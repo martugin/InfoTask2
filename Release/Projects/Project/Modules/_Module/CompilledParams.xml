@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл результатов и ошибок компиляции -->
+<CompilledParams>
+  <CalcParam ParamId="Уникальный идентификатор (целое)" CompiledExpr="Скомпилированное выражение" ErrMess="Ошибка компиляции" ResultType="Возвращаемый тип данных">
+    <CalcSubParams>
+      <CalcSubParam SubParamId="Идентификатор, уникальный для подпараметров одного параметра (целое)" CompiledExpr="Скомпилированное выражение" ErrMess="Ошибка компиляции" ResultType="Возвращаемый тип данных"></CalcSubParam>
+    </CalcSubParams>
+  </CalcParam>
+</CompilledParams>

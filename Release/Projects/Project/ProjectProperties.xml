@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл свойств проекта (ProjectProperties.xml)-->
+<ProjectProperties ProjectCode="Код Проекта" ProjectName="Имя Проекта" Description="Описание Проекта">
+  <Connects>
+    <_Source Code="Код соединения" Complect="Код комплекта" Description="Описание соединения">
+      <!--Источник, включая коммуникатор-->
+    </_Source>
+    <_HandInput Code="Код соединения" Description="Описание соединения">
+      <!--Источник ручного ввода-->
+    </_HandInput>
+    <_Receiver Code="Код соединения" Complect="Код комплекта" Description="Описание соединения">
+      <!--Приемник, включая коммуникатор-->
+    </_Receiver>
+    <_Archive Code="Код соединения" Description="Описание соединения">
+      <!--Архив результатов-->
+      <ArchiveModules>
+        <_ArchiveModule ModuleCode="Код модуля в архиве" Alias="Псевдоним" />
+      </ArchiveModules>
+    </_Archive>
+    <_MomentSource Code="Код соединения" Complect="Код комплекта" Description="Описание соединения">
+      <!--Мгновенный источник-->
+    </_MomentSource>
+  </Connects>
+</ProjectProperties>

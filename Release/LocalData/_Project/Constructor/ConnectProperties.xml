@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Значения настроек соединений для проекта-->
+<ConnectProperties>
+  <_КодСоединенияИсточника JoinPropLists="Общие свойства источника и коммуникатора склеивать в одно">
+    <SourceProvider Provider="Провайдер источника">
+      <_КодСвойства PropValue="Значение свойства" />
+    </SourceProvider>
+    <CommProvider Provider="Провайдер коммуникатора">
+      <_КодСвойства PropValue="Значение свойства" />
+    </CommProvider>
+  </_КодСоединенияИсточника>
+  <_КодСоединенияПриемника JoinPropLists="Общие свойства приемника и коммуникатора склеивать в одно">
+    <ReceiverProvider Provider="Провайдер приемника">
+      <_КодСвойства PropValue="Значение свойства" />
+    </ReceiverProvider>
+    <CommProvider Provider="Провайдер коммуникатора">
+      <_КодСвойства PropValue="Значение свойства" />
+    </CommProvider>
+  </_КодСоединенияПриемника>
+  <_КодСоединенияАрхива>
+    <ArchiveProvider Provider="Провайдер архива">
+      <_КодСвойства PropValue="Значение свойства" />
+    </ArchiveProvider>
+  </_КодСоединенияАрхива>
+</ConnectProperties>

@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл установленной конфигурации InfoTask-->
+<Config>
+  <Packages>
+    <Kernel Description="Ядро системы " InstallDate=""></Kernel>
+    <Constructor Description="Конструктор проектов " InstallDate="" />
+    <ServerCalc Description="Сервер периодических расчетов" InstallDate="" />
+    <ServerApp Description="Сервер приложений" InstallDate="" />
+    <ServerExcel Description="Сервер отчетов Excel" InstallDate="" />
+    <Client Description="Клиентское приложение " InstallDate="" />
+    <ReportConstructorExcel Description="Конструктор бланков отчетов Excel" InstallDate="" />
+    <Analyzer Description="Клиент анализатора архивов" InstallDate="" />
+    <RAS Description="Клиент программы РАС" InstallDate="" />
+    <Calibrator Description="Наладчик" InstallDate="" />
+    <Kosmotronika Description="Комплект провайдеров для ПТК Космотроника-Венец" InstallDate="" />
+    <Ovation Description="Комплект провайдеров для ПТК Ovation" InstallDate="" />
+    <Wonderware Description="Комплект провайдеров для ПТК Wonderware" InstallDate="" />
+    <Siemens Description="Комплект провайдеров для Siemens" InstallDate="" />
+  </Packages>
+  <Providers>
+    <Kosmotronika Description="Провайдеры для ПТК Космотроника-Венец" DllFile="Providers\Kosmotronika\Kosmotronika.dll">
+      <KosmotronikaRetroSource ProviderType="Источник" Description="Ретро-сервер">
+        <ProviderProps>
+          <RetroServerName PropNum="1" Description="Имя Ретро-сервера" DefaultValue="RetroServer">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </RetroServerName>
+        </ProviderProps>
+      </KosmotronikaRetroSource>
+      <KosmotronikaSQLComm ProviderType="Коммуникатор" Description="База данных SQL" ProviderFile="Providers\Kosmotronika\KosmotronikaSQLComm.accde">
+        <ProviderProps>
+          <TemplateName PropNum="1" Description="Шаблон списка сигналов" DefaultValue="InfoTask">
+            <PropOptions RowSourceType="Value List" RowSource="InfoTask;ArhAnalyzer;Минимальный" />
+          </TemplateName>
+          <SQLServer PropNum="2" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="3" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="4" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="5" Description="Пароль входа" />
+          <Database PropNum="6" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+        </ProviderProps>
+      </KosmotronikaSQLComm>
+      <KosmotronikaDBFComm ProviderType="Коммуникатор" Description="База данных DBF" ProviderFile="Providers\Kosmotronika\KosmotronikaDBFComm.accde">
+        <ProviderProps>
+          <TemplateName PropNum="1" Description="Шаблон списка сигналов" DefaultValue="InfoTask">
+            <PropOptions RowSourceType="Value List" RowSource="InfoTask;ArhAnalyzer;Минимальный" />
+          </TemplateName>
+          <DbfDir PropNum="2" Description="Каталог таблиц Dbf" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFolder([Form], &quot;PropValue&quot;, &quot;Каталог DBF&quot;)" />
+          </DbfDir>
+          <SystemDir PropNum="3" Description="Каталог System" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFolder([Form], &quot;PropValue&quot;, &quot;Каталог SYSTEM&quot;)" />
+          </SystemDir>
+        </ProviderProps>
+      </KosmotronikaDBFComm>
+      <KosmotronikaOPCReceiver ProviderType="Приемник" Description="Запись в OPC-сервер DA">
+        <ProviderProps>
+          <OPCServerName PropNum="1" Description="Имя OPC-сервера" DefaultValue="Progress.OpenOPC.2">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </OPCServerName>
+          <Node PropNum="2" Description="Рабочая станция">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Node>
+          <ServerGroup PropNum="3" Description="Имя серверной группы">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ServerGroup>
+        </ProviderProps>
+      </KosmotronikaOPCReceiver>
+      <KosmotronikaSQLOPCReceiverComm ProviderType="КоммуникаторПриемника" Description="Формирование списка точек для записи в OPC из SQL-базы" ProviderFile="Providers\Kosmotronika\KosmotronikaSQLComm.accde">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="3" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="4" Description="Пароль входа" />
+          <Database PropNum="5" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+          <ReceiverFilter PropNum="6" Description="Список сигналов для записи в OPC" DefaultValue="Точки из стойки">
+            <PropOptions RowSourceType="Value List" RowSource="Все точки;Точки из стойки" />
+          </ReceiverFilter>
+          <ReceiverST PropNum="7" Description="Номер стойки с точками для записи в OPC">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ReceiverST>
+        </ProviderProps>
+      </KosmotronikaSQLOPCReceiverComm>
+      <KosmotronikaDBFOPCReceiverComm ProviderType="КоммуникаторПриемника" Description="Формирование списка точек для записи в OPC из DBF-базы" ProviderFile="Providers\Kosmotronika\KosmotronikaDBFComm.accde">
+        <ProviderProps>
+          <DbfDir PropNum="1" Description="Каталог таблиц Dbf" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFolder([Form], &quot;PropValue&quot;, &quot;Каталог DBF&quot;)" />
+          </DbfDir>
+          <ReceiverFilter PropNum="2" Description="Список сигналов для записи в OPC" DefaultValue="Точки из стойки">
+            <PropOptions RowSourceType="Value List" RowSource="Все точки;Точки из стойки" />
+          </ReceiverFilter>
+          <ReceiverST PropNum="3" Description="Номер стойки с точками для записи в OPC">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ReceiverST>
+        </ProviderProps>
+      </KosmotronikaDBFOPCReceiverComm>
+    </Kosmotronika>
+    <Ovation Description="Провайдеры для ПТК Ovation" DllFile="Providers\Ovation\Ovation.dll">
+      <OvationSource ProviderType="Источник" Description="Process Historian">
+        <ProviderProps>
+          <DataSource PropNum="1" Description="Источник данных Historian (DROP)">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </DataSource>
+        </ProviderProps>
+      </OvationSource>
+      <OvationComm ProviderType="Коммуникатор" Description="Process Historian" ProviderFile="\Providers\Ovation\OvationComm.accde">
+        <ProviderProps>
+          <DataSource PropNum="1" Description="Источник данных Historian (DROP)">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </DataSource>
+        </ProviderProps>
+      </OvationComm>
+      <OvationOPCReceiverComm ProviderType="КоммуникаторПриемника" Description="Формирование списка точек для записи в OPC из Historian" ProviderFile="\Providers\Ovation\OvationComm.accde">
+        <ProviderProps>
+          <DataSource PropNum="1" Description="Источник данных Historian (DROP)">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </DataSource>
+        </ProviderProps>
+      </OvationOPCReceiverComm>
+      <OvationReceiver ProviderType="Приемник" Description="Запись в OPC-сервер DA">
+        <ProviderProps>
+          <OPCServerName PropNum="1" Description="Имя OPC-сервера" DefaultValue="Ovation.OPCDAServer.1">
+            <PropOptions RowSourceType="Value List" RowSource="Ovation.OPC.4;Ovation.OPCDAServer.1" />
+          </OPCServerName>
+          <Node PropNum="2" Description="Рабочая станция">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Node>
+        </ProviderProps>
+      </OvationReceiver>
+    </Ovation>
+    <Wonderware Description="Провайдеры для ПТК Wonderware" DllFile="Providers\Wonderware\Wonderware.dll">
+      <WonderwareSource ProviderType="Источник" Description="Historian">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="3" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="4" Description="Пароль входа" />
+          <Database PropNum="5" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+        </ProviderProps>
+      </WonderwareSource>
+      <WonderwareComm ProviderType="Коммуникатор" Description="Historian" ProviderFile="\Providers\Wonderware\WonderwareComm.accde">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="3" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="4" Description="Пароль входа" />
+          <Database PropNum="5" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+        </ProviderProps>
+      </WonderwareComm>
+      <WonderwareOPCReceiverComm ProviderType="КоммуникаторПриемника" Description="Формирование списка точек для записи в OPC из Historian" ProviderFile="\Providers\Wonderware\WonderwareComm.accde">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="3" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="4" Description="Пароль входа" />
+          <Database PropNum="5" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+        </ProviderProps>
+      </WonderwareOPCReceiverComm>
+      <WonderwareOPCReceiver ProviderType="Приемник" Description="Запись в OPC-сервер DA">
+        <ProviderProps>
+          <OPCServerName PropNum="1" Description="Имя OPC-сервера" DefaultValue="ArchestrA.FSGateway.2" RowSource="ArchestrA.FSGateway.2" />
+          <Node PropNum="2" Description="Рабочая станция" />
+          <ServerNode PropNum="3" Description="Имя серверного узла" />
+          <ServerGroup PropNum="4" Description="Имя серверной группы" />
+        </ProviderProps>
+      </WonderwareOPCReceiver>
+    </Wonderware>
+    <Siemens Description="Провайдеры для Siemens" DllFile="Providers\Siemens\Siemens.dll">
+      <SimaticSource ProviderType="Источник" Description="Источник OLE DB ПТК SIMATIC">
+        <ProviderProps>
+          <MainSQLServer PropNum="1" Description="Имя основного SQL-сервера архива">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </MainSQLServer>
+          <ReserveSQLServer PropNum="2" Description="Имя резервного SQL-сервера архива">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ReserveSQLServer>
+        </ProviderProps>
+      </SimaticSource>
+      <SimaticComm ProviderType="Коммуникатор" Description="Коммуникатор OLE DB ПТК SIMATIC" ProviderFile="\Providers\Siemens\SimaticComm.accdb">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="3" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="4" Description="Пароль входа" />
+          <Database PropNum="5" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+        </ProviderProps>
+      </SimaticComm>
+    </Siemens>
+    <Clones Description="Провайдеры архивов мгновенных значений InfoTask">
+      <CloneSource ProviderType="Источник" Description="Клон архива">
+        <ProviderProps>
+          <CloneFile PropNum="1" Description="Файл клона архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </CloneFile>
+        </ProviderProps>
+      </CloneSource>
+      <CloneComm ProviderType="Коммуникатор" Description="Клон архива" ProviderFile="Providers\Clones\CloneComm.accde">
+        <ProviderProps>
+          <CloneFile PropNum="1" Description="Файл клона архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </CloneFile>
+        </ProviderProps>
+      </CloneComm>
+      <CloneReceiverComm ProviderType="КоммуникаторПриемник" Description="Коммуникатор приемника, сигналы берутся из клона " ProviderFile="Providers\Clones\CloneComm.accde">
+        <ProviderProps>
+          <CloneFile PropNum="1" Description="Файл клона архива" ButText...="">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </CloneFile>
+        </ProviderProps>
+      </CloneReceiverComm>
+    </Clones>
+    <Archives Description="Провайдеры для с архивов результатов расчета">
+      <AccessArchive ProviderType="Архив" Description="Архив в формате Access">
+        <ProviderProps>
+          <DatabaseFile PropNum="1" Description="Файл архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </DatabaseFile>
+        </ProviderProps>
+      </AccessArchive>
+      <SQLServerArchive ProviderType="Архив" Description="Архив в формате SQL-сервер">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="3" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="4" Description="Пароль входа" />
+          <Database PropNum="5" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+        </ProviderProps>
+      </SQLServerArchive>
+      <AccessArchiveSource ProviderType="Источник" Description="Архив в формате Access как источник, один модуль">
+        <ProviderProps>
+          <DatabaseFile PropNum="1" Description="Файл архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </DatabaseFile>
+          <ModuleCode PropNum="2" Description="Код модуля в архиве">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ModuleCode>
+        </ProviderProps>
+      </AccessArchiveSource>
+      <SQLServerArchiveSource ProviderType="Источник" Description="Архив в формате SQL-сервера как источник, один модуль">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="3" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="4" Description="Пароль входа" />
+          <Database PropNum="5" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+          <ModuleCode PropNum="6" Description="Код модуля в архиве">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ModuleCode>
+        </ProviderProps>
+      </SQLServerArchiveSource>
+      <ArchiveAccessComm ProviderType="Коммуникатор" Description="Архив в формате Access как коммуникатор, один модуль">
+        <ProviderProps>
+          <DatabaseFile PropNum="1" Description="Файл архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </DatabaseFile>
+          <ModuleCode PropNum="2" Description="Код модуля в архиве">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ModuleCode>
+        </ProviderProps>
+      </ArchiveAccessComm>
+      <ArchiveSQLServerComm ProviderType="Коммуникатор" Description="Архив в формате SQL-сервера как коммуникатор, один модуль">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="3" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="4" Description="Пароль входа" />
+          <Database PropNum="5" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+          <ModuleCode PropNum="6" Description="Код модуля в архиве">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ModuleCode>
+        </ProviderProps>
+      </ArchiveSQLServerComm>
+      <ArchiveModuleComm ProviderType="Коммуникатор" Description="Архивные параметры модуля InfoTask">
+        <ProviderProps>
+          <ModuleCode PropNum="1" Description="Код модуля">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ModuleCode>
+        </ProviderProps>
+      </ArchiveModuleComm>
+    </Archives>
+  </Providers>
+</Config>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Редактируемые свойства порожденных параметров -->
+<DerivedParamsEdit>
+  <DerivedParam ParamCode="Код" ReceiverSignal="Код сигнала приемника" ObjectCodeEdit="Код привязанного объекта" UnitsEdit="Единицы измерения" MinEdit="Минимум шкалы (действ)" MaxEdit="Максимум шкалы (действ)" CommentEdit="Комментарий"></DerivedParam>
+  <DerivedSubParamsEdit>
+    <DerivedParam ParamCode="Код" ReceiverSignal="Код сигнала приемника" ObjectCodeEdit="Код привязанного объекта" UnitsEdit="Единицы измерения" MinEdit="Минимум шкалы (действ)" MaxEdit="Максимум шкалы (действ)" CommentEdit="Комментарий"></DerivedParam>
+  </DerivedSubParamsEdit>
+</DerivedParamsEdit>
