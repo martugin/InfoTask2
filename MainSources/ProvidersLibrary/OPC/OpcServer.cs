@@ -183,7 +183,7 @@ namespace CommonTypes
             _signalsCode.Add(tag, item);
             item.Tag = tag;
             item.ClientHandler = _signals.Count;
-            item.Value = Mom.Create(dataType, v); 
+            item.Value = MomFactory.NewMean(dataType, v); 
             if (!_items.ContainsKey(item.Tag))
                 _items.Add(item.Tag, item);
             return item;
@@ -258,7 +258,7 @@ namespace CommonTypes
                     {
                         var item = _itemsList[i];
                         serverHandles.SetValue(item.ServerHandler, i);
-                        valuesArr.SetValue(item.Value.ToMom.Object, i);
+                        valuesArr.SetValue(item.Value.Object, i);
                     }
                     _group.SyncWrite(m - 1, ref serverHandles, ref valuesArr, out errorsArr);
                 }

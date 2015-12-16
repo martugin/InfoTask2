@@ -6,112 +6,91 @@ namespace CommonTypes
     //Одно значение
     public abstract class Mean : Val, IMean
     {
-        public virtual bool Boolean { get { return false; } }
-        public virtual int Integer { get { return 0; } }
-        public virtual double Real { get { return 0; } }
-        public virtual DateTime Date { get { return Different.MinDate; } }
-        public virtual string String { get { return ""; } }
-        public virtual object Object { get { return 0; } }
-
-        public static Mean Create(DataType dtype, IRecordRead rec, string field)
+        public virtual bool Boolean
         {
-            switch (dtype)
-            {
-                case DataType.Real:
-                    return new MeanReal(rec.GetDouble(field));
-                case DataType.String:
-                    return new MeanString(rec.GetString(field));
-                case DataType.Integer:
-                    return new MeanInteger(rec.GetInt(field));
-                case DataType.Boolean:
-                    return new MeanBool(rec.GetBool(field));
-                case DataType.Time:
-                    return new MeanTime(rec.GetTime(field));
-            }
-            return null;
+            get { return false; }
+            internal set {}
+        }
+        public virtual int Integer
+        {
+            get { return 0; }
+            internal set {}
+        }
+        public virtual double Real
+        {
+            get { return 0; }
+            internal set {}
+        }
+        public virtual DateTime Date
+        {
+            get { return Different.MinDate; }
+            internal set {}
+        }
+        public virtual string String
+        {
+            get { return ""; }
+            internal set {}
+        }
+        public virtual object Object
+        {
+            get { return 0; }
+            internal set {}
         }
 
-        protected bool Equals(Mean other)
+        public bool ValueEquals(IMean mean)
         {
-            var dt = DataType.Add(other.DataType);
+            var dt = DataType.Add(mean.DataType);
             switch (dt)
             {
                 case DataType.String:
-                    return String == other.String;
+                    return String == mean.String;
                 case DataType.Real:
-                    return Real == other.Real;
+                    return Real == mean.Real;
                 case DataType.Integer:
-                    return Integer == other.Integer;
+                    return Integer == mean.Integer;
                 case DataType.Boolean:
-                    return Boolean == other.Boolean;
+                    return Boolean == mean.Boolean;
                 case DataType.Time:
-                    return Date == other.Date;
+                    return Date == mean.Date;
             }
             return false;
         }
 
-        public override bool Equals(object obj)
+        public bool ValueLess(IMean mean)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Mean)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return String.GetHashCode();
-        }
-
-        //Операции сравнения
-        public static bool operator ==(Mean x, Mean y)
-        {
-            if (ReferenceEquals(null, x)) return ReferenceEquals(null, y);
-            return x.Equals(y);
-        }
-
-        public static bool operator !=(Mean x, Mean y)
-        {
-            return !(x == y);
-        }
-
-        public static bool operator <(Mean x, Mean y)
-        {
-            var dt = x.DataType.Add(y.DataType);
+            var dt = DataType.Add(mean.DataType);
             switch (dt)
             {
                 case DataType.String:
-                    return x.String.CompareTo(y.String) < 0;
+                    return String.CompareTo(mean.String) < 0;
                 case DataType.Real:
-                    return x.Real < y.Real;
+                    return Real < mean.Real;
                 case DataType.Integer:
-                    return x.Integer < y.Integer;
+                    return Integer < mean.Integer;
                 case DataType.Boolean:
-                    return !x.Boolean && y.Boolean;
+                    return !Boolean && mean.Boolean;
                 case DataType.Time:
-                    return x.Date < y.Date;
+                    return Date < mean.Date;
             }
             return false;
         }
 
-        public static bool operator <=(Mean x, Mean y)
+        public bool ValueAndErrorEquals(IMean mean)
         {
-            return x < y || x == y;
+            return ValueEquals(mean) && Error == mean.Error;
         }
 
-        public static bool operator >(Mean x, Mean y)
-        {
-            return !(x <= y);
-        }
-
-        public static bool operator >=(Mean x, Mean y)
-        {
-            return !(x < y);
-        }
-
+        public abstract void ValueToRec(IRecordAdd rec, string field);
+        public abstract IMom Clone(DateTime time, ErrMom err = null);
+        
         public override ICalcVal CalcValue { get { return this; } }
-        public ErrMom Error { get { return null; } }
-        public ErrMom TotalError { get { return null; } }
+        public virtual ErrMom Error
+        {
+            get { return null; }
+            internal set {}
+        }
+        public virtual ErrMom TotalError { get { return Error; } }
+        public int Count { get { return 1; } }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -122,34 +101,98 @@ namespace CommonTypes
         {
             _boolean = b;
         }
+        public MeanBool() { }
 
-        private readonly bool _boolean;
+        private bool _boolean;
 
-        public override DataType DataType { get { return DataType.Boolean; }}
-        public override bool Boolean { get { return _boolean; } }
-        public override int Integer { get { return _boolean ? 1 : 0; } }
-        public override double Real { get { return _boolean ? 1 : 0; } }
-        public override string String { get { return _boolean ? "1" : "0"; } }
-        public override object Object { get { return _boolean; } }
+        public override DataType DataType {get { return DataType.Boolean; } }
+        
+        public override bool Boolean
+        {
+            get { return _boolean; }
+            internal set { _boolean = value; }
+        }
+        public override int Integer
+        {
+            get { return _boolean ? 1 : 0; }
+            internal set { _boolean = value != 0; }
+        }
+        public override double Real
+        {
+            get { return _boolean ? 1 : 0; }
+            internal set { _boolean = value != 0; }
+        }
+        public override string String
+        {
+            get { return _boolean ? "1" : "0"; }
+            internal set { _boolean = value != "0"; }
+        }
+        public override object Object
+        {
+            get { return _boolean; }
+            internal set { _boolean = (bool)value; }
+        }
+
+        public override void ValueToRec(IRecordAdd rec, string field)
+        {
+            rec.Put(field, _boolean);
+        }
+
+        public override IMom Clone(DateTime time, ErrMom err = null)
+        {
+            return new MomBool(time, _boolean, Error.Add(err));
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
     //Логическое значение
-    public class MeanInteger : Mean
+    public class MeanInt : Mean
     {
-        public MeanInteger(int i)
+        public MeanInt(int i)
         {
             _integer = i;
         }
+        public MeanInt() { }
 
-        private readonly int _integer;
+        private int _integer;
 
         public override DataType DataType { get { return DataType.Integer; } }
-        public override bool Boolean { get { return _integer == 0; } }
-        public override int Integer { get { return _integer; } }
-        public override double Real { get { return _integer; } }
-        public override string String { get { return _integer.ToString(); } }
-        public override object Object { get { return _integer; } }
+
+        public override bool Boolean
+        {
+            get { return _integer == 0; }
+            internal set { _integer = value ? 1 : 0; }
+        }
+        public override int Integer
+        {
+            get { return _integer; }
+            internal set { _integer = value; }
+        }
+        public override double Real
+        {
+            get { return _integer; }
+            internal set { _integer = Convert.ToInt32(value); }
+        }
+        public override string String
+        {
+            get { return _integer.ToString(); }
+            internal set { _integer = value.ToInt(); }
+        }
+        public override object Object
+        {
+            get { return _integer; }
+            internal set { _integer = (int) value; }
+        }
+
+        public override void ValueToRec(IRecordAdd rec, string field)
+        {
+            rec.Put(field, _integer);
+        }
+
+        public override IMom Clone(DateTime time, ErrMom err = null)
+        {
+            return new MomInt(time, _integer, Error.Add(err));
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -160,15 +203,47 @@ namespace CommonTypes
         {
             _real = r;
         }
+        public MeanReal() { }
 
-        private readonly double _real;
+        private double _real;
 
         public override DataType DataType { get { return DataType.Real; } }
-        public override bool Boolean { get { return _real == 0; } }
-        public override int Integer { get { return Convert.ToInt32(_real); } }
-        public override double Real { get { return _real; } }
-        public override string String { get { return _real.ToString(); } }
-        public override object Object { get { return _real; } }
+
+        public override bool Boolean
+        {
+            get { return _real == 0; }
+            internal set { _real = value ? 1 : 0; }
+        }
+        public override int Integer
+        {
+            get { return Convert.ToInt32(_real); }
+            internal set { _real = value; }
+        }
+        public override double Real
+        {
+            get { return _real; }
+            internal set { _real = value; }
+        }
+        public override string String
+        {
+            get { return _real.ToString(); }
+            internal set { _real = value.ToDouble(0); }
+        }
+        public override object Object
+        {
+            get { return _real; }
+            internal set { _real = (double) value; }
+        }
+
+        public override void ValueToRec(IRecordAdd rec, string field)
+        {
+            rec.Put(field, _real);
+        }
+
+        public override IMom Clone(DateTime time, ErrMom err = null)
+        {
+            return new MomReal(time, _real, Error.Add(err));
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -179,16 +254,52 @@ namespace CommonTypes
         {
             _string = s;
         }
+        public MeanString() { }
 
-        private readonly string _string;
+        private string _string;
 
         public override DataType DataType { get { return DataType.String; } }
-        public override bool Boolean { get { return _string == "0"; } }
-        public override int Integer { get { return _string.ToInt(); } }
-        public override double Real { get { return _string.ToDouble(); } }
-        public override DateTime Date { get { return _string.ToDateTime(); } }
-        public override string String { get { return _string; } }
-        public override object Object { get { return _string; } }
+
+        public override bool Boolean
+        {
+            get { return _string == "0"; }
+            internal set { _string = value ? "1" : "0"; }
+        }
+        public override int Integer
+        {
+            get { return _string.ToInt(); }
+            internal set { _string = value.ToString(); }
+        }
+        public override double Real
+        {
+            get { return _string.ToDouble(); }
+            internal set { _string = value.ToString(); }
+        }
+        public override DateTime Date
+        {
+            get { return _string.ToDateTime(); }
+            internal set { _string = value.ToString(); }
+        }
+        public override string String
+        {
+            get { return _string; }
+            internal set { _string = value; }
+        }
+        public override object Object
+        {
+            get { return _string; }
+            internal set { _string = (string) value; }
+        }
+
+        public override void ValueToRec(IRecordAdd rec, string field)
+        {
+            rec.Put(field, _string);
+        }
+
+        public override IMom Clone(DateTime time, ErrMom err = null)
+        {
+            return new MomString(time, _string, Error.Add(err));
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -199,12 +310,36 @@ namespace CommonTypes
         {
             _date = d;
         }
+        public MeanTime() { }
 
-        private readonly DateTime _date;
+        private DateTime _date;
 
         public override DataType DataType { get { return DataType.Time; } }
-        public override DateTime Date { get { return _date; } }
-        public override string String { get { return _date.ToString(); } }
-        public override object Object { get { return _date; } }
+
+        public override DateTime Date
+        {
+            get { return _date; }
+            internal set { _date = value; }
+        }
+        public override string String
+        {
+            get { return _date.ToString(); }
+            internal set { _date = value.ToDateTime(); }
+        }
+        public override object Object
+        {
+            get { return _date; }
+            internal set { _date = (DateTime) value; }
+        }
+
+        public override void ValueToRec(IRecordAdd rec, string field)
+        {
+            rec.Put(field, _date);
+        }
+
+        public override IMom Clone(DateTime time, ErrMom err = null)
+        {
+            return new MomTime(time, _date, Error.Add(err));
+        }
     }
 }

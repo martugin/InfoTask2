@@ -6,25 +6,17 @@ namespace CommonTypes
     //Мгновенные значения с возможностью изменения, декоратор над Mom
     public class MomEdit: Val, IMom
     {
-        public MomEdit(DataType type, ErrMom error = null)
+        public MomEdit(DataType dtype, DateTime time, ErrMom err = null)
         {
-            _mom = Mom.Create(type, error);
-        }
-
-        public MomEdit(DataType type, DateTime time, ErrMom error = null)
-        {
-            _mom = Mom.Create(type, time, error);
+            _mom = (Mean)MomFactory.NewMom(dtype, time, err);
         }
 
         //Обертываемое мгновенное значение
-        private readonly Mom _mom;
+        private readonly Mean _mom;
+        public IMom Mom { get { return (IMom)_mom; }}
 
         //Время значения
-        public DateTime Time 
-        {
-            get { return _mom.Time; }
-            set { _mom.Time = value; } 
-        }
+        public DateTime Time { get { return ((IMom)_mom).Time; } }
 
         //Ошибка
         public ErrMom Error
@@ -44,50 +36,45 @@ namespace CommonTypes
             get { return _mom.Boolean; }
             set { _mom.Boolean = value; }
         }
-
         public int Integer
         {
             get { return _mom.Integer; }
             set { _mom.Integer = value; }
         }
-
         public double Real
         {
             get { return _mom.Real; }
             set { _mom.Real = value; }
         }
-
         public DateTime Date
         {
             get { return _mom.Date; }
             set { _mom.Date = value; }
         }
-
         public string String
         {
             get { return _mom.String; }
             set { _mom.String = value;}
         }
-
         public object Object
         {
             get { return _mom.Object; }
-            set { _mom.Object = value; }
+            internal set { _mom.Object = value; }
         }
 
-        public bool ValueEquals(IMom mom)
+        public bool ValueEquals(IMean mean)
         {
-            return _mom.ValueEquals(mom);
+            return _mom.ValueEquals(mean);
         }
 
-        public bool ValueLess(IMom mom)
+        public bool ValueLess(IMean mean)
         {
-            return _mom.ValueLess(mom);
+            return _mom.ValueLess(mean);
         }
 
-        public bool ValueAndErrorEquals(IMom mom)
+        public bool ValueAndErrorEquals(IMean mean)
         {
-            return _mom.ValueAndErrorEquals(mom);
+            return _mom.ValueAndErrorEquals(mean);
         }
 
         //Запись в рекордсет
@@ -97,22 +84,37 @@ namespace CommonTypes
         }
 
         //Копирует значение из другого мгновенного значения
-        public void CopyValueFrom(Mom mom)
+        public void CopyValueFrom(IMean mean)
         {
-            if (mom is MomReal) _mom.Real = mom.Real;
-            else if (mom is MomInteger) _mom.Integer = mom.Integer;
-            else if (mom is MomBoolean) _mom.Boolean = mom.Boolean;
-            else if (mom is MomString) _mom.String = mom.String;
-            else if (mom is MomTime) _mom.Date = mom.Date;
+            switch (mean.DataType)
+            {
+                case DataType.Real:
+                    Real = mean.Real;
+                    break;
+                case DataType.Integer:
+                    Integer = mean.Integer;
+                    break;
+                case DataType.Boolean:
+                    Boolean = mean.Boolean;
+                    break;
+                case DataType.String:
+                    String = mean.String;
+                    break;
+                case DataType.Time:
+                    Date = mean.Date;
+                    break;
+            }
+        }
+
+        public IMom Clone(DateTime time, ErrMom err = null)
+        {
+            return _mom.Clone(time, err);
         }
 
         //Типы данных и значения
         public override DataType DataType { get { return _mom.DataType; } }
         public override ICalcVal CalcValue { get { return _mom.CalcValue; } }
-
         public ErrMom TotalError { get { return _mom.Error; } }
-        public Mom ToMom { get { return _mom; } }
         public int Count { get { return 1; } }
-        public Mom this[int n] { get { return n == 0 ? ToMom : null; } }
     }
 }

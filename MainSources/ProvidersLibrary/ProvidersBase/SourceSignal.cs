@@ -16,20 +16,16 @@ namespace CommonTypes
         private readonly int _idInClone;
         
         //Значение среза на начало периода
-        public Mom BeginMom { get; private set; }
+        public IMom BeginMom { get; private set; }
 
-        //Значение 
-        public IMomentsVal Value { get { return MomList == null ? Mom : (IMomentsVal)MomList; } }
         //Список мгновенных значений
-        public MomList MomList { get; set; }
-        //Одиночное мгновенное значение 
-        public Mom Mom { get; set; }
+        public MomList Value { get; set; }
 
         //Добавка мгновенных значений в список или клон
         //Возвращает количество реально добавленных значений
         //rec - рекордсет клона, если не задан, то добавляется в список
         //если forBegin, то значение не пишется в список сразу, т.к. оно предназначено для формирования среза
-        public int AddMom(Mom mom, bool forBegin = false, bool skipEquals = true, bool add10Min = true)
+        public int AddMom(IMom mom, bool forBegin = false, bool skipEquals = true, bool add10Min = true)
         {
             if (forBegin) ChangeBegin(mom);
             else
@@ -38,7 +34,7 @@ namespace CommonTypes
                 if (rec == null)
                 {
                     ChangeBegin(mom);
-                    return MomList.AddMom(mom, skipEquals) == null ? 0 : 1;
+                    return Value.AddMom(mom, skipEquals) == null ? 0 : 1;
                 }
                 if (IsReal) return MomentToClone(rec, mom.Time, mom.Real, mom.Error, false, add10Min);    
             }
@@ -47,32 +43,32 @@ namespace CommonTypes
         //Добавка мгновенных значений разного типа в список или клон
         public int AddMom(DateTime time, bool b, ErrMom err = null, bool forBegin = false)
         {
-            return AddMom(Mom.Create(time, b, err), forBegin);
+            return AddMom(new MomBool(time, b, err), forBegin);
         }
         public int AddMom(DateTime time, int i, ErrMom err = null, bool forBegin = false)
         {
-            return AddMom(Mom.Create(time, i, err), forBegin);
+            return AddMom(new MomInt(time, i, err), forBegin);
         }
         public int AddMom(DateTime time, double r, ErrMom err = null, bool forBegin = false)
         {
-            return AddMom(Mom.Create(time, r, err), forBegin);
+            return AddMom(new MomReal(time, r, err), forBegin);
         }
         public int AddMom(DateTime time, DateTime d, ErrMom err = null, bool forBegin = false)
         {
-            return AddMom(Mom.Create(time, d, err), forBegin);
+            return AddMom(new MomTime(time, d, err), forBegin);
         }
         public int AddMom(DateTime time, string s, ErrMom err = null, bool forBegin = false)
         {
-            return AddMom(Mom.Create(time, s, err), forBegin);
+            return AddMom(new MomString(time, s, err), forBegin);
         }
         //Добавка мгновенных значений с указанием типов данных, значение берется из типа object
         public int AddMom(DataType dtype, DateTime time, object ob, ErrMom err = null, bool forBegin = false)
         {
-            return AddMom(Mom.Create(dtype, time, ob, err), forBegin);
+            return AddMom(MomFactory.NewMom(dtype, time, ob, err), forBegin);
         }
 
         //Присваевает новое значение в BeginMom
-        private void ChangeBegin(Mom mv)
+        private void ChangeBegin(IMom mv)
         {
             if (BeginMom == null || BeginMom.Time < mv.Time)
                 BeginMom = mv;
@@ -85,7 +81,7 @@ namespace CommonTypes
             var rec = ((SourceBase)Provider).CloneRec;
             if (rec == null)
             {
-                MomList.AddMom(BeginMom.Clone(beginTime));
+                Value.AddMom(BeginMom.Clone(beginTime));
                 return 1;
             }
             if (IsReal) return MomentToClone(rec, beginTime, BeginMom.Real, BeginMom.Error);

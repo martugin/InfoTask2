@@ -45,6 +45,6 @@ namespace CommonTypes
         }
 
         //Передаваемое значение
-        public IMomentsVal Value { get; set; }
+        public IMean Value { get; set; }
     }
 }

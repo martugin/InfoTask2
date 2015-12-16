@@ -15,6 +15,6 @@ namespace CommonTypes
         public int ServerHandler { get; internal set; }
 
         //Значение
-        public Mom Mom { get { return Value.ToMom; } }
+        public IMean Mom { get { return Value; } }
     }
 }

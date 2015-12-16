@@ -14,7 +14,7 @@ namespace CommonTypes
             _fieldsDic = tabl.Fields[level];
             _fields = new Mean[_fieldsDic.Count];
             foreach (var f in _fieldsDic.Values)
-                _fields[f.Num] = Mean.Create(f.DataType, rec, f.Name);
+                _fields[f.Num] = rec.GetMean(f.DataType, f.Name);
         }
 
         //Id себя и родителя

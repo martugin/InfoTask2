@@ -49,7 +49,7 @@ namespace CommonTypes
         public void GetValues(DateTime beginRead, DateTime endRead)
         {
             foreach (var sig in ProviderSignals.Values)
-                sig.MomList = new MomList(sig.DataType);
+                sig.Value = new MomList(sig.DataType);
             BeginRead = beginRead;
             EndRead = endRead;
 
