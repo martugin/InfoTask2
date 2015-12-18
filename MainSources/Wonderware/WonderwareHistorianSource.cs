@@ -13,7 +13,7 @@ namespace Provider
     {
         //Код провайдера
         public override string Code { get { return "WonderwareHistorianSource"; } }
-        //Настройки провайдера
+        //Настройки провайдера 
         public string Inf
         {
             get { return ProviderInf; }
