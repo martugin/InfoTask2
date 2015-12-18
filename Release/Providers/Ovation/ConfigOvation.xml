@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл установленной конфигурации InfoTask-->
+<Config>
+  <Packages>
+    <!--Установленные пакеты-->
+    <Ovation Description="Комплект провайдеров для ПТК Ovation" InstallDate="" />
+  </Packages>
+  <Providers>
+    <!--Список провайдеров-->
+    <Ovation Description="Комплект провайдеров для работы c ПТК Ovation" DllFile="Providers\Ovation\Ovation.dll">
+      <OvationSource ProviderType="Источник" Description="Источник Ovation Process Historian">
+        <ProviderProps>
+          <DataSource PropNum="1" Description="Источник данных Historian (DROP)" />
+        </ProviderProps>
+      </OvationSource>
+      <OvationComm ProviderType="Коммуникатор" Description="Коммуникатор Ovation Process Historian" ProviderFile="\Providers\Ovation\OvationComm.accde">
+        <ProviderProps>
+          <DataSource PropNum="1" Description="Источник данных Historian (DROP)" />
+        </ProviderProps>
+      </OvationComm>
+      <OvationOPCReceiverComm ProviderType="КоммуникаторПриемника" Description="Коммуникатор приемника OPC ПТК Ovation, сигналы берутся из Process Historian" ProviderFile="\Providers\Ovation\OvationComm.accde">
+        <ProviderProps>
+          <DataSource PropNum="1" Description="Источник данных Historian (DROP)" />
+        </ProviderProps>
+      </OvationOPCReceiverComm>
+      <OvationReceiver ProviderType="Приемник" Description="Приемник OPC ПТК Ovation">
+        <ProviderProps>
+          <OPCServerName PropNum="1" Description="Имя OPC-сервера" DefaultValue="Ovation.OPCDAServer.1" RowSource="Ovation.OPC.4;Ovation.OPCDAServer.1" />
+          <Node PropNum="2" Description="Рабочая станция" />
+        </ProviderProps>
+      </OvationReceiver>
+    </Ovation>
+  </Providers>
+</Config>

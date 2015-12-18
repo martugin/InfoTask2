@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл установленной конфигурации InfoTask-->
+<Config>
+  <Packages>
+    <!--Установленные пакеты-->
+    <Wonderware Description="Комплект провайдеров для ПТК Wonderware" InstallDate="" />
+  </Packages>
+  <Providers>
+    <!--Список провайдеров-->
+    <Wonderware Description="Комплект провайдеров для работы c ПТК Wonderware" DllFile="Providers\Wonderware\Wonderware.dll">
+      <WonderwareSource ProviderType="Источник" Description="Источник Wonderware Historian">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера"></SQLServer>
+          <IndentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows" RowSource="Windows;SqlServer"></IndentType>
+          <Login PropNum="3" Description="Логин пользователя SQL-сервера" />
+          <Password PropNum="4" Description="Пароль входа в SQL-сервер" />
+          <Database PropNum="5" Description="База данных"></Database>
+        </ProviderProps>
+      </WonderwareSource>
+      <WonderwareComm ProviderType="Коммуникатор" Description="Коммуникатор Wonderware Historian" ProviderFile="\Providers\Wonderware\WonderwareComm.accde">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера"></SQLServer>
+          <IndentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows" RowSource="Windows;SqlServer"></IndentType>
+          <Login PropNum="3" Description="Логин пользователя SQL-сервера" />
+          <Password PropNum="4" Description="Пароль входа в SQL-сервер" />
+          <Database PropNum="5" Description="База данных"></Database>
+        </ProviderProps>
+      </WonderwareComm>
+      <WonderwareOPCReceiverComm ProviderType="КоммуникаторПриемника" Description="Коммуникатор приемника OPC ПТК Wonderware, сигналы берутся из Historian" ProviderFile="\Providers\Wonderware\WonderwareComm.accde">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера"></SQLServer>
+          <IndentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows" RowSource="Windows;SqlServer"></IndentType>
+          <Login PropNum="3" Description="Логин пользователя SQL-сервера" />
+          <Password PropNum="4" Description="Пароль входа в SQL-сервер" />
+          <Database PropNum="5" Description="База данных"></Database>
+        </ProviderProps>
+      </WonderwareOPCReceiverComm>
+      <WonderwareOPCReceiver ProviderType="Приемник" Description="Приемник OPC ПТК Ovation">
+        <ProviderProps>
+          <OPCServerName PropNum="1" Description="Имя OPC-сервера" DefaultValue="ArchestrA.FSGateway.2" RowSource="ArchestrA.FSGateway.2" />
+          <Node PropNum="2" Description="Рабочая станция" />
+          <ServerNode PropNum="3" Description="Имя серверного узла" />
+          <ServerGroup PropNum="4" Description="Имя серверной группы" />
+        </ProviderProps>
+      </WonderwareOPCReceiver>
+    </Wonderware>
+  </Providers>
+</Config>

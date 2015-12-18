@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл списка порожденных параметров-->
+<DerivedParams>
+  <DerivedParam ParamCode="Код" ParamName="Имя" Task="Задача" IsSave="Сохранять в архив или ведомость { true, false }" SuperProcess="Тип накопления" ReceiverSignal="Код сигнала приемника" ObjectCode="Код привязанного объекта" Units="Единицы измерения" Min="Минимум шкалы (действ)" Max="Максимум шкалы (действ)" Comment="Комментарий">
+    <DerivedSubParams>
+      <DerivedSubParam SubParamCode="Код" SubParamName="Имя" IsSave="Сохранять в архив или ведомость { true, false }" SuperProcess="Тип накопления" ReceiverSignal="Код сигнала приемника" ObjectCode="Код привязанного объекта" Units="Единицы измерения" Min="Минимум шкалы (действ)" Max="Максимум шкалы (действ)" Comment="Комментарий"></DerivedSubParam>
+    </DerivedSubParams>
+  </DerivedParam>
+</DerivedParams>

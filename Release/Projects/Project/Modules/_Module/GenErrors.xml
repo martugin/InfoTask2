@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл ошибок генерации-->
+<Generated>
+  <GenErrors>
+    <!--Ошибки в генерирующих параметрах-->
+    <GenParam ParamId="Идентификатор генерирующего параметра (целое)" GenErrMess="Ошибка генерации">
+      <GenSubParams>
+        <GenSubParam GenSubParamId="Идентификатор генерирующего подпараметра (целое)" GenErrMess="Ошибка генерации" />
+      </GenSubParams>
+    </GenParam>
+  </GenErrors>
+</Generated>

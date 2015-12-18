@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл установленной конфигурации InfoTask-->
+<Config>
+  <Packages>
+    <!--Установленные пакеты-->
+    <_КодПакета Description="Описание" InstallDate="Дата установки" />
+  </Packages>
+  <Providers>
+    <!--Список провайдеров-->
+    <_КодКомплекта Description="Описание">
+      <!--Один комплект провайдеров-->
+      <_Провайдер ProviderType="Тип провайдера" Description="Описание провайдера" ProviderFile="Файл провайдера, только для коммуникаторов">
+        <ProviderProps>
+          <!--Свойства провайдера-->
+          <_КодСвойства PropNum="Порядковый номер" Description="Описание" DefaultValue="Значение по умолчанию" RowSource="Источник строк выпадающего списка">
+            <PropCommands>
+              <!--Команды меню-->
+              <_КодКомманды CommandName="Имя в меню" CommandAction="Действие" />
+            </PropCommands>
+          </_КодСвойства>
+        </ProviderProps>
+      </_Провайдер>
+    </_КодКомплекта>
+  </Providers>
+</Config>
