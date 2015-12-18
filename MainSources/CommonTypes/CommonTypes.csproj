@@ -50,6 +50,7 @@
     <Compile Include="ErrMoms\ErrMom.cs" />
     <Compile Include="ErrMoms\ErrMomFactory.cs" />
     <Compile Include="ErrMoms\ErrMomPool.cs" />
+    <Compile Include="Moments\DataType.cs" />
     <Compile Include="Moments\EMean.cs" />
     <Compile Include="Moments\IMean.cs" />
     <Compile Include="Moments\MomFactory.cs" />

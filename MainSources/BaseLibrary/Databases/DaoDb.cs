@@ -16,39 +16,12 @@ namespace BaseLibrary
         {
             File = file;
         }
-
-        //ToDo разобраться с блокировкой
-        //Глобальная статическая переменная DBEngine
-        private static DBEngine _engine;
-        private static readonly object EngineLock = new object();
-        public static DBEngine Engine
-        {
-            get
-            {
-                //lock (EngineLock)
-                    return _engine ?? (_engine = new DBEngine());
-            }
-        }
-        //Закрывает Engine
-        public static void CloseEngine()
-        {
-            try
-            {
-                //lock (EngineLock)
-                    if (_engine != null)
-                    {
-                        _engine.FreeLocks();
-                        _engine = null;
-                    }    
-            }
-            catch {}
-            GC.Collect();
-        }
-
+        
         //Путь к файлу
         internal string File { get; set; }
         //Соединение DAO с базой данных
         public Database Database { get; private set; }
+        public DBEngine Engine { get; private set; }
         //Соединение ADO с базой данных
         public OleDbConnection Connection { get; private set; }
 
@@ -57,17 +30,8 @@ namespace BaseLibrary
         {
             if (Database == null)
             {
-                //int n = 0;
-                //while (n++ < 5)
-                //{
-                //    try
-                //    {
-                        lock (EngineLock)
+                Engine = new DBEngine();
                 Database = Engine.OpenDatabase(File);
-                //    n = 5;
-                //    }
-                //    catch { Thread.Sleep(1000);}
-                //}
             }
             return this;
         }
@@ -85,22 +49,28 @@ namespace BaseLibrary
         {
             try
             {
+                if (Connection != null) Connection.Close();
+                Connection = null;
+            } catch { }
+            try
+            {
                 if (Database != null) Database.Close();
                 Database = null;
             } catch { }
             try
             {
-                if (Connection != null) Connection.Close();
-                Connection = null;
-            } catch { }
+                if (Engine != null)
+                {
+                    Engine = null;
+                    GC.Collect();
+                }
+            } catch {}
         }
 
         //Выполнить запрос StSql - строка запроса, options - опции запроса
         public void Execute(string stSql, object options = null)
         {
-            if (Database == null)
-                lock (EngineLock)
-                Database = Engine.OpenDatabase(File);
+            ConnectDao();
             if (options == null) Database.Execute(stSql);
             else Database.Execute(stSql, options);
         }
@@ -122,14 +92,6 @@ namespace BaseLibrary
         private bool ColumnExists(string tableName, string columnName)
         {
             ConnectDao();
-            //foreach (Field c in Database.TableDefs[tableName].Fields)
-            //{
-            //    if (c.Name.ToLower().Equals(columnName.ToLower()))
-            //    {
-            //        cExists = true;
-            //        break;
-            //    }
-            //} далее то же самое
             return Database.TableDefs[tableName].Fields.Cast<Field>().Any(c => c.Name.ToUpper().Equals(columnName.ToUpper()));
         }
         //Проверка на наличие таблицы в БД
@@ -149,26 +111,20 @@ namespace BaseLibrary
         public void SetColumnBool(string tableName, string columnName, IndexModes indexMode = IndexModes.WithoutChange,
             bool? defaultValue = null)
         {
-            if (!ColumnExists(tableName, columnName))
-            {
-                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] YESNO");
-                Dispose();
-            }
-            else
-            {
-                ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] YESNO");
-                Dispose();
-            }
+            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] YESNO";
+            if (!ColumnExists(tableName, columnName)) Execute(stSql);
+            else ExecuteAdo(stSql);
+            Dispose();
+
             ConnectDao();
             try
             {
-            Database.TableDefs[tableName].Fields[columnName].Properties.Append(
-                Database.TableDefs[tableName].Fields[columnName].CreateProperty("DisplayControl", 3, 106, false));
+                var field = Database.TableDefs[tableName].Fields[columnName];
+                field.Properties.Append(field.CreateProperty("DisplayControl", 3, 106, false));
             }
             catch {}
 
             SetColumnIndex(tableName, columnName, indexMode);
-
             ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] SET DEFAULT " + defaultValue);
         }
 
@@ -176,127 +132,88 @@ namespace BaseLibrary
         public void SetColumnDouble(string tableName, string columnName, IndexModes indexMode = IndexModes.WithoutChange,
             double? defaultValue = null, bool required = false)
         {
-            if (!ColumnExists(tableName, columnName))
-            {
-                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] DOUBLE");
-                Dispose();
-            }
-            else
-            {
-                ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] DOUBLE");
-                Dispose();
-            }
+            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] DOUBLE";
+            if (!ColumnExists(tableName, columnName)) Execute(stSql);
+            else ExecuteAdo(stSql);
+            Dispose();
             SetColumnIndex(tableName, columnName, indexMode);
 
-            //ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] SET DEFAULT " + defaultValue);
-
             ConnectDao();
-            Database.TableDefs[tableName].Fields[columnName].Required = required;
-            string defValS = defaultValue.HasValue ? defaultValue.ToString() : "";
-            Database.TableDefs[tableName].Fields[columnName].DefaultValue = defValS;
+            var field = Database.TableDefs[tableName].Fields[columnName];
+            field.Required = required;
+            field.DefaultValue = defaultValue.HasValue ? defaultValue.ToString() : "";
         }
 
         public void SetColumnLong(string tableName, string columnName, IndexModes indexMode = IndexModes.WithoutChange,
             long? defaultValue = null, bool required = false)
         {
-            if (!ColumnExists(tableName, columnName))
-            {
-                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] LONG");
-                Dispose();
-            }
-            else
-            {
-                ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] LONG");
-            }
+            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] LONG";
+            if (!ColumnExists(tableName, columnName)) Execute(stSql);
+            else ExecuteAdo(stSql);
+            
+            Dispose();
             SetColumnIndex(tableName, columnName, indexMode);
 
             ConnectDao();
-            Database.TableDefs[tableName].Fields[columnName].Required = required;
-
-            string defValS = defaultValue.HasValue ? defaultValue.ToString() : "";
-            Database.TableDefs[tableName].Fields[columnName].DefaultValue = defValS;
+            var field = Database.TableDefs[tableName].Fields[columnName];
+            field.Required = required;
+            field.DefaultValue = defaultValue.HasValue ? defaultValue.ToString() : "";
         }
 
         public void SetColumnString(string tableName, string columnName, int length = 255,
             IndexModes indexMode = IndexModes.WithoutChange, string defaultValue = null, bool required = false, bool emptyStrings = true)
         {
+            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] TEXT(" + length + ")";
             if (!ColumnExists(tableName, columnName))
             {
-                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] TEXT(" + length + ")");
+                Execute(stSql);
                 Dispose();
             }
-            ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] TEXT(" + length + ") WITH COMPRESSION");
+            ExecuteAdo(stSql + " WITH COMPRESSION");
             Dispose();
 
             SetColumnIndex(tableName, columnName, indexMode);
 
             ConnectDao();
-            Database.TableDefs[tableName].Fields[columnName].Required = required;
-            Database.TableDefs[tableName].Fields[columnName].AllowZeroLength = emptyStrings;
-            string defValS = defaultValue ?? "";
-            Database.TableDefs[tableName].Fields[columnName].DefaultValue = defValS;
+            var field = Database.TableDefs[tableName].Fields[columnName];
+            field.Required = required;
+            field.AllowZeroLength = emptyStrings;
+            field.DefaultValue = defaultValue ?? "";
         }
 
         public void SetColumnMemo(string tableName, string columnName, string defaultValue = null, bool required = false, bool emptyStrings = true)
         {
+            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] MEMO";
             if (!ColumnExists(tableName, columnName))
             {
-                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] MEMO");
+                Execute(stSql);
                 Dispose();
-                ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] MEMO WITH COMPRESSION");
+                ExecuteAdo(stSql + " MEMO WITH COMPRESSION");
             }
-            else ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] MEMO WITH COMPRESSION");
+            else ExecuteAdo(stSql + " MEMO WITH COMPRESSION");
+            Dispose();
 
             ConnectDao();
-            Database.TableDefs[tableName].Fields[columnName].Required = required;
-            Database.TableDefs[tableName].Fields[columnName].AllowZeroLength = emptyStrings;
-            string defValS = defaultValue ?? "";
-            Database.TableDefs[tableName].Fields[columnName].DefaultValue = defValS;
+            var field = Database.TableDefs[tableName].Fields[columnName];
+            field.Required = required;
+            field.AllowZeroLength = emptyStrings;
+            field.DefaultValue = defaultValue ?? "";
         }
 
         public void SetColumnDatetime(string tableName, string columnName, IndexModes indexMode = IndexModes.WithoutChange,
             DateTime? defaultValue = null, bool required = false)
         {
+            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] DATETIME";
             if (!ColumnExists(tableName, columnName))
-            {
-                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] DATETIME");
-                Dispose();
-            }
-            else
-            {
-                ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] DATETIME");
-                Dispose();
-            }
+                Execute(stSql);
+            else ExecuteAdo(stSql);
+            Dispose();
             SetColumnIndex(tableName, columnName, indexMode);
 
             ConnectDao();
-            Database.TableDefs[tableName].Fields[columnName].Required = required;
-            string defValS = defaultValue.HasValue ? defaultValue.ToString() : "";
-            Database.TableDefs[tableName].Fields[columnName].DefaultValue = defValS;
-        }
-
-        //ToDo Убрать для перенесения DataType в CommonTypes
-        //Добавление поля в таблицу с указанием типа данных
-        public void SetColumn(string tableName, string columnName, DataType dtype)
-        {
-            switch (dtype)
-            {
-                case DataType.String:
-                    SetColumnString(tableName, columnName);
-                    break;
-                case DataType.Real:
-                    SetColumnDouble(tableName, columnName);
-                    break;
-                case DataType.Integer:
-                    SetColumnLong(tableName, columnName);
-                    break;
-                case DataType.Boolean:
-                    SetColumnBool(tableName, columnName);
-                    break;
-                case DataType.Time:
-                    SetColumnDatetime(tableName, columnName);
-                    break;
-            }
+            var field = Database.TableDefs[tableName].Fields[columnName];
+            field.Required = required;
+            field.DefaultValue = defaultValue.HasValue ? defaultValue.ToString() : "";
         }
 
         //Удаление поля из таблицы
@@ -325,18 +242,9 @@ namespace BaseLibrary
         {
             if (TableExists(tableNameOld))
             {
-                //ExecuteAdo("RENAME TABLE " + tableNameOld + " TO " + tableNameNew + ";");
                 ConnectDao();
                 Database.TableDefs[tableNameOld].Name = tableNameNew;
             }
-        }
-
-        //Связь многие к одному
-        public void AddForeignLink(string tableName, string columnName, string linkedTable, string linkedColumn, bool cascade = true)
-        {
-            string cascadeS = cascade ? " ON DELETE CASCADE ON UPDATE CASCADE" : "";
-            ExecuteAdo("ALTER TABLE " + tableName + " ADD CONSTRAINT " + linkedTable + tableName
-                       + " FOREIGN KEY ([" + columnName + "]) REFERENCES " + linkedTable + "(" + linkedColumn + ")" + cascadeS);
         }
 
         //Добавление параметров в SysTabl
@@ -360,9 +268,16 @@ namespace BaseLibrary
                     "' AND NOT EXISTS(SELECT * FROM SysSubTabl t2 WHERE t1.SubParamName = t2.SubParamName)");
         }
 
+        //Связь многие к одному
+        public void AddForeignLink(string tableName, string columnName, string linkedTable, string linkedColumn, bool cascade = true)
+        {
+            string cascadeS = cascade ? " ON DELETE CASCADE ON UPDATE CASCADE" : "";
+            ExecuteAdo("ALTER TABLE " + tableName + " ADD CONSTRAINT " + linkedTable + tableName
+                       + " FOREIGN KEY ([" + columnName + "]) REFERENCES " + linkedTable + "(" + linkedColumn + ")" + cascadeS);
+        }
+
         //Добавление индекса по одному полю
-        public void SetColumnIndex(string tableName, string columnName, IndexModes indexMode = IndexModes.WithoutChange,
-            string oldIndexName = null)
+        public void SetColumnIndex(string tableName, string columnName, IndexModes indexMode = IndexModes.WithoutChange, string oldIndexName = null)
         {
             //важно, что в случае indexMode = EmptyIndex columnName на самом деле - название индекса, а не поля,
             //т.к. они могут и не совпадать
@@ -417,9 +332,7 @@ namespace BaseLibrary
                     {
                         indexesS += ind.Name + Environment.NewLine;
                         if (ind.Name == index)
-                        {
                             fieldFinded = true;
-                        }
                     }
                 }
                 if (index == "") MessageBox.Show(indexesS);
@@ -437,15 +350,20 @@ namespace BaseLibrary
         {
             if (file.IsEmpty() || stSql.IsEmpty())
                 throw new NullReferenceException("Файл базы данных и строка запроса не могут быть пустыми или null");
-            Database db;
-            lock (EngineLock)
-                db = Engine.OpenDatabase(file);
+            var en = new DBEngine();
+            var db = en.OpenDatabase(file);
             try
             {
                 if (options == null) db.Execute(stSql);
                 else db.Execute(stSql, options);
             }
-            finally { try {db.Close();} catch { } }
+            finally
+            {
+                try { db.Close(); } catch { }
+                db = null;
+                en = null;
+                GC.Collect(); 
+            }
         }
 
         public static void ExecuteAdo(string file, string stSql, object options = null)
@@ -474,7 +392,8 @@ namespace BaseLibrary
                         using (var sys = new SysTabl(daodb))
                             if (sys.SubValue("FileOptions", "FileType") != fileType)
                                 return false;
-                var db = Engine.OpenDatabase(file);
+                var en = new DBEngine();
+                var db = en.OpenDatabase(file);
                 try
                 {
                     var missing = new SortedSet<string>();
@@ -484,19 +403,27 @@ namespace BaseLibrary
                             missing.Add(table);
                         foreach (var t in db.TableDefs)
                         {
-                            string s = ((TableDef)t).Name;
+                            string s = ((TableDef) t).Name;
                             if (missing.Contains(s)) missing.Remove(s);
                         }
                     }
                     return missing.Count == 0;
                 }
-                finally { try { db.Close(); } catch { } }
+                finally
+                {
+                    try
+                    {
+                        try { db.Close(); } catch { }
+                        db = null;
+                        en = null;
+                        GC.Collect();
+                    }
+                    catch { }
+                }
             }
-            catch
-            {
-                return false;
-            }
+            catch { return false; }
         }
+
         //Та же проверка, но без указания типа файла, только по списку таблиц
         public static bool Check(string file, IEnumerable<string> tables = null)
         {
@@ -524,11 +451,11 @@ namespace BaseLibrary
             if (ftmp.Exists) ftmp.Delete();
             fdb.MoveTo(ftmp.FullName);
             new FileInfo(file).Delete();
-            lock (EngineLock)
-            {
-            Engine.CompactDatabase(ftmp.FullName, file);
-            Engine.FreeLocks();
-            }
+            var en = new DBEngine();
+            en.CompactDatabase(ftmp.FullName, file);
+            en.FreeLocks();
+            en = null;
+            GC.Collect();
             if (timeout > 0) Thread.Sleep(timeout);
         }
 

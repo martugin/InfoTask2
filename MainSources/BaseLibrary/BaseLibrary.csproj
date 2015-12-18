@@ -76,7 +76,6 @@
     <Compile Include="Databases\SqlDb.cs" />
     <Compile Include="Databases\SysTabl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Values\DataType.cs" />
     <Compile Include="Values\TimeInterval.cs" />
     <Compile Include="Values\TimeUnit.cs" />
     <Compile Include="WPF\ConvertersWPF.cs" />

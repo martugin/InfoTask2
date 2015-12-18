@@ -1,9 +1,9 @@
 ﻿using System;
+using BaseLibrary;
 using Microsoft.Office.Interop.Access.Dao;
 
-namespace BaseLibrary
+namespace CommonTypes
 {
-    //ToDo перенести в CommonTypes
     //Типы данных
     public enum DataType : byte
     {
@@ -146,54 +146,6 @@ namespace BaseLibrary
             return "Error";
         }
 
-        //Получение типа данных из типа данных таблицы Access
-        public static DataType ToDataType(this short d)
-        {
-            switch ((DataTypeEnum)d)
-            {
-                case DataTypeEnum.dbText:
-                case DataTypeEnum.dbMemo:
-                    return DataType.String;
-                case DataTypeEnum.dbInteger:
-                case DataTypeEnum.dbLong:
-                case DataTypeEnum.dbBigInt:
-                case DataTypeEnum.dbByte:
-                    return DataType.Integer;
-                case DataTypeEnum.dbDouble:
-                case DataTypeEnum.dbSingle:
-                case DataTypeEnum.dbDecimal:
-                case DataTypeEnum.dbFloat:
-                    return DataType.Real;
-                case DataTypeEnum.dbBoolean:
-                    return DataType.Boolean;
-                case DataTypeEnum.dbDate:
-                case DataTypeEnum.dbTime:
-                case DataTypeEnum.dbTimeStamp:
-                    return DataType.Time;
-            }
-            return DataType.Error;
-        }
-
-        //Получение типа данных таблицы Access из типа данных 
-        public static DataTypeEnum ToColumnType(this DataType d)
-        {
-            switch (d)
-            {
-                case DataType.String:
-                    return DataTypeEnum.dbText;
-                case DataType.Real:
-                case DataType.Weighted:
-                    return DataTypeEnum.dbDouble;
-                case DataType.Boolean:
-                    return DataTypeEnum.dbBoolean;
-                case DataType.Integer:
-                    return DataTypeEnum.dbLong;
-                case DataType.Time:
-                    return DataTypeEnum.dbDate;
-            }
-            return DataTypeEnum.dbText;
-        }
-
         //Сравнение двух типов данных, True - если первый приводим ко второму
         public static bool LessOrEquals(this DataType t1, DataType t2)
         {
@@ -243,6 +195,77 @@ namespace BaseLibrary
                     return s.Length <= 255;
             }
             return true;
+        }
+
+        //Получение типа данных из типа данных таблицы Access
+        public static DataType ToDataType(this short d)
+        {
+            switch ((DataTypeEnum)d)
+            {
+                case DataTypeEnum.dbText:
+                case DataTypeEnum.dbMemo:
+                    return DataType.String;
+                case DataTypeEnum.dbInteger:
+                case DataTypeEnum.dbLong:
+                case DataTypeEnum.dbBigInt:
+                case DataTypeEnum.dbByte:
+                    return DataType.Integer;
+                case DataTypeEnum.dbDouble:
+                case DataTypeEnum.dbSingle:
+                case DataTypeEnum.dbDecimal:
+                case DataTypeEnum.dbFloat:
+                    return DataType.Real;
+                case DataTypeEnum.dbBoolean:
+                    return DataType.Boolean;
+                case DataTypeEnum.dbDate:
+                case DataTypeEnum.dbTime:
+                case DataTypeEnum.dbTimeStamp:
+                    return DataType.Time;
+            }
+            return DataType.Error;
+        }
+
+        //Получение типа данных таблицы Access из типа данных 
+        public static DataTypeEnum ToColumnType(this DataType d)
+        {
+            switch (d)
+            {
+                case DataType.String:
+                    return DataTypeEnum.dbText;
+                case DataType.Real:
+                case DataType.Weighted:
+                    return DataTypeEnum.dbDouble;
+                case DataType.Boolean:
+                    return DataTypeEnum.dbBoolean;
+                case DataType.Integer:
+                    return DataTypeEnum.dbLong;
+                case DataType.Time:
+                    return DataTypeEnum.dbDate;
+            }
+            return DataTypeEnum.dbText;
+        }
+
+        //Добавление поля в таблицу поля с указанием типа данных
+        public static void SetColumn(this DaoDb db, string tableName, string columnName, DataType dtype)
+        {
+            switch (dtype)
+            {
+                case DataType.String:
+                    db.SetColumnString(tableName, columnName);
+                    break;
+                case DataType.Real:
+                    db.SetColumnDouble(tableName, columnName);
+                    break;
+                case DataType.Integer:
+                    db.SetColumnLong(tableName, columnName);
+                    break;
+                case DataType.Boolean:
+                    db.SetColumnBool(tableName, columnName);
+                    break;
+                case DataType.Time:
+                    db.SetColumnDatetime(tableName, columnName);
+                    break;
+            }
         }
     }
 }
