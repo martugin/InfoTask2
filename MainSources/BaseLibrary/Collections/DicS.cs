@@ -23,7 +23,7 @@ namespace BaseLibrary
         public Dictionary<string, T> Dic { get { return _dic; } }
 
         //Получение элемента
-        private T Get(string s)
+        public T Get(string s)
         {
             string sl = s.ToUpper();
             if (_dic.ContainsKey(sl)) return _dic[sl];

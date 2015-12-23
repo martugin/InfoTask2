@@ -101,8 +101,8 @@ namespace BaseLibrary
             catch { return new List<string>(); }
         }
 
-        //Перводит строку в HashSet
-        public static SetS ToPropertyHashSet(this string str, string separator = ";")
+        //Перводит строку в SetS
+        public static SetS ToPropertySetS(this string str, string separator = ";")
         {
             try
             {
@@ -116,6 +116,23 @@ namespace BaseLibrary
                 return res;
             }
             catch { return new SetS(); }
+        }
+
+        //Перводит строку в HashSet
+        public static HashSet<string> ToPropertyHashSet(this string str, string separator = ";")
+        {
+            try
+            {
+                var res = new HashSet<string>();
+                if (!str.IsEmpty())
+                {
+                    string[] st = str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var s in st)
+                        res.Add(s);
+                }
+                return res;
+            }
+            catch { return new HashSet<string>(); }
         }
 
         //Перводит строку в SortedSet

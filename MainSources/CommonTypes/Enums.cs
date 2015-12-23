@@ -366,7 +366,7 @@ namespace CommonTypes
                     if (!rec.NoMatch())
                     {
                         var set = rec.GetString("ParamTag").ToPropertyDicS()["JointProviders"].ToPropertyHashSet();
-                        foreach (var c in set.Values)
+                        foreach (var c in set)
                         {
                             rec.FindFirst("ParamName", c);
                             if (!rec.NoMatch()) list.Add(c);
