@@ -274,22 +274,5 @@ namespace BaseLibrary
             }
             catch { }
         }
-
-        //Чтение из реестра пути к каталогу InfoTask, в возвращаемом пути \ на конце
-        public static string GetInfoTaskDir()
-        {
-            var dir = GetRegistry(@"software\InfoTask", "InfoTaskPath");
-            if (dir == "") dir = GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTaskPath");
-            if (!dir.EndsWith(@"\")) dir += @"\";
-            return dir;
-        }
-
-        //Путь к каталогу с тестами InfoTask
-        public static string GetTestInfoTaskDir()
-        {
-            var itd = GetInfoTaskDir();
-            var n = itd.LastIndexOf(@"\", itd.Length - 2);
-            return itd.Substring(0, n + 1) + @"Test\";
-        }       
     }
 }

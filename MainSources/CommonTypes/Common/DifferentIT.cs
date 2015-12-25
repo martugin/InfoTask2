@@ -3,188 +3,26 @@ using BaseLibrary;
 
 namespace CommonTypes
 {
-    //Тип значения
-    public enum ValueType
+    //Общие функции для InfoTask и конвертеры 
+    public static class DifferentIT
     {
-        Moments, //Одно значение или список значений по времени
-        Segments, //Сегменты
-        List, //Список
-        DicInt, //Словарь с целыми ключами
-        DicString, //Словарь со строковыми ключами
-        Signal, //Сигнал
-        Param, //Параметр
-        Var, //Переменная
-        Tabl, //Таблица
-        Grafic, //График
-        Prev, //Параметр функции Пред
-        Void, //Нет значения
-        Error, //Значение после ошибки парсера
-        Undef, //Значение еще не определено
-        Max //Максимум в иерархии классов, ошибка
-    }
+        //Чтение из реестра пути к каталогу InfoTask, в возвращаемом пути \ на конце
+        public static string GetInfoTaskDir()
+        {
+            var dir = Different.GetRegistry(@"software\InfoTask", "InfoTaskPath");
+            if (dir == "") dir = Different.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTaskPath");
+            if (!dir.EndsWith(@"\")) dir += @"\";
+            return dir;
+        }
 
-    //------------------------------------------------------------------------------
-    //Тип ошибки
-    public enum ErrorQuality
-    {
-        Good = 0,
-        Warning = 1,
-        Error = 2
-    }
+        //Путь к каталогу разработки InfoTask
+        public static string GetInfoTaskDevelopDir()
+        {
+            var itd = GetInfoTaskDir();
+            var n = itd.LastIndexOf(@"\", itd.Length - 2);
+            return itd.Substring(0, n + 1);
+        }
 
-    //------------------------------------------------------------------------------
-    //Тип функции
-    public enum FunType
-    {
-        Scalar, //Скалярные
-        ScalarComplex, //Скалярные с указанием переменных, используемых в данной точке
-        ScalarObject, //Скалярные с первым не скалярным параметром 
-        Const, //Без параметров 
-        Object, //С первым не скалярным параметром (Tabl, Prev), а остальными - Mom
-        Moments, //Работа со списками мгновенных значений
-        CalcData, //Работа с сегментами и статистические функции
-        Calc, //Работа с расчетными значениями
-        Val, //Общие функции
-        Operator //Операторы
-    }
-
-    //------------------------------------------------------------------------------
-    //Тип провайдера или другого подобного объекта
-    public enum ProviderType
-    {
-        Communicator,
-        CommReceiver,
-        Source,
-        Archive,
-        Receiver,
-        Imitator,
-        Thread,
-        Project,
-        Error
-    }
-
-    //---------------------------------------------------------------------
-
-    //Тип окна для настройки провайдера
-    public enum ProviderSetupType
-    {
-        Reporter,//Настройка разового расчета из репортера
-        Controller,//Настройка собственных потоков контроллера
-        ReporterArchive,//Настройка отчетов и менеджера на архив
-        Analyzer,//Анализатор
-        Constructor,//Конструктор
-        Default, //Не задан
-        Error
-    }
-
-    //--------------------------------------------------------------------
-    //Тип графика
-    public enum GraficType
-    {
-        Grafic,//График
-        Grafic0,//График - ступенчатая интерполяция
-        Diagramm,//Диаграмма
-        Error
-    }
-
-    //--------------------------------------------------------------------
-    //Тип интерполяции
-    public enum InterpolationType
-    {
-        Constant,//Ступенчатая
-        Linear,//Линейная
-        None,
-        Error //Не правильно заполненная
-    }
-
-    //----------------------------------------------------------------------
-    //Типы накопления
-    public enum SuperProcess
-    {
-        Moment, //Мгновенные
-        FirstP, //Периодическое - первое
-        FirstA, //Абсолютное - первое
-        FirstPA, //Периодическое и абсолютное - первое
-        LastP, //Периодическое - последнее
-        LastA,//Абсолютное - последнее
-        LastPA, //Периодическое и абсолютное - последнее
-        MinP, //Периодическое - минимум
-        MinA, //Абсолютное - минимум
-        MinPA, //Периодическое и абсолютное - минимум
-        MaxP, //Итоговое - максимум
-        MaxA, //Абсолютное - максимум
-        MaxPA, //Периодическое и абсолютное - максимум
-        AverageP, //Периодическое - среднее
-        AverageA, //Абсолютное - среднее
-        AveragePA, //Периодическое и абсолютное - среднее
-        AvNonZeroP, //Периодическое - среднее не ноль
-        AvNonZeroA, //Абсолютное - среднее не ноль
-        AvNonZeroPA, //Периодическое и абсолютное - среднее не ноль
-        SummP, //Периодическое - сумма
-        SummA,//Абсолютное - сумма
-        SummPA,  //Периодическое и абсолютное - сумма
-        None, //Нет накопления
-        Error //Не правильно заполненное
-    }
-
-    //-----------------------------------------------------------------
-    //Приложения
-    public enum ApplicationType
-    {
-        Constructor,//Конструктор расчетов
-        Excel,//Построитель отчетов Excel
-        PowerPoint,//Построитель отчетов PowerPoint
-        Controller, //Контроллер расчетов
-        Analyzer,//Анализатор 
-        Ras,//РАС
-        Error//Ошибка
-    }
-   
-    //--------------------------------------------------------------------------
-   //Тип отчета в архиве
-    public enum ReportType
-    {
-        Calc,
-        Template,
-        Source,
-        Excel,
-        PowerPoint,
-        Error
-    }
-
-    //--------------------------------------------------------------------------
-    //Тип интервала для записи в архив
-    public enum IntervalType
-    {
-        Single,
-        Named,
-        NamedAdd, //Именованный интервал с добавлением по времени и параметрам
-        NamedAddParams, //Именованный интервал с добавлением по параметрам
-        Periodic,
-        Moments,
-        Base,
-        Hour,
-        Day,
-        Absolute,
-        AbsoluteDay,
-        Combined, //Для запроса данных для отчета Базовые, Часовые, Суточные, Часовые, Базовые 
-        Empty
-    }
-
-    //--------------------------------------------------------------------------
-    //Режим формирования имитационного значения
-    public enum ImitMode 
-    {
-        NoImit,
-        FromBegin,
-        FromHour,
-        FromDay
-    }
-
-    //--------------------------------------------------------------------------
-    //Преобразование различных типов данных
-    public static class Conv
-    {
         //Возвращает тип ошибки как строку
         public static string ToRussian(this ErrorQuality quality)
         {
@@ -351,8 +189,8 @@ namespace CommonTypes
         //Список совместимых кодов провайдеров для выбранного кода провайдера
         public static List<string> JointProviderCodes(this string code)
         {
-            var list = new List<string> {code};
-            using (var rec = new RecDao(Different.GetInfoTaskDir() + @"General\Config.accdb", "SysTabl"))
+            var list = new List<string> { code };
+            using (var rec = new RecDao(DifferentIT.GetInfoTaskDir() + @"General\Config.accdb", "SysTabl"))
             {
                 if (code == "CloneSource")
                 {
@@ -371,11 +209,11 @@ namespace CommonTypes
                             rec.FindFirst("ParamName", c);
                             if (!rec.NoMatch()) list.Add(c);
                         }
-                    }    
+                    }
                 }
             }
             return list;
-        } 
+        }
 
         //Перевод из строки в ProviderSetupType
         public static ProviderSetupType ToProviderSetupType(this string s)
@@ -603,8 +441,8 @@ namespace CommonTypes
         {
             return (new HashSet<SuperProcess>
                 {SuperProcess.MinA, SuperProcess.MinPA, SuperProcess.MaxA, SuperProcess.MaxPA, SuperProcess.FirstA, SuperProcess.FirstPA, SuperProcess.LastA, SuperProcess.LastPA, 
-                 SuperProcess.SummA, SuperProcess.SummPA, SuperProcess.AverageA, SuperProcess.AveragePA, SuperProcess.AvNonZeroA, SuperProcess.AvNonZeroPA}) 
-                .Contains(t);   
+                 SuperProcess.SummA, SuperProcess.SummPA, SuperProcess.AverageA, SuperProcess.AveragePA, SuperProcess.AvNonZeroA, SuperProcess.AvNonZeroPA})
+                .Contains(t);
         }
 
         //True, если тип накопления предполагает периодическое накопление
@@ -747,7 +585,7 @@ namespace CommonTypes
                 case ApplicationType.Controller:
                     return ProviderSetupType.Controller;
                 case ApplicationType.Analyzer:
-                    return ProviderSetupType.Analyzer;                
+                    return ProviderSetupType.Analyzer;
             }
             return ProviderSetupType.Reporter;
         }
@@ -943,7 +781,7 @@ namespace CommonTypes
         //True, если тип интервала используется при периодическом накоплении
         public static bool IsPeriodic(this IntervalType t)
         {
-            return t == IntervalType.Base || t == IntervalType.Hour || t == IntervalType.Day || t == IntervalType.Combined; 
+            return t == IntervalType.Base || t == IntervalType.Hour || t == IntervalType.Day || t == IntervalType.Combined;
         }
 
         //True, если тип интервала используется при абсолютном накоплении
@@ -978,7 +816,7 @@ namespace CommonTypes
         {
             switch (t)
             {
-                case IntervalType.Base: 
+                case IntervalType.Base:
                     return 2;
                 case IntervalType.Hour:
                     return 4;

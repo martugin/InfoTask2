@@ -35,7 +35,7 @@ namespace Provider
         //Соединение с архивами
         #region
         //Путь к SimaticCommData
-        private readonly string _commDataFile = Different.GetInfoTaskDir() + @"Providers\Siemens\SimaticCommData.accdb";
+        private readonly string _commDataFile = DifferentIT.GetInfoTaskDir() + @"Providers\Siemens\SimaticCommData.accdb";
 
         //Основная и дублирующая базы данных
         private SimaticArchive _mainArchive;

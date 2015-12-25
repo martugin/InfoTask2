@@ -24,8 +24,8 @@ _ReSharper*/
 *.vshost.exe
 
 /Debug
-/Distr
 /Setup
+/TestsRun
 
 /Installers/KernelBootstrapper/InfoTaskKernelSetup.msi 
 /Installers/ReporterBootstrapper/ReporterSetup.msi
