@@ -1,164 +1,150 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using BaseLibrary;
 
 namespace CommonTypes
 {
-    //Список мгновенных значений 
-    public class MomList : CalcVal, IMomentsVal
+    public abstract class MomList : Mean, IMomentsVal
     {
-        public MomList(DataType dataType, ErrMom err = null) : base(err)
-        {
-            _dataType = dataType;
-            _moments = new List<IMom>();
-            Moments = new ReadOnlyCollection<IMom>(_moments);
-        }
-
-        //Тип данных
-        private readonly DataType _dataType;
-        public override DataType DataType { get { return _dataType; } }
-
-        //Список мгновенных значений
-        private readonly List<IMom> _moments;
-        public ReadOnlyCollection<IMom> Moments { get; private set; }
         //Количество значений
-        public int Count { get { return Moments.Count; } }
-        //Возвращает значение по номеру
-        public IMom this[int n] { get { return Moments[n]; }}
-
-        //Добавляет мгновенное значение в список, сохраняет упорядоченность по времени, два момента списка могут иметь одинаковое время
-        //skipEquals - не добавлять значение, если оно совпадает с предыдущим
-        public IMom AddMom(IMom mom, bool skipEquals = false)
+        public override int Count
         {
-            if (mom == null || !mom.DataType.LessOrEquals(DataType))
-                return null;
-            return AddMomWithoutCheck(mom, skipEquals);
+            get { return Times.Count; }
         }
 
-        //Добавка значения в список без проверки типа данных
-        private IMom AddMomWithoutCheck(IMom mom, bool skipEquals)
+        //Текущий номер значений
+        public int CurNum { get; set; }
+        
+        //Текущее значение
+        protected abstract Mean CurMean { get; }
+        //Тип данных
+        public override DataType DataType { get { return CurMean.DataType; } }
+
+        //Заполнить текущее значение из списка по индексу
+        protected abstract void GetCurMean(int i);
+        //Добавить текущее значение в список индексу или в конец
+        protected abstract void AddCurMean(int i);
+        protected abstract void AddCurMean();
+
+        //Список времен
+        private readonly List<DateTime> _times = new List<DateTime>();
+        protected List<DateTime> Times { get { return _times; } }
+
+        //Время по индексу
+        DateTime IMomentsVal.Time(int i)
         {
-            if (_moments.Count == 0 || mom.Time >= _moments[Count - 1].Time)
+            return Times[i];
+        }
+        //Время текущего значения
+        public DateTime Time { get { return Times[CurNum]; }}
+
+        //Список ошибок с указанием времен
+        private List<MeanErrTime> _errors;
+        protected List<MeanErrTime> Errors { get { return _errors ?? (_errors = new List<MeanErrTime>()); } }
+
+        //Ошибка по индексу
+        public ErrMom Err(int i)
+        {
+            //Двоичный поиск
+            throw new NotImplementedException();
+        }
+        //Текущая ошибка
+        public override ErrMom Error { get { return Err(CurNum); }  }
+
+        //Получение значений по индексу
+        public bool GetBoolean(int i)
+        {
+            GetCurMean(i);
+            return CurMean.Boolean;
+        }
+        public int GetInteger(int i)
+        {
+            GetCurMean(i);
+            return CurMean.Integer;
+        }
+
+        public double GetReal(int i)
+        {
+            GetCurMean(i);
+            return CurMean.Real;
+        }
+
+        public DateTime GetDate(int i)
+        {
+            GetCurMean(i);
+            return CurMean.Date;
+        }
+
+        public string GetString(int i)
+        {
+            GetCurMean(i);
+            return CurMean.String;
+        }
+
+        //Добавление значений в список
+        private void AddTimeErrorMean(DateTime time, ErrMom err, bool skipEquals)
+        {
+            if (Times.Count == 0 || time >= Times[Times.Count - 1])
             {
-                if (!skipEquals || _moments.Count == 0 || !_moments[Count - 1].ValueAndErrorEquals(mom))
-                    _moments.Add(mom);
-                else return null;
+                Times.Add(time);
+                AddCurMean();
+                if (err != null)
+                    Errors.Add(new MeanErrTime(time, err));
             }
             else
             {
-                int i = _moments.Count - 1;
-                while (i >= 0 && _moments[i].Time > mom.Time) i--;
-                if (!skipEquals || i == -1 || !_moments[i].ValueAndErrorEquals(mom))
-                    _moments.Insert(i + 1, mom);
-                else return null;
-            }
-            return mom;
-        }
-
-        //Добавляет клон MomEdit в список
-        public IMom AddMomEdit(MomEdit edit, bool skipEquals = false)
-        {
-            return AddMom(edit.Mom, skipEquals);
-        }
-
-        //Создание нового Mom и добавление его в MomList
-        //skipEquals - не добавлять повторяющееся значение
-        public IMom AddMom(DateTime time, bool b, ErrMom error = null, bool skipEquals = false)
-        {
-            return AddMomWithoutCheck(MomFactory.NewMom(DataType, time, b, error), skipEquals);
-        }
-        public IMom AddMom(DateTime time, int i, ErrMom error = null, bool skipEquals = false)
-        {
-            return AddMomWithoutCheck(MomFactory.NewMom(DataType, time, i, error), skipEquals);
-        }
-        public IMom AddMom(DateTime time, double r, ErrMom error = null, bool skipEquals = false)
-        {
-            return AddMomWithoutCheck(MomFactory.NewMom(DataType, time, r, error), skipEquals);
-        }
-        public IMom AddMom(DateTime time, DateTime d, ErrMom error = null, bool skipEquals = false)
-        {
-            return AddMomWithoutCheck(MomFactory.NewMom(DataType, time, d, error), skipEquals);
-        }
-        public IMom AddMom(DateTime time, string s, ErrMom error = null, bool skipEquals = false)
-        {
-            return AddMomWithoutCheck(MomFactory.NewMom(DataType, time, s, error), skipEquals);
-        }
-        public IMom AddMom(DateTime time, object ob, ErrMom error = null, bool skipEquals = false)
-        {
-            return AddMomWithoutCheck(MomFactory.NewMom(DataType, time, ob, error), skipEquals);
-        }
-        public IMom AddMom(DateTime time, ErrMom error = null, bool skipEquals = false)
-        {
-            return AddMomWithoutCheck(MomFactory.NewMom(DataType, time, error), skipEquals);
-        }
-
-        //Очищает список значений
-        public void Clear()
-        {
-            _moments.Clear();
-        }
-
-        //Возвращает последнее мгновенное значение, или null, если список пустой
-        public IMom LastMom
-        {
-            get
-            {
-                if (_moments.Count == 0) return null;
-                return _moments[_moments.Count - 1];
+                //Двоичный поиск
+                throw new NotImplementedException();
             }
         }
 
-        //Итоговая ошибка для записи в Result
-        public override ErrMom TotalError 
-        { 
-            get
-            {
-                ErrMom err = Error;
-                foreach (var mom in Moments)
-                    err = err.Add(mom.Error);
-                return err;
-            } 
+        public void AddMom(IMom mom, bool skipEquals = false)
+        {
+            CurMean.GetValueFromMean(mom);
+            AddTimeErrorMean(mom.Time, mom.Error, skipEquals);
         }
 
-        //Интерполяция типа type значений list на время time по точке с номером n и следующим за ней, если n = -1, то значение в начале
-        public IMom Interpolation(InterpolationType type, int n, DateTime time)
+        public void AddMom(DateTime time, bool b, ErrMom err = null, bool skipEquals = false)
         {
-            if (Count == 0) return MomFactory.NewMom(DataType.Value, time);
-            if (n >= 0 && time == Moments[n].Time) 
-                return Moments[n];
-            if (type == InterpolationType.Constant || (DataType != DataType.Real && DataType != DataType.Time) || n < 0 || n >= Moments.Count - 1)
-                return Moments[n < 0 ? 0 : n].Clone(time);
-
-            var err = Moments[n].Error.Add(Moments[n + 1].Error);
-            double t = time.Minus(Moments[n].Time);
-            double t0 = Moments[n + 1].Time.Minus(Moments[n].Time);
-            if (DataType == DataType.Real)
-            {
-                double x1 = Moments[n + 1].Real;
-                double x0 = Moments[n].Real;
-                double r = t0 == 0 || t == 0 ? x0 : x0 + t * (x1 - x0) / t0;
-                return new MomReal(time, r, err);
-            }
-            DateTime x1D = Moments[n + 1].Date;
-            DateTime x0D = Moments[n].Date;
-            DateTime d = t0 == 0 || t == 0 ? x0D : x0D.AddSeconds(t * x1D.Minus(x0D) / t0);
-            return new MomTime(time, d, err);
+            CurMean.Boolean = b;
+            AddTimeErrorMean(time, err, skipEquals);
         }
 
-        //Выделяет часть списка за указаный период
-        public MomList GetPart(DateTime beg, DateTime en, bool addBegin, InterpolationType interpolation = InterpolationType.Constant)
+        public void AddMom(DateTime time, int i, ErrMom err = null, bool skipEquals = false)
         {
-            var res = new MomList(DataType, Error);
-            if (Moments.Count == 0) return res;
-            int n = -1;
-            while (n + 1 < Moments.Count && Moments[n + 1].Time < beg)
-                n++;
-            if (addBegin && Moments[n].Time != beg) 
-                res.AddMom(Interpolation(interpolation, n, beg));
-            while (Moments[n].Time <= en)
-                res.AddMom(Moments[n]);
-            return res;
+            CurMean.Integer = i;
+            AddTimeErrorMean(time, err, skipEquals);
+        }
+
+        public void AddMom(DateTime time, double r, ErrMom err = null, bool skipEquals = false)
+        {
+            CurMean.Real = r;
+            AddTimeErrorMean(time, err, skipEquals);
+        }
+
+        public void AddMom(DateTime time, DateTime d, ErrMom err = null, bool skipEquals = false)
+        {
+            CurMean.Date = d;
+            AddTimeErrorMean(time, err, skipEquals);
+        }
+
+        public void AddMom(DateTime time, string s, ErrMom err = null, bool skipEquals = false)
+        {
+            CurMean.String = s;
+            AddTimeErrorMean(time, err, skipEquals);
+        }
+
+        public override void ValueToRec(IRecordAdd rec, string field)
+        {
+            CurMean.ValueToRec(rec, field);
+        }
+        public override IMom Clone(DateTime time)
+        {
+            return CurMean.Clone(time);
+        }
+        public override IMom Clone(DateTime time, ErrMom err)
+        {
+            return CurMean.Clone(time, err);
         }
     }
 }

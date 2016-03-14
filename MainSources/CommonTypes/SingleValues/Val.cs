@@ -1,6 +1,4 @@
-﻿using BaseLibrary;
-
-namespace CommonTypes
+﻿namespace CommonTypes
 {
     //Базовый класс для всех значений, кроме переменных
     public abstract class Val : IVal
@@ -15,14 +13,8 @@ namespace CommonTypes
     //Базовый класс для расчетных значений и массивов
     public abstract class CalcVal : Val, ICalcVal
     {
-        protected CalcVal(ErrMom err)
-        {
-            Error = err;
-        }
-        
         //Общая ошибка на все значение
-        public ErrMom Error { get; internal set; }
-        public virtual ErrMom TotalError { get { return Error; } }
+        public virtual ErrMom TotalError { get { return null; } }
 
         public override ICalcVal CalcValue { get { return this; } }
     }

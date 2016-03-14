@@ -4,66 +4,66 @@ namespace CommonTypes
 {
     //Значение + ошибка, но вез времени
 
-    public class EMeanBool : MeanBool
+    public class MeanErrBool : MeanBool
     {
         public override ErrMom Error { get; internal set; }
         
-        public EMeanBool(bool b, ErrMom err = null) : base(b)
+        public MeanErrBool(bool b, ErrMom err = null) : base(b)
         {
             Error = err;
         }
-        internal EMeanBool() {}
+        internal MeanErrBool() {}
     }
 
     //---------------------------------------------------------------------------------------------------
     
-    public class EMeanInt : MeanInt
+    public class MeanErrInt : MeanInt
     {
         public override ErrMom Error { get; internal set; }
 
-        public EMeanInt(int i, ErrMom err = null) : base(i)
+        public MeanErrInt(int i, ErrMom err = null) : base(i)
         {
             Error = err;
         }
-        internal EMeanInt() { }
+        internal MeanErrInt() { }
     }
 
     //---------------------------------------------------------------------------------------------------
 
-    public class EMeanReal : MeanReal
+    public class MeanErrReal : MeanReal
     {
         public override ErrMom Error { get; internal set; }
 
-        public EMeanReal(double r, ErrMom err = null) : base(r)
+        public MeanErrReal(double r, ErrMom err = null) : base(r)
         {
             Error = err;
         }
-        internal EMeanReal(){}
+        internal MeanErrReal(){}
     }
 
     //---------------------------------------------------------------------------------------------------
 
-    public class EMeanTime : MeanTime
+    public class MeanErrTime : MeanTime
     {
         public override ErrMom Error { get; internal set; }
 
-        public EMeanTime(DateTime t, ErrMom err = null) : base(t)
+        public MeanErrTime(DateTime t, ErrMom err = null) : base(t)
         {
             Error = err;
         }
-        internal EMeanTime() { }
+        internal MeanErrTime() { }
     }
 
     //---------------------------------------------------------------------------------------------------
 
-    public class EMeanString : MeanString
+    public class MeanErrString : MeanString
     {
         public override ErrMom Error { get; internal set; }
 
-        public EMeanString(string s, ErrMom err = null) : base(s)
+        public MeanErrString(string s, ErrMom err = null) : base(s)
         {
             Error = err;
         }
-        internal EMeanString() { }
+        internal MeanErrString() { }
     }
 }
