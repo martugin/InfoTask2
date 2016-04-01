@@ -51,22 +51,22 @@
     <Compile Include="ErrMoms\ErrMom.cs" />
     <Compile Include="ErrMoms\ErrMomFactory.cs" />
     <Compile Include="ErrMoms\ErrMomPool.cs" />
-    <Compile Include="Moments\DataType.cs" />
-    <Compile Include="Moments\MeanErr.cs" />
-    <Compile Include="Moments\Mean.cs" />
-    <Compile Include="Moments\MeanBase.cs" />
-    <Compile Include="Moments\MomErr.cs" />
+    <Compile Include="Values\DataType.cs" />
+    <Compile Include="Values\Mean\MeansErr.cs" />
+    <Compile Include="Values\Mean\Mean.cs" />
+    <Compile Include="Values\Mean\MeansBase.cs" />
+    <Compile Include="Values\Mom\MomsErr.cs" />
     <Compile Include="Moments\MomFactory.cs" />
-    <Compile Include="Moments\Mom.cs" />
+    <Compile Include="Values\Mom\Moms.cs" />
     <Compile Include="Moments\MomEdit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SingleValues\IVal.cs" />
-    <Compile Include="SingleValues\ListBool.cs" />
-    <Compile Include="SingleValues\MomList.cs" />
-    <Compile Include="SingleValues\MomListOld.cs" />
-    <Compile Include="SingleValues\Segment.cs" />
-    <Compile Include="SingleValues\Val.cs" />
-    <Compile Include="Moments\Means.cs" />
+    <Compile Include="Values\IVal.cs" />
+    <Compile Include="Values\MomList\MomLists.cs" />
+    <Compile Include="Values\MomList\MomList.cs" />
+    <Compile Include="Values\MomList\MomListsOld.cs" />
+    <Compile Include="Values\Segment.cs" />
+    <Compile Include="Values\Val.cs" />
+    <Compile Include="Values\Mean\Means.cs" />
     <Compile Include="Tabls\Tabl.cs" />
     <Compile Include="Tabls\TablRow.cs" />
     <Compile Include="Tabls\TablsList.cs" />
@@ -78,7 +78,9 @@
       <Name>BaseLibrary</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="SingleValues\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
