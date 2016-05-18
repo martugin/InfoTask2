@@ -1,0 +1,98 @@
+﻿using System;
+using BaseLibrary;
+
+namespace CommonTypes
+{
+    //Одно значение
+    public abstract class Mean : CalcVal, IMean
+    {
+        public virtual bool Boolean
+        {
+            get { return false; }
+            internal set { }
+        }
+        public virtual int Integer
+        {
+            get { return 0; }
+            internal set { }
+        }
+        public virtual double Real
+        {
+            get { return 0; }
+            internal set { }
+        }
+        public virtual DateTime Date
+        {
+            get { return Different.MinDate; }
+            internal set { }
+        }
+        public virtual string String
+        {
+            get { return ""; }
+            internal set { }
+        }
+        public virtual object Object
+        {
+            get { return 0; }
+            internal set { }
+        }
+
+        public bool ValueEquals(IMean mean)
+        {
+            var dt = DataType.Add(mean.DataType);
+            switch (dt)
+            {
+                case DataType.String:
+                    return String == mean.String;
+                case DataType.Real:
+                    return Real == mean.Real;
+                case DataType.Integer:
+                    return Integer == mean.Integer;
+                case DataType.Boolean:
+                    return Boolean == mean.Boolean;
+                case DataType.Time:
+                    return Date == mean.Date;
+            }
+            return false;
+        }
+
+        public bool ValueLess(IMean mean)
+        {
+            var dt = DataType.Add(mean.DataType);
+            switch (dt)
+            {
+                case DataType.String:
+                    return String.CompareTo(mean.String) < 0;
+                case DataType.Real:
+                    return Real < mean.Real;
+                case DataType.Integer:
+                    return Integer < mean.Integer;
+                case DataType.Boolean:
+                    return !Boolean && mean.Boolean;
+                case DataType.Time:
+                    return Date < mean.Date;
+            }
+            return false;
+        }
+
+        public bool ValueAndErrorEquals(IMean mean)
+        {
+            return ValueEquals(mean) && Error == mean.Error;
+        }
+
+        public abstract void ValueToRec(IRecordAdd rec, string field);
+        public abstract IMom Clone(DateTime time);
+        public abstract IMom Clone(DateTime time, ErrMom err);
+
+        public virtual ErrMom Error
+        {
+            get { return null; }
+            internal set { }
+        }
+        
+        public virtual int Count { get { return 1; } }
+
+        //Скопировать значение из другого значения
+        internal virtual void GetValueFromMean(IMean mean) { }
+    }
+}

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="windows-1251"?>
-<!--Файл списка единиц измерений-->
-<UnitsList>
-  <_UnitsListItem UnitsCode="Код (например, кг)" UnitsName="Имя (например, килограмм)" UnitsType="Тип измеряемой величины (например, масса)" />
-</UnitsList>

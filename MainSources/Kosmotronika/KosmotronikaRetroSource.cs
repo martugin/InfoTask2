@@ -215,7 +215,7 @@ namespace Provider
             return true;
         }
 
-        //Чтение срезов по одному блоку аналоговых сигналов
+        //Чтение срезов по одному блоку сигналов
         protected override Tuple<int, int> ReadPartValues(bool isCut)
         {
             using (_rec)
