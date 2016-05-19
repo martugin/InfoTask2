@@ -218,7 +218,7 @@ namespace Provider
                                 nwrite += ob.StateSignal.AddMom(time, _rec.GetInt("STS"), null, isCut);
                             if (ob.ValueSignal != null)
                             {
-                                var mom = MomFactory.NewMom(ob.ValueSignal.DataType, time, RMean(_rec), MakeError(ob, _rec));
+                                var mom = MFactory.NewMom(ob.ValueSignal.DataType, time, RMean(_rec), MakeError(ob, _rec));
                                 nwrite += ob.ValueSignal.AddMom(mom, isCut);
                             }
                         }

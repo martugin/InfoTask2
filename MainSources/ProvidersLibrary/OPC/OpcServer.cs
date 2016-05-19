@@ -183,7 +183,7 @@ namespace CommonTypes
             _signalsCode.Add(tag, item);
             item.Tag = tag;
             item.ClientHandler = _signals.Count;
-            item.Value = MomFactory.NewMean(dataType, v); 
+            item.Value = MFactory.NewMean(dataType, v); 
             if (!_items.ContainsKey(item.Tag))
                 _items.Add(item.Tag, item);
             return item;

@@ -64,7 +64,7 @@ namespace CommonTypes
         //Добавка мгновенных значений с указанием типов данных, значение берется из типа object
         public int AddMom(DataType dtype, DateTime time, object ob, ErrMom err = null, bool forBegin = false)
         {
-            return AddMom(MomFactory.NewMom(dtype, time, ob, err), forBegin);
+            return AddMom(MFactory.NewMom(dtype, time, ob, err), forBegin);
         }
 
         //Присваевает новое значение в BeginMom

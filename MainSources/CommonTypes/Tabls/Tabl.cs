@@ -1,48 +1,11 @@
-﻿using System;
-using BaseLibrary;
+﻿using BaseLibrary;
 using Microsoft.Office.Interop.Access.Dao;
 
 namespace CommonTypes
 {
-    //Поле таблицы
-    public class TablField
-    {
-        public TablField(string name, int num, DataType fataType)
-        {
-            Name = name;
-            Num = num;
-            DataType = fataType;
-        }
-
-        //Имя поля
-        public string Name { get; private set; }
-        //Номер поля
-        public int Num { get; private set; }
-        //Тип данных
-        public DataType DataType { get; private set; }
-
-        //Сравнение по всем характеристикам
-        public bool IsEquals(TablField field)
-        {
-            return Num == field.Num && Name == field.Name && DataType == field.DataType;
-        }
-    }
-
-    //---------------------------------------------------------------------------------------------------------
     //Таблица со всеми вложенными
     public class Tabl
     {
-        //Проверка, что таблица базы Access является таблицей
-        //Возвращает пару <код, уровень вложенности>, или null, если не является нужной таблицей
-        public static Tuple<string, int> GetTabl(string tname)
-        {
-            if (!tname.StartsWith("Tbl_") || tname.Length < 10 || tname.Substring(tname.Length - 5, 4) != "_Sub")
-                return null;
-            string code = tname.Substring(4, tname.Length - 9);
-            int level = tname.Substring(tname.Length - 1, 1).ToInt();
-            return new Tuple<string, int>(code, level);
-        }
-
         //Создание таблицы
         public Tabl(string code, //код таблицы
                           int level, // уровень вложенности
@@ -83,7 +46,8 @@ namespace CommonTypes
         //Имя таблицы указанной вложенности
         private string TablName(int level)
         {
-            return "Tbl_" + Code + "_Sub" + level;
+            if (level == 0) return Code;
+            return Code + "_Sub" + level;
         }
 
         //Словари номеров полей с ключами - названиями, для разных подтаблиц

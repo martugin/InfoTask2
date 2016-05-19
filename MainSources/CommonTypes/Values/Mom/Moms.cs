@@ -9,12 +9,17 @@ namespace CommonTypes
     {
         //Время значения
         public DateTime Time { get; internal set; }
-
+        
         public MomBool(DateTime time, bool b) : base(b)
         {
             Time = time;
         }
-        internal MomBool(){} 
+        internal MomBool(){}
+
+        public virtual IMom Clone()
+        {
+            return new MomBool(Time, Boolean);
+        }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -29,6 +34,11 @@ namespace CommonTypes
             Time = time;
         }
         internal MomInt() {}
+
+        public virtual IMom Clone()
+        {
+            return new MomInt(Time, Integer);
+        }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -43,6 +53,11 @@ namespace CommonTypes
             Time = time;
         }
         internal MomReal() {}
+
+        public virtual IMom Clone()
+        {
+            return new MomReal(Time, Real);
+        }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -57,6 +72,11 @@ namespace CommonTypes
             Time = time;
         }
         internal MomString() {}
+
+        public virtual IMom Clone()
+        {
+            return new MomString(Time, String);
+        }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -71,6 +91,11 @@ namespace CommonTypes
             Time = time;
         }
         internal MomTime() {}
+
+        public virtual IMom Clone()
+        {
+            return new MomTime(Time, Date);
+        }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -86,6 +111,11 @@ namespace CommonTypes
         public override DataType DataType { get { return DataType.Weighted; } }
         //Длина интервала
         public double Weight { get; private set; }
+
+        public override IMom Clone()
+        {
+            return new MomWeighted(Time, Real, Weight);
+        }
 
         public override IMom Clone(DateTime time)
         {
@@ -113,6 +143,11 @@ namespace CommonTypes
         internal MomValue() { }
 
         public override void ValueToRec(IRecordAdd rec, string field) { }
+
+        public virtual IMom Clone()
+        {
+            return new MomValue(Time);
+        }
 
         public override IMom Clone(DateTime time)
         {

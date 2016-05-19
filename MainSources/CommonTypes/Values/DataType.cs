@@ -245,7 +245,7 @@ namespace CommonTypes
             return DataTypeEnum.dbText;
         }
 
-        //Добавление поля в таблицу поля с указанием типа данных
+        //Добавление в таблицу поля с указанием типа данных
         public static void SetColumn(this DaoDb db, string tableName, string columnName, DataType dtype)
         {
             switch (dtype)
