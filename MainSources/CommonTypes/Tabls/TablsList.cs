@@ -11,15 +11,19 @@ namespace CommonTypes
         {
             db.ConnectDao();
             foreach (TableDef t in db.Database.TableDefs)
-            {
-                var tup = Tabl.GetTabl(t.Name);
-                if (tup != null)
+                if (t.Name != "SysTabl" && t.Name != "SysSubTabl")
                 {
-                    if (Tabls.ContainsKey(tup.Item1))
-                        Tabls[tup.Item1].AddLevel(tup.Item2);
-                    else Tabls.Add(tup.Item1, new Tabl(tup.Item1, tup.Item2, db));
+                    int level = 0;
+                    string tname = t.Name;
+                    if (t.Name.Substring(t.Name.Length - 5, 4) == "_Sub")
+                    {
+                        level = t.Name.Substring(t.Name.Length - 1).ToInt();
+                        tname = t.Name.Substring(0, t.Name.Length - 5);
+                    }
+                    if (Tabls.ContainsKey(tname))
+                        Tabls[tname].AddLevel(level);
+                    else Tabls.Add(tname, new Tabl(tname, level, db));
                 }
-            }
         }
 
         //Словарь таблиц

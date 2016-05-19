@@ -47,17 +47,21 @@ namespace CommonTypes
         //Копия значения с новым временем и ошибкой
         IMom Clone(DateTime time);
         IMom Clone(DateTime time, ErrMom err);
-
+        
         //Количество значений
         int Count { get; }
+        //Само оттделное значение или последнее значение списка
+        IMean LastMean { get; }
     }
 
     //-----------------------------------------------------------------------------------------------
-    //Интерфейс для Mom и MomEdit
+    //Интерфейс для Mom и MomErr
     public interface IMom : IMean
     {
         //Время
         DateTime Time { get; }
+        //Клонирование значения
+        IMom Clone();
     }
 
     //-----------------------------------------------------------------------------------------------
@@ -68,9 +72,9 @@ namespace CommonTypes
         int CurNum { get; set; }
 
         //Время i-ого значения
-        DateTime Time(int i);
+        DateTime GetTime(int i);
         //Ошибка i-ого значения
-        ErrMom Err(int i);
+        ErrMom GetError(int i);
 
         //Значения разных типов i-ого значения
         bool GetBoolean(int i);
@@ -78,6 +82,11 @@ namespace CommonTypes
         double GetReal(int i);
         DateTime GetDate(int i);
         string GetString(int i);
+
+        //Копия значения по индексу, возможно с новым временем и ошибкой
+        IMom Clone(int i);
+        IMom Clone(int i, DateTime time);
+        IMom Clone(int i, DateTime time, ErrMom err);
 
         //Добавление мгновенного значения
         //skipEquals - если не добавлять значение в конец списка, если предыдущее с ним совпадает

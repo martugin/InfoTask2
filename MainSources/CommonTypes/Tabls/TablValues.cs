@@ -14,7 +14,7 @@ namespace CommonTypes
         //Список строк подчиненных таблиц
         private readonly List<TablRow> _subs = new List<TablRow>();
         public List<TablRow> Subs { get { return _subs; } }
-        //Ряд - родитель или null, если данныен старшей таблицы
+        //Ряд - родитель или null, если это данные старшей таблицы
         public SubRows Parent { get; set; }
 
         //Добавить строку подтаблицы
