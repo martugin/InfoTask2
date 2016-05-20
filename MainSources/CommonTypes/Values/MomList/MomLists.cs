@@ -23,6 +23,11 @@ namespace CommonTypes
         {
             _means.Add(CurMean.Boolean);
         }
+        //Очистка значений
+        protected override void ClearMeans()
+        {
+            _means.Clear();
+        }
     }
 
     //--------------------------------------------------------------------------------------------
@@ -45,6 +50,11 @@ namespace CommonTypes
         protected override void AddCurMomEnd()
         {
             _means.Add(CurMean.Integer);
+        }
+        //Очистка значений
+        protected override void ClearMeans()
+        {
+            _means.Clear();
         }
     }
 
@@ -69,6 +79,11 @@ namespace CommonTypes
         {
             _means.Add(CurMean.Real);
         }
+        //Очистка значений
+        protected override void ClearMeans()
+        {
+            _means.Clear();
+        }
     }
 
     //--------------------------------------------------------------------------------------------
@@ -92,6 +107,11 @@ namespace CommonTypes
         {
             _means.Add(CurMean.String);
         }
+        //Очистка значений
+        protected override void ClearMeans()
+        {
+            _means.Clear();
+        }
     }
 
     //--------------------------------------------------------------------------------------------
@@ -114,6 +134,11 @@ namespace CommonTypes
         protected override void AddCurMomEnd()
         {
             _means.Add(CurMean.Date);
+        }
+        //Очистка значений
+        protected override void ClearMeans()
+        {
+            _means.Clear();
         }
     }
 
@@ -139,6 +164,12 @@ namespace CommonTypes
         {
             base.AddCurMomEnd();
             _weights.Add(((MomWeighted)CurMean).Weight);
+        }
+        //Очистка значений
+        protected override void ClearMeans()
+        {
+            base.ClearMeans();
+            _weights.Clear();
         }
     }
 }

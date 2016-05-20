@@ -18,6 +18,10 @@ namespace CommonTypes
             return CreateMean(dtype, err);
         }
 
+        public static IMean NewMean(bool b, ErrMom err = null)
+        {
+            return err == null ? new MeanBool(b) : new MeanErrBool(b, err);
+        }
         public static IMean NewMean(DataType dtype, bool b, ErrMom err = null)
         {
             var mean = CreateMean(dtype, err);
@@ -25,6 +29,10 @@ namespace CommonTypes
             return mean;
         }
 
+        public static IMean NewMean(int i, ErrMom err = null)
+        {
+            return err == null ? new MeanInt(i) : new MeanErrInt(i, err);
+        }
         public static Mean NewMean(DataType dtype, int i, ErrMom err = null)
         {
             var mean = CreateMean(dtype, err);
@@ -32,6 +40,10 @@ namespace CommonTypes
             return mean;
         }
 
+        public static IMean NewMean(double d, ErrMom err = null)
+        {
+            return err == null ? new MeanReal(d) : new MeanErrReal(d, err);
+        }
         public static Mean NewMean(DataType dtype, double r, ErrMom err = null)
         {
             var mean = CreateMean(dtype, err);
@@ -39,6 +51,10 @@ namespace CommonTypes
             return mean;
         }
 
+        public static IMean NewMean(string s, ErrMom err = null)
+        {
+            return err == null ? new MeanString(s) : new MeanErrString(s, err);
+        }
         public static Mean NewMean(DataType dtype, string s, ErrMom err = null)
         {
             var mean = CreateMean(dtype, err);
@@ -46,6 +62,10 @@ namespace CommonTypes
             return mean;
         }
 
+        public static IMean NewMean(DateTime d, ErrMom err = null)
+        {
+            return err == null ? new MeanTime(d) : new MeanErrTime(d, err);
+        }
         public static Mean NewMean(DataType dtype, DateTime d, ErrMom err = null)
         {
             var mean = CreateMean(dtype, err);
@@ -116,11 +136,20 @@ namespace CommonTypes
 
         //NewMom
         #region
+        public static IMom NewMom(DateTime time, bool b, ErrMom err = null)
+        {
+            return err == null ? new MomBool(time, b) : new MomErrBool(time, b, err);
+        }
         public static IMom NewMom(DataType dtype, DateTime time, bool b, ErrMom err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Boolean = b;
             return (IMom) mom;
+        }
+
+        public static IMom NewMom(DateTime time, int i, ErrMom err = null)
+        {
+            return err == null ? new MomInt(time, i) : new MomErrInt(time, i, err);
         }
         public static IMom NewMom(DataType dtype, DateTime time, int i, ErrMom err = null)
         {
@@ -128,11 +157,21 @@ namespace CommonTypes
             mom.Integer = i;
             return (IMom)mom;
         }
+
+        public static IMom NewMom(DateTime time, double r, ErrMom err = null)
+        {
+            return err == null ? new MomReal(time, r) : new MomErrReal(time, r, err);
+        }
         public static IMom NewMom(DataType dtype, DateTime time, double r, ErrMom err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Real = r;
             return (IMom)mom;
+        }
+
+        public static IMom NewMom(DateTime time, string s, ErrMom err = null)
+        {
+            return err == null ? new MomString(time, s) : new MomErrString(time, s, err);
         }
         public static IMom NewMom(DataType dtype, DateTime time, string s, ErrMom err = null)
         {
@@ -140,12 +179,18 @@ namespace CommonTypes
             mom.String = s;
             return (IMom)mom;
         }
+
+        public static IMom NewMom(DateTime time, DateTime d, ErrMom err = null)
+        {
+            return err == null ? new MomTime(time, d) : new MomErrTime(time, d, err);
+        }
         public static IMom NewMom(DataType dtype, DateTime time, DateTime d, ErrMom err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Date = d;
             return (IMom)mom;
         }
+
         public static IMom NewMom(DataType dtype, DateTime time, object ob, ErrMom err = null)
         {
             var mom = CreateMom(dtype, time, err);

@@ -159,7 +159,7 @@ namespace CommonTypes
         }
 
         //Возвращает общий минимум для двух типов
-        public static DataType Inf(this DataType t1, DataType t2)
+        public static DataType Subtract(this DataType t1, DataType t2)
         {
             if (t2.LessOrEquals(t1)) return t2;
             if (t1.LessOrEquals(t2)) return t1;

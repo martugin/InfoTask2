@@ -89,14 +89,18 @@ namespace CommonTypes
         IMom Clone(int i, DateTime time, ErrMom err);
 
         //Добавление мгновенного значения
-        //skipEquals - если не добавлять значение в конец списка, если предыдущее с ним совпадает
-        void AddMom(IMom mom, bool skipEquals = false);
-        void AddMom(DateTime time, IMean mean, bool skipEquals = false);
+        //skipRepeats - если не добавлять значение в конец списка, если предыдущее с ним совпадает
+        //Возвращают количество добавленных значения
+        int AddMom(IMom mom, bool skipRepeats = false);
+        int AddMom(DateTime time, IMean mean, bool skipRepeats = false);
         //Дгобавление с указанием времени и значения
-        void AddMom(DateTime time, bool b, ErrMom err = null, bool skipEquals = false);
-        void AddMom(DateTime time, int i, ErrMom err = null, bool skipEquals = false);
-        void AddMom(DateTime time, double r, ErrMom err = null, bool skipEquals = false);
-        void AddMom(DateTime time, DateTime d, ErrMom err = null, bool skipEquals = false);
-        void AddMom(DateTime time, string s, ErrMom err = null, bool skipEquals = false);
+        int AddMom(DateTime time, bool b, ErrMom err = null, bool skipRepeats = false);
+        int AddMom(DateTime time, int i, ErrMom err = null, bool skipRepeats = false);
+        int AddMom(DateTime time, double r, ErrMom err = null, bool skipRepeats = false);
+        int AddMom(DateTime time, DateTime d, ErrMom err = null, bool skipRepeats = false);
+        int AddMom(DateTime time, string s, ErrMom err = null, bool skipRepeats = false);
+
+        //Очистить список значений
+        void Clear();
     }
 }

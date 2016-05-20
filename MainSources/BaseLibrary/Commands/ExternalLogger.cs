@@ -2,7 +2,7 @@
 
 namespace BaseLibrary
 {
-    //Класс для переопределения операция логгера
+    //Класс для переопределения операций логгера
     public abstract class ExternalLogger : IContextable
     {
         protected ExternalLogger(Logger logger)

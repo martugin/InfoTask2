@@ -46,21 +46,19 @@ namespace CommonTypes
         public IDicSForRead<SourceSignal> Signals { get { return ProviderSignals; } }
 
         //Чтение данных из архива
-        public void GetValues(DateTime beginRead, DateTime endRead)
+        public void GetValues(DateTime periodBegin, DateTime periodEnd)
         {
             foreach (var sig in ProviderSignals.Values)
-                sig.Value = new MomList(sig.DataType);
-            BeginRead = beginRead;
-            EndRead = endRead;
+                sig.MomList = new MomList(sig.DataType);
+            PeriodBegin = periodBegin;
+            PeriodEnd = periodEnd;
 
             SetReadProperties();
             if (NeedCut)
-                Start(ReadCut, 0, BeginRead < EndRead ? 30 : 100);
-            if (!NeedCut || BeginRead < EndRead)
+                Start(ReadCut, 0, PeriodBegin < PeriodEnd ? 30 : 100);
+            if (!NeedCut || PeriodBegin < PeriodEnd)
                 Start(ReadChanges, Procent, 100);
         }
-        protected DateTime BeginRead { get; private set; }
-        protected DateTime EndRead { get; private set; }
         
         //Задание нестандартных свойств получения данных
         protected virtual void SetReadProperties() {}
@@ -128,11 +126,8 @@ namespace CommonTypes
 
         //Чтение значений сигналов по блокам
         #region
-        //Начало и конец текущего получения данных
-        private DateTime _begin;
-        private DateTime _end;
         //Выполняется чтение среза данных
-        private bool _isCut;
+        public bool IsCutReading { get; protected set; }
 
         //Нужно считывать срез
         protected bool NeedCut { private get; set; }
@@ -188,7 +183,7 @@ namespace CommonTypes
                 NumRead = NumWrite = 0;
                 _begin = beg;
                 _end = en;
-                _isCut = isCut;
+                IsCutReading = isCut;
                 AddEvent(msg ?? ("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов"), n + " объектов, " + beg + " - " + en);
                 var parts = MakeParts(objects, partSize);
 
@@ -249,7 +244,7 @@ namespace CommonTypes
             int i = 0;
             List<SourceObject> part = null;
             foreach (var ob in objects)
-                if (!_isCut || !ob.HasBegin(BeginRead))
+                if (!IsCutReading || !ob.HasBegin(BeginRead))
                 {
                     if (i++ % partSize == 0)
                         parts.Add(part = new List<SourceObject>());
@@ -289,7 +284,7 @@ namespace CommonTypes
                 try
                 {
                     AddEvent("Чтение значений блока объектов", part.Count + " объектов");
-                    if (!QueryPartValues(part, _begin, _end, _isCut))
+                    if (!QueryPartValues(part, _begin, _end, IsCutReading))
                         return IsConnected = false;
                 }
                 catch (Exception ex)
@@ -301,7 +296,7 @@ namespace CommonTypes
             try
             {
                 AddEvent("Распределение данных по сигналам", part.Count + " объектов");
-                Tuple<int, int> pair = ReadPartValues(_isCut);
+                Tuple<int, int> pair = ReadPartValues(IsCutReading);
                 NumRead += pair.Item1;
                 NumWrite += pair.Item2;
                 AddEvent("Значения блока объектов прочитаны", pair.Item1 + " значений прочитано, " + pair.Item2 + " значений сформировано");

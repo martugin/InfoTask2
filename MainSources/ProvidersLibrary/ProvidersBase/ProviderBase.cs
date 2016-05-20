@@ -84,5 +84,9 @@ namespace CommonTypes
 
         //Очистка ресурсов
         public virtual void Dispose() { }
+
+        //Текущий период расчета, задается при чтениии из провайдера или при записис в провайдер
+        public DateTime PeriodBegin { get; protected set; }
+        public DateTime PeriodEnd { get; protected set; }
     }
 }

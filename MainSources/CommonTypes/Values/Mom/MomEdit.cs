@@ -4,16 +4,33 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Мгновенные значения с возможностью изменения, декоратор над Mom
-    public class MeanEdit: Val, IMean
+    public class MomEdit: Val, IMom
     {
-        public MeanEdit(Mean mean)
+        public MomEdit(DataType dtype)
         {
-            _mean = mean;
+            _mean = (Mean)MFactory.NewMean(dtype);
+            Time = Different.MinDate;
+        }
+        public MomEdit(DataType dtype, DateTime time) : this(dtype)
+        {
+            Time = time;
+        }
+        public MomEdit(DataType dtype, ErrMom err) : this(dtype)
+        {
+            Error = err;
+        }
+        public MomEdit(DataType dtype, DateTime time, ErrMom err) : this(dtype, time)
+        {
+            Error = err;
         }
 
         //Обертываемое мгновенное значение
         private readonly Mean _mean;
-        
+        //Время
+        public DateTime Time { get; set; }
+        //Ошибка
+        public ErrMom Error { get; set; }
+
         //Значения разных типов 
         public bool Boolean
         {
@@ -43,7 +60,7 @@ namespace CommonTypes
         public object Object
         {
             get { return _mean.Object; }
-            internal set { _mean.Object = value; }
+            set { _mean.Object = value; }
         }
 
         public bool ValueEquals(IMean mean)
@@ -72,10 +89,21 @@ namespace CommonTypes
         {
             _mean.CopyValueFrom(mean);
         }
+        //Копирует время, ошибку и значение из другого IMom
+        public void CopyAllFrom(IMom mom)
+        {
+            _mean.CopyValueFrom(mom);
+            Time = mom.Time;
+            Error = mom.Error;
+        }
 
+        public IMom Clone()
+        {
+            return _mean.Clone(Time, Error);
+        }
         public IMom Clone(DateTime time)
         {
-            return _mean.Clone(time);
+            return _mean.Clone(time, Error);
         }
         public IMom Clone(DateTime time, ErrMom err)
         {
@@ -85,7 +113,6 @@ namespace CommonTypes
         //Типы данных и значения
         public override DataType DataType { get { return _mean.DataType; } }
         public override ICalcVal CalcValue { get { return _mean.CalcValue; } }
-        public ErrMom Error { get { return _mean.Error; } }
         public ErrMom TotalError { get { return _mean.Error; } }
         public int Count { get { return 1; } }
         public IMean LastMean { get { return _mean; } }

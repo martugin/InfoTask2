@@ -43,6 +43,9 @@ namespace CommonTypes
 
         //Подготовка провайдера к работе (во время PrepareCalc)
         void Prepare();
+        //Текущий период расчета
+        DateTime PeriodBegin { get; }
+        DateTime PeriodEnd { get; }
     }
 
     //--------------------------------------------------------------------
