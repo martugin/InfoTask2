@@ -172,7 +172,7 @@ namespace Provider
         }
 
         //Запрос значений из Historian по списку сигналов и интервалу
-        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en)
         {
             var sb = new StringBuilder("select ID, TIMESTAMP, TIME_NSEC, F_VALUE, RAW_VALUE, STS from PT_HF_HIST " + "where (");
             bool isFirst = true;
@@ -199,7 +199,7 @@ namespace Provider
 
         //Считывает значения из рекордсета _rec
         //Возвращает количество прочитанных значений и сформированных значений
-        protected override Tuple<int, int> ReadPartValues(bool isCut)
+        protected override Tuple<int, int> ReadPartValues()
         {
             int nread = 0, nwrite = 0;
             using (_rec)
@@ -215,11 +215,11 @@ namespace Provider
                             ob = _objectsId[id];
                             DateTime time = Time(_rec);
                             if (ob.StateSignal != null)
-                                nwrite += ob.StateSignal.AddMom(time, _rec.GetInt("STS"), null, isCut);
+                                nwrite += ob.StateSignal.AddMom(time, _rec.GetInt("STS"));
                             if (ob.ValueSignal != null)
                             {
                                 var mom = MFactory.NewMom(ob.ValueSignal.DataType, time, RMean(_rec), MakeError(ob, _rec));
-                                nwrite += ob.ValueSignal.AddMom(mom, isCut);
+                                nwrite += ob.ValueSignal.AddMom(mom);
                             }
                         }
                     }
@@ -242,15 +242,15 @@ namespace Provider
         protected override void ReadCut()
         {
             using (Start(0, 50)) //Срез по 4 минутам
-                ReadValuesByParts(_objectsId.Values, 200, BeginRead.AddMinutes(-4), BeginRead, true);
+                ReadValuesByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
             using (Start(50, 100)) //Срез по 61 минуте
-                ReadValuesByParts(_objectsId.Values, 200, BeginRead.AddMinutes(-61), BeginRead.AddMinutes(-4), true);
+                ReadValuesByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
         }
 
         //Чтение изменений
         protected override void ReadChanges()
         {
-            ReadValuesByParts(_objectsId.Values, 200, BeginRead, EndRead, false);
+            ReadValuesByParts(_objectsId.Values, 200, PeriodBegin, PeriodEnd, false);
         }
         #endregion
     }

@@ -5,7 +5,7 @@ namespace CommonTypes
     //Один параметр для записи в OPC
     public class OpcItem : ReceiverSignal
     {
-        internal OpcItem(string signalInf, string code, DataType dataType, IProvider provider) 
+        internal OpcItem(string signalInf, string code, DataType dataType, IReceiver provider) 
             : base(signalInf, code, dataType, provider)
         {}
 

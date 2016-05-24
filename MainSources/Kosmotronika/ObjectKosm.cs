@@ -1,5 +1,4 @@
-﻿using System;
-using CommonTypes;
+﻿using CommonTypes;
 
 namespace Provider
 {
@@ -59,15 +58,15 @@ namespace Provider
         internal SourceSignal PokSignal { get; private set; }
 
         //Для объекта определен срез
-        public override bool HasBegin(DateTime time)
+        public override bool HasBegin
         {
-            return SignalsHasBegin(time, ValueSignal, StateSignal, PokSignal);
+            get { return SignalsHasBegin(ValueSignal, StateSignal, PokSignal);}
         }
 
         //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
-        public override int AddBegin(DateTime time)
+        public override int AddBegin()
         {
-            return SignalsAddBegin(time, ValueSignal, StateSignal, PokSignal);
+            return SignalsAddBegin(ValueSignal, StateSignal, PokSignal);
         }
     }
 }

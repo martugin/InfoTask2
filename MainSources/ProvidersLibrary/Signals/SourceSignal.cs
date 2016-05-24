@@ -111,7 +111,7 @@ namespace CommonTypes
         public bool HasBegin { get { return _beginMom != null; } }
 
         //Добавляет мгновенное значение в клон, возвращает количество добавленных значений
-        //Если withoutLast, то не добавляет само значение (только предыдущие раз в 10 минут), если add10Min, то добавляет значения не реже чем раз в 10 минут
+        //Если withoutLast, то не добавляет само значение (только предыдущие раз в 10 минут), значения не реже чем раз в 10 минут
         private int MomentToClone(bool withoutLast = false)
         {
             if (!IsReal) return 0;

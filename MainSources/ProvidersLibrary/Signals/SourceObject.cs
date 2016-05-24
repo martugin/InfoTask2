@@ -20,10 +20,7 @@ namespace CommonTypes
         public string Context { get { return Code + "(объект)"; } }
 
         //Для объекта опредлено значение среза на время time
-        public virtual bool HasBegin()
-        {
-            return false;
-        }
+        public virtual bool HasBegin { get { return false; } }
 
         //Проверяет, что хотя бы по одному сигналу из signals есть срез на время time
         protected bool SignalsHasBegin(params SourceSignal[] signals)
@@ -36,7 +33,7 @@ namespace CommonTypes
         }
 
         //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
-        public virtual int AddBegin(DateTime time)
+        public virtual int AddBegin()
         {
             return 0;
         }

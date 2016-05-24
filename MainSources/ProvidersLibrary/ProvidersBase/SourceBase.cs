@@ -49,11 +49,16 @@ namespace CommonTypes
         public void GetValues(DateTime periodBegin, DateTime periodEnd)
         {
             foreach (var sig in ProviderSignals.Values)
-                sig.MomList = new MomList(sig.DataType);
+                sig.MomList.Clear();
+            if (periodBegin != PeriodEnd)
+                foreach (var sig in ProviderSignals.Values)
+                    sig.ClearBegin();
+
             PeriodBegin = periodBegin;
             PeriodEnd = periodEnd;
-
             SetReadProperties();
+            Procent = 5;
+
             if (NeedCut)
                 Start(ReadCut, 0, PeriodBegin < PeriodEnd ? 30 : 100);
             if (!NeedCut || PeriodBegin < PeriodEnd)
@@ -126,9 +131,6 @@ namespace CommonTypes
 
         //Чтение значений сигналов по блокам
         #region
-        //Выполняется чтение среза данных
-        public bool IsCutReading { get; protected set; }
-
         //Нужно считывать срез
         protected bool NeedCut { private get; set; }
         //Свойства чтения сигналов по блокам
@@ -136,7 +138,7 @@ namespace CommonTypes
         protected int MaxErrorCount { private get; set; } //Количество блоков, которое нужно считать, чтобы понять, что связи нет, 0 - читать до конца
         protected int MaxErrorDepth { private get; set; } //Глубина, до которой нужно дробить первый блок, если так и не было успешного считывания
         protected int ErrorWaiting { private get; set; } //Время ожидания после ошибки считывания в мс
-
+        
         private void SetDefaultReadProperties()
         {
             NeedCut = true;
@@ -146,20 +148,18 @@ namespace CommonTypes
             ErrorWaiting = 100;
         }
 
+        //Выполняется чтение среза данных
+        public bool IsCutReading { get; protected set; }
+
         //Общее количество прочитанных и сформированных значений
         protected int NumRead { get; set; }
         protected int NumWrite { get; set; }
 
-        //Запрос рекордсета по одному блоку
-        protected virtual bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut) 
-        {
-            return true;
-        }
-        //Чтение значений из рекордсета по одному блоку
-        protected virtual Tuple<int, int> ReadPartValues(bool isCut)
-        {
-            return new Tuple<int, int>(0, 0);
-        }
+        //Период считывания данных по текущему блоку 
+        private DateTime _begin;
+        private DateTime _end;
+        //Рекордсет, запрашиваемый из архива
+        protected IRecordRead Rec;
 
         //Чтение значений по блокам объектов
         protected void ReadValuesByParts(IEnumerable<SourceObject> objects, //список объектов
@@ -179,7 +179,6 @@ namespace CommonTypes
                 }
                 if (!IsConnected && !Connect()) return;
 
-                //_successRead = false;
                 NumRead = NumWrite = 0;
                 _begin = beg;
                 _end = en;
@@ -187,7 +186,7 @@ namespace CommonTypes
                 AddEvent(msg ?? ("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов"), n + " объектов, " + beg + " - " + en);
                 var parts = MakeParts(objects, partSize);
 
-                double d = 100.0/parts.Count;
+                double d = 100.0 / parts.Count;
                 for (int i = 0; i < parts.Count; i++)
                     using (Start(i*d, i*d + d, CommandFlags.Danger))
                     {
@@ -206,12 +205,12 @@ namespace CommonTypes
                 int nadd = 0;
                 if (isCut)
                 {
-                    nadd += ProviderSignals.Values.Sum(sig => sig.MakeBegin(BeginRead));
+                    nadd += ProviderSignals.Values.Sum(sig => sig.MakeBegin());
                     AddEvent("Сформирован срез", nadd + " значений сформировано");
                 }
                 else
                 {
-                    nadd += ProviderSignals.Values.Sum(sig => sig.MakeEnd(EndRead));
+                    nadd += ProviderSignals.Values.Sum(sig => sig.MakeEnd());
                     AddEvent("Добавлены значения в конец интервала", nadd + " значений сформировано");
                 }
                 NumWrite += nadd;
@@ -233,7 +232,7 @@ namespace CommonTypes
         {
             return !isCut 
                 ? objects.Count() 
-                : objects.Count(ob => ob.HasBegin(BeginRead));
+                : objects.Count(ob => ob.HasBegin);
         }
 
         //Разбиение списка объектов на блоки
@@ -244,7 +243,7 @@ namespace CommonTypes
             int i = 0;
             List<SourceObject> part = null;
             foreach (var ob in objects)
-                if (!IsCutReading || !ob.HasBegin(BeginRead))
+                if (!IsCutReading || !ob.HasBegin)
                 {
                     if (i++ % partSize == 0)
                         parts.Add(part = new List<SourceObject>());
@@ -284,7 +283,7 @@ namespace CommonTypes
                 try
                 {
                     AddEvent("Чтение значений блока объектов", part.Count + " объектов");
-                    if (!QueryPartValues(part, _begin, _end, IsCutReading))
+                    if (!QueryPartValues(part, _begin, _end))
                         return IsConnected = false;
                 }
                 catch (Exception ex)
@@ -293,17 +292,20 @@ namespace CommonTypes
                     return IsConnected = false;
                 }
             }
-            try
+            using (Start(50, 100))
             {
-                AddEvent("Распределение данных по сигналам", part.Count + " объектов");
-                Tuple<int, int> pair = ReadPartValues(IsCutReading);
-                NumRead += pair.Item1;
-                NumWrite += pair.Item2;
-                AddEvent("Значения блока объектов прочитаны", pair.Item1 + " значений прочитано, " + pair.Item2 + " значений сформировано");
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка при формировании значений", ex);
+                try
+                {
+                    AddEvent("Распределение данных по сигналам", part.Count + " объектов");
+                    Tuple<int, int> pair = ReadPartValues();
+                    NumRead += pair.Item1;
+                    NumWrite += pair.Item2;
+                    AddEvent("Значения блока объектов прочитаны", pair.Item1 + " значений прочитано, " + pair.Item2 + " значений сформировано");
+                }
+                catch (Exception ex)
+                {
+                    AddError("Ошибка при формировании значений", ex);
+                }    
             }
             return true;
         }
@@ -311,9 +313,10 @@ namespace CommonTypes
         //Хотя бы одно из чтений значений было успешным
         private bool _successRead;
 
-        //Считывает значения по блоку сигналов part, используя функцию _funReadValues, в случае ошибки читает блок по частям
-        //useRecursion - использовать рекурсивный вызов, depth - глубина в дереве вызовов, начиная с 1
-        private bool ReadPartRecursive(List<SourceObject> part, bool useRecursion, int depth)
+        //Считывает значения по блоку сигналов, в случае ошибки рекурсивно считает для половин блока
+        private bool ReadPartRecursive(List<SourceObject> part, //Блок сигналов 
+                                                       bool useRecursion, //useRecursion - использовать рекурсивный вызов
+                                                       int depth) //depth - глубина в дереве вызовов, начиная с 1
         {
             if (!IsConnected && !Connect()) return false;
             bool b = ReadPart(part);
@@ -332,6 +335,83 @@ namespace CommonTypes
             bool b2 = ReadPartRecursive(part.GetRange(m, part.Count - m), true, depth + 1);
             if (!b2) Thread.Sleep(ErrorWaiting);
             return b1 || b2;
+        }
+
+        //Добавка мгновенных значений разного типа d указанный сигнал
+        public int AddMom(SourceSignal sig, DateTime time, bool b, ErrMom err = null)
+        {
+            if (sig == null) return 0;
+            return sig.AddMom(time, b, err);
+        }
+        public int AddMom(SourceSignal sig, DateTime time, int i, ErrMom err = null)
+        {
+            if (sig == null) return 0;
+            return sig.AddMom(time, i, err);
+        }
+        public int AddMom(SourceSignal sig, DateTime time, double r, ErrMom err = null)
+        {
+            if (sig == null) return 0;
+            return sig.AddMom(time, r, err);
+        }
+        public int AddMom(SourceSignal sig, DateTime time, DateTime d, ErrMom err = null)
+        {
+            if (sig == null) return 0;
+            return sig.AddMom(time, d, err);
+        }
+        public int AddMom(SourceSignal sig, DateTime time, string s, ErrMom err = null)
+        {
+            if (sig == null) return 0;
+            return sig.AddMom(time, s, err);
+        }
+        //Добавка мгновенных значений, значение берется из типа object
+        public int AddMom(SourceSignal sig, DateTime time, object ob, ErrMom err = null)
+        {
+            if (sig == null) return 0;
+            return sig.AddMom(time, ob, err);
+        }
+
+        //Запрос рекордсета по одному блоку, рекорсет должен быть записан в свойство Rec
+        protected virtual bool QueryPartValues(List<SourceObject> part, //список объектов
+                                                                   DateTime beg, //период считывания
+                                                                   DateTime en)
+        {
+            Rec = null;
+            return true;
+        }
+
+        //Чтение значений из рекордсета по одному блоку
+        protected virtual Tuple<int, int> ReadPartValues()
+        {
+            int nread = 0, nwrite = 0;
+            while (Rec.Read())
+            {
+                nread++;
+                SourceObject ob = null;
+                try
+                {
+                    ob = DefineObject();
+                    if (ob != null)
+                        nwrite += ReadObjectValue(ob);
+                }
+                catch (Exception ex)
+                {
+                    AddErrorObject(ob == null ? "" : ob.Inf, "Ошибка при чтении значений из рекордсета", ex);
+                }
+            }
+            return new Tuple<int, int>(nread, nwrite);
+        }
+
+        //Определение текущего считываемого объекта
+        protected virtual SourceObject DefineObject()
+        {
+            return null;
+        }
+
+        //Чтение значений по одному объекту из рекордсета источника
+        //Возвращает количество сформированных значений
+        protected virtual int ReadObjectValue(SourceObject obj)
+        {
+            return 0;
         }
         #endregion
     }

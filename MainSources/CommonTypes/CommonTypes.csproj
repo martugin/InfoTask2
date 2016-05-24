@@ -58,7 +58,7 @@
     <Compile Include="Values\Mom\MomsErr.cs" />
     <Compile Include="Values\MFactory.cs" />
     <Compile Include="Values\Mom\Moms.cs" />
-    <Compile Include="Values\Mean\MeanEdit.cs" />
+    <Compile Include="Values\Mom\MomEdit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Values\IVal.cs" />
     <Compile Include="Values\MomList\MomLists.cs" />

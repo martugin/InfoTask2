@@ -50,9 +50,9 @@ namespace Provider
         private readonly Dictionary<string, ObjectWonderware> _objects = new Dictionary<string, ObjectWonderware>();
 
         //Добавить сигнал в провайдер
-        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, int idInClone = 0)
+        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, bool skipRepeats, int idInClone = 0)
         {
-            var sig = new SignalWonderware(signalInf, code, dataType, this, idInClone);
+            var sig = new SignalWonderware(signalInf, code, dataType, this, skipRepeats, idInClone);
             if (!_objects.ContainsKey(sig.TagName))
                 _objects.Add(sig.TagName, new ObjectWonderware(sig.TagName));
             var ret = _objects[sig.TagName].AddSignal(sig);
@@ -216,21 +216,9 @@ namespace Provider
                             if (ob.ValueSignal != null)
                             {
                                 var err = MakeError(quality, ob);
-                                switch (ob.DataType)
-                                {
-                                    case DataType.Boolean:
-                                        nwrite += ob.ValueSignal.AddMom(time, d != 0, err);
-                                        break;
-                                    case DataType.Real:
-                                        nwrite += ob.ValueSignal.AddMom(time, d, err);
-                                        break;
-                                    case DataType.Integer:
-                                        nwrite += ob.ValueSignal.AddMom(time, Convert.ToInt32(d), err);
-                                        break;
-                                    default: //String
-                                        nwrite += ob.ValueSignal.AddMom(time, _rec.GetString("vValue"), err);
-                                        break;
-                                }
+                                if (ob.DataType.LessOrEquals(DataType.Real))
+                                    nwrite += ob.ValueSignal.AddMom(time, d, err);
+                                else nwrite += ob.ValueSignal.AddMom(time, _rec.GetString("vValue"), err);
                             }
                         }
                     }
@@ -252,7 +240,7 @@ namespace Provider
         //Чтение данных из Historian за период
         protected override void ReadChanges()
         {
-            ReadValuesByParts(_objects.Values, 500, BeginRead, EndRead, false);
+            ReadValuesByParts(_objects.Values, 500, PeriodBegin, PeriodEnd, false);
         }
         #endregion
     }
