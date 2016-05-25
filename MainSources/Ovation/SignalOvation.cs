@@ -6,8 +6,8 @@ namespace Provider
     //Один сигнал (с учетом бита)
     internal class SignalOvation : SourceSignal
     {
-        internal SignalOvation(string signalInf, string code, DataType dataType, IProvider provider, int idInClone)
-            : base(signalInf, code, dataType, provider, idInClone)
+        internal SignalOvation(string signalInf, string code, DataType dataType, ISource provider, bool skipRepeats, int idInClone)
+            : base(signalInf, code, dataType, provider, skipRepeats, idInClone)
         {
             Id = Inf.GetInt("Id");
             IsState = Inf["Prop"] == "STAT";

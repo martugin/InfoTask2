@@ -216,17 +216,17 @@ namespace Provider
         //Определение текущего считываемого объекта
         protected override SourceObject DefineObject()
         {
-            var ob = new ObjectIndex
-                        {
-                            Sn = Rec.GetInt(0),
-                            NumType = Rec.GetInt(1),
-                            Appartment = Rec.GetInt(2),
-                            Out = _isAnalog ? 1 : Rec.GetInt(6)
-                        };
-            if (_isAnalog && _analogs.ContainsKey(ob))
-                return _analogs[ob];
-            if (_outs.ContainsKey(ob))
-                return _outs[ob];
+            var ind = new ObjectIndex
+            {
+                Sn = Rec.GetInt(0),
+                NumType = Rec.GetInt(1),
+                Appartment = Rec.GetInt(2),
+                Out = _isAnalog ? 1 : Rec.GetInt(6)
+            };
+            if (_isAnalog && _analogs.ContainsKey(ind))
+                return _analogs[ind];
+            if (_outs.ContainsKey(ind))
+                return _outs[ind];
             return null;
         }
 
@@ -234,8 +234,8 @@ namespace Provider
         //Возвращает количество сформированных значений
         protected override int ReadObjectValue(SourceObject obj)
         {
+            var ob = (ObjectKosm)obj;
             int nwrite = 0;
-            var ob = (ObjectKosm) obj;
             DateTime time = Rec.GetTime(3);
             int ndint = Rec.GetInt(_isAnalog ? 6 : 8);
             var err = MakeError(ndint, ob);

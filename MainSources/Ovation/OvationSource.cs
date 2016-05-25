@@ -80,7 +80,7 @@ namespace Provider
         //Освобождение ресурсов, занятых провайдером
         public override void Dispose()
         {
-            try { if (_rec != null) _rec.Dispose(); } catch { }
+            try { if (Rec != null) Rec.Dispose(); } catch { }
             try 
             { 
                 _connection.Close();
@@ -93,9 +93,9 @@ namespace Provider
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
 
         //Добавить сигнал
-        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, int idInClone)
+        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, bool skipRepeats, int idInClone)
         {
-            var sig = new SignalOvation(signalInf, code, dataType, this, idInClone);
+            var sig = new SignalOvation(signalInf, code, dataType, this, skipRepeats, idInClone);
             var ob = _objectsId.Add(sig.Id, new ObjectOvation(sig.Id, code));
             if (sig.IsState) //Слово состояния
             {
@@ -136,41 +136,6 @@ namespace Provider
 
         //Чтение значений
         #region
-        //Рекордсет получения данных
-        private IRecordRead _rec;
-        
-        //Формирование ошибки мгновенных значений по значению слова недостоверности
-        private ErrMom MakeError(IContextable ob, IRecordRead rec)
-        {
-            //Недостоверность 8 и 9 бит, 00 - good, 01 - fair(имитация), 10 - poor(зашкал), 11 - bad
-            if (rec.IsNull("STS") || (rec.IsNull("F_VALUE") && rec.IsNull("RAW_VALUE")))
-                return MakeError(4, ob);//нет данных
-            int state = rec.GetInt("STS");
-            bool b8 = state.GetBit(8), b9 = state.GetBit(9);
-            if (!b8 && !b9) return null;
-            if (!b8) return MakeError(1, ob);
-            if (!b9) return MakeError(2, ob);
-            return MakeError(3, ob);
-        }
-        
-        //Получает значение из текущей строчки рекордсета
-        private double RMean(IRecordRead rec)
-        {
-            return rec.GetDouble("F_VALUE", IMean(rec));
-        }
-        private int IMean(IRecordRead rec)
-        {
-            return rec.GetInt("RAW_VALUE");
-        }
-
-        //Получает время из текущей строчки рекордсета
-        private DateTime Time(IRecordRead rec)
-        {
-            var time = rec.GetTime("TIMESTAMP");
-            time = time.AddMilliseconds(rec.GetInt("TIME_NSEC") / 1000000.0);
-            return time.ToLocalTime();
-        }
-
         //Запрос значений из Historian по списку сигналов и интервалу
         protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en)
         {
@@ -188,8 +153,8 @@ namespace Provider
               .Append(") and (TIMESTAMP <= ")
               .Append(en.ToOvationString())
               .Append(") order by TIMESTAMP, TIME_NSEC");
-            _rec = new ReaderAdo(_connection, sb.ToString());
-            if (en.Subtract(beg).TotalMinutes > 59 && (_rec == null || !_rec.HasRows))
+            Rec = new ReaderAdo(_connection, sb.ToString());
+            if (en.Subtract(beg).TotalMinutes > 59 && (Rec == null || !Rec.HasRows))
             {
                 AddWarning("Значения из источника не получены", null, beg + " - " + en +"; " + part.First().Inf + " и др.");
                 return IsConnected = false;
@@ -197,45 +162,48 @@ namespace Provider
             return true;
         }
 
-        //Считывает значения из рекордсета _rec
-        //Возвращает количество прочитанных значений и сформированных значений
-        protected override Tuple<int, int> ReadPartValues()
+        //Определение текущего считываемого объекта
+        protected override SourceObject DefineObject()
         {
-            int nread = 0, nwrite = 0;
-            using (_rec)
-                while (_rec.Read())
-                {
-                    ObjectOvation ob = null;
-                    try
-                    {
-                        nread++;
-                        var id = _rec.GetInt("Id");
-                        if (_objectsId.ContainsKey(id))
-                        {
-                            ob = _objectsId[id];
-                            DateTime time = Time(_rec);
-                            if (ob.StateSignal != null)
-                                nwrite += ob.StateSignal.AddMom(time, _rec.GetInt("STS"));
-                            if (ob.ValueSignal != null)
-                            {
-                                var mom = MFactory.NewMom(ob.ValueSignal.DataType, time, RMean(_rec), MakeError(ob, _rec));
-                                nwrite += ob.ValueSignal.AddMom(mom);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        AddErrorObject(ob == null ? "" : ob.Inf, "Ошибка при чтении значений из рекордсета", ex);
-                    }
-                }
-            return new Tuple<int, int>(nread, nwrite);
+            var id = Rec.GetInt("Id");
+            if (_objectsId.ContainsKey(id))
+                return _objectsId[id];
+            return null;
+        }
+
+        //Чтение значений по одному объекту из рекордсета источника
+        //Возвращает количество сформированных значений
+        protected override int ReadObjectValue(SourceObject obj)
+        {
+            var ob = (ObjectOvation)obj;
+            var time1 = Rec.GetTime("TIMESTAMP");
+            time1 = time1.AddMilliseconds(Rec.GetInt("TIME_NSEC") / 1000000.0);
+            DateTime time = time1.ToLocalTime();
+            var rMean = Rec.GetDouble("F_VALUE", Rec.GetInt("RAW_VALUE"));
+
+            return AddMom(ob.StateSignal, time, Rec.GetInt("STS")) +
+                      AddMom(ob.ValueSignal, time, rMean, MakeError(ob, Rec));
+        }
+
+        //Формирование ошибки мгновенных значений по значению слова недостоверности
+        private ErrMom MakeError(IContextable ob, IRecordRead rec)
+        {
+            //Недостоверность 8 и 9 бит, 00 - good, 01 - fair(имитация), 10 - poor(зашкал), 11 - bad
+            if (rec.IsNull("STS") || (rec.IsNull("F_VALUE") && rec.IsNull("RAW_VALUE")))
+                return MakeError(4, ob);//нет данных
+            int state = rec.GetInt("STS");
+            bool b8 = state.GetBit(8), b9 = state.GetBit(9);
+            if (!b8 && !b9) return null;
+            if (!b8) return MakeError(1, ob);
+            if (!b9) return MakeError(2, ob);
+            return MakeError(3, ob);
         }
 
         //Задание нестандартных свойств получения данных
         protected override void SetReadProperties()
         {
-            MaxErrorCount = 10;
-            MaxErrorDepth = 10;
+            MaxErrorCount = 5;
+            MaxErrorDepth = 5;
         }
 
         //Чтение среза

@@ -1,5 +1,4 @@
-﻿using System;
-using CommonTypes;
+﻿using CommonTypes;
 
 namespace Provider
 {
@@ -20,15 +19,15 @@ namespace Provider
         internal int Id { get; private set; }
 
         //Возвращает, есть ли у объекта неопределенные срезы на время time 
-        public override bool HasBegin(DateTime time)
+        public override bool HasBegin
         {
-            return SignalsHasBegin(time, ValueSignal, StateSignal);
+            get { return SignalsHasBegin(ValueSignal, StateSignal); }
         }
 
         //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
-        public override int AddBegin(DateTime time)
+        public override int AddBegin()
         {
-            return SignalsAddBegin(time, ValueSignal, StateSignal);
+            return SignalsAddBegin(ValueSignal, StateSignal);
         }
     }
 }
