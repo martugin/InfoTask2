@@ -172,11 +172,8 @@ namespace Provider
             return factory;
         }
 
-        //Рекордсет со значениями
-        private ReaderAdo _rec;
-
         //Запрос значений по одному блоку сигналов
-        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en)
         {
             var sb = new StringBuilder("SELECT TagName, DateTime = convert(nvarchar, DateTime, 21), Value, vValue, Quality, QualityDetail FROM History WHERE  TagName IN (");
             for (var n = 0; n < part.Count; n++)
@@ -191,45 +188,31 @@ namespace Provider
                 sb.Append(" AND DateTime <").Append(en.ToSqlString());
             sb.Append(" ORDER BY DateTime");
             
-            _rec = new ReaderAdo(_sqlProps, sb.ToString(), 10000);
+            Rec = new ReaderAdo(_sqlProps, sb.ToString(), 10000);
             return true;
         }
 
-        //Формирование значений по одному блоку сигналов
-        protected override Tuple<int, int> ReadPartValues(bool isCut)
+        //Определение текущего считываемого объекта
+        protected override SourceObject DefineObject()
         {
-            int nread = 0, nwrite = 0;
-            using (_rec)
-                while (_rec.Read())
-                {
-                    string code = "";
-                    try
-                    {
-                        code = _rec.GetString("TagName");
-                        if (_objects.ContainsKey(code))
-                        {
-                            var ob = _objects[code];
-                            DateTime time = _rec.GetTime("DateTime");
-                            int quality = _rec.GetInt("QualityDetail");
-                            var d = _rec.GetDouble("Value");
-                            nread++;
-                            if (ob.ValueSignal != null)
-                            {
-                                var err = MakeError(quality, ob);
-                                if (ob.DataType.LessOrEquals(DataType.Real))
-                                    nwrite += ob.ValueSignal.AddMom(time, d, err);
-                                else nwrite += ob.ValueSignal.AddMom(time, _rec.GetString("vValue"), err);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        AddErrorObject(code, "Ошибка при чтении значений из рекордсета", ex);
-                    }
-                }
-            return new Tuple<int, int>(nread, nwrite);
+            string code = Rec.GetString("TagName");
+            if (_objects.ContainsKey(code))
+                return _objects[code];
+            return null;
         }
 
+        //Чтение значений по одному объекту из рекордсета источника
+        //Возвращает количество сформированных значений
+        protected override int ReadObjectValue(SourceObject obj)
+        {
+            var ob = (ObjectWonderware)obj;
+            DateTime time = Rec.GetTime("DateTime");
+            var err = MakeError(Rec.GetInt("QualityDetail"), ob);
+            if (ob.DataType.LessOrEquals(DataType.Real))
+                return AddMom(ob.ValueSignal, time, Rec.GetDouble("Value"), err);
+            return AddMom(ob.ValueSignal, time, Rec.GetString("vValue"), err);
+        }
+        
         //Задание нестандартных свойств получения данных
         protected override void SetReadProperties()
         {

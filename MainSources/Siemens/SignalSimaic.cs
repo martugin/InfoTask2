@@ -6,8 +6,8 @@ namespace Provider
     //Сигнал
     internal class SignalSimatic : SourceSignal
     {
-        public SignalSimatic(string signalInf, string code, DataType dataType, IProvider provider, int idInClone = 0) 
-            : base(signalInf, code, dataType, provider, idInClone)
+        public SignalSimatic(string signalInf, string code, DataType dataType, ISource provider, bool skipRepeats, int idInClone = 0) 
+            : base(signalInf, code, dataType, provider, skipRepeats, idInClone)
         {
             Id = Inf.GetInt("Id"); 
         }
