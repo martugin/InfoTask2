@@ -43,6 +43,9 @@ namespace CommonTypes
 
         //Подготовка провайдера к работе (во время PrepareCalc)
         void Prepare();
+        //Текущий период расчета
+        DateTime PeriodBegin { get; }
+        DateTime PeriodEnd { get; }
     }
 
     //--------------------------------------------------------------------
@@ -62,8 +65,11 @@ namespace CommonTypes
     {
         //Добавить сигнал в список сигналов, принимает информацию по сигналу возвращает сам сигнал
         //Если сигнал уже есть, то его изменяет и возвращает и ничего не добавляет
-        //signalInf, code, dataType - поля из Signals, idInClone - id в Signals клона, если синал используется для формирования клона
-        SourceSignal AddSignal(string signalInf, string code, DataType dataType, int idInClone = 0);
+        SourceSignal AddSignal(string signalInf, //Информация о сигнале для источника
+                                            string code, //Код сигнала
+                                            DataType dataType, //Тип данных
+                                            bool skipRepeats = true, //Пропускать полностью повторяющиеся значения
+                                            int idInClone = 0); //idInClone - id в Signals клона, если синал используется для формирования клона
         //Удаляет из источника все сигналы
         void ClearSignals();
 

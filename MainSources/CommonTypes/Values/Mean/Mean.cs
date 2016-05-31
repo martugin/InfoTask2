@@ -42,10 +42,10 @@ namespace CommonTypes
             var dt = DataType.Add(mean.DataType);
             switch (dt)
             {
-                case DataType.String:
-                    return String == mean.String;
                 case DataType.Real:
                     return Real == mean.Real;
+                case DataType.String:
+                    return String == mean.String;
                 case DataType.Integer:
                     return Integer == mean.Integer;
                 case DataType.Boolean:
@@ -61,10 +61,10 @@ namespace CommonTypes
             var dt = DataType.Add(mean.DataType);
             switch (dt)
             {
-                case DataType.String:
-                    return String.CompareTo(mean.String) < 0;
                 case DataType.Real:
                     return Real < mean.Real;
+                case DataType.String:
+                    return String.CompareTo(mean.String) < 0;
                 case DataType.Integer:
                     return Integer < mean.Integer;
                 case DataType.Boolean:
@@ -91,8 +91,9 @@ namespace CommonTypes
         }
         
         public virtual int Count { get { return 1; } }
+        public virtual IMean LastMean { get { return this; } }
 
         //Скопировать значение из другого значения
-        internal virtual void GetValueFromMean(IMean mean) { }
+        internal virtual void CopyValueFrom(IMean mean) { }
     }
 }

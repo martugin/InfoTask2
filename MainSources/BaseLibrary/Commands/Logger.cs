@@ -206,21 +206,21 @@ namespace BaseLibrary
             MessageError(err);
         }
 
-        //text - текст ошибки, ex - исключение, par - праметры ошибки, isFatal - ошибка или предупреждение
+        //text - текст ошибки, ex - исключение, par - праметры ошибки
         public void AddError(string text, Exception ex = null, string par = "", string context = "")
         {
             var err = new ErrorCommand(text, ex, par, context);
             AddError(err);
         }
 
-        //text - текст ошибки, ex - исключение, par - праметры ошибки, isFatal - ошибка или предупреждение
+        //text - текст ошибки, ex - исключение, par - праметры ошибки
         public void AddWarning(string text, Exception ex = null, string par = "", string context = "")
         {
             var err = new ErrorCommand(text, ex, par, context, CommandQuality.Warning);
             AddError(err);
         }
 
-        //Добавляет Ошибку в лог
+        //Добавляет ошибку в лог
         private void LogError(ErrorCommand er)
         {
             RunHistoryOperation(_superHistory, () =>

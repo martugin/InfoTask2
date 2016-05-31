@@ -56,10 +56,12 @@
     <Compile Include="ProvidersBase\ProviderSetupForm.designer.cs">
       <DependentUpon>ProviderSetupForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProvidersBase\ProviderSignal.cs" />
+    <Compile Include="ProvidersBase\SqlSourceBase.cs" />
+    <Compile Include="Signals\ProviderSignal.cs" />
     <Compile Include="ProvidersBase\SourceBase.cs" />
-    <Compile Include="ProvidersBase\SourceObject.cs" />
-    <Compile Include="ProvidersBase\SourceSignal.cs" />
+    <Compile Include="Signals\SourceObject.cs" />
+    <Compile Include="Signals\ReceiverSignal.cs" />
+    <Compile Include="Signals\SourceSignal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">

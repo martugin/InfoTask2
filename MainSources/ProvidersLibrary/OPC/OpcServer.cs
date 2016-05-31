@@ -25,19 +25,12 @@ namespace CommonTypes
         public bool AllowListValues { get { return false; } }
 
         //Настройки
-        public string Inf
+        protected override void GetInfDicS(DicS<string> dic)
         {
-            get { return ProviderInf; }
-            set
-            {
-                ProviderInf = value;
-                var dic = ProviderInf.ToPropertyDicS();
-                dic.DefVal = "";
-                ServerName = dic["OPCServerName"];
-                Node = dic["Node"];
-                Hash = "OPCServer=" + ServerName + ";Node=" + Node;
-                GetAdditionalInf(dic);
-            }
+            ServerName = dic["OPCServerName"];
+            Node = dic["Node"];
+            Hash = "OPCServer=" + ServerName + ";Node=" + Node;
+            GetAdditionalInf(dic);
         }
 
         //Загрузка дополнительных настроек провайдера из Inf
@@ -183,7 +176,7 @@ namespace CommonTypes
             _signalsCode.Add(tag, item);
             item.Tag = tag;
             item.ClientHandler = _signals.Count;
-            item.Value = MomFactory.NewMean(dataType, v); 
+            item.Value = MFactory.NewMean(dataType, v); 
             if (!_items.ContainsKey(item.Tag))
                 _items.Add(item.Tag, item);
             return item;

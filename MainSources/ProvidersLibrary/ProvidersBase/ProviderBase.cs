@@ -25,6 +25,22 @@ namespace CommonTypes
         protected string ProviderInf { get; set; }
         //Кэш для идентификации соединения
         public string Hash { get; protected set; }
+        
+        //Загрузка настроек провайдера
+        public string Inf
+        {
+            get { return ProviderInf; }
+            set
+            {
+                ProviderInf = value;
+                var dic = ProviderInf.ToPropertyDicS();
+                dic.DefVal = "";
+                GetInfDicS(dic);
+            }
+        }
+
+        //Загрузка свойств из словаря
+        protected abstract void GetInfDicS(DicS<string> dic);
 
         //Контекст и имя объекта для записи комманд и ошибок, заданные по умолчанию
         public override string Context
@@ -84,5 +100,9 @@ namespace CommonTypes
 
         //Очистка ресурсов
         public virtual void Dispose() { }
+
+        //Текущий период расчета, задается при чтениии из провайдера или при записис в провайдер
+        public DateTime PeriodBegin { get; protected set; }
+        public DateTime PeriodEnd { get; protected set; }
     }
 }

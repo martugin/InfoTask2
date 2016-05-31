@@ -41,17 +41,10 @@ namespace BaseLibrary
         //Преводит дату в формат для запросов SQL Server
         public static string ToSqlString(this DateTime d)
         {
-            //Русский
-            //return "'" + d + "'";
-
-            //Английский
-            //CultureInfo ci = CultureInfo.CreateSpecificCulture("en-US");
-            //return "'" + d.ToString("yyyy-MM-dd HH:mm:ss.fff", ci) + "'";
-
             return "convert(datetime, '" + d.Year + "-" + d.Month + "-" + d.Day + " " + d.Hour + ":" + d.Minute + ":" + d.Second + "." + d.Millisecond + "', 21)";
         }
 
-        //Преводит дату в формат для запросов Simaic
+        //Преводит дату в формат для запросов Simatic
         public static string ToSimaticString(this DateTime d)
         {
             DateTime dd = d.ToUniversalTime();
@@ -162,8 +155,11 @@ namespace BaseLibrary
             MessageBox.Show(message, caption, MessageBoxButtons.OK, icon);
         }
 
-        //Выводит сообщение об ошибке по заданной строке сообщения и исключению
-        public static string MessageError(this Exception ex, string message = null, string caption = "InfoTask", MessageBoxIcon icon = MessageBoxIcon.Error)
+        //Выводит сообщение об ошибке 
+        public static string MessageError(this Exception ex, //Исключение, вызвашее ошибку
+                                                           string message = null, //Текст сообщения
+                                                           string caption = "InfoTask", //Заголовок окна сообщения
+                                                           MessageBoxIcon icon = MessageBoxIcon.Error) //Иконка
         {
             var sb = new StringBuilder();
             sb.Append(message.IsEmpty() ? "" : (message + Environment.NewLine))
@@ -182,7 +178,9 @@ namespace BaseLibrary
         }
 
         //Выводит сообщение об ошибке
-        public static string MessageError(string message, string caption = "InfoTask", MessageBoxIcon icon = MessageBoxIcon.Error)
+        public static string MessageError(string message, //Текст сообщения
+                                                           string caption = "InfoTask", //Заголовок окна сообщения
+                                                           MessageBoxIcon icon = MessageBoxIcon.Error) //Иконка
         {
             MessageBox.Show(message, caption, MessageBoxButtons.OK, icon);
             return message;
@@ -226,8 +224,9 @@ namespace BaseLibrary
             return b;
         }
 
-        //Чтение значения из реестра path - путь к папке свойства, par - имя свойства
-        public static string GetRegistry(string path, string par)
+        //Чтение значения из реестра
+        public static string GetRegistry(string path, //path - путь к папке свойства
+                                                        string par) //par - имя свойства
         {
             try
             {

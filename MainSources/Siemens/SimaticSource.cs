@@ -18,18 +18,11 @@ namespace Provider
         public override string Code { get { return "SimaticSource"; } }
 
         //Настройки провайдера
-        public string Inf
+        protected override void GetInfDicS(DicS<string> dic)
         {
-            get { return ProviderInf; }
-            set
-            {
-                ProviderInf = value;
-                var dic = ProviderInf.ToPropertyDicS();
-                dic.DefVal = "";
-                _mainArchive = new SimaticArchive(this, dic["SQLServer"], false);
-                _reserveArchive = new SimaticArchive(this, dic["SQLServerReserve"], true);
-                Hash = _mainArchive.Hash + ";" + _reserveArchive.Hash;
-            }
+            _mainArchive = new SimaticArchive(this, dic["SQLServer"], false);
+            _reserveArchive = new SimaticArchive(this, dic["SQLServerReserve"], true);
+            Hash = _mainArchive.Hash + ";" + _reserveArchive.Hash;
         }
 
         //Соединение с архивами
@@ -114,19 +107,13 @@ namespace Provider
         }
         #endregion
 
-        //Диапазон источника
-        public TimeInterval GetTime()
-        {
-            return new TimeInterval(Different.MinDate, DateTime.Now);
-        }
-
         //Словари сигналов, ключи полные коды и Id
         private readonly Dictionary<int, ObjectSimatic> _objectsId = new Dictionary<int, ObjectSimatic>();
 
         //Добавить сигнал в провайдер
-        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, int idInClone = 0)
+        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, bool skipRepeats, int idInClone = 0)
         {
-            var sig = new SignalSimatic(signalInf, code, dataType, this, idInClone);
+            var sig = new SignalSimatic(signalInf, code, dataType, this, skipRepeats, idInClone);
             if (!_objectsId.ContainsKey(sig.Id))
             {
                 var ob = new ObjectSimatic(sig);
@@ -157,11 +144,9 @@ namespace Provider
         #region
         //Соединение, из которого считываются данные
         private OleDbConnection _conn;
-        //Рекордсет со значениями
-        private ReaderAdo _rec;
 
         //Запрос значений по одному блоку сигналов
-        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en)
         {
             var sb = new StringBuilder("TAG:R, ");
             if (part.Count == 1)
@@ -177,53 +162,42 @@ namespace Provider
             sb.Append(", ").Append(en.ToSimaticString());
             
             AddEvent("Запрос значений из архива", part.Count + " тегов");
-            _rec = new ReaderAdo(_conn, sb.ToString());
+            Rec = new ReaderAdo(_conn, sb.ToString());
             return true;
         }
 
-        //Формирование значений по одному блоку сигналов
-        protected override Tuple<int, int> ReadPartValues(bool isCut)
+        //Определение текущего считываемого объекта
+        protected override SourceObject DefineObject()
         {
-            int nread = 0, nwrite = 0;
-            using (_rec)
-                while (_rec.Read())
-                {
-                    ObjectSimatic ob = null;
-                    try
-                    {
-                        int id = _rec.GetInt(0);
-                        if (_objectsId.ContainsKey(id))
-                        {
-                            ob = _objectsId[id];
-                            DateTime time = _rec.GetTime(1).ToLocalTime();
-                            int quality = _rec.GetInt(3);
-                            var err = MakeError(quality, ob);
-                            nread++;
-                            if (ob.SignalValue != null)
-                                nwrite += ob.SignalValue.AddMom(ob.SignalValue.DataType, time, _rec.Reader[2], err, isCut);
-                            if (ob.SignalQuality != null)
-                                nwrite += ob.SignalQuality.AddMom(time, quality, null, isCut);
-                            if (ob.SignalFlags != null)
-                                nwrite += ob.SignalFlags.AddMom(time, _rec.GetInt(4), err, isCut);    
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        AddErrorObject(ob == null ? "" : ob.Code, "Ошибка при чтении значений из рекордсета", ex);
-                    }
-                }
-            return new Tuple<int, int>(nread, nwrite);
+            int id = Rec.GetInt(0);
+            if (_objectsId.ContainsKey(id))
+                return _objectsId[id];
+            return null;
         }
 
+        //Чтение значений по одному объекту из рекордсета источника
+        //Возвращает количество сформированных значений
+        protected override int ReadObjectValue(SourceObject obj)
+        {
+            var ob = (ObjectSimatic)obj;
+            DateTime time = Rec.GetTime(1).ToLocalTime();
+            var quality = Rec.GetInt(3);
+            var err = MakeError(quality, ob);
+
+            return AddMom(ob.SignalFlags, time, Rec.GetInt(4), err) +
+                      AddMom(ob.SignalQuality, time, quality, err) +
+                      AddMom(ob.SignalValue, time, ((ReaderAdo)Rec).Reader[2], err);
+        }
+        
         //Чтение среза
         protected override void ReadCut()
         {
-            ReadValuesByParts(_objectsId.Values, 500, BeginRead.AddSeconds(-60), BeginRead, true);
+            ReadValuesByParts(_objectsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
         }
         //Чтение изменений
         protected override void ReadChanges()
         {
-            ReadValuesByParts(_objectsId.Values, 500, BeginRead, EndRead, false);
+            ReadValuesByParts(_objectsId.Values, 500, PeriodBegin, PeriodEnd, false);
         }
         #endregion
     }

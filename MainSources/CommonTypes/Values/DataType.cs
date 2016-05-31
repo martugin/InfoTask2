@@ -159,7 +159,7 @@ namespace CommonTypes
         }
 
         //Возвращает общий минимум для двух типов
-        public static DataType Inf(this DataType t1, DataType t2)
+        public static DataType Subtract(this DataType t1, DataType t2)
         {
             if (t2.LessOrEquals(t1)) return t2;
             if (t1.LessOrEquals(t2)) return t1;
@@ -245,7 +245,7 @@ namespace CommonTypes
             return DataTypeEnum.dbText;
         }
 
-        //Добавление поля в таблицу поля с указанием типа данных
+        //Добавление в таблицу поля с указанием типа данных
         public static void SetColumn(this DaoDb db, string tableName, string columnName, DataType dtype)
         {
             switch (dtype)
@@ -263,7 +263,7 @@ namespace CommonTypes
                     db.SetColumnBool(tableName, columnName);
                     break;
                 case DataType.Time:
-                    db.SetColumnDatetime(tableName, columnName);
+                    db.SetColumnDateTime(tableName, columnName);
                     break;
             }
         }

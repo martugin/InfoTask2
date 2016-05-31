@@ -9,50 +9,18 @@ namespace Provider
 {
     [Export(typeof(IProvider))]
     [ExportMetadata("Code", "WonderwareHistorianSource")]
-    public class WonderwareHistorianSource : SourceBase, ISource 
+    public class WonderwareHistorianSource : SqlSourceBase, ISource 
     {
         //Код провайдера
         public override string Code { get { return "WonderwareHistorianSource"; } }
-        //Настройки провайдера 
-        public string Inf
-        {
-            get { return ProviderInf; }
-            set 
-            { 
-                ProviderInf = value;
-                var dic = ProviderInf.ToPropertyDicS();
-                dic.DefVal = "";
-                bool e = dic["IndentType"].ToUpper() != "WINDOWS";
-                string server = dic["SQLServer"], db = dic["Database"];
-                _sqlProps = new SqlProps(server, db, e, dic["Login"], dic["Password"]);
-                Hash = "SQLServer=" + server + ";Database=" + db;
-            }
-        }
         
-        //Возвращает выпадающий список для поля настройки, props - словарь значение свойств, propname - имя свойства для ячейки со списком
-        public override List<string> ComboBoxList(Dictionary<string, string> props, string propname)
-        {
-            try
-            {
-                bool hasServer = props.ContainsKey("SQLServer") && !props["SQLServer"].IsEmpty();
-                var hasLogin = (props["IndentType"].ToUpper() == "WINDOWS" || (props.ContainsKey("Login") && !props["Login"].IsEmpty()));
-                if (propname == "Database" && hasServer && hasLogin)
-                    return SqlDb.SqlDatabasesList(props["SQLServer"], props["IndentType"].ToUpper() != "WINDOWS", props["Login"], props["Password"]);
-            }
-            catch { }
-            return new List<string>();
-        }
-
-        //Настройки SQL Server
-        private SqlProps _sqlProps;
-
         //Словарь объектов по TagName
         private readonly Dictionary<string, ObjectWonderware> _objects = new Dictionary<string, ObjectWonderware>();
 
         //Добавить сигнал в провайдер
-        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, int idInClone = 0)
+        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, bool skipRepeats, int idInClone = 0)
         {
-            var sig = new SignalWonderware(signalInf, code, dataType, this, idInClone);
+            var sig = new SignalWonderware(signalInf, code, dataType, this, skipRepeats, idInClone);
             if (!_objects.ContainsKey(sig.TagName))
                 _objects.Add(sig.TagName, new ObjectWonderware(sig.TagName));
             var ret = _objects[sig.TagName].AddSignal(sig);
@@ -67,57 +35,15 @@ namespace Provider
             _objects.Clear();
         }
         
-        //Проверка соединения
-        public bool Check()
-        {
-            return Danger(TryCheck, 2, 500, "Не удалось соединиться с SQL-сервером");
-        }
-        private bool TryCheck()
-        {
-            try
-            {
-                using (SqlDb.Connect(_sqlProps))
-                    return true;
-            }
-            catch (Exception ex)
-            {
-                AddError("Не удалось соединиться с SQL-сервером", ex);
-                return false;
-            }
-        }
-        
-        //Проверка настроек
-        public string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
-        {
-            string err = "";
-            if (inf["SQLServer"].IsEmpty()) err += "Не указано имя SQL-сервера" + Environment.NewLine;
-            if (inf["IndentType"].IsEmpty()) err += "Не задан тип идентификации" + Environment.NewLine;
-            if (inf["IndentType"] == "SqlServer" && inf["Login"].IsEmpty()) err += "Не задан логин" + Environment.NewLine;
-            if (inf["Database"].IsEmpty()) err += "Не задано имя базы данных" + Environment.NewLine;
-            return err;
-        }
-
-        //Проверка соединения
-        public bool CheckConnection()
-        {
-            if (Check())
-            {
-                CheckConnectionMessage = "Успешное соединение";
-                return true;
-            }
-            AddError(CheckConnectionMessage = "Не удалось соединиться с SQL-сервером");
-            return false;
-        }
-
         //Получение диапазона архива по блокам истории
-        public TimeInterval GetTime()
+        public override TimeInterval GetTime()
         {
             TimeIntervals.Clear();
             DateTime mind = Different.MaxDate, maxd = Different.MinDate;
             DateTime mint = Different.MaxDate, maxt = Different.MinDate;
             try
             {
-                using (var rec = new ReaderAdo(_sqlProps, "SELECT FromDate, ToDate FROM v_HistoryBlock ORDER BY FromDate, ToDate DESC"))
+                using (var rec = new ReaderAdo(SqlProps, "SELECT FromDate, ToDate FROM v_HistoryBlock ORDER BY FromDate, ToDate DESC"))
                     while (rec.Read())
                     {
                         var fromd = rec.GetTime("FromDate");
@@ -172,11 +98,8 @@ namespace Provider
             return factory;
         }
 
-        //Рекордсет со значениями
-        private ReaderAdo _rec;
-
         //Запрос значений по одному блоку сигналов
-        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en)
         {
             var sb = new StringBuilder("SELECT TagName, DateTime = convert(nvarchar, DateTime, 21), Value, vValue, Quality, QualityDetail FROM History WHERE  TagName IN (");
             for (var n = 0; n < part.Count; n++)
@@ -191,57 +114,31 @@ namespace Provider
                 sb.Append(" AND DateTime <").Append(en.ToSqlString());
             sb.Append(" ORDER BY DateTime");
             
-            _rec = new ReaderAdo(_sqlProps, sb.ToString(), 10000);
+            Rec = new ReaderAdo(SqlProps, sb.ToString(), 10000);
             return true;
         }
 
-        //Формирование значений по одному блоку сигналов
-        protected override Tuple<int, int> ReadPartValues(bool isCut)
+        //Определение текущего считываемого объекта
+        protected override SourceObject DefineObject()
         {
-            int nread = 0, nwrite = 0;
-            using (_rec)
-                while (_rec.Read())
-                {
-                    string code = "";
-                    try
-                    {
-                        code = _rec.GetString("TagName");
-                        if (_objects.ContainsKey(code))
-                        {
-                            var ob = _objects[code];
-                            DateTime time = _rec.GetTime("DateTime");
-                            int quality = _rec.GetInt("QualityDetail");
-                            var d = _rec.GetDouble("Value");
-                            nread++;
-                            if (ob.ValueSignal != null)
-                            {
-                                var err = MakeError(quality, ob);
-                                switch (ob.DataType)
-                                {
-                                    case DataType.Boolean:
-                                        nwrite += ob.ValueSignal.AddMom(time, d != 0, err);
-                                        break;
-                                    case DataType.Real:
-                                        nwrite += ob.ValueSignal.AddMom(time, d, err);
-                                        break;
-                                    case DataType.Integer:
-                                        nwrite += ob.ValueSignal.AddMom(time, Convert.ToInt32(d), err);
-                                        break;
-                                    default: //String
-                                        nwrite += ob.ValueSignal.AddMom(time, _rec.GetString("vValue"), err);
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        AddErrorObject(code, "Ошибка при чтении значений из рекордсета", ex);
-                    }
-                }
-            return new Tuple<int, int>(nread, nwrite);
+            string code = Rec.GetString("TagName");
+            if (_objects.ContainsKey(code))
+                return _objects[code];
+            return null;
         }
 
+        //Чтение значений по одному объекту из рекордсета источника
+        //Возвращает количество сформированных значений
+        protected override int ReadObjectValue(SourceObject obj)
+        {
+            var ob = (ObjectWonderware)obj;
+            DateTime time = Rec.GetTime("DateTime");
+            var err = MakeError(Rec.GetInt("QualityDetail"), ob);
+            if (ob.DataType.LessOrEquals(DataType.Real))
+                return AddMom(ob.ValueSignal, time, Rec.GetDouble("Value"), err);
+            return AddMom(ob.ValueSignal, time, Rec.GetString("vValue"), err);
+        }
+        
         //Задание нестандартных свойств получения данных
         protected override void SetReadProperties()
         {
@@ -252,7 +149,7 @@ namespace Provider
         //Чтение данных из Historian за период
         protected override void ReadChanges()
         {
-            ReadValuesByParts(_objects.Values, 500, BeginRead, EndRead, false);
+            ReadValuesByParts(_objects.Values, 500, PeriodBegin, PeriodEnd, false);
         }
         #endregion
     }

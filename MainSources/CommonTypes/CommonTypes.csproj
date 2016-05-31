@@ -51,20 +51,18 @@
     <Compile Include="ErrMoms\ErrMom.cs" />
     <Compile Include="ErrMoms\ErrMomFactory.cs" />
     <Compile Include="ErrMoms\ErrMomPool.cs" />
+    <Compile Include="Tabls\TablField.cs" />
     <Compile Include="Values\DataType.cs" />
     <Compile Include="Values\Mean\MeansErr.cs" />
     <Compile Include="Values\Mean\Mean.cs" />
-    <Compile Include="Values\Mean\MeansBase.cs" />
     <Compile Include="Values\Mom\MomsErr.cs" />
-    <Compile Include="Moments\MomFactory.cs" />
+    <Compile Include="Values\MFactory.cs" />
     <Compile Include="Values\Mom\Moms.cs" />
-    <Compile Include="Moments\MomEdit.cs" />
+    <Compile Include="Values\Mom\MomEdit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Values\IVal.cs" />
     <Compile Include="Values\MomList\MomLists.cs" />
     <Compile Include="Values\MomList\MomList.cs" />
-    <Compile Include="Values\MomList\MomListsOld.cs" />
-    <Compile Include="Values\Segment.cs" />
     <Compile Include="Values\Val.cs" />
     <Compile Include="Values\Mean\Means.cs" />
     <Compile Include="Tabls\Tabl.cs" />
@@ -78,9 +76,7 @@
       <Name>BaseLibrary</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SingleValues\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

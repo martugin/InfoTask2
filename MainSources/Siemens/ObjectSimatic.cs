@@ -1,5 +1,4 @@
-﻿using System;
-using CommonTypes;
+﻿using CommonTypes;
 
 namespace Provider
 {
@@ -40,16 +39,16 @@ namespace Provider
         //Id в таблице архива
         public int Id { get; private set; }
 
-        //Возвращает, есть ли у объекта неопределенные срезы на время time 
-        public override bool HasBegin(DateTime time)
+        //Возвращает, есть ли у объекта неопределенные срезы
+        public override bool HasBegin
         {
-            return SignalsHasBegin(time, SignalValue, SignalQuality, SignalFlags);
+            get { return SignalsHasBegin(SignalValue, SignalQuality, SignalFlags); }
         }
 
         //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
-        public override int AddBegin(DateTime time)
+        public override int AddBegin()
         {
-            return SignalsAddBegin(time, SignalValue, SignalQuality, SignalFlags);
+            return SignalsAddBegin(SignalValue, SignalQuality, SignalFlags);
         }
     }
 }

@@ -23,7 +23,6 @@ namespace BaseLibrary
     }
 
     //----------------------------------------------------------------------------------
-
     //Строка для записи в лог
     public static class CommandConverters
     {
@@ -42,5 +41,4 @@ namespace BaseLibrary
         }    
     }
 
-    
 }

@@ -19,7 +19,7 @@ namespace BaseLibrary
         public string Text { get; private set; }
         //Ошибка или предупреждение
         public CommandQuality Quality { get; private set; }
-        //Системная ошибка, вызвавшая данную
+        //Исключение, вызвавшее ошибку
         public Exception Exeption { get; private set; }
         //Параметры ошибки
         public string Params { get; private set; }

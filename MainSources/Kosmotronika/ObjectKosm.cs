@@ -27,7 +27,7 @@ namespace Provider
             NumType = ind.NumType;
             Appartment = ind.Appartment;
             Out = ind.Out;
-            int p = code.LastIndexOf(".");
+            int p = code.LastIndexOf(".", StringComparison.Ordinal);
             string s = p == -1 ? code : code.Substring(0, p);
             Inf = string.Concat("Code=", s, "; SN=", Sn, "; NumType=", NumType, ";Out=", Out, "; Appartment=", Appartment, ";");
         }
@@ -59,15 +59,15 @@ namespace Provider
         internal SourceSignal PokSignal { get; private set; }
 
         //Для объекта определен срез
-        public override bool HasBegin(DateTime time)
+        public override bool HasBegin
         {
-            return SignalsHasBegin(time, ValueSignal, StateSignal, PokSignal);
+            get { return SignalsHasBegin(ValueSignal, StateSignal, PokSignal);}
         }
 
         //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
-        public override int AddBegin(DateTime time)
+        public override int AddBegin()
         {
-            return SignalsAddBegin(time, ValueSignal, StateSignal, PokSignal);
+            return SignalsAddBegin(ValueSignal, StateSignal, PokSignal);
         }
     }
 }

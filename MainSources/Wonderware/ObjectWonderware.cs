@@ -1,6 +1,4 @@
-﻿using System;
-using BaseLibrary;
-using CommonTypes;
+﻿using CommonTypes;
 
 namespace Provider
 {
@@ -33,14 +31,14 @@ namespace Provider
         }
 
         //Добавить срез
-        public override int AddBegin(DateTime time)
+        public override int AddBegin()
         {
-            return SignalsAddBegin(time, ValueSignal);
+            return SignalsAddBegin(ValueSignal);
         }
         //Определен срез
-        public override bool HasBegin(DateTime time)
+        public override bool HasBegin
         {
-            return SignalsHasBegin(time, ValueSignal);
+            get { return SignalsHasBegin(ValueSignal); }
         }
     }
 }

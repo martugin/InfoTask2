@@ -38,7 +38,7 @@ namespace BaseLibrary
         bool? GetBoolNull(string field);
         bool? GetBoolNull(int num);
 
-        bool IsNull(string filed);
+        bool IsNull(string field);
         bool IsNull(int num);
 
         void GetToDataGrid(string field, DataGridViewCellCollection cells, string gridField = null);
@@ -64,8 +64,7 @@ namespace BaseLibrary
         void PutFromDataGrid(string field, DataGridViewCellCollection cells, string gridField = null);
         void PutFromDataGrid(string field, DataGridViewRow row, string gridField = null);
     }
-
-
+    
     //---------------------------------------------------------------------------------------------
     //Общий интерфейс для всех рекордсетов позволяющих запись, чтение и поиск данных
     public interface IRecordSet : IRecordRead, IRecordAdd
