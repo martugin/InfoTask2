@@ -18,18 +18,11 @@ namespace Provider
         public override string Code { get { return "SimaticSource"; } }
 
         //Настройки провайдера
-        public string Inf
+        protected override void GetInfDicS(DicS<string> dic)
         {
-            get { return ProviderInf; }
-            set
-            {
-                ProviderInf = value;
-                var dic = ProviderInf.ToPropertyDicS();
-                dic.DefVal = "";
-                _mainArchive = new SimaticArchive(this, dic["SQLServer"], false);
-                _reserveArchive = new SimaticArchive(this, dic["SQLServerReserve"], true);
-                Hash = _mainArchive.Hash + ";" + _reserveArchive.Hash;
-            }
+            _mainArchive = new SimaticArchive(this, dic["SQLServer"], false);
+            _reserveArchive = new SimaticArchive(this, dic["SQLServerReserve"], true);
+            Hash = _mainArchive.Hash + ";" + _reserveArchive.Hash;
         }
 
         //Соединение с архивами
@@ -113,12 +106,6 @@ namespace Provider
             Disconnect();
         }
         #endregion
-
-        //Диапазон источника
-        public TimeInterval GetTime()
-        {
-            return new TimeInterval(Different.MinDate, DateTime.Now);
-        }
 
         //Словари сигналов, ключи полные коды и Id
         private readonly Dictionary<int, ObjectSimatic> _objectsId = new Dictionary<int, ObjectSimatic>();

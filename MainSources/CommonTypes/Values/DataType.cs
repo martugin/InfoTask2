@@ -263,7 +263,7 @@ namespace CommonTypes
                     db.SetColumnBool(tableName, columnName);
                     break;
                 case DataType.Time:
-                    db.SetColumnDatetime(tableName, columnName);
+                    db.SetColumnDateTime(tableName, columnName);
                     break;
             }
         }

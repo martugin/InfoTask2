@@ -1,4 +1,5 @@
-﻿using CommonTypes;
+﻿using System;
+using CommonTypes;
 
 namespace Provider
 {
@@ -26,7 +27,7 @@ namespace Provider
             NumType = ind.NumType;
             Appartment = ind.Appartment;
             Out = ind.Out;
-            int p = code.LastIndexOf(".");
+            int p = code.LastIndexOf(".", StringComparison.Ordinal);
             string s = p == -1 ? code : code.Substring(0, p);
             Inf = string.Concat("Code=", s, "; SN=", Sn, "; NumType=", NumType, ";Out=", Out, "; Appartment=", Appartment, ";");
         }

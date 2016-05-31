@@ -10,6 +10,7 @@ namespace Provider
     {
         //Код
         public override string Code { get { return "KosmotronikaOPCReceiver"; } }
+        
         //Серверная группа
         private string _serverGroup;
         //Загрузка дополнительных настроек провайдера из Inf

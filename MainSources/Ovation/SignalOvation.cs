@@ -3,7 +3,7 @@ using CommonTypes;
 
 namespace Provider
 {
-    //Один сигнал (с учетом бита)
+    //Один сигнал источника Овации
     internal class SignalOvation : SourceSignal
     {
         internal SignalOvation(string signalInf, string code, DataType dataType, ISource provider, bool skipRepeats, int idInClone)

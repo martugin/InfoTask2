@@ -39,7 +39,7 @@ namespace Provider
         //Id в таблице архива
         public int Id { get; private set; }
 
-        //Возвращает, есть ли у объекта неопределенные срезы на время time 
+        //Возвращает, есть ли у объекта неопределенные срезы
         public override bool HasBegin
         {
             get { return SignalsHasBegin(SignalValue, SignalQuality, SignalFlags); }

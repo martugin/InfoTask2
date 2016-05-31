@@ -9,43 +9,11 @@ namespace Provider
 {
     [Export(typeof(IProvider))]
     [ExportMetadata("Code", "WonderwareHistorianSource")]
-    public class WonderwareHistorianSource : SourceBase, ISource 
+    public class WonderwareHistorianSource : SqlSourceBase, ISource 
     {
         //Код провайдера
         public override string Code { get { return "WonderwareHistorianSource"; } }
-        //Настройки провайдера 
-        public string Inf
-        {
-            get { return ProviderInf; }
-            set 
-            { 
-                ProviderInf = value;
-                var dic = ProviderInf.ToPropertyDicS();
-                dic.DefVal = "";
-                bool e = dic["IndentType"].ToUpper() != "WINDOWS";
-                string server = dic["SQLServer"], db = dic["Database"];
-                _sqlProps = new SqlProps(server, db, e, dic["Login"], dic["Password"]);
-                Hash = "SQLServer=" + server + ";Database=" + db;
-            }
-        }
         
-        //Возвращает выпадающий список для поля настройки, props - словарь значение свойств, propname - имя свойства для ячейки со списком
-        public override List<string> ComboBoxList(Dictionary<string, string> props, string propname)
-        {
-            try
-            {
-                bool hasServer = props.ContainsKey("SQLServer") && !props["SQLServer"].IsEmpty();
-                var hasLogin = (props["IndentType"].ToUpper() == "WINDOWS" || (props.ContainsKey("Login") && !props["Login"].IsEmpty()));
-                if (propname == "Database" && hasServer && hasLogin)
-                    return SqlDb.SqlDatabasesList(props["SQLServer"], props["IndentType"].ToUpper() != "WINDOWS", props["Login"], props["Password"]);
-            }
-            catch { }
-            return new List<string>();
-        }
-
-        //Настройки SQL Server
-        private SqlProps _sqlProps;
-
         //Словарь объектов по TagName
         private readonly Dictionary<string, ObjectWonderware> _objects = new Dictionary<string, ObjectWonderware>();
 
@@ -67,57 +35,15 @@ namespace Provider
             _objects.Clear();
         }
         
-        //Проверка соединения
-        public bool Check()
-        {
-            return Danger(TryCheck, 2, 500, "Не удалось соединиться с SQL-сервером");
-        }
-        private bool TryCheck()
-        {
-            try
-            {
-                using (SqlDb.Connect(_sqlProps))
-                    return true;
-            }
-            catch (Exception ex)
-            {
-                AddError("Не удалось соединиться с SQL-сервером", ex);
-                return false;
-            }
-        }
-        
-        //Проверка настроек
-        public string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
-        {
-            string err = "";
-            if (inf["SQLServer"].IsEmpty()) err += "Не указано имя SQL-сервера" + Environment.NewLine;
-            if (inf["IndentType"].IsEmpty()) err += "Не задан тип идентификации" + Environment.NewLine;
-            if (inf["IndentType"] == "SqlServer" && inf["Login"].IsEmpty()) err += "Не задан логин" + Environment.NewLine;
-            if (inf["Database"].IsEmpty()) err += "Не задано имя базы данных" + Environment.NewLine;
-            return err;
-        }
-
-        //Проверка соединения
-        public bool CheckConnection()
-        {
-            if (Check())
-            {
-                CheckConnectionMessage = "Успешное соединение";
-                return true;
-            }
-            AddError(CheckConnectionMessage = "Не удалось соединиться с SQL-сервером");
-            return false;
-        }
-
         //Получение диапазона архива по блокам истории
-        public TimeInterval GetTime()
+        public override TimeInterval GetTime()
         {
             TimeIntervals.Clear();
             DateTime mind = Different.MaxDate, maxd = Different.MinDate;
             DateTime mint = Different.MaxDate, maxt = Different.MinDate;
             try
             {
-                using (var rec = new ReaderAdo(_sqlProps, "SELECT FromDate, ToDate FROM v_HistoryBlock ORDER BY FromDate, ToDate DESC"))
+                using (var rec = new ReaderAdo(SqlProps, "SELECT FromDate, ToDate FROM v_HistoryBlock ORDER BY FromDate, ToDate DESC"))
                     while (rec.Read())
                     {
                         var fromd = rec.GetTime("FromDate");
@@ -188,7 +114,7 @@ namespace Provider
                 sb.Append(" AND DateTime <").Append(en.ToSqlString());
             sb.Append(" ORDER BY DateTime");
             
-            Rec = new ReaderAdo(_sqlProps, sb.ToString(), 10000);
+            Rec = new ReaderAdo(SqlProps, sb.ToString(), 10000);
             return true;
         }
 

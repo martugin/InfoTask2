@@ -31,10 +31,15 @@ namespace CommonTypes
             return true;
         }
 
+        //Создание фабрики ошибок
+        protected virtual IErrMomFactory MakeErrFactory()
+        {
+            var factory = new ErrMomFactory(Code, ErrMomType.Source);
+            factory.AddGoodDescr(0);
+            return factory;
+        }
         //Хранилище ошибок 
         protected ErrMomPool ErrPool { get; private set; }
-        //Создание фабрики ошибок
-        protected abstract IErrMomFactory MakeErrFactory();
         //Создание ошибки 
         protected ErrMom MakeError(int number, IContextable addr)
         {
@@ -79,7 +84,16 @@ namespace CommonTypes
         //Список временных интервалов диапазона источника
         private readonly List<TimeInterval> _timeIntervals = new List<TimeInterval>();
         public List<TimeInterval> TimeIntervals { get { return _timeIntervals; } }
-        
+
+        //Получение диапазона архива 
+        public virtual TimeInterval GetTime()
+        {
+            TimeIntervals.Clear();
+            var ti = new TimeInterval(Different.MinDate, DateTime.Now);
+            TimeIntervals.Add(ti);
+            return ti;
+        }
+
         //Создание клона
         #region
         //Рекордсет таблицы значений клона

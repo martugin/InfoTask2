@@ -17,19 +17,12 @@ namespace Provider
         //Код провайдера
         public override string Code { get { return "OvationSource"; } }
         //Настройки провайдера
-        public string Inf
+        protected override void GetInfDicS(DicS<string> dic)
         {
-            get { return ProviderInf; }
-            set
-            {
-                ProviderInf = value;
-                var dic = ProviderInf.ToPropertyDicS();
-                dic.DefVal = "";
-                _dataSource = dic["DataSource"];
-                Hash = "OvationHistorian=" + _dataSource;
-            }
+            _dataSource = dic["DataSource"];
+            Hash = "OvationHistorian=" + _dataSource;
         }
-        
+
         //Имя дропа
         private string _dataSource;
         //Соединение с провайдером Historian
@@ -126,7 +119,7 @@ namespace Provider
         }
         
         //Получение времени источника
-        public TimeInterval GetTime()
+        public override TimeInterval GetTime()
         {
             TimeIntervals.Clear();
             var t = new TimeInterval(Different.MinDate.AddYears(1), DateTime.Now);

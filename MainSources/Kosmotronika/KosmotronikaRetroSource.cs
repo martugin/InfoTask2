@@ -14,17 +14,12 @@ namespace Provider
     {
         //Код провайдера
         public override string Code { get { return "KosmotronikaRetroSource"; } }
+        
         //Настройки провайдера
-        public string Inf
+        protected override void GetInfDicS(DicS<string> dic)
         {
-            get { return ProviderInf; }
-            set
-            {
-                ProviderInf = value;
-                var dic = ProviderInf.ToPropertyDicS();
-                _retroServerName = dic["RetroServerName"] ?? "";
-                Hash = "RetroServer=" + _retroServerName;
-            }
+            _retroServerName = dic["RetroServerName"];
+            Hash = "RetroServer=" + _retroServerName;
         }
         
         //Имя ретросервера
@@ -91,7 +86,7 @@ namespace Provider
         }
 
         //Получение времени архива, True - если успешно
-        public TimeInterval GetTime()
+        public override TimeInterval GetTime()
         {
             if (!Danger(TryGetTime, 2, 500, "Не удалось определить временной диапазон Ретро-сервера")) return null;
             return new TimeInterval(BeginTime, EndTime);
