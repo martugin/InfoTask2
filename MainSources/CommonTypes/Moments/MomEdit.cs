@@ -106,7 +106,12 @@ namespace CommonTypes
             }
         }
 
-        public IMom Clone(DateTime time, ErrMom err = null)
+        public IMom Clone(DateTime time)
+        {
+            return _mom.Clone(time);
+        }
+
+        public IMom Clone(DateTime time, ErrMom err)
         {
             return _mom.Clone(time, err);
         }
