@@ -5,32 +5,16 @@ namespace Provider
     //Объект
     internal class ObjectSimatic : SourceObject
     {
-        internal ObjectSimatic(SignalSimatic signal) : base(signal.Inf["Tag"])
+        internal ObjectSimatic(string archive, string code, int id) : base(code)
         {
-            Id = signal.Id;
-            Archive = signal.Inf["Archive"];
+            Id = id;
+            Archive = archive;
             FullCode = Archive + @"\" + Code;
-            AddSignal(signal);
         }
 
-        //Добавление сигнала
-        internal SignalSimatic AddSignal(SignalSimatic signal)
-        {
-            switch (signal.Inf.Get("Prop", "").ToLower())
-            {
-                case "quality": 
-                    return SignalQuality = SignalQuality ?? signal;
-                case "flags": 
-                    return SignalFlags = SignalFlags ?? signal; 
-                default:
-                    return SignalValue = SignalValue ?? signal; 
-            }
-        }
-
-        //Сигналы: значение, качество, флаги
-        internal SignalSimatic SignalValue { get; private set; }
-        internal SignalSimatic SignalQuality { get; private set; }
-        internal SignalSimatic SignalFlags { get; private set; }
+        //Сигналы: качество, флаги
+        internal SourceSignal QualitySignal { get; set; }
+        internal SourceSignal FlagsSignal { get; set; }
         
         //Имя архива
         internal string Archive { get; private set; }
@@ -39,16 +23,29 @@ namespace Provider
         //Id в таблице архива
         public int Id { get; private set; }
 
+        public override SourceSignal AddSignal(SourceSignal sig)
+        {
+            switch (sig.Inf["Prop"].ToLower())
+            {
+                case "quality":
+                    return QualitySignal = QualitySignal ?? sig;
+                case "flags":
+                    return FlagsSignal = FlagsSignal ?? sig;
+                default:
+                    return ValueSignal = ValueSignal ?? sig;
+            }
+        }
+
         //Возвращает, есть ли у объекта неопределенные срезы
         public override bool HasBegin
         {
-            get { return SignalsHasBegin(SignalValue, SignalQuality, SignalFlags); }
+            get { return SignalsHasBegin(ValueSignal, QualitySignal, FlagsSignal); }
         }
 
         //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
         public override int AddBegin()
         {
-            return SignalsAddBegin(SignalValue, SignalQuality, SignalFlags);
+            return SignalsAddBegin(ValueSignal, QualitySignal, FlagsSignal);
         }
     }
 }

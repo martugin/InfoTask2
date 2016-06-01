@@ -8,7 +8,7 @@ namespace CommonTypes
     public abstract class SqlSourceBase : SourceBase
     {
         //Загрузка свойств из словаря
-        protected override void GetInfDicS(DicS<string> dic)
+        protected override void ReadDicS(DicS<string> dic)
         {
             bool e = dic["IndentType"].ToUpper() != "WINDOWS";
             string server = dic["SQLServer"], db = dic["Database"];
@@ -34,7 +34,7 @@ namespace CommonTypes
         protected SqlProps SqlProps { get; private set; }
         
         //Проверка соединения
-        public virtual bool Check()
+        public override bool Check()
         {
             return Danger(TryCheck, 2, 500, "Не удалось соединиться с SQL-сервером");
         }
@@ -53,7 +53,7 @@ namespace CommonTypes
         }
 
         //Проверка настроек
-        public virtual string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
+        public override string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
         {
             string err = "";
             if (inf["SQLServer"].IsEmpty()) err += "Не указано имя SQL-сервера" + Environment.NewLine;
@@ -64,7 +64,7 @@ namespace CommonTypes
         }
 
         //Проверка соединения
-        public virtual bool CheckConnection()
+        public override bool CheckConnection()
         {
             if (Check())
             {

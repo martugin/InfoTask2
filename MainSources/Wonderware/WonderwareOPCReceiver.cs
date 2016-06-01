@@ -14,10 +14,12 @@ namespace Provider
         private string _serverNode;
         //Серверная группа
         private string _serverGroup;
-        protected override void GetAdditionalInf(DicS<string> inf)
+        //Загрузка дополнительных настроек провайдера из Inf
+        protected override void ReadDicS(DicS<string> dic)
         {
-            _serverNode = inf.Get("ServerNode", "");
-            _serverGroup = inf.Get("ServerGroup", "");
+            base.ReadDicS(dic);
+            _serverNode = dic["ServerNode"];
+            _serverGroup = dic["ServerGroup"];
         }
 
         //Получение Tag точки по сигналу

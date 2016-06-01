@@ -12,13 +12,13 @@ namespace Provider
 {
     [Export(typeof(IProvider))]
     [ExportMetadata("Code", "SimaticSource")]
-    public class SimaticSource : SourceBase, ISource 
+    public class SimaticSource : SourceBase
     {
         //Код провайдера
         public override string Code { get { return "SimaticSource"; } }
 
         //Настройки провайдера
-        protected override void GetInfDicS(DicS<string> dic)
+        protected override void ReadDicS(DicS<string> dic)
         {
             _mainArchive = new SimaticArchive(this, dic["SQLServer"], false);
             _reserveArchive = new SimaticArchive(this, dic["SQLServerReserve"], true);
@@ -77,13 +77,13 @@ namespace Provider
         }
 
         //Проверка соединения
-        public bool Check()
+        public override bool Check()
         {
             return Connect();
         }
 
         //Проверка настроек
-        public string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
+        public override string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
         {
             string err = "";
             if (!inf.ContainsKey("SQLServer") || inf["SQLServer"].IsEmpty()) 
@@ -92,7 +92,7 @@ namespace Provider
         }
 
         //Проверка соединения
-        public bool CheckConnection()
+        public override bool CheckConnection()
         {
             CheckConnectionMessage = "";
             bool bres = _mainArchive.CheckConnection();
@@ -108,25 +108,19 @@ namespace Provider
         #endregion
 
         //Словари сигналов, ключи полные коды и Id
-        private readonly Dictionary<int, ObjectSimatic> _objectsId = new Dictionary<int, ObjectSimatic>();
+        private readonly DicI<ObjectSimatic> _objectsId = new DicI<ObjectSimatic>();
 
         //Добавить сигнал в провайдер
-        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, bool skipRepeats, int idInClone = 0)
+        protected override SourceObject AddObject(SourceSignal sig)
         {
-            var sig = new SignalSimatic(signalInf, code, dataType, this, skipRepeats, idInClone);
-            if (!_objectsId.ContainsKey(sig.Id))
-            {
-                var ob = new ObjectSimatic(sig);
-                _objectsId.Add(sig.Id, ob);
-                ProviderSignals.Add(sig.Code, sig);
-                return sig;
-            }
-            var addsig = _objectsId[sig.Id].AddSignal(sig);
-            return ProviderSignals.Add(addsig.Code, addsig);
+            int id = sig.Inf.GetInt("Id");
+            if (!_objectsId.ContainsKey(id))
+                return _objectsId.Add(id, new ObjectSimatic(sig.Inf["Archive"], sig.Inf["Tag"], id));
+            return _objectsId[id];
         }
-
+        
         //Очистка списка сигналов
-        public void ClearSignals()
+        public override void ClearSignals()
         {
             _objectsId.Clear();
             ProviderSignals.Clear();
@@ -184,9 +178,9 @@ namespace Provider
             var quality = Rec.GetInt(3);
             var err = MakeError(quality, ob);
 
-            return AddMom(ob.SignalFlags, time, Rec.GetInt(4), err) +
-                      AddMom(ob.SignalQuality, time, quality, err) +
-                      AddMom(ob.SignalValue, time, ((ReaderAdo)Rec).Reader[2], err);
+            return AddMom(ob.FlagsSignal, time, Rec.GetInt(4), err) +
+                      AddMom(ob.QualitySignal, time, quality, err) +
+                      AddMom(ob.ValueSignal, time, ((ReaderAdo)Rec).Reader[2], err);
         }
         
         //Чтение среза

@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="ObjectWonderware.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SignalWonderware.cs" />
     <Compile Include="WonderwareHistorianSource.cs" />
     <Compile Include="WonderwareOPCReceiver.cs" />
   </ItemGroup>

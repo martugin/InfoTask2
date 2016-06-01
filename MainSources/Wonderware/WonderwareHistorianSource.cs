@@ -9,7 +9,7 @@ namespace Provider
 {
     [Export(typeof(IProvider))]
     [ExportMetadata("Code", "WonderwareHistorianSource")]
-    public class WonderwareHistorianSource : SqlSourceBase, ISource 
+    public class WonderwareHistorianSource : SqlSourceBase
     {
         //Код провайдера
         public override string Code { get { return "WonderwareHistorianSource"; } }
@@ -18,18 +18,16 @@ namespace Provider
         private readonly Dictionary<string, ObjectWonderware> _objects = new Dictionary<string, ObjectWonderware>();
 
         //Добавить сигнал в провайдер
-        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, bool skipRepeats, int idInClone = 0)
+        protected override SourceObject AddObject(SourceSignal sig)
         {
-            var sig = new SignalWonderware(signalInf, code, dataType, this, skipRepeats, idInClone);
-            if (!_objects.ContainsKey(sig.TagName))
-                _objects.Add(sig.TagName, new ObjectWonderware(sig.TagName));
-            var ret = _objects[sig.TagName].AddSignal(sig);
-            if (ret == sig) ProviderSignals.Add(sig.Code, sig);
-            return ret;
+            string tag = sig.Inf["TagName"];
+            if (!_objects.ContainsKey(tag))
+                _objects.Add(tag, new ObjectWonderware(tag));
+            return _objects[tag];
         }
-
+        
         //Очистка списка сигналов
-        public void ClearSignals()
+        public override void ClearSignals()
         {
             ProviderSignals.Clear();
             _objects.Clear();
@@ -38,9 +36,7 @@ namespace Provider
         //Получение диапазона архива по блокам истории
         public override TimeInterval GetTime()
         {
-            TimeIntervals.Clear();
             DateTime mind = Different.MaxDate, maxd = Different.MinDate;
-            DateTime mint = Different.MaxDate, maxt = Different.MinDate;
             try
             {
                 using (var rec = new ReaderAdo(SqlProps, "SELECT FromDate, ToDate FROM v_HistoryBlock ORDER BY FromDate, ToDate DESC"))
@@ -49,13 +45,7 @@ namespace Provider
                         var fromd = rec.GetTime("FromDate");
                         var tod = rec.GetTime("ToDate");
                         if (fromd < mind) mind = fromd;
-                        if (fromd.Subtract(maxt).TotalMinutes > 1)
-                        {
-                            if (maxt != Different.MinDate) TimeIntervals.Add(new TimeInterval(mint, maxt));
-                            mint = fromd;
-                        }
                         if (maxd < tod) maxd = tod;
-                        if (maxt < tod) maxt = tod;
                     }
             }
             catch (Exception ex)
@@ -134,7 +124,7 @@ namespace Provider
             var ob = (ObjectWonderware)obj;
             DateTime time = Rec.GetTime("DateTime");
             var err = MakeError(Rec.GetInt("QualityDetail"), ob);
-            if (ob.DataType.LessOrEquals(DataType.Real))
+            if (ob.ValueSignal.DataType.LessOrEquals(DataType.Real))
                 return AddMom(ob.ValueSignal, time, Rec.GetDouble("Value"), err);
             return AddMom(ob.ValueSignal, time, Rec.GetString("vValue"), err);
         }

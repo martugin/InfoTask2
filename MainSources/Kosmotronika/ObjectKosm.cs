@@ -33,13 +33,13 @@ namespace Provider
         }
 
         //Добавить к объекту сигнал, если такого еще не было
-        public SourceSignal AddSignal(SourceSignal sig)
+        public override SourceSignal AddSignal(SourceSignal sig)
         {
             if (sig.Inf["Prop"] == "ND")
-                return StateSignal ?? (StateSignal = sig);
+                return StateSignal = StateSignal ?? sig;
             if (sig.Inf["Prop"] == "POK")
-                return PokSignal ?? (PokSignal = sig);
-            return ValueSignal ?? (ValueSignal = sig);
+                return PokSignal = PokSignal ?? sig;
+            return ValueSignal = ValueSignal ?? sig;
         }
         
         //Системный номер
@@ -51,9 +51,7 @@ namespace Provider
         //Номер выхода
         internal int Out { get; private set; }
 
-        //Сигнал, содержащий значения самого выхода параметра
-        internal SourceSignal ValueSignal { get; private set; }
-        //Сигнал недостоврности
+        //Сигнал недостоверности
         internal SourceSignal StateSignal { get; private set; }
         //Сигнал ПОК
         internal SourceSignal PokSignal { get; private set; }

@@ -1,5 +1,4 @@
-﻿using System;
-using BaseLibrary;
+﻿using BaseLibrary;
 
 namespace CommonTypes
 {
@@ -19,8 +18,20 @@ namespace CommonTypes
         //Контекст
         public string Context { get { return Code + "(объект)"; } }
 
+        //Основной сигнал объекта
+        public SourceSignal ValueSignal { get; set; }
+
+        //Добавить к объекту сигнал, если такого еще не было
+        public virtual SourceSignal AddSignal(SourceSignal sig)
+        {
+            return ValueSignal = ValueSignal ?? sig;
+        }
+        
         //Для объекта опредлено значение среза на время time
-        public virtual bool HasBegin { get { return false; } }
+        public virtual bool HasBegin
+        {
+            get { return SignalsHasBegin(ValueSignal); }
+        }
 
         //Проверяет, что хотя бы по одному сигналу из signals есть срез на время time
         protected bool SignalsHasBegin(params SourceSignal[] signals)
@@ -35,7 +46,7 @@ namespace CommonTypes
         //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
         public virtual int AddBegin()
         {
-            return 0;
+            return SignalsAddBegin(ValueSignal);
         }
 
         //Добавляет во все сигналы из signals срез на время time, возвращает количество добавленных значений

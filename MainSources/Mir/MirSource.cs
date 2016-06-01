@@ -8,7 +8,7 @@ namespace Provider
 {
     [Export(typeof(IProvider))]
     [ExportMetadata("Code", "MirSource")]
-    public class MirSource : SqlSourceBase, ISource
+    public class MirSource : SqlSourceBase
     {
         //Код провайдера
         public override string Code { get { return "MirSource"; } }
@@ -20,7 +20,7 @@ namespace Provider
         private readonly DicI<ObjectMir> _objectsId = new DicI<ObjectMir>();
         
         //Очистка списка сигналов
-        public void ClearSignals()
+        public override void ClearSignals()
         {
             ProviderSignals.Clear();
             _objects.Clear();
@@ -28,23 +28,14 @@ namespace Provider
         }
 
         //Добавляет один сигнал в список
-        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, bool skipRepeats = true, int idInClone = 0)
+        protected override SourceObject AddObject(SourceSignal sig)
         {
-            var sig = new SourceSignal(signalInf, code, dataType, this, skipRepeats, idInClone);
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
-            ObjectMir ob;
             if (!_objects.ContainsKey(ocode))
-            {
-                ob = new ObjectMir(ocode);
-                _objects.Add(ocode, ob);
-            }
-            else ob = _objects[ocode];
-            if (sig.Inf.Get("ValueType") == "Indication")
-                ob.IndicationSignal = sig;
-            else ob.UnitSignal = sig;
-            return ProviderSignals.Add(code, sig);
+                return _objects.Add(ocode, new ObjectMir(ocode));
+            return _objects[ocode];
         }
-
+        
         //Подготовка провайдера, чтение значений IDCHANNEL
         public override void Prepare()
         {

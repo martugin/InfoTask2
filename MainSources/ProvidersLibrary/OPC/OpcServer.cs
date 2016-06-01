@@ -25,16 +25,12 @@ namespace CommonTypes
         public bool AllowListValues { get { return false; } }
 
         //Настройки
-        protected override void GetInfDicS(DicS<string> dic)
+        protected override void ReadDicS(DicS<string> dic)
         {
             ServerName = dic["OPCServerName"];
             Node = dic["Node"];
             Hash = "OPCServer=" + ServerName + ";Node=" + Node;
-            GetAdditionalInf(dic);
         }
-
-        //Загрузка дополнительных настроек провайдера из Inf
-        protected virtual void GetAdditionalInf(DicS<string> inf) { }
 
         //Тип OPC-сервера
         public string ServerName { get; set; }
@@ -100,19 +96,19 @@ namespace CommonTypes
         }
 
         //Проверка соединения
-        public bool Check()
+        public override bool Check()
         {
             return Danger(Connect, 2, 500, "Ошибка соединения с OPC-сервером");
         }
 
         //Проверка настроек
-        public string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
+        public override string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
         {
             return !inf["OPCServerName"].IsEmpty() ? "" : "Не задано имя OPC-сервера";
         }
 
         //Проверка соединения
-        public bool CheckConnection()
+        public override bool CheckConnection()
         {
             if (Check())
             {
