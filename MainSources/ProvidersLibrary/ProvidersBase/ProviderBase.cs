@@ -6,7 +6,7 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Базовый класс для всех провайдеров
-    public abstract class ProviderBase : ExternalLogger
+    public abstract class ProviderBase : ExternalLogger, IProvider
     {
         protected ProviderBase() : base (new Logger()){}
         protected ProviderBase(string name, Logger logger) : base (logger)
@@ -35,18 +35,23 @@ namespace CommonTypes
                 ProviderInf = value;
                 var dic = ProviderInf.ToPropertyDicS();
                 dic.DefVal = "";
-                GetInfDicS(dic);
+                ReadDicS(dic);
             }
         }
 
         //Загрузка свойств из словаря
-        protected abstract void GetInfDicS(DicS<string> dic);
+        protected abstract void ReadDicS(DicS<string> dic);
 
         //Контекст и имя объекта для записи комманд и ошибок, заданные по умолчанию
         public override string Context
         {
             get { return Name + ", " + Type.ToRussian() + ", " + Code + "; " + Hash; }
         }
+
+        public virtual bool Check() { return true; }
+        public virtual bool CheckConnection() { return true; }
+        public virtual string CheckSettings(Dictionary<string, string> infDic, Dictionary<string, string> nameDic)
+        { return ""; }
 
         //Cтрока для вывода сообщения о последней проверке соединения
         public string CheckConnectionMessage { get; set; }
@@ -66,7 +71,7 @@ namespace CommonTypes
                 AddMenuCommands();
             }
             IsSetup = true;
-            new ProviderSetupForm {SetupType = SetupType, Provider = (IProvider) this}.ShowDialog();
+            new ProviderSetupForm {SetupType = SetupType, Provider = this}.ShowDialog();
             while (IsSetup) Thread.Sleep(500);
             return ProviderInf;
         }

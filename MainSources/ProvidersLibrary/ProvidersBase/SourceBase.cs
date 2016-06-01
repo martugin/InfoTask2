@@ -7,7 +7,7 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Базовый класс для всех источников
-    public abstract class SourceBase : ProviderBase
+    public abstract class SourceBase : ProviderBase, ISource
     {
         protected SourceBase()
         {
@@ -22,13 +22,28 @@ namespace CommonTypes
 
         //Тип провайдера
         public override ProviderType Type { get { return ProviderType.Source; } }
-        
+
         //True, если соединение прошло успешно, становится False, если произошла ошибка
         protected bool IsConnected { get; set; }
         //Открытие соединения
         protected virtual bool Connect()
         {
             return true;
+        }
+
+        //Добавить сигнал
+        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, bool skipRepeats, int idInClone)
+        {
+            var sig = new SourceSignal(signalInf, code, dataType, this, skipRepeats, idInClone);
+            AddObject(sig).AddSignal(sig);
+            return ProviderSignals.Add(sig.Code, sig);
+        }
+        //Добавить объект по содержащий заданный сигнал
+        protected abstract SourceObject AddObject(SourceSignal sig);
+
+        public virtual void ClearSignals()
+        {
+            ProviderSignals.Clear();
         }
 
         //Создание фабрики ошибок
@@ -51,7 +66,7 @@ namespace CommonTypes
         public IDicSForRead<SourceSignal> Signals { get { return ProviderSignals; } }
 
         //Чтение данных из архива
-        public void GetValues(DateTime periodBegin, DateTime periodEnd)
+        public virtual void GetValues(DateTime periodBegin, DateTime periodEnd)
         {
             foreach (var sig in ProviderSignals.Values)
                 sig.MomList.Clear();
@@ -81,17 +96,11 @@ namespace CommonTypes
         protected DateTime BeginTime { get; set; }
         //Конец диапазона источника
         protected DateTime EndTime { get; set; }
-        //Список временных интервалов диапазона источника
-        private readonly List<TimeInterval> _timeIntervals = new List<TimeInterval>();
-        public List<TimeInterval> TimeIntervals { get { return _timeIntervals; } }
 
         //Получение диапазона архива 
         public virtual TimeInterval GetTime()
         {
-            TimeIntervals.Clear();
-            var ti = new TimeInterval(Different.MinDate, DateTime.Now);
-            TimeIntervals.Add(ti);
-            return ti;
+            return new TimeInterval(Different.MinDate.AddYears(1), DateTime.Now);
         }
 
         //Создание клона

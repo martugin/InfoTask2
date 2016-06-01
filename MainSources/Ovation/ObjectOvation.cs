@@ -8,15 +8,20 @@ namespace Provider
         internal ObjectOvation(int id, string code) : base(code)
         {
             Id = id;
-            Inf = code + "; Id=" + Id;
+            Inf = code.Substring(0, code.IndexOf('.')) + "; Id=" + Id;
         }
 
-        //Дискретный или аналоговый сигнал
-        internal SignalOvation ValueSignal { get; set; }
         //Сигнал со словом состояния
-        internal SignalOvation StateSignal { get; set; }
+        internal SourceSignal StateSignal { get; set; }
         //Id в Historian
         internal int Id { get; private set; }
+
+        public override SourceSignal AddSignal(SourceSignal sig)
+        {
+            if (sig.Inf["Prop"] == "STAT")
+                return StateSignal = StateSignal ?? sig;
+            return ValueSignal = ValueSignal ?? sig;
+        }
 
         //Возвращает, есть ли у объекта неопределенные срезы
         public override bool HasBegin

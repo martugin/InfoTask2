@@ -34,12 +34,14 @@ namespace CommonTypes
         bool CheckConnection();
         //Cтрока для вывода сообщения о последней проверке соединения
         string CheckConnectionMessage { get; }
-        //Проверка корректности настроек, возвращает строку с ошибками, infDic - словарь настроек, nameDic - словарь имен свойств
-        string CheckSettings(Dictionary<string, string> infDic, Dictionary<string, string> nameDic);
+        //Проверка корректности настроек, возвращает строку с ошибками
+        string CheckSettings(Dictionary<string, string> infDic, //словарь настроек
+                                        Dictionary<string, string> nameDic); //словарь имен свойств
         //Словарь комманд открытия дилогов, ключи - имена свойств, вторые ключи - названия пунктов меню
         DicS<Dictionary<string, IMenuCommand>> MenuCommands { get; } 
-        //Возвращает выпадающий список для поля настройки, props - словарь значение свойств, propname - имя свойства для ячейки со списком
-        List<string> ComboBoxList(Dictionary<string, string> props, string propname);
+        //Возвращает выпадающий список для поля настройки
+        List<string> ComboBoxList(Dictionary<string, string> props, //словарь значений свойств
+                                                string propname); //имя свойства для ячейки со списком
 
         //Подготовка провайдера к работе (во время PrepareCalc)
         void Prepare();
@@ -49,13 +51,15 @@ namespace CommonTypes
     }
 
     //--------------------------------------------------------------------
+    
     //Стандартный интерфейс для источников и имитаторов
     public interface IProviderSource : IProvider
     {
         //Список всех сигналов источника, сигналы можно только читать
         IDicSForRead<SourceSignal> Signals { get; }
-        //Чтение значений за период от beginRead до endRead
-        void GetValues(DateTime beginRead, DateTime endRead);
+        //Чтение значений за период
+        void GetValues(DateTime beginRead, //Начало периода
+                               DateTime endRead); //Конец периода
     }
 
     //--------------------------------------------------------------------
@@ -75,8 +79,6 @@ namespace CommonTypes
 
         //Получение интервала времени архива, если не удалось определить - возвращает null
         TimeInterval GetTime();
-        //Список временных интервалов архива виде: BeginTime1, EndTime1, BeginTime2, EndTime2 и т. д.
-        List<TimeInterval> TimeIntervals { get; }
 
         //Считать значения в клон, если задан cloneFile, cloneInf - настройки создания клона
         //Чтение значений за период от beginRead до endRead
@@ -91,7 +93,9 @@ namespace CommonTypes
         //Список сигналов приемника с мгновенными значениями
         IDicSForRead<ReceiverSignal> Signals { get; }
         //Добавить сигнал приемника
-        ReceiverSignal AddSignal(string signalInf, string code, DataType dataType);
+        ReceiverSignal AddSignal(string signalInf, //Информация о сигнале для приемника
+                                               string code, //Код сигнала
+                                               DataType dataType); //Тип данных
         //Отправить значения параметров на приемник
         void WriteValues();
         //Допускается передача списка мгновенных значений за один раз

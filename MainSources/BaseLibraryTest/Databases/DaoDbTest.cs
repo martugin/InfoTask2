@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using BaseLibrary;
 
 namespace BaseLibraryTest
@@ -13,7 +14,7 @@ namespace BaseLibraryTest
             var dir = Different.GetRegistry(@"software\InfoTask", "InfoTaskPath");
             if (dir == "") dir = Different.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTaskPath");
             if (!dir.EndsWith(@"\")) dir += @"\";
-            var n = dir.LastIndexOf(@"\", dir.Length - 2);
+            var n = dir.LastIndexOf(@"\", dir.Length - 2, StringComparison.Ordinal);
             return dir.Substring(0, n + 1);
         }
 

@@ -14,6 +14,13 @@ namespace Provider
         //Id для получения значений из IZM_TII
         public int IdChannel { get; set; }
 
+        public override SourceSignal AddSignal(SourceSignal sig)
+        {
+            if (sig.Inf.Get("ValueType") == "Indication")
+                return IndicationSignal = IndicationSignal ?? sig;
+            return UnitSignal = UnitSignal ?? sig;
+        }
+
         //Возвращает, есть ли у объекта неопределенные срезы
         public override bool HasBegin
         {

@@ -10,13 +10,13 @@ namespace Provider
 {
     [Export(typeof(IProvider))]
     [ExportMetadata("Code", "KosmotronikaRetroSource")]
-    public class KosmotronikaRetroSource : SourceBase, ISource
+    public class KosmotronikaRetroSource : SourceBase
     {
         //Код провайдера
         public override string Code { get { return "KosmotronikaRetroSource"; } }
         
         //Настройки провайдера
-        protected override void GetInfDicS(DicS<string> dic)
+        protected override void ReadDicS(DicS<string> dic)
         {
             _retroServerName = dic["RetroServerName"];
             Hash = "RetroServer=" + _retroServerName;
@@ -48,24 +48,28 @@ namespace Provider
         }
 
         //Проверка соединения с провайдером, вызывается в настройках, или когда уже произошла ошибка для повторной проверки соединения
-        public bool Check()
+        public override bool Check()
         {
             return Danger(Connect, 2, 500, "Не удалось определить временной диапазон Ретро-сервера");
         }
 
         //Проверка настроек
-        public string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
+        public override string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
         {
             return !inf["RetroServerName"].IsEmpty() ? "" : "Не задано имя Ретро-сервера";
         }
 
         //Проверка соединения
-        public bool CheckConnection()
+        public override bool CheckConnection()
         {
-            if (Check() && GetTime() != null && TimeIntervals.Count > 0)
+            if (Check() && GetTime() != null)
             {
-                CheckConnectionMessage = "Успешное соединение. Диапазон источника: " + TimeIntervals[0].Begin + " - " + TimeIntervals[0].End;
-                return true;
+                var ti = GetTime();
+                if (ti != null)
+                {
+                    CheckConnectionMessage = "Успешное соединение. Диапазон источника: " + ti.Begin + " - " + ti.End;
+                    return true;    
+                }
             }
             AddError(CheckConnectionMessage = "Ошибка соединения с Ретро-сервером");
             return false;
@@ -102,8 +106,6 @@ namespace Provider
                 {
                     BeginTime = rec.GetTime(0);
                     EndTime = rec.GetTime(1);
-                    TimeIntervals.Clear();
-                    TimeIntervals.Add(new TimeInterval(BeginTime, EndTime));
                     AddEvent("Диапазон источника определен", BeginTime + " - " + EndTime);
                     return BeginTime.ToString() != "0:00:00";
                 }
@@ -123,7 +125,7 @@ namespace Provider
         private readonly Dictionary<ObjectIndex, ObjectKosm> _analogs = new Dictionary<ObjectIndex, ObjectKosm>();
         
         //Очистка списка сигналов
-        public void ClearSignals()
+        public override void ClearSignals()
         {
             ProviderSignals.Clear();
             _outs.Clear();
@@ -131,21 +133,19 @@ namespace Provider
         }
 
         //Добавляет один сигнал в список
-        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, bool skipRepeats = true, int idInClone = 0)
+        protected override SourceObject AddObject(SourceSignal sig)
         {
-            var sig = new SourceSignal(signalInf, code, dataType, this, skipRepeats, idInClone);
-            //Заполнение SignalsLists
-            var ind=new ObjectIndex
-                        {
-                            Sn = sig.Inf.GetInt("SysNum"),
-                            NumType = sig.Inf.GetInt("NumType"),
-                            Appartment = sig.Inf.GetInt("Appartment"),
-                            Out = sig.Inf.GetInt("NumOut")
-                        };
+            var ind = new ObjectIndex
+            {
+                Sn = sig.Inf.GetInt("SysNum"),
+                NumType = sig.Inf.GetInt("NumType"),
+                Appartment = sig.Inf.GetInt("Appartment"),
+                Out = sig.Inf.GetInt("NumOut")
+            };
             ObjectKosm obj;
             if (ind.Out == 1 && (ind.NumType == 1 || ind.NumType == 3 || ind.NumType == 32))
             {
-                if (_analogs.ContainsKey(ind))  obj = _analogs[ind];
+                if (_analogs.ContainsKey(ind)) obj = _analogs[ind];
                 else _analogs.Add(ind, obj = new ObjectKosm(ind, sig.Code));
             }
             else
@@ -153,9 +153,7 @@ namespace Provider
                 if (_outs.ContainsKey(ind)) obj = _outs[ind];
                 else _outs.Add(ind, obj = new ObjectKosm(ind, sig.Code));
             }
-            var nsig = obj.AddSignal(sig);
-            if (nsig == sig) ProviderSignals.Add(sig.Code, nsig);
-            return nsig;
+            return obj;
         }
         #endregion
 

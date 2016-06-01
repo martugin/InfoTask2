@@ -12,12 +12,12 @@ namespace Provider
 {
     [Export(typeof(IProvider))]
     [ExportMetadata("Code", "OvationSource")]
-    public class OvationSource : SourceBase, ISource
+    public class OvationSource : SourceBase
     {
         //Код провайдера
         public override string Code { get { return "OvationSource"; } }
         //Настройки провайдера
-        protected override void GetInfDicS(DicS<string> dic)
+        protected override void ReadDicS(DicS<string> dic)
         {
             _dataSource = dic["DataSource"];
             Hash = "OvationHistorian=" + _dataSource;
@@ -47,19 +47,19 @@ namespace Provider
         }
 
         //Проверка соединения с провайдером, вызывается в настройках, или когда уже произошла ошибка для повторной проверки соединения
-        public bool Check()
+        public override bool Check()
         {
             return Danger(Connect, 2, 500, "Не удалось соединиться с Historian");
         }
 
         //Проверка настроек
-        public string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
+        public override string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
         {
             return "";
         }
 
         //Проверка соединения
-        public bool CheckConnection()
+        public override bool CheckConnection()
         {
             if (Check())
             {
@@ -86,21 +86,16 @@ namespace Provider
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
 
         //Добавить сигнал
-        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, bool skipRepeats, int idInClone)
+        protected override SourceObject AddObject(SourceSignal sig)
         {
-            var sig = new SignalOvation(signalInf, code, dataType, this, skipRepeats, idInClone);
-            var ob = _objectsId.Add(sig.Id, new ObjectOvation(sig.Id, code));
-            if (sig.IsState) //Слово состояния
-            {
-                if (ob.StateSignal == null) ProviderSignals.Add(sig.Code, sig);
-                return ob.StateSignal ?? (ob.StateSignal = sig);
-            }
-            if (ob.ValueSignal == null) ProviderSignals.Add(sig.Code, sig);
-            return ob.ValueSignal ?? (ob.ValueSignal = sig);
+            int id = sig.Inf.GetInt("Id");
+            if (!_objectsId.ContainsKey(id))
+                return _objectsId.Add(id, new ObjectOvation(id, sig.Inf["CodeObject"]));
+            return _objectsId[id];
         }
-
+        
         //Удалить все сигналы
-        public void ClearSignals()
+        public override void ClearSignals()
         {
             ProviderSignals.Clear();
             _objectsId.Clear();
@@ -116,15 +111,6 @@ namespace Provider
             factory.AddDescr(3, "BAD");
             factory.AddDescr(4, "Нет данных");
             return factory;
-        }
-        
-        //Получение времени источника
-        public override TimeInterval GetTime()
-        {
-            TimeIntervals.Clear();
-            var t = new TimeInterval(Different.MinDate.AddYears(1), DateTime.Now);
-            TimeIntervals.Add(t);
-            return t;
         }
 
         //Чтение значений
