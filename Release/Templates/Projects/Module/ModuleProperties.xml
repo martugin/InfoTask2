@@ -2,5 +2,5 @@
 <!--Свойства модуля-->
 <ModuleProperties ModuleCode="" ModuleName="" Description="" ModuleType="Разовый">
   <LinkedModules></LinkedModules>
-  <LinkedConnections></LinkedConnections>
+  <LinkedConnects />
 </ModuleProperties>
