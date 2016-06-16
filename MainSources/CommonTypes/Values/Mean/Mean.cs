@@ -43,6 +43,7 @@ namespace CommonTypes
             switch (dt)
             {
                 case DataType.Real:
+                case DataType.Weighted:
                     return Real == mean.Real;
                 case DataType.String:
                     return String == mean.String;
@@ -62,6 +63,7 @@ namespace CommonTypes
             switch (dt)
             {
                 case DataType.Real:
+                case DataType.Weighted:
                     return Real < mean.Real;
                 case DataType.String:
                     return String.CompareTo(mean.String) < 0;

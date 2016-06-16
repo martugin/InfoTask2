@@ -75,7 +75,7 @@ namespace CommonTypes
 
         public bool ValueAndErrorEquals(IMean mean)
         {
-            return _mean.ValueAndErrorEquals(mean);
+            return _mean.ValueEquals(mean) && Error == mean.Error;
         }
 
         //Запись в рекордсет
@@ -112,9 +112,9 @@ namespace CommonTypes
 
         //Типы данных и значения
         public override DataType DataType { get { return _mean.DataType; } }
-        public override ICalcVal CalcValue { get { return _mean.CalcValue; } }
-        public ErrMom TotalError { get { return _mean.Error; } }
+        public override ICalcVal CalcValue { get { return this; } }
+        public ErrMom TotalError { get { return Error; } }
         public int Count { get { return 1; } }
-        public IMean LastMean { get { return _mean; } }
+        public IMean LastMean { get { return this; } }
     }
 }
