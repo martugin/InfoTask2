@@ -3,7 +3,7 @@ using BaseLibrary;
 
 namespace CommonTypes
 {
-    //Мгновенные значения с возможностью изменения, декоратор над Mom
+    //Мгновенные значения с возможностью изменения, декоратор над Mean
     public class MomEdit: Val, IMom
     {
         public MomEdit(DataType dtype)

@@ -190,7 +190,7 @@ namespace CommonTypes
         public static List<string> JointProviderCodes(this string code)
         {
             var list = new List<string> { code };
-            using (var rec = new RecDao(DifferentIT.GetInfoTaskDir() + @"General\Config.accdb", "SysTabl"))
+            using (var rec = new RecDao(GetInfoTaskDir() + @"General\Config.accdb", "SysTabl"))
             {
                 if (code == "CloneSource")
                 {
@@ -308,69 +308,24 @@ namespace CommonTypes
                 case "мгновенные":
                 case "moment":
                     return SuperProcess.Moment;
-                case "среднее(а)":
-                case "average(a)":
-                    return SuperProcess.AverageA;
-                case "среднее(п)":
-                case "average(p)":
-                    return SuperProcess.AverageP;
-                case "среднее(па)":
-                case "average(pa)":
-                    return SuperProcess.AveragePA;
-                case "среднеененоль(а)":
-                case "averagenonzero(a)":
-                    return SuperProcess.AvNonZeroA;
-                case "среднеененоль(п)":
-                case "averagenonzero(п)":
-                    return SuperProcess.AvNonZeroP;
-                case "среднеененоль(па)":
-                case "averagenonzero(пa)":
-                    return SuperProcess.AvNonZeroPA;
-                case "минимум(а)":
-                case "minimum(a)":
-                    return SuperProcess.MinA;
-                case "минимум(п)":
-                case "minimum(p)":
-                    return SuperProcess.MinP;
-                case "минимум(па)":
-                case "minimum(pa)":
-                    return SuperProcess.MinPA;
-                case "максимум(а)":
-                case "maximum(a)":
-                    return SuperProcess.MaxA;
-                case "максимум(п)":
-                case "maximum(p)":
-                    return SuperProcess.MaxP;
-                case "максимум(па)":
-                case "maximum(pa)":
-                    return SuperProcess.MaxPA;
-                case "первое(а)":
-                case "first(a)":
-                    return SuperProcess.FirstA;
-                case "первое(п)":
-                case "first(p)":
-                    return SuperProcess.FirstP;
-                case "первое(па)":
-                case "first(pa)":
-                    return SuperProcess.FirstPA;
-                case "последнее(а)":
-                case "last(a)":
-                    return SuperProcess.LastA;
-                case "последнее(п)":
-                case "last(p)":
-                    return SuperProcess.LastP;
-                case "последнее(па)":
-                case "last(pa)":
-                    return SuperProcess.LastPA;
-                case "сумма(а)":
-                case "summ(a)":
-                    return SuperProcess.SummA;
-                case "сумма(п)":
-                case "summ(p)":
-                    return SuperProcess.SummP;
-                case "сумма(па)":
-                case "summ(pa)":
-                    return SuperProcess.SummPA;
+                case "среднее":
+                case "average":
+                    return SuperProcess.Average;
+                case "минимум":
+                case "minimum":
+                    return SuperProcess.Min;
+                case "максимум":
+                case "maximum":
+                    return SuperProcess.Max;
+                case "первое":
+                case "first":
+                    return SuperProcess.First;
+                case "последнее":
+                case "last":
+                    return SuperProcess.Last;
+                case "сумма":
+                case "summ":
+                    return SuperProcess.Summ;
                 case "":
                     return SuperProcess.None;
             }
@@ -384,48 +339,18 @@ namespace CommonTypes
             {
                 case SuperProcess.Moment:
                     return "Мгновенные";
-                case SuperProcess.AverageA:
-                    return "Среднее(А)";
-                case SuperProcess.AverageP:
-                    return "Среднее(П)";
-                case SuperProcess.AveragePA:
-                    return "Среднее(ПА)";
-                case SuperProcess.AvNonZeroA:
-                    return "СреднееНеНоль(А)";
-                case SuperProcess.AvNonZeroP:
-                    return "СреднееНеНоль(П)";
-                case SuperProcess.AvNonZeroPA:
-                    return "СреднееНеНоль(ПА)";
-                case SuperProcess.MinA:
-                    return "Минимум(А)";
-                case SuperProcess.MinP:
-                    return "Минимум(П)";
-                case SuperProcess.MinPA:
-                    return "Минимум(ПА)";
-                case SuperProcess.MaxA:
-                    return "Максимум(А)";
-                case SuperProcess.MaxP:
-                    return "Максимум(П)";
-                case SuperProcess.MaxPA:
-                    return "Максимум(ПА)";
-                case SuperProcess.FirstA:
-                    return "Первое(А)";
-                case SuperProcess.FirstP:
-                    return "Первое(П)";
-                case SuperProcess.FirstPA:
-                    return "Первое(ПА)";
-                case SuperProcess.LastA:
-                    return "Последнее(А)";
-                case SuperProcess.LastP:
-                    return "Последнее(П)";
-                case SuperProcess.LastPA:
-                    return "Последнее(ПА)";
-                case SuperProcess.SummA:
-                    return "Сумма(А)";
-                case SuperProcess.SummP:
-                    return "Сумма(П)";
-                case SuperProcess.SummPA:
-                    return "Сумма(ПА)";
+                case SuperProcess.Average:
+                    return "Среднее";
+                case SuperProcess.Min:
+                    return "Минимум";
+                case SuperProcess.Max:
+                    return "Максимум";
+                case SuperProcess.First:
+                    return "Первое";
+                case SuperProcess.Last:
+                    return "Последнее";
+                case SuperProcess.Summ:
+                    return "Сумма";
             }
             return null;
         }
@@ -435,72 +360,13 @@ namespace CommonTypes
         {
             return t == SuperProcess.None || t == SuperProcess.Error;
         }
-
-        //True, если тип накопления предполагает абсолютное накопление
-        public static bool IsAbsolute(this SuperProcess t)
-        {
-            return (new HashSet<SuperProcess>
-                {SuperProcess.MinA, SuperProcess.MinPA, SuperProcess.MaxA, SuperProcess.MaxPA, SuperProcess.FirstA, SuperProcess.FirstPA, SuperProcess.LastA, SuperProcess.LastPA, 
-                 SuperProcess.SummA, SuperProcess.SummPA, SuperProcess.AverageA, SuperProcess.AveragePA, SuperProcess.AvNonZeroA, SuperProcess.AvNonZeroPA})
-                .Contains(t);
-        }
-
-        //True, если тип накопления предполагает периодическое накопление
-        public static bool IsPeriodic(this SuperProcess t)
-        {
-            return (new HashSet<SuperProcess>
-                {SuperProcess.MinP, SuperProcess.MinPA, SuperProcess.MaxP, SuperProcess.MaxPA, SuperProcess.FirstP, SuperProcess.FirstPA, SuperProcess.LastP, SuperProcess.LastPA, 
-                 SuperProcess.SummP, SuperProcess.SummPA, SuperProcess.AverageP, SuperProcess.AveragePA, SuperProcess.AvNonZeroP, SuperProcess.AvNonZeroPA})
-                .Contains(t);
-        }
-
-        //Убирает A из типа накопления (оставляет P)
-        public static SuperProcess ToProcess(this SuperProcess t)
-        {
-            switch (t)
-            {
-                case SuperProcess.None:
-                    return SuperProcess.None;
-                case SuperProcess.Moment:
-                    return SuperProcess.Moment;
-                case SuperProcess.AverageA:
-                case SuperProcess.AverageP:
-                case SuperProcess.AveragePA:
-                    return SuperProcess.AverageP;
-                case SuperProcess.AvNonZeroA:
-                case SuperProcess.AvNonZeroP:
-                case SuperProcess.AvNonZeroPA:
-                    return SuperProcess.AvNonZeroP;
-                case SuperProcess.MinA:
-                case SuperProcess.MinP:
-                case SuperProcess.MinPA:
-                    return SuperProcess.MinP;
-                case SuperProcess.MaxA:
-                case SuperProcess.MaxP:
-                case SuperProcess.MaxPA:
-                    return SuperProcess.MaxP;
-                case SuperProcess.FirstA:
-                case SuperProcess.FirstP:
-                case SuperProcess.FirstPA:
-                    return SuperProcess.FirstP;
-                case SuperProcess.LastA:
-                case SuperProcess.LastP:
-                case SuperProcess.LastPA:
-                    return SuperProcess.LastP;
-                case SuperProcess.SummA:
-                case SuperProcess.SummP:
-                case SuperProcess.SummPA:
-                    return SuperProcess.SummP;
-            }
-            return SuperProcess.Error;
-        }
+       
 
         //Как преобразуется тип расчетного параметра при преобразовании в архивный параметр с учетом типа накопления
         public static DataType AplySuperProcess(this DataType dt, SuperProcess sp)
         {
-            var s = sp.ToProcess();
-            if (s == SuperProcess.AverageP || s == SuperProcess.AvNonZeroP) return DataType.Real;
-            if (s == SuperProcess.SummP && dt == DataType.Boolean) return DataType.Integer;
+            if (sp == SuperProcess.Average ) return DataType.Real;
+            if (sp == SuperProcess.Summ && dt == DataType.Boolean) return DataType.Integer;
             return dt;
         }
 

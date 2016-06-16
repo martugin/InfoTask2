@@ -89,7 +89,12 @@ namespace CommonTypes
             get { return null; }
             internal set { }
         }
-        
+
+        public override ErrMom TotalError
+        {
+            get { return Error; }
+        }
+
         public virtual int Count { get { return 1; } }
         public virtual IMean LastMean { get { return this; } }
 

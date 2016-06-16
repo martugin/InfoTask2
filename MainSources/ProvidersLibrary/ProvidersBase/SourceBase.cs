@@ -147,7 +147,7 @@ namespace CommonTypes
         private void WriteErrors(DaoDb db)
         {
             using (var rec = new RecDao(db, "MomentsError"))
-                foreach (var err in ErrPool.UsedErrors)
+                foreach (var err in ErrPool.UsedErrorDescrs)
                     err.ToRecordset(rec);
         }
         #endregion

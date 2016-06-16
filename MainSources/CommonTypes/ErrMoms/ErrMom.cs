@@ -5,15 +5,12 @@ namespace CommonTypes
     //Полная ошибка мгновенного значения
     public class ErrMom
     {
-        public ErrMom(ErrDescr errDescr, IContextable addr, IErrMomFactory factory)
+        public ErrMom(ErrDescr errDescr, IContextable addr)
         {
             ErrDescr = errDescr;
             AddressLink = addr;
-            ErrFactory = factory;
         }
 
-        //Хранилище ошибок
-        public IErrMomFactory ErrFactory { get; private set; }
         //Ссылка на описание ошибки
         public ErrDescr ErrDescr { get; private set; }
         //Ссылка на объект, породивший ошибку
@@ -25,5 +22,9 @@ namespace CommonTypes
         public string Text { get { return ErrDescr.Text; } }
         //Качество ошибки
         public ErrorQuality Quality { get { return ErrDescr.Quality; } }
+        //Номер ошибки
+        public int Number { get { return ErrDescr.Number; } }
+        //Номер ошибки
+        public ErrMomType ErrType { get { return ErrDescr.ErrType; } }
     }
 }
