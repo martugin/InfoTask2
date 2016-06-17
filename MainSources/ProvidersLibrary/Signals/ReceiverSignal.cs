@@ -3,8 +3,8 @@
     //Сигнал приемника
     public class ReceiverSignal : ProviderSignal
     {
-        public ReceiverSignal(string signalInf, string code, DataType dataType, IReceiver provider) 
-            :base(signalInf, code, dataType)
+        public ReceiverSignal(IReceiver receiver, string code, DataType dataType, string signalInf)
+            : base(code, dataType, signalInf)
         {
         }
 

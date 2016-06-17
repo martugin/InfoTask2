@@ -56,7 +56,7 @@ namespace CommonTypes
     public interface IProviderSource : IProvider
     {
         //Список всех сигналов источника, сигналы можно только читать
-        IDicSForRead<SourceSignal> Signals { get; }
+        IDicSForRead<ISourceSignal> Signals { get; }
         //Чтение значений за период
         void GetValues(DateTime beginRead, //Начало периода
                                DateTime endRead); //Конец периода
@@ -69,11 +69,12 @@ namespace CommonTypes
     {
         //Добавить сигнал в список сигналов, принимает информацию по сигналу возвращает сам сигнал
         //Если сигнал уже есть, то его изменяет и возвращает и ничего не добавляет
-        SourceSignal AddSignal(string signalInf, //Информация о сигнале для источника
-                                            string code, //Код сигнала
+        ISourceSignal AddSignal(string code, //Код сигнала
+                                            string context, //Контекст значений (код внутреннего объекта источника)
                                             DataType dataType, //Тип данных
+                                            string signalInf, //Информация о сигнале для источника
                                             bool skipRepeats = true, //Пропускать полностью повторяющиеся значения
-                                            int idInClone = 0); //idInClone - id в Signals клона, если синал используется для формирования клона
+                                            string formula = null); //Расчетная формула если есть
         //Удаляет из источника все сигналы
         void ClearSignals();
 
@@ -83,6 +84,19 @@ namespace CommonTypes
         //Считать значения в клон, если задан cloneFile, cloneInf - настройки создания клона
         //Чтение значений за период от beginRead до endRead
         void MakeClone(DateTime beginRead, DateTime endRead, string cloneFile, string cloneInf);
+    }
+
+    //--------------------------------------------------------------------
+
+    //Интерфейс сигнала источника
+    public interface ISourceSignal
+    {
+        //Список значений
+        IMomListReadOnly MomList { get; }
+        //Код
+        string Code { get; }
+        //Тип данных
+        DataType DataType { get; }
     }
 
     //--------------------------------------------------------------------

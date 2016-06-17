@@ -32,18 +32,23 @@ namespace CommonTypes
         }
 
         //Добавить сигнал
-        public SourceSignal AddSignal(string signalInf, string code, DataType dataType, bool skipRepeats, int idInClone)
+        public ISourceSignal AddSignal(string code, string context, DataType dataType, string signalInf, bool skipRepeats = false, string formula = null)
         {
-            var sig = new SourceSignal(signalInf, code, dataType, this, skipRepeats, idInClone);
-            AddObject(sig).AddSignal(sig);
-            return ProviderSignals.Add(sig.Code, sig);
+            if (ProviderSignals.ContainsKey(code))
+                return ProviderSignals[code];
+            var sig = new SourceSignal(this, code, dataType, signalInf, skipRepeats);
+            sig = AddObject(sig).AddSignal(sig);
+            if (formula != null)
+                return new CalcSignal(sig, code, dataType, formula);
+            return sig;
         }
         //Добавить объект по содержащий заданный сигнал
         protected abstract SourceObject AddObject(SourceSignal sig);
-
+        
         public virtual void ClearSignals()
         {
             ProviderSignals.Clear();
+            CalcSignals.Clear();
         }
 
         //Создание фабрики ошибок
@@ -62,8 +67,12 @@ namespace CommonTypes
         }
         
         //Список сигналов, содержащих возвращаемые значения
-        protected readonly DicS<SourceSignal> ProviderSignals = new DicS<SourceSignal>();
-        public IDicSForRead<SourceSignal> Signals { get { return ProviderSignals; } }
+        protected readonly DicS<ISourceSignal> ProviderSignals = new DicS<ISourceSignal>();
+        public IDicSForRead<ISourceSignal> Signals { get { return ProviderSignals; } }
+        
+        //Словарь расчетных сигналов
+        private readonly DicS<SourceSignal> _calcSignals = new DicS<SourceSignal>();
+        public DicS<SourceSignal> CalcSignals { get { return _calcSignals; } }
 
         //Чтение данных из архива
         public virtual void GetValues(DateTime periodBegin, DateTime periodEnd)

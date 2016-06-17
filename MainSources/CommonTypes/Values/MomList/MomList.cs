@@ -4,7 +4,7 @@ using BaseLibrary;
 
 namespace CommonTypes
 {
-    public abstract class MomList : Mean, IMomentsVal
+    public abstract class MomList : Mean, IMomList
     {
         //Количество значений
         public override int Count { get { return _times.Count; }}

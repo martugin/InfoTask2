@@ -57,6 +57,7 @@
       <DependentUpon>ProviderSetupForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ProvidersBase\SqlSourceBase.cs" />
+    <Compile Include="Signals\CalcSignal.cs" />
     <Compile Include="Signals\ProviderSignal.cs" />
     <Compile Include="ProvidersBase\SourceBase.cs" />
     <Compile Include="Signals\SourceObject.cs" />

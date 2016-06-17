@@ -2,32 +2,26 @@
 
 namespace CommonTypes
 {
+    //Базовый класс для всех сигналов источников и приемников
     public class ProviderSignal : IContextable
     {
-        public ProviderSignal(string signalInf, string code, DataType dataType)
+        public ProviderSignal(string code, DataType dataType)
         {
             Code = code;
             DataType = dataType;
+        }
+        public ProviderSignal(string code, DataType dataType, string signalInf) : this(code, dataType)
+        {
             Inf = signalInf.ToPropertyDicS();
         }
 
         //Полный код сигнала
         public string Code { get; private set; }
         //Адрес для формирования ошибок мгновенных значений
-        public virtual string Context { get { return "{" + Code + "}" ; } }
+        public string Context { get { return "{" + Code + "}" ; } }
         //Тип данных 
-        private DataType _dataType;
-        public DataType DataType 
-        { 
-            get { return _dataType; }
-            protected set 
-            { 
-                _dataType = value;
-                IsReal = DataType.LessOrEquals(DataType.Real);
-            } 
-        }
-        //Тип данных можно записать как число
-        protected bool IsReal; //Todo убрать
+        public DataType DataType { get; private set; }
+
         //Словарь свойств
         public DicS<string> Inf { get; private set; }
     }

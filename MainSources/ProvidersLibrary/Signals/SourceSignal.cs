@@ -4,27 +4,26 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Один сигнал 
-    public class SourceSignal : ProviderSignal
+    public class SourceSignal : ProviderSignal, ISourceSignal
     {
-        public SourceSignal(string signalInf, string code, DataType dataType, ISource source, bool skipRepeats, int idInClone = 0) 
-            : base(signalInf, code, dataType)
+        public SourceSignal(ISource source, string code, DataType dataType, string signalInf, bool skipRepeats)
+            : base(code, dataType, signalInf)
         {
-            _source = (SourceBase)source;
-            _idInClone = idInClone;
+            _source = source;
             _skipRepeats = skipRepeats;
+            _momList = MFactory.NewList(dataType);
             _bufMom = new MomEdit(dataType);
-            if (idInClone != 0) _cloneMom = new MomEdit(dataType);
+            _cloneMom = new MomEdit(dataType);
         }
 
-        //Id в файле клона и т.п.
-        private readonly int _idInClone;
         //Пропускать повторы значений
         private readonly bool _skipRepeats;
         //Источник
-        private readonly SourceBase _source;
-
-        //Список мгновенных значений
-        public MomList MomList { get; set; }
+        private readonly ISource _source;
+        
+        //Возвращаемый список значений
+        private readonly MomList _momList;
+        public IMomListReadOnly MomList { get { return _momList; } }
 
         //Значение среза на начало периода
         private MomEdit _beginMom;
@@ -137,7 +136,7 @@ namespace CommonTypes
         {
             var rec = _source.CloneRec;
             rec.AddNew();
-            rec.Put("SignalId", _idInClone);
+            //rec.Put("SignalId", _idInClone);
             rec.Put("Time", _cloneMom.Time);
             rec.Put("Value", _cloneMom.Real);
             if (_cloneMom.Error != null) rec.Put("NumError", _cloneMom.Error.ErrDescr.Number);
