@@ -52,12 +52,6 @@ namespace Provider
             return Danger(Connect, 2, 500, "Не удалось соединиться с Historian");
         }
 
-        //Проверка настроек
-        public override string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
-        {
-            return "";
-        }
-
         //Проверка соединения
         public override bool CheckConnection()
         {
@@ -85,12 +79,12 @@ namespace Provider
         //Словарь объектов по Id
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
 
-        //Добавить сигнал
+        //Добавить объект
         protected override SourceObject AddObject(SourceSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))
-                return _objectsId.Add(id, new ObjectOvation(id, sig.Inf["CodeObject"]));
+                return _objectsId.Add(id, new ObjectOvation(this, id, sig.Inf["CodeObject"]));
             return _objectsId[id];
         }
         
@@ -144,38 +138,7 @@ namespace Provider
         //Определение текущего считываемого объекта
         protected override SourceObject DefineObject()
         {
-            var id = Rec.GetInt("Id");
-            if (_objectsId.ContainsKey(id))
-                return _objectsId[id];
-            return null;
-        }
-
-        //Чтение значений по одному объекту из рекордсета источника
-        //Возвращает количество сформированных значений
-        protected override int ReadObjectValue(SourceObject obj)
-        {
-            var ob = (ObjectOvation)obj;
-            var time1 = Rec.GetTime("TIMESTAMP");
-            time1 = time1.AddMilliseconds(Rec.GetInt("TIME_NSEC") / 1000000.0);
-            DateTime time = time1.ToLocalTime();
-            var rMean = Rec.GetDouble("F_VALUE", Rec.GetInt("RAW_VALUE"));
-
-            return AddMom(ob.StateSignal, time, Rec.GetInt("STS")) +
-                      AddMom(ob.ValueSignal, time, rMean, MakeError(ob, Rec));
-        }
-
-        //Формирование ошибки мгновенных значений по значению слова недостоверности
-        private ErrMom MakeError(IContextable ob, IRecordRead rec)
-        {
-            //Недостоверность 8 и 9 бит, 00 - good, 01 - fair(имитация), 10 - poor(зашкал), 11 - bad
-            if (rec.IsNull("STS") || (rec.IsNull("F_VALUE") && rec.IsNull("RAW_VALUE")))
-                return MakeError(4, ob);//нет данных
-            int state = rec.GetInt("STS");
-            bool b8 = state.GetBit(8), b9 = state.GetBit(9);
-            if (!b8 && !b9) return null;
-            if (!b8) return MakeError(1, ob);
-            if (!b9) return MakeError(2, ob);
-            return MakeError(3, ob);
+            return _objectsId[Rec.GetInt("Id")];
         }
 
         //Задание нестандартных свойств получения данных

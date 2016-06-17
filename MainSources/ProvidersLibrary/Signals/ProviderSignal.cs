@@ -27,7 +27,7 @@ namespace CommonTypes
             } 
         }
         //Тип данных можно записать как число
-        protected bool IsReal;
+        protected bool IsReal; //Todo убрать
         //Словарь свойств
         public DicS<string> Inf { get; private set; }
     }

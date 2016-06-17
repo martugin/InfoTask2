@@ -1,12 +1,15 @@
-﻿using CommonTypes;
+﻿using System;
+using BaseLibrary;
+using CommonTypes;
 
 namespace Provider
 {
     //Один объект (дисктретная, аналоговая или упакованная точка)
     internal class ObjectMir : SourceObject
     {
-        internal ObjectMir(string code) 
-            : base(code) {}
+        public ObjectMir(SourceBase source) : base(source)
+        {
+        }
 
         //Cигналы Unit и Indcation
         internal SourceSignal UnitSignal { get; set; }
@@ -14,23 +17,20 @@ namespace Provider
         //Id для получения значений из IZM_TII
         public int IdChannel { get; set; }
 
-        public override SourceSignal AddSignal(SourceSignal sig)
+        protected override SourceSignal AddNewSignal(SourceSignal sig)
         {
             if (sig.Inf.Get("ValueType") == "Indication")
                 return IndicationSignal = IndicationSignal ?? sig;
             return UnitSignal = UnitSignal ?? sig;
         }
 
-        //Возвращает, есть ли у объекта неопределенные срезы
-        public override bool HasBegin
+        //Чтение значений по одному объекту из рекордсета источника
+        //Возвращает количество сформированных значений
+        public override int ReadValueFromRec(IRecordRead rec)
         {
-            get { return SignalsHasBegin(UnitSignal, IndicationSignal); }
-        }
-
-        //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
-        public override int AddBegin()
-        {
-            return SignalsAddBegin(UnitSignal, IndicationSignal);
+            DateTime time = rec.GetTime("TIME");
+            return AddMom(IndicationSignal, time, rec.GetDouble("VALUE_INDICATION")) +
+                      AddMom(UnitSignal, time, rec.GetDouble("VALUE_UNIT"));
         }
     }
 }

@@ -56,7 +56,7 @@ namespace CommonTypes
         //Хранилище ошибок 
         protected ErrMomPool ErrPool { get; private set; }
         //Создание ошибки 
-        protected ErrMom MakeError(int number, IContextable addr)
+        internal protected ErrMom MakeError(int number, IContextable addr)
         {
             return ErrPool.MakeError(number, addr);
         }
@@ -360,39 +360,6 @@ namespace CommonTypes
             return b1 || b2;
         }
 
-        //Добавка мгновенных значений разного типа d указанный сигнал
-        public int AddMom(SourceSignal sig, DateTime time, bool b, ErrMom err = null)
-        {
-            if (sig == null) return 0;
-            return sig.AddMom(time, b, err);
-        }
-        public int AddMom(SourceSignal sig, DateTime time, int i, ErrMom err = null)
-        {
-            if (sig == null) return 0;
-            return sig.AddMom(time, i, err);
-        }
-        public int AddMom(SourceSignal sig, DateTime time, double r, ErrMom err = null)
-        {
-            if (sig == null) return 0;
-            return sig.AddMom(time, r, err);
-        }
-        public int AddMom(SourceSignal sig, DateTime time, DateTime d, ErrMom err = null)
-        {
-            if (sig == null) return 0;
-            return sig.AddMom(time, d, err);
-        }
-        public int AddMom(SourceSignal sig, DateTime time, string s, ErrMom err = null)
-        {
-            if (sig == null) return 0;
-            return sig.AddMom(time, s, err);
-        }
-        //Добавка мгновенных значений, значение берется из типа object
-        public int AddMom(SourceSignal sig, DateTime time, object ob, ErrMom err = null)
-        {
-            if (sig == null) return 0;
-            return sig.AddMom(time, ob, err);
-        }
-
         //Запрос рекордсета по одному блоку, рекорсет должен быть записан в свойство Rec
         protected virtual bool QueryPartValues(List<SourceObject> part, //список объектов
                                                                    DateTime beg, //период считывания
@@ -414,7 +381,7 @@ namespace CommonTypes
                 {
                     ob = DefineObject();
                     if (ob != null)
-                        nwrite += ReadObjectValue(ob);
+                        nwrite += ob.ReadValueFromRec(Rec);
                 }
                 catch (Exception ex)
                 {

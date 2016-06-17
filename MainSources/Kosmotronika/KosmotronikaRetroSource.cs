@@ -146,12 +146,12 @@ namespace Provider
             if (ind.Out == 1 && (ind.NumType == 1 || ind.NumType == 3 || ind.NumType == 32))
             {
                 if (_analogs.ContainsKey(ind)) obj = _analogs[ind];
-                else _analogs.Add(ind, obj = new ObjectKosm(ind, sig.Code));
+                else _analogs.Add(ind, obj = new ObjectKosm(this, ind));
             }
             else
             {
                 if (_outs.ContainsKey(ind)) obj = _outs[ind];
-                else _outs.Add(ind, obj = new ObjectKosm(ind, sig.Code));
+                else _outs.Add(ind, obj = new ObjectKosm(this, ind));
             }
             return obj;
         }
@@ -166,7 +166,7 @@ namespace Provider
         }
 
         //Производится считывание аналоговых сигналов
-        private bool _isAnalog;
+        internal bool IsAnalog { get; private set; }
 
         //Определяет размер блока для считывания, исходя из длины периода
         private int PartSize()
@@ -181,22 +181,22 @@ namespace Provider
          //Запрос значений по одному блоку сигналов
         protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en)
         {
-            var nums = new ushort[part.Count,_isAnalog ? 3 : 4];
+            var nums = new ushort[part.Count,IsAnalog ? 3 : 4];
             for (int i = 0; i < part.Count; i++)
             {
                 var ob = (ObjectKosm) part[i];
                 nums[i, 0] = (ushort) ob.Sn;
                 nums[i, 1] = (ushort) ob.NumType;
                 nums[i, 2] = (ushort) ob.Appartment;
-                if (!_isAnalog) nums[i, 3] = (ushort) ob.Out;
+                if (!IsAnalog) nums[i, 3] = (ushort) ob.Out;
             }
 
             var parSysNums = new OleDbParameter("Sysnums", OleDbType.Variant) {Value = nums};
             var parBeginTime = new OleDbParameter("BeginTime", OleDbType.DBTimeStamp) {Value = beg};
             var parEndTime = new OleDbParameter("EndTime", OleDbType.DBTimeStamp) {Value = en};
             Rec = IsCutReading 
-                ? new ReaderAdo(_connection, _isAnalog ? "Exec ST_ANALOG ?, ?" : "Exec ST_OUT ?, ?", parBeginTime, parSysNums) 
-                : new ReaderAdo(_connection, _isAnalog ? "Exec RT_ANALOGREAD ? , ? , ?" : "Exec RT_EXTREAD ? , ? , ?", parBeginTime, parEndTime, parSysNums);
+                ? new ReaderAdo(_connection, IsAnalog ? "Exec ST_ANALOG ?, ?" : "Exec ST_OUT ?, ?", parBeginTime, parSysNums) 
+                : new ReaderAdo(_connection, IsAnalog ? "Exec RT_ANALOGREAD ? , ? , ?" : "Exec RT_EXTREAD ? , ? , ?", parBeginTime, parEndTime, parSysNums);
 
             if (IsCutReading && !Rec.HasRows)
             {
@@ -214,37 +214,13 @@ namespace Provider
                 Sn = Rec.GetInt(0),
                 NumType = Rec.GetInt(1),
                 Appartment = Rec.GetInt(2),
-                Out = _isAnalog ? 1 : Rec.GetInt(6)
+                Out = IsAnalog ? 1 : Rec.GetInt(6)
             };
-            if (_isAnalog && _analogs.ContainsKey(ind))
+            if (IsAnalog && _analogs.ContainsKey(ind))
                 return _analogs[ind];
             if (_outs.ContainsKey(ind))
                 return _outs[ind];
             return null;
-        }
-
-        //Чтение значений по одному объекту из рекордсета источника
-        //Возвращает количество сформированных значений
-        protected override int ReadObjectValue(SourceObject obj)
-        {
-            var ob = (ObjectKosm)obj;
-            int nwrite = 0;
-            DateTime time = Rec.GetTime(3);
-            int ndint = Rec.GetInt(_isAnalog ? 6 : 8);
-            var err = MakeError(ndint, ob);
-
-            nwrite += AddMom(ob.PokSignal, time, Rec.GetInt(5), err);
-            nwrite += AddMom(ob.StateSignal, time, ndint);
-            if (_isAnalog)
-                nwrite += AddMom(ob.ValueSignal, time, Rec.GetDouble(8), err);
-            else
-            {
-                var strValue = Rec.GetString(9);    
-                if (strValue.IndexOf("0x", StringComparison.Ordinal) >= 0)
-                    nwrite += ob.ValueSignal.AddMom(time, Convert.ToUInt32(strValue, 16), err);
-                else nwrite += ob.ValueSignal.AddMom(time, Convert.ToDouble(strValue), err);
-            }
-            return nwrite;
         }
 
         private double AnalogsProcent()
@@ -256,11 +232,11 @@ namespace Provider
         //Чтение среза
         protected override void ReadCut()
         {
-            _isAnalog = true;
+            IsAnalog = true;
             using (Start(0, AnalogsProcent()))
                 ReadValuesByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
 
-            _isAnalog = false;
+            IsAnalog = false;
             using (Start(AnalogsProcent(), 100))
                 ReadValuesByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по выходам");
         }
@@ -268,11 +244,11 @@ namespace Provider
         //Чтение изменений
         protected override void ReadChanges()
         {
-            _isAnalog = true;
+            IsAnalog = true;
             using (Start(0, AnalogsProcent()))
                 ReadValuesByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по аналоговым сигналам");
 
-            _isAnalog = false;
+            IsAnalog = false;
             using (Start(AnalogsProcent(), 100))
                 ReadValuesByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по выходам");
         }

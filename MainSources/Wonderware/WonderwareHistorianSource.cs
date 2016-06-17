@@ -22,7 +22,7 @@ namespace Provider
         {
             string tag = sig.Inf["TagName"];
             if (!_objects.ContainsKey(tag))
-                _objects.Add(tag, new ObjectWonderware(tag));
+                _objects.Add(tag, new ObjectWonderware(this, tag));
             return _objects[tag];
         }
         
@@ -96,7 +96,7 @@ namespace Provider
             {
                 if (n != 0) sb.Append(", ");
                 var ob = (ObjectWonderware) part[n];
-                sb.Append("'").Append(ob.Code).Append("'");
+                sb.Append("'").Append(ob.TagName).Append("'");
             }
             sb.Append(") AND wwRetrievalMode = 'Delta'");
             sb.Append(" AND DateTime >= ").Append(beg.ToSqlString());
@@ -117,18 +117,6 @@ namespace Provider
             return null;
         }
 
-        //Чтение значений по одному объекту из рекордсета источника
-        //Возвращает количество сформированных значений
-        protected override int ReadObjectValue(SourceObject obj)
-        {
-            var ob = (ObjectWonderware)obj;
-            DateTime time = Rec.GetTime("DateTime");
-            var err = MakeError(Rec.GetInt("QualityDetail"), ob);
-            if (ob.ValueSignal.DataType.LessOrEquals(DataType.Real))
-                return AddMom(ob.ValueSignal, time, Rec.GetDouble("Value"), err);
-            return AddMom(ob.ValueSignal, time, Rec.GetString("vValue"), err);
-        }
-        
         //Задание нестандартных свойств получения данных
         protected override void SetReadProperties()
         {

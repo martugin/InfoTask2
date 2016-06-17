@@ -115,7 +115,7 @@ namespace Provider
         {
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))
-                return _objectsId.Add(id, new ObjectSimatic(sig.Inf["Archive"], sig.Inf["Tag"], id));
+                return _objectsId.Add(id, new ObjectSimatic(this, sig.Inf["Archive"], sig.Inf["Tag"], id));
             return _objectsId[id];
         }
         
@@ -163,24 +163,7 @@ namespace Provider
         //Определение текущего считываемого объекта
         protected override SourceObject DefineObject()
         {
-            int id = Rec.GetInt(0);
-            if (_objectsId.ContainsKey(id))
-                return _objectsId[id];
-            return null;
-        }
-
-        //Чтение значений по одному объекту из рекордсета источника
-        //Возвращает количество сформированных значений
-        protected override int ReadObjectValue(SourceObject obj)
-        {
-            var ob = (ObjectSimatic)obj;
-            DateTime time = Rec.GetTime(1).ToLocalTime();
-            var quality = Rec.GetInt(3);
-            var err = MakeError(quality, ob);
-
-            return AddMom(ob.FlagsSignal, time, Rec.GetInt(4), err) +
-                      AddMom(ob.QualitySignal, time, quality, err) +
-                      AddMom(ob.ValueSignal, time, ((ReaderAdo)Rec).Reader[2], err);
+            return _objectsId[Rec.GetInt(0)];
         }
         
         //Чтение среза
