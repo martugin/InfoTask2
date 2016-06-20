@@ -4,20 +4,21 @@ using BaseLibrary;
 
 namespace CommonTypes
 {
+    //Список мгновенных значений
     public abstract class MomList : Mean, IMomList
     {
         //Количество значений
-        public override int Count { get { return _times.Count; }}
+        public override int Count { get { return _times.Count; } }
         //Текущий номер значений
         public int CurNum { get; set; }
-        
+
         //Список времен
         private readonly List<DateTime> _times = new List<DateTime>();
         //Время текущего значения
         public DateTime Time { get { return _times[CurNum]; } }
         //Время i-ого значения
         public DateTime GetTime(int i) { return _times[i]; }
-        
+
         //Список ошибок
         private List<ErrMom> _errors;
         //Текущая ошибка
@@ -32,6 +33,11 @@ namespace CommonTypes
         //Ошибка i-ого значения
         public ErrMom GetError(int i) { return _errors[i]; }
 
+        //Мгновенное значение для добавления в список
+        protected Mean CurMean { get; set; }
+        //Тип данных
+        public override DataType DataType { get { return CurMean.DataType; } }
+
         //Добавить ошибку в i-ю позицию списка
         private void AddError(ErrMom err, int i)
         {
@@ -44,12 +50,7 @@ namespace CommonTypes
             }
             _errors[i] = err;
         }
-
-        //Тип данных
-        public override DataType DataType { get { return CurMean.DataType; } }
         
-        //Мгновенное значение для добавления в список
-        protected Mean CurMean { get; set; }
         //Добавить текущее значение для добавления в список по индексу или в конец
         protected abstract void AddCurMom(int i);
         protected abstract void AddCurMomEnd();
@@ -137,6 +138,16 @@ namespace CommonTypes
             return AddTimeErrorMean(time, err, skipRepeats);
         }
 
+        //Очистка списка значений
+        public void Clear()
+        {
+            _times.Clear();
+            _errors = null;
+            ClearMeans();
+        }
+        //Очистка самих значений
+        protected abstract void ClearMeans();
+
         //Получение значений по индексу
         public bool GetBoolean(int i)
         {
@@ -220,15 +231,15 @@ namespace CommonTypes
             {
                 if (Count == 0) return null;
                 CurNum = Count - 1;
-                return this;    
+                return this;
             }
         }
 
         //Итоговая ошибка
         public override ErrMom TotalError
         {
-            get 
-            { 
+            get
+            {
                 var terr = Error;
                 if (_errors != null)
                     foreach (var err in _errors)
@@ -236,16 +247,6 @@ namespace CommonTypes
                 return terr;
             }
         }
-
-        //Очистка списка значений
-        public void Clear()
-        {
-            _times.Clear();
-            _errors = null;
-            ClearMeans();
-        }
-        //Очистка самих значений
-        protected abstract void ClearMeans();
 
         //Todo Подумать, что сделать с интерполяций
         //Интерполяция типа type значений list на время time по точке с номером n и следующим за ней, если n = -1, то значение в начале

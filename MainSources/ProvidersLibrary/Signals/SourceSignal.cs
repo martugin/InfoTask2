@@ -12,7 +12,10 @@ namespace CommonTypes
             _source = source;
             _skipRepeats = skipRepeats;
             _momList = MFactory.NewList(dataType);
-            _bufMom = new MomEdit(dataType);
+            MomList = new MomListReadOnly(_momList);
+            BufMom = new MomEdit(dataType);
+            _beginMom = new MomEdit(dataType);
+            _endMom = new MomEdit(dataType);
             _cloneMom = new MomEdit(dataType);
         }
 
@@ -23,91 +26,62 @@ namespace CommonTypes
         
         //Возвращаемый список значений
         private readonly MomList _momList;
-        public IMomListReadOnly MomList { get { return _momList; } }
+        public IMomListReadOnly MomList { get; private set; }
 
         //Значение среза на начало периода
         private MomEdit _beginMom;
+        //Значение среза для следующего периода
+        private MomEdit _endMom;
         //Буферное значение для добавления в список
-        private readonly MomEdit _bufMom;
+        internal MomEdit BufMom { get; private set; }
         //Предыдущее значение, записанное в клон
         private readonly MomEdit _cloneMom;
 
         //Добавка мгновенного значения в список или клон
         //Возвращает количество реально добавленных значений 
-        private int PutMom(DateTime time, ErrMom err)  
+        internal int PutMom(DateTime time, ErrMom err)  
         {
-            _bufMom.Time = time;
-            _bufMom.Error = err;
-
-            if (_beginMom == null)
-                _beginMom = new MomEdit(_bufMom.DataType);
-            if (_beginMom.Time <= _bufMom.Time && _bufMom.Time <= _source.PeriodBegin)
-                _beginMom.CopyAllFrom(_bufMom);
-            if (_source.IsCutReading) return 0;//Должен быть задан признак в источнике
+            BufMom.Time = time;
+            BufMom.Error = err;
+            if (time <= _source.PeriodBegin && _beginMom.Time <= time)
+                _beginMom.CopyAllFrom(BufMom);
+            if (time <= _source.PeriodEnd && _endMom.Time <= time)
+            {
+                _endMom.CopyAllFrom(BufMom);
+                return _momList.AddMom(BufMom, _skipRepeats);
+            }
 
             if (_source.CloneRec == null)
-                return MomList.AddMom(_bufMom, _skipRepeats);
+                return _momList.AddMom(BufMom, _skipRepeats);
             return MomentToClone();
         }
 
-        //Добавка мгновенных значений разного типа в список или клон, отдельные фйнкции для добавления среза
-        public int AddMom(DateTime time, bool b, ErrMom err = null)
+        //Очистка списка значений
+        internal void ClearMoments(bool clearBegin)
         {
-            _bufMom.Boolean = b;
-            return PutMom(time, err);
-        }
-        public int AddMom(DateTime time, int i, ErrMom err = null)
-        {
-            _bufMom.Integer = i;
-            return PutMom(time, err);
-        }
-        public int AddMom(DateTime time, double r, ErrMom err = null)
-        {
-            _bufMom.Real = r;
-            return PutMom(time, err);
-        }
-        public int AddMom(DateTime time, DateTime d, ErrMom err = null)
-        {
-            _bufMom.Date = d;
-            return PutMom(time, err);
-        }
-        public int AddMom(DateTime time, string s, ErrMom err = null)
-        {
-            _bufMom.String = s;
-            return PutMom(time, err);
-        }
-        //Добавка мгновенных значений, значение берется из типа object
-        public int AddMom(DateTime time, object ob, ErrMom err = null)
-        {
-            _bufMom.Object= ob;
-            return PutMom(time, err);
+            _momList.Clear();
+            if (clearBegin) _beginMom.Time = Different.MinDate;
         }
 
         //Добавляет значение среза на начало периода в список или клон, возвращает 1, если срез был получен, иначе 0
-        public int MakeBegin()
+        internal int MakeBegin()
         {
-            if (_beginMom == null) return 0;
+            if (_beginMom.Time == Different.MinDate) return 0;
             if (_source.CloneRec == null)
-                return MomList.AddMom(_beginMom);
+                return _momList.AddMom(_beginMom);
             return MomentToClone();
         }
 
         //Формирует значение на конец периода и дополняет значения в клоне до конца периода
-        public int MakeEnd()
+        internal int MakeEnd()
         {
-            if (_source.CloneRec != null && _bufMom.Time != Different.MinDate && IsReal)
+            if (_endMom.Time == Different.MinDate) return 0;
+            if (_momList.Count == 0)
+            _momList[MomList.Count - 1]
+            if (_source.CloneRec != null && BufMom.Time != Different.MinDate)
                 return MomentToClone(true);
             return 0;
         }
-
-        //Очищает значение среза
-        public void ClearBegin()
-        {
-            _beginMom = null;
-        }
-        
-        //Срез для сигнала определен
-        public bool HasBegin { get { return _beginMom != null; } }
 
         //Добавляет мгновенное значение в клон, возвращает количество добавленных значений
         //Если withoutLast, то не добавляет само значение (только предыдущие раз в 10 минут), значения не реже чем раз в 10 минут
@@ -115,16 +89,16 @@ namespace CommonTypes
         {
             if (!IsReal) return 0;
             int n = 0;
-            if (_bufMom.Time != Different.MinDate)
-                while (_bufMom.Time.Subtract(_cloneMom.Time).TotalMinutes > 10)
+            if (BufMom.Time != Different.MinDate)
+                while (BufMom.Time.Subtract(_cloneMom.Time).TotalMinutes > 10)
                 {
                     _cloneMom.Time = _cloneMom.Time.AddMinutes(10);
                     ToClone();
                     n++;
                 }
-            if (!withoutLast && _cloneMom.Time < _bufMom.Time && (!_bufMom.ValueEquals(_cloneMom) || _bufMom.Error != _cloneMom.Error))
+            if (!withoutLast && _cloneMom.Time < BufMom.Time && (!BufMom.ValueEquals(_cloneMom) || BufMom.Error != _cloneMom.Error))
             {
-                _cloneMom.CopyAllFrom(_bufMom);
+                _cloneMom.CopyAllFrom(BufMom);
                 ToClone();
                 n++;
             }

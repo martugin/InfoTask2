@@ -2,8 +2,6 @@
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.OleDb;
 using System.Text;
 using BaseLibrary;
 using CommonTypes;
@@ -12,70 +10,13 @@ namespace Provider
 {
     [Export(typeof(IProvider))]
     [ExportMetadata("Code", "OvationSource")]
-    public class OvationSource : SourceBase
+    public class OvationSource : OleDbSource
     {
-        //Код провайдера
-        public override string Code { get { return "OvationSource"; } }
-        //Настройки провайдера
-        protected override void ReadDicS(DicS<string> dic)
+        protected override void MakeConnect(string name, Logger logger)
         {
-            _dataSource = dic["DataSource"];
-            Hash = "OvationHistorian=" + _dataSource;
+            ProviderConnect = new OvationSourceConnect(name, logger);
         }
 
-        //Имя дропа
-        private string _dataSource;
-        //Соединение с провайдером Historian
-        private OleDbConnection _connection;
-
-        //Открытие соединения
-        protected override bool Connect()
-        {
-            Dispose();
-            try
-            {
-                AddEvent("Соединение с Historian");
-                _connection = new OleDbConnection("Provider=OvHOleDbProv.OvHOleDbProv.1;Persist Security Info=True;User ID='';Data Source=" + _dataSource + ";Location='';Mode=ReadWrite;Extended Properties=''");
-                _connection.Open();
-                return IsConnected = _connection.State == ConnectionState.Open;
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка соединения с Historian", ex);
-                return IsConnected = false;
-            }
-        }
-
-        //Проверка соединения с провайдером, вызывается в настройках, или когда уже произошла ошибка для повторной проверки соединения
-        public override bool Check()
-        {
-            return Danger(Connect, 2, 500, "Не удалось соединиться с Historian");
-        }
-
-        //Проверка соединения
-        public override bool CheckConnection()
-        {
-            if (Check())
-            {
-                CheckConnectionMessage = "Успешное соединение с Historian";
-                return true;
-            }
-            AddError(CheckConnectionMessage = "Ошибка соединения с Historian");
-            return false;
-        }
-
-        //Освобождение ресурсов, занятых провайдером
-        public override void Dispose()
-        {
-            try { if (Rec != null) Rec.Dispose(); } catch { }
-            try 
-            { 
-                _connection.Close();
-                _connection.Dispose();
-            }
-            catch { }
-        }
-       
         //Словарь объектов по Id
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
 
@@ -95,10 +36,16 @@ namespace Provider
             _objectsId.Clear();
         }
 
+        //Чтение объектов из файла клона, перед заполнением клона
+        public override void PropareClone()
+        {
+            
+        }
+
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(Code, ErrMomType.Source);
+            var factory = new ErrMomFactory(ProviderConnect.Code, ErrMomType.Source);
             factory.AddGoodDescr(0);
             factory.AddDescr(1, "FAIR", ErrorQuality.Warning);
             factory.AddDescr(2, "POOR", ErrorQuality.Warning);
@@ -126,7 +73,7 @@ namespace Provider
               .Append(") and (TIMESTAMP <= ")
               .Append(en.ToOvationString())
               .Append(") order by TIMESTAMP, TIME_NSEC");
-            Rec = new ReaderAdo(_connection, sb.ToString());
+            Rec = new ReaderAdo(Connection, sb.ToString());
             if (en.Subtract(beg).TotalMinutes > 59 && (Rec == null || !Rec.HasRows))
             {
                 AddWarning("Значения из источника не получены", null, beg + " - " + en +"; " + part.First().Inf + " и др.");

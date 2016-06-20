@@ -8,13 +8,13 @@ namespace CommonTypes
     //Один сигнал для чтения по блокам
     public class SourceObject : IContextable
     {
-        public SourceObject(SourceBase source)
+        public SourceObject(ISource source)
         {
             Source = source;
         }
 
         //Ссылка на источник
-        protected SourceBase Source { get; private set; } 
+        protected ISource Source { get; private set; } 
         //Информация по объекту
         public string Inf { get; set; }
 
@@ -79,42 +79,42 @@ namespace CommonTypes
         }
 
         //Добавка мгновенных значений разного типа в указанный сигнал
-        protected int AddMom(SourceSignal sig, DateTime time, bool b, ErrMom err = null)
+        public int AddMom(SourceSignal sig, DateTime time, bool b, ErrMom err = null)
         {
             if (sig == null) return 0;
-            return sig.AddMom(time, b, err);
+            sig.BufMom.Boolean = b;
+            return sig.PutMom(time, err);
         }
-        protected int AddMom(SourceSignal sig, DateTime time, int i, ErrMom err = null)
+        public int AddMom(SourceSignal sig, DateTime time, int i, ErrMom err = null)
         {
             if (sig == null) return 0;
-            return sig.AddMom(time, i, err);
+            sig.BufMom.Integer = i;
+            return sig.PutMom(time, err);
         }
-        protected int AddMom(SourceSignal sig, DateTime time, double r, ErrMom err = null)
+        public int AddMom(SourceSignal sig, DateTime time, double r, ErrMom err = null)
         {
             if (sig == null) return 0;
-            return sig.AddMom(time, r, err);
+            sig.BufMom.Real = r;
+            return sig.PutMom(time, err);
         }
-        protected int AddMom(SourceSignal sig, DateTime time, DateTime d, ErrMom err = null)
+        public int AddMom(SourceSignal sig, DateTime time, DateTime d, ErrMom err = null)
         {
             if (sig == null) return 0;
-            return sig.AddMom(time, d, err);
+            sig.BufMom.Date = d;
+            return sig.PutMom(time, err);
         }
-        protected int AddMom(SourceSignal sig, DateTime time, string s, ErrMom err = null)
+        public int AddMom(SourceSignal sig, DateTime time, string s, ErrMom err = null)
         {
             if (sig == null) return 0;
-            return sig.AddMom(time, s, err);
+            sig.BufMom.String = s;
+            return sig.PutMom(time, err);
         }
         //Добавка мгновенных значений, значение берется из типа object
-        protected int AddMom(SourceSignal sig, DateTime time, object ob, ErrMom err = null)
+        public int AddMom(SourceSignal sig, DateTime time, object ob, ErrMom err = null)
         {
             if (sig == null) return 0;
-            return sig.AddMom(time, ob, err);
-        }
-
-        //Создание ошибки 
-        protected ErrMom MakeError(int number)
-        {
-            return Source.MakeError(number, this);
+            sig.BufMom.Object = ob;
+            return sig.PutMom(time, err);
         }
     }
 }

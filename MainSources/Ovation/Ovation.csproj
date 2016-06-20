@@ -45,6 +45,7 @@
     <Compile Include="ObjectOvation.cs" />
     <Compile Include="OvationOPCReceiver.cs" />
     <Compile Include="OvationSource.cs" />
+    <Compile Include="OvationSourceConnect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
