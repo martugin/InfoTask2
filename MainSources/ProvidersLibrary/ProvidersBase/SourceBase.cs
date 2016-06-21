@@ -7,15 +7,19 @@ namespace CommonTypes
     //Базовый класс для всех источников
     public abstract class SourceBase : ProviderBase, ISource
     {
-        protected SourceBase()
+        protected SourceBase() 
         {
-            NeedCut = true;
-            ErrPool = new ErrMomPool(MakeErrFactory());
+            Initialize();
         }
-        protected SourceBase(string name, Logger logger) 
-            : base(name, logger)
+        protected SourceBase(string name, Logger logger) : base(name, logger)
+        {
+            Initialize();
+        }
+
+        private void Initialize()
         {
             NeedCut = true;
+            CloneCutFrequency = 10;
             ErrPool = new ErrMomPool(MakeErrFactory());
         }
 
@@ -23,23 +27,24 @@ namespace CommonTypes
         public SourceConnect SourceConnect { get { return (SourceConnect) ProviderConnect; } }
 
         //Добавить сигнал
-        public ISourceSignal AddSignal(string code, string context, DataType dataType, string signalInf, bool skipRepeats = false, string formula = null)
+        public ISourceSignal AddSignal(string code, string context, DataType dataType, string signalInf, string formula = null)
         {
             if (ProviderSignals.ContainsKey(code))
                 return ProviderSignals[code];
-            var sig = new SourceSignal(this, code, dataType, signalInf, skipRepeats);
-            sig = AddObject(sig).AddSignal(sig);
+            var sig = new SourceSignal(this, code, dataType, signalInf);
+            sig = AddObject(sig, context).AddSignal(sig);
             if (formula != null)
                 return new CalcSignal(sig, code, dataType, formula);
             return sig;
         }
-        //Добавить объект по содержащий заданный сигнал
-        protected abstract SourceObject AddObject(SourceSignal sig);
+        //Добавить объект содержащий заданный сигнал
+        protected abstract SourceObject AddObject(SourceSignal sig, string context);
         
         public virtual void ClearSignals()
         {
             ProviderSignals.Clear();
             CalcSignals.Clear();
+            CloneObjects.Clear();
         }
 
         //Список сигналов, содержащих возвращаемые значения
@@ -51,10 +56,7 @@ namespace CommonTypes
         //Словарь объектов с ключами Id для клона и для источников, где ключ объекта - число
         private readonly DicI<SourceObject> _objectsId = new DicI<SourceObject>();
         public DicI<SourceObject> ObjectsId { get { return _objectsId; }}
-
-        //Подготовка объектов в файле клона к заполнению
-        public virtual void PropareClone() {}
-
+        
         //Создание фабрики ошибок
         protected virtual IErrMomFactory MakeErrFactory()
         {
@@ -95,37 +97,58 @@ namespace CommonTypes
         
         //Создание клона
         #region
+        //Частота сосздания срезов для клона в минутах, должно делить 60
+        public int CloneCutFrequency { get; protected set; }
+
         //Рекордсет таблицы значений клона
-        public RecDao CloneRec { get; private set; }
+        protected RecDao CloneRec { get; private set; }
+        //Рекордсет таблицы  срезов клона
+        protected RecDao CloneCutRec { get; private set; }
         //Рекордсет таблицы ошибок создания клона
         protected RecDao CloneErrorRec { get; private set; }
 
-        //Настройки создания клона
-        protected DicS<string> CloneInf { get; private set; }
         //Словарь ошибочных объектов, ключи - коды объектов
         private readonly Dictionary<string, string> _errorObjects = new Dictionary<string, string>();
         protected Dictionary<string, string> ErrorObjects { get { return _errorObjects; }}
 
-        //Добавляет объект в ErrorObjects, inf - описание сигнала, errText - сообщение ошибки, ex - исключение
-        protected void AddErrorObject(string inf, string errText, Exception ex = null)
+        //Добавляет объект в ErrorsObjects
+        protected void AddErrorObject(string context, //context - описание сигнала
+                                                        string errText, //errText - сообщение об ошибке
+                                                        Exception ex = null) //ex - исключение
         {
-            if (!ErrorObjects.ContainsKey(inf))
-                ErrorObjects.Add(inf, errText + (ex == null ? "" : (". " + ex.Message + ". " + ex.StackTrace)));
+            if (!ErrorObjects.ContainsKey(context))
+            {
+                var err = errText + (ex == null ? "" : (". " + ex.Message + ". " + ex.StackTrace));
+                ErrorObjects.Add(context, err);
+                CloneErrorRec.AddNew();
+                CloneErrorRec.Put("SignalContext", context);
+                CloneErrorRec.Put("ErrorDescription", err);
+                CloneErrorRec.Update();
+            }
         }
 
+        //Словарь объектов клона, ключи Id в клоне
+        private readonly DicI<SourceObject> _cloneObjects = new DicI<SourceObject>();
+        public DicI<SourceObject> CloneObjects { get { return _cloneObjects; } }
+
+        //Запись объектов в таблицу CloneSignals клона
+        protected abstract void WriteObjectsToClone(RecDao rec);
+
         //Создание клона архива
-        public void MakeClone(DateTime beginRead, DateTime endRead, string cloneFile = "", string cloneProps = "")
+        public void MakeClone(DateTime beginRead, //Начало периода клона
+                                          DateTime endRead, //Конец периода клона
+                                          string cloneFile) //Файл значений клона
         {
             try
             {
                 using (var db = new DaoDb(cloneFile))
                 {
-                    using (var sys = new SysTabl(db))
-                        CloneInf = (sys.Value("CloneInf") ?? "").ToPropertyDicS();
-                    using (CloneRec = new RecDao(db, "SELECT * FROM MomentsValues"))
-                        using (CloneErrorRec = new RecDao(db, "SELECT * FROM ErrorsList"))
-                            GetValues(beginRead, endRead);
-                    WriteErrors(db);
+                    using (var rec = new RecDao(db, "CloneSignals"))
+                        WriteObjectsToClone(rec);
+                    using (CloneRec = new RecDao(db, "SELECT * FROM CloneValues"))
+                        using (CloneCutRec = new RecDao(db, "SELECT * FROM CutValues"))
+                            using (CloneErrorRec = new RecDao(db, "SELECT * FROM ErrorsSignals"))
+                                GetValues(beginRead, endRead);
                 }
             }
             catch (Exception ex)
@@ -134,16 +157,6 @@ namespace CommonTypes
             }
             CloneRec = null;
         }
-
-        //Запись в клон списка ошибок
-        private void WriteErrors(DaoDb db)
-        {
-            using (var rec = new RecDao(db, "MomentsError"))
-                foreach (var err in ErrPool.UsedErrorDescrs)
-                    err.ToRecordset(rec);
-        }
         #endregion
-
-        
     }
 }

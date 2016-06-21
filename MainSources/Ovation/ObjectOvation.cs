@@ -7,10 +7,11 @@ namespace Provider
     //Один объект (дисктретная, аналоговая или упакованная точка)
     internal class ObjectOvation : SourceObject
     {
-        internal ObjectOvation(OvationSource source, int id, string code) : base(source)
+        internal ObjectOvation(OvationSource source, int id,  string context) 
+            : base(source, context)
         {
             Id = id;
-            Inf = code.Substring(0, code.IndexOf('.')) + "; Id=" + Id;
+            Inf = "Id=" + Id;
         }
         
         //Сигнал со словом состояния
@@ -28,29 +29,54 @@ namespace Provider
 
         //Чтение значений по одному объекту из рекордсета источника
         //Возвращает количество сформированных значений
-        public override int ReadValueFromRec(IRecordRead rec)
+        protected override int AddObjectMoments()
         {
-            var time1 = rec.GetTime("TIMESTAMP");
-            time1 = time1.AddMilliseconds(rec.GetInt("TIME_NSEC") / 1000000.0);
-            DateTime time = time1.ToLocalTime();
-            var rMean = rec.GetDouble("F_VALUE", rec.GetInt("RAW_VALUE"));
-
-            return AddMom(StateSignal, time, rec.GetInt("STS")) +
-                      AddMom(ValueSignal, time, rMean, MakeError(rec));
+            var rMean = _fValue ?? _rawValue;
+            return AddMom(StateSignal, ValueTime, _sts) +
+                      AddMom(ValueSignal, ValueTime, rMean, ReadError());
         }
 
         //Формирование ошибки мгновенных значений по значению слова недостоверности
-        private ErrMom MakeError(IRecordRead rec)
+        private ErrMom ReadError()
         {
             //Недостоверность 8 и 9 бит, 00 - good, 01 - fair(имитация), 10 - poor(зашкал), 11 - bad
-            if (rec.IsNull("STS") || (rec.IsNull("F_VALUE") && rec.IsNull("RAW_VALUE")))
+            if (_sts == null || (_fValue == null && _rawValue == null))
                 return MakeError(4);//нет данных
-            int state = rec.GetInt("STS");
-            bool b8 = state.GetBit(8), b9 = state.GetBit(9);
+            bool b8 = ((int)_sts).GetBit(8), b9 = ((int)_sts).GetBit(9);
             if (!b8 && !b9) return null;
             if (!b8) return MakeError(1);
             if (!b9) return MakeError(2);
             return MakeError(3);
+        }
+
+        //Поля значения объекта для клона
+        private double? _fValue;
+        private int? _rawValue;
+        private int? _sts;
+
+        //Чтение времени из рекордсета источника
+        protected override DateTime ReadTime(IRecordRead rec)
+        {
+            var time1 = rec.GetTime("TIMESTAMP");
+            time1 = time1.AddMilliseconds(rec.GetInt("TIME_NSEC") / 1000000.0);
+            DateTime time = time1.ToLocalTime();
+            return time;
+        }
+
+        //Чтение значений из источника для клона
+        protected override void ReadValue(IRecordRead rec)
+        {
+            _fValue = rec.GetDouble("F_VALUE");
+            _rawValue = rec.GetInt("RAW_VALUE");
+            _sts = rec.GetInt("STS");
+        }
+
+        //Запись одной строчки значений из полей в клон
+        protected override void PutValueToClone(IRecordAdd rec)
+        {
+            rec.Put("F_VALUE", _fValue);
+            rec.Put("RAW_VALUE", _rawValue);
+            rec.Put("STS", _sts);
         }
     }
 }

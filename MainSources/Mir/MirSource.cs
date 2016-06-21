@@ -12,7 +12,7 @@ namespace Provider
     {
         //Код провайдера
         public override string Code { get { return "MirSource"; } }
-
+        
         //Список сигналов
         #region
         //Словари объектов, ключи коды и IdChanell
@@ -22,17 +22,17 @@ namespace Provider
         //Очистка списка сигналов
         public override void ClearSignals()
         {
-            ProviderSignals.Clear();
+            base.ClearSignals();
             _objects.Clear();
             _objectsId.Clear();
         }
 
         //Добавляет один сигнал в список
-        protected override SourceObject AddObject(SourceSignal sig)
+        protected override SourceObject AddObject(SourceSignal sig, string context)
         {
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
             if (!_objects.ContainsKey(ocode))
-                return _objects.Add(ocode, new ObjectMir(this));
+                return _objects.Add(ocode, new ObjectMir(this, context));
             return _objects[ocode];
         }
         

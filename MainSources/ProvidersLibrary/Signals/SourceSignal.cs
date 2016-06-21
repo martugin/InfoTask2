@@ -6,11 +6,10 @@ namespace CommonTypes
     //Один сигнал 
     public class SourceSignal : ProviderSignal, ISourceSignal
     {
-        public SourceSignal(ISource source, string code, DataType dataType, string signalInf, bool skipRepeats)
+        public SourceSignal(ISource source, string code, DataType dataType, string signalInf)
             : base(code, dataType, signalInf)
         {
             _source = source;
-            _skipRepeats = skipRepeats;
             _momList = MFactory.NewList(dataType);
             MomList = new MomListReadOnly(_momList);
             BufMom = new MomEdit(dataType);
@@ -19,8 +18,6 @@ namespace CommonTypes
             _cloneMom = new MomEdit(dataType);
         }
 
-        //Пропускать повторы значений
-        private readonly bool _skipRepeats;
         //Источник
         private readonly ISource _source;
         
@@ -48,11 +45,11 @@ namespace CommonTypes
             if (time <= _source.PeriodEnd && _endMom.Time <= time)
             {
                 _endMom.CopyAllFrom(BufMom);
-                return _momList.AddMom(BufMom, _skipRepeats);
+                return _momList.AddMom(BufMom);
             }
 
             if (_source.CloneRec == null)
-                return _momList.AddMom(BufMom, _skipRepeats);
+                return _momList.AddMom(BufMom);
             return MomentToClone();
         }
 

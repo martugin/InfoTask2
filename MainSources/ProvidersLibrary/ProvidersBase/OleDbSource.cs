@@ -12,12 +12,10 @@ namespace CommonTypes
     {
         protected OleDbSource()
         {
-            SetDefaultReadProperties();
             SetReadProperties();
         }
         protected OleDbSource(string name, Logger logger) : base(name, logger)
         {
-            SetDefaultReadProperties();
             SetReadProperties();
         }
 
@@ -42,15 +40,15 @@ namespace CommonTypes
         protected int ErrorWaiting { private get; set; } //Время ожидания после ошибки считывания в мс
 
         //Задание стандартных свойств получения данных
-        protected void SetDefaultReadProperties()
+        protected virtual void SetReadProperties()
         {
             NeedCut = true;
             ReconnectsCount = 2;
             MaxErrorCount = 3;
             MaxErrorDepth = 3;
             ErrorWaiting = 100;
+            CloneCutFrequency = 10;
         }
-        protected virtual void SetReadProperties() {}
 
         //Выполняется чтение среза данных
         protected bool IsCutReading { get; set; }
@@ -164,16 +162,7 @@ namespace CommonTypes
                 int i = 0;
                 string s = "";
                 foreach (var ob in ErrorObjects)
-                {
                     if (++i < 10) s += ob.Key + ", ";
-                    if (CloneErrorRec != null)
-                    {
-                        CloneErrorRec.AddNew();
-                        CloneErrorRec.Put("Signal", ob.Key);
-                        CloneErrorRec.Put("ErrorDescription", ob.Value);
-                        CloneErrorRec.Update();
-                    }
-                }
                 AddWarning("Не удалось прочитать значения по некоторым объектам", null,
                            s + (ErrorObjects.Count > 10 ? " и др." : "") + "всего " + ErrorObjects.Count + " объектов не удалось прочитать");
             }
@@ -251,7 +240,7 @@ namespace CommonTypes
         }
 
         //Чтение значений из рекордсета по одному блоку
-        protected virtual Tuple<int, int> ReadPartValues()
+        protected Tuple<int, int> ReadPartValues()
         {
             int nread = 0, nwrite = 0;
             while (Rec.Read())
@@ -262,7 +251,11 @@ namespace CommonTypes
                 {
                     ob = DefineObject();
                     if (ob != null)
-                        nwrite += ob.ReadValueFromRec(Rec);
+                    {
+                        if (CloneRec == null)
+                            nwrite += ob.MakeValueFromRec(Rec);
+                        else nwrite += ob.ReadValueToClone(Rec, CloneRec, CloneCutRec);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -271,7 +264,7 @@ namespace CommonTypes
             }
             return new Tuple<int, int>(nread, nwrite);
         }
-
+        
         //Определение текущего считываемого объекта
         protected virtual SourceObject DefineObject()
         {

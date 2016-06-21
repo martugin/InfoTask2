@@ -36,16 +36,16 @@ namespace CommonTypes
                                 string context, //Контекст значений (код внутреннего объекта источника)
                                 DataType dataType, //Тип данных
                                 string signalInf, //Информация о сигнале для источника
-                                bool skipRepeats = true, //Пропускать полностью повторяющиеся значения
                                 string formula = null); //Расчетная формула если есть
         //Удаляет из источника все сигналы
         void ClearSignals();
 
-        //Считать значения в клон, если задан cloneFile, cloneInf - настройки создания клона
-        //Чтение значений за период от beginRead до endRead
-        void MakeClone(DateTime beginRead, 
-                       DateTime endRead, 
-                       string cloneFile, string cloneInf);
+        //Частота сосздания срезов для клона в минутах, должно делить 60
+        int CloneCutFrequency { get; }
+        //Считать значения в клон
+        void MakeClone(DateTime beginRead, //Начало периода клона
+                                DateTime endRead, //Конец периода клона
+                                string cloneFile); //Файл значений клона
     }
 
     //------------------------------------------------------------------------------------------------------------------------

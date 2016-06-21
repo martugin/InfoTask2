@@ -49,6 +49,7 @@
     <Compile Include="OPC\OpcServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProvidersBase\OleDbSource.cs" />
+    <Compile Include="ProvidersConnects\CloneAccessConnect.cs" />
     <Compile Include="ProvidersInterfaces\IProvider.cs" />
     <Compile Include="ProvidersInterfaces\IReceiver.cs" />
     <Compile Include="ProvidersInterfaces\ISource.cs" />

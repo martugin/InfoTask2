@@ -17,7 +17,7 @@ namespace Provider
 
         //Чтение значений по одному объекту из рекордсета источника
         //Возвращает количество сформированных значений
-        public override int ReadValueFromRec(IRecordRead rec)
+        public override int MakeValueFromRec(IRecordRead rec)
         {
             DateTime time = rec.GetTime("DateTime");
             var err = MakeError(rec.GetInt("QualityDetail"));

@@ -56,28 +56,21 @@ namespace CommonTypes
         protected abstract void AddCurMomEnd();
         
         //Добавить время, ошибку и значение в списки
-        private int AddTimeErrorMean(DateTime time, ErrMom err, bool skipRepeats)
+        private int AddTimeErrorMean(DateTime time, ErrMom err)
         {
-            if (Count == 0)
-            {
-                AddMomToEnd(time, err);
-                return 1;
-            }
             CurNum = Count - 1;
-            if (time >= _times[CurNum] )
+            if (Count == 0)
+                AddMomToEnd(time, err);
+            else if (time >= _times[CurNum])
+                AddMomToEnd(time, err);
+            else
             {
-                if (!skipRepeats || !CurMean.ValueEquals(this) || err != Error)
-                {
-                    AddMomToEnd(time, err);
-                    return 1;
-                }
-                return 0;
+                while (CurNum >= 0 && _times[CurNum] > time) CurNum--;
+                CurNum++;
+                _times.Insert(CurNum, time);
+                AddCurMom(CurNum);
+                AddError(err, CurNum);    
             }
-            while (CurNum >= 0 && _times[CurNum] > time) CurNum--;
-            CurNum++;
-            _times.Insert(CurNum, time);
-            AddCurMom(CurNum);
-            AddError(err, CurNum);
             return 1;
         }
 
@@ -90,52 +83,52 @@ namespace CommonTypes
         }
 
         //Добавление значений в список, возвращают количество реально добавленных значений
-        public int AddMom(IMom mom, bool skipRepeats = false)
+        public int AddMom(IMom mom)
         {
             CurMean.CopyValueFrom(mom);
-            return AddTimeErrorMean(mom.Time, mom.Error, skipRepeats);
+            return AddTimeErrorMean(mom.Time, mom.Error);
         }
 
-        public int AddMom(DateTime time, IMean mean, bool skipRepeats = false)
+        public int AddMom(DateTime time, IMean mean)
         {
             CurMean.CopyValueFrom(mean);
-            return AddTimeErrorMean(time, mean.Error, skipRepeats);
+            return AddTimeErrorMean(time, mean.Error);
         }
 
-        public int AddMom(DateTime time, bool b, ErrMom err = null, bool skipRepeats = false)
+        public int AddMom(DateTime time, bool b, ErrMom err = null)
         {
             CurMean.Boolean = b;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            return AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, int i, ErrMom err = null, bool skipRepeats = false)
+        public int AddMom(DateTime time, int i, ErrMom err = null)
         {
             CurMean.Integer = i;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            return AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, double r, ErrMom err = null, bool skipRepeats = false)
+        public int AddMom(DateTime time, double r, ErrMom err = null)
         {
             CurMean.Real = r;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            return AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, DateTime d, ErrMom err = null, bool skipRepeats = false)
+        public int AddMom(DateTime time, DateTime d, ErrMom err = null)
         {
             CurMean.Date = d;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            return AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, string s, ErrMom err = null, bool skipRepeats = false)
+        public int AddMom(DateTime time, string s, ErrMom err = null)
         {
             CurMean.String = s;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            return AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, object ob, ErrMom err = null, bool skipRepeats = false)
+        public int AddMom(DateTime time, object ob, ErrMom err = null)
         {
             CurMean.Object = ob;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            return AddTimeErrorMean(time, err);
         }
 
         //Очистка списка значений

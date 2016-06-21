@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BaseLibrary;
 
 namespace CommonTypes
@@ -8,9 +7,10 @@ namespace CommonTypes
     //Один сигнал для чтения по блокам
     public class SourceObject : IContextable
     {
-        public SourceObject(ISource source)
+        public SourceObject(ISource source, string context)
         {
             Source = source;
+            Context = context;
         }
 
         //Ссылка на источник
@@ -18,18 +18,10 @@ namespace CommonTypes
         //Информация по объекту
         public string Inf { get; set; }
 
+        //Id для добавления в файл клона
+        public int IdInClone { get; set; }
         //Контекст для формирования ошибок
-        public virtual string Context 
-        { 
-            get 
-            { 
-                if (ValueSignal != null) 
-                    return ValueSignal.Context;
-                if (Signals.Count > 0)
-                    return Signals.First().Context;
-                return "";
-            } 
-        }
+        public string Context { get; private set; }
 
         //Основной сигнал объекта
         public SourceSignal ValueSignal { get; set; }
@@ -48,29 +40,14 @@ namespace CommonTypes
         {
             return ValueSignal = ValueSignal ?? sig;
         }
-
-        //Чтение одной строчки значений из рекордсета, возвращает количество используемых значений
-        public virtual int ReadValueFromRec(IRecordRead rec)
-        {
-            return 0;
-        }
-
+        
         //Для объекта опредлено значение среза на время time
-        public bool HasBegin
-        {
-            get
-            {
-                bool e = true;
-                foreach (var sig in Signals)
-                    if (sig != null)
-                        e &= sig.HasBegin;
-                return e;    
-            }
-        }
+        public bool HasBegin { get; private set; }
         
         //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
         public int AddBegin()
         {
+            HasBegin = true;
             int n = 0;
             foreach (var sig in Signals)
                 if (sig != null)
@@ -116,5 +93,89 @@ namespace CommonTypes
             sig.BufMom.Object = ob;
             return sig.PutMom(time, err);
         }
+
+        //Создание ошибки
+        public ErrMom MakeError(int number)
+        {
+            return Source.MakeError(number, this);
+        }
+
+        //Чтение одной строчки значений из рекордсета, возвращает количество используемых значений
+        public int MakeValueFromRec(IRecordRead rec)
+        {
+            ValueTime = ReadTime(rec);
+            ReadValue(rec);
+            return AddObjectMoments();
+        }
+        protected virtual int AddObjectMoments()
+        {
+            return 0;
+        }
+
+        //Запись в клон
+        #region
+        //Запись характеристик объекта в таблицу CloneSignals клон
+        public void WriteToClone(RecDao rec)
+        {
+            rec.AddNew();
+            rec.Put("SignalContext", Context);
+            IdInClone = rec.GetInt("Id");
+            WriteObjectProperties(rec);
+            rec.Update();
+        }
+        protected virtual void WriteObjectProperties(IRecordAdd rec) {}
+
+        //Поля значения объекта для клона
+        //Время последнего и текущего значения добавленного в клон
+        protected DateTime ValueTime { get; private set; }
+        protected DateTime CurValueTime { get; private set; }
+
+        //Чтение одной строчки значений из рекордсета, и запись ее в клон
+        public int ReadValueToClone(IRecordRead rec, //Исходный рекордсет
+                                                   IRecordAdd recClone, //Рекордсет клона
+                                                   IRecordAdd recCut) //Рекордсет срезов клона
+        {
+            int nwrite = 0;
+            CurValueTime = ReadTime(rec);
+            var d1 = RemoveMinultes(CurValueTime);
+            var d = RemoveMinultes(ValueTime).AddMinutes(Source.CloneCutFrequency);
+            while (d <= d1)
+            {
+                recCut.AddNew();
+                recCut.Put("ValueTime", d);
+                PutValueToClone(recCut);
+                recCut.Update();
+                d = d.AddMinutes(Source.CloneCutFrequency);
+                nwrite++;
+            }
+            ValueTime = CurValueTime;
+            ReadValue(rec);
+            recClone.AddNew();
+            recCut.Put("ValueTime", ValueTime);
+            PutValueToClone(recClone);
+            recClone.Update();
+            return nwrite + 1;
+        }
+
+        private DateTime RemoveMinultes(DateTime time)
+        {
+            int m = time.Minute;
+            int k = m / Source.CloneCutFrequency;
+            var d = ValueTime.AddMinutes(ValueTime.Minute).AddSeconds(ValueTime.Second).AddMilliseconds(ValueTime.Millisecond);
+            return d.AddMinutes(k*m);
+        }
+
+        //Прочитать время
+        protected virtual DateTime ReadTime(IRecordRead rec)
+        {
+            return DateTime.MinValue;
+        }
+
+        //Чтение значений из источника для клона
+        protected virtual void ReadValue(IRecordRead rec) { }
+
+        //Запись одной строчки значений из полей в клон
+        protected virtual void PutValueToClone(IRecordAdd rec) { }
+        #endregion
     }
 }

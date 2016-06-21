@@ -17,29 +17,23 @@ namespace Provider
             ProviderConnect = new OvationSourceConnect(name, logger);
         }
 
-        //Словарь объектов по Id
+        //Словарь объектов по Id в Historian
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
 
         //Добавить объект
-        protected override SourceObject AddObject(SourceSignal sig)
+        protected override SourceObject AddObject(SourceSignal sig, string context)
         {
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))
-                return _objectsId.Add(id, new ObjectOvation(this, id, sig.Inf["CodeObject"]));
+                return _objectsId.Add(id, new ObjectOvation(this, id, context));
             return _objectsId[id];
         }
         
         //Удалить все сигналы
         public override void ClearSignals()
         {
-            ProviderSignals.Clear();
+            base.ClearSignals();
             _objectsId.Clear();
-        }
-
-        //Чтение объектов из файла клона, перед заполнением клона
-        public override void PropareClone()
-        {
-            
         }
 
         //Создание фабрики ошибок
@@ -56,6 +50,16 @@ namespace Provider
 
         //Чтение значений
         #region
+        //Запись объектов в таблицу CloneSignals клона
+        protected override void WriteObjectsToClone(RecDao rec)
+        {
+            foreach (var ob in _objectsId.Values)
+            {
+                ob.WriteToClone(rec);
+                CloneObjects.Add(ob.IdInClone, ob);
+            }
+        }
+
         //Запрос значений из Historian по списку сигналов и интервалу
         protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en)
         {
