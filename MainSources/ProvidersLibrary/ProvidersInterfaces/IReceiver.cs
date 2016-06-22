@@ -1,6 +1,7 @@
 using BaseLibrary;
+using CommonTypes;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     //Стандартный интерфейс для класса Receiver
     public interface IReceiver : IProvider

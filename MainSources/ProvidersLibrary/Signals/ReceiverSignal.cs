@@ -1,4 +1,6 @@
-﻿namespace CommonTypes
+﻿using CommonTypes;
+
+namespace ProvidersLibrary
 {
     //Сигнал приемника
     public class ReceiverSignal : ProviderSignal

@@ -1,11 +1,12 @@
 ﻿using System;
 using BaseLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace Provider
 {
     //Один объект (дисктретная, аналоговая или упакованная точка)
-    internal class ObjectOvation : SourceObject
+    internal class ObjectOvation : OleDbSourceObject
     {
         internal ObjectOvation(OvationSource source, int id,  string context) 
             : base(source, context)

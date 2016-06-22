@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using BaseLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace Provider
 {
@@ -15,6 +16,16 @@ namespace Provider
         protected override string GetOpcItemTag(DicS<string> inf)
         {
             return inf["CodeObject"];
+        }
+
+        protected override void MakeConnect(string name, Logger logger)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override string Complect
+        {
+            get { throw new System.NotImplementedException(); }
         }
     }
 }

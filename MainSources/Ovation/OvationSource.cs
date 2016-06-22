@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using BaseLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace Provider
 {
@@ -16,6 +17,9 @@ namespace Provider
         {
             ProviderConnect = new OvationSourceConnect(name, logger);
         }
+
+        //Комплект
+        public override string Complect { get { return "Ovation"; }}
 
         //Словарь объектов по Id в Historian
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
@@ -55,7 +59,7 @@ namespace Provider
         {
             foreach (var ob in _objectsId.Values)
             {
-                ob.WriteToClone(rec);
+                ob.WritePropsToClone(rec);
                 CloneObjects.Add(ob.IdInClone, ob);
             }
         }

@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.Sql;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using BaseLibrary;
+using CommonTypes;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     public partial class ProviderSetupForm : Form
     {
@@ -20,19 +16,19 @@ namespace CommonTypes
         }
 
         //Ссылка на провайдер
-        private IProvider _provider;
-        public IProvider Provider
+        private ProviderConnect _connect;
+        public ProviderConnect Connect
         {
-            get { return _provider; }
+            get { return _connect; }
             set
             {
-                _provider = value;
+                _connect = value;
                 _namesDic = new Dictionary<string, string>();
-                _infDic = _provider.Inf.ToPropertyDictionary();
+                _infDic = _connect.Inf.ToPropertyDictionary();
                 string config = DifferentIT.GetInfoTaskDir() + @"General\Config.accdb";
                 using (var rec = new RecDao(config, "SELECT SysSubTabl.SubParamNum, SysSubTabl.SubParamName, SysSubTabl.SubParamDescription, SysSubTabl.SubParamTag, SysSubTabl.SubParamRowSource " +
                                                     "FROM SysTabl INNER JOIN SysSubTabl ON SysTabl.ParamId = SysSubTabl.ParamId " +
-                                                    "WHERE (SysTabl.ParamName='" + _provider.Code + "') AND (SysSubTabl.SubParamType='Property') ORDER BY SysSubTabl.SubParamNum"))
+                                                    "WHERE (SysTabl.ParamName='" + _connect.Code + "') AND (SysSubTabl.SubParamType='Property') ORDER BY SysSubTabl.SubParamNum"))
                 {
                     int nmenu = 0;
                     while (rec.Read())
@@ -64,7 +60,7 @@ namespace CommonTypes
                                 List<string> list;
                                 if (tag.ContainsKey("SpecialComboBox"))
                                 {
-                                    list = _provider.ComboBoxList(AddInf(_infDic), cells.Get("PropCode"));
+                                    list = _connect.ComboBoxList(AddInf(_infDic), cells.Get("PropCode"));
                                     cell.Tag = "SpecialComboBox";
                                 }
                                 else list = rowSource.Split(new[] {';'}).ToList();
@@ -77,10 +73,10 @@ namespace CommonTypes
                             }
                             
                             //Контекстное меню
-                            if (_provider.MenuCommands != null && _provider.MenuCommands.ContainsKey(pcode))
+                            if (_connect.MenuCommands != null && _connect.MenuCommands.ContainsKey(pcode))
                             {
                                 var menu = new ContextMenuStrip();
-                                foreach (var k in _provider.MenuCommands[pcode])
+                                foreach (var k in _connect.MenuCommands[pcode])
                                 {
                                     menu.Items.Add(k.Key);
                                     _dialogs.Add(k.Value);
@@ -156,7 +152,7 @@ namespace CommonTypes
             var cells = Props.Rows[e.RowIndex].Cells;
             if (e.ColumnIndex == 3 && (string)cells[e.ColumnIndex].Tag == "SpecialComboBox")
             {
-                List<string> list = _provider.ComboBoxList(AddInf(_infDic), cells.Get("PropCode"));
+                List<string> list = _connect.ComboBoxList(AddInf(_infDic), cells.Get("PropCode"));
                 var cell = (DataGridViewComboBoxCell) cells[e.ColumnIndex];
                 var v = cell.Value;
                 cell.Value = null;
@@ -171,33 +167,33 @@ namespace CommonTypes
         private void ButOK_Click(object sender, EventArgs e)
         {
             var dic = AddInf(_infDic);
-            string err = Provider.CheckSettings(dic, _namesDic);
+            string err = Connect.CheckSettings(dic);
             if (err.IsEmpty() || Different.MessageQuestion(err + Environment.NewLine + "Закрыть форму настроек?", "Недопустимые настройки"))
             {
-                Provider.Inf = dic.ToPropertyString();
+                Connect.Inf = dic.ToPropertyString();
                 Close();
-                Provider.IsSetup = false;
+                Connect.IsSetup = false;
             }    
         }
 
         private void ButCancel_Click(object sender, EventArgs e)
         {
-            Provider.Inf = _infDic.ToPropertyString();
+            Connect.Inf = _infDic.ToPropertyString();
             Close();
-            Provider.IsSetup = false;
+            Connect.IsSetup = false;
         }
 
         private void ButCheck_Click(object sender, EventArgs e)
         {
             var dic = AddInf(_infDic);
-            string err = Provider.CheckSettings(dic, _namesDic);
+            string err = Connect.CheckSettings(dic);
             if (!err.IsEmpty())
                 Different.MessageError(err, "Недопустимые настройки");
             else
             {
-                Provider.Inf = dic.ToPropertyString();
-                bool b = Provider.CheckConnection();
-                MessageBox.Show(Provider.CheckConnectionMessage, "InfoTask", MessageBoxButtons.OK, b ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+                Connect.Inf = dic.ToPropertyString();
+                bool b = Connect.CheckConnection();
+                MessageBox.Show(Connect.CheckConnectionMessage, "InfoTask", MessageBoxButtons.OK, b ? MessageBoxIcon.Information : MessageBoxIcon.Error);
             }
         }
 
@@ -205,16 +201,5 @@ namespace CommonTypes
         {
 
         }
-
-        //private void Props_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
-        //{
-        //    if (Props.CurrentCell.ColumnIndex == 3)
-        //    {
-        //        ComboBox combo = e.Control as ComboBox;
-        //        if (combo == null) return;
-        //        combo.DropDownStyle = ComboBoxStyle.DropDown;
-        //        if (combo.SelectedIndex < 0) combo.SelectedIndex = 0;
-        //    }
-        //}
     }
 }

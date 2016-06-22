@@ -4,7 +4,7 @@ using System.Threading;
 using BaseLibrary;
 using OPCAutomation;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     //Соединение с OPC-сервером
     public abstract class OpcServer : ProviderBase, IReceiver

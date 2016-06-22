@@ -3,14 +3,15 @@ using System.Data;
 using System.Data.OleDb;
 using BaseLibrary;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     public abstract class OleDbSourceConnect : SourceConnect
     {
         protected OleDbSourceConnect() { }
-        //Соединение с провайдером Historian
-        protected OleDbSourceConnect(string name, Logger logger) : base(name, logger) { }
+        protected OleDbSourceConnect(string name, Logger logger) 
+            : base(name, logger) { }
 
+        //Соединение с провайдером OleDb
         public OleDbConnection Connection { get; set; }
         
         //True, если соединение прошло успешно, становится False, если произошла ошибка

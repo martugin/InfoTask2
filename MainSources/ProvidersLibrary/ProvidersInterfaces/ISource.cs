@@ -1,7 +1,8 @@
 using System;
 using BaseLibrary;
+using CommonTypes;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     //Стандартный интерфейс для соединений источников 
     public interface ISourceConnect : IProviderConnect

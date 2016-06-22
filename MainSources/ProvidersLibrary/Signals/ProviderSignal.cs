@@ -1,6 +1,7 @@
 ﻿using BaseLibrary;
+using CommonTypes;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     //Базовый класс для всех сигналов источников и приемников
     public class ProviderSignal : IContextable

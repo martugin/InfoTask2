@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using BaseLibrary;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     //OleDb-источник с чтением значений сигналов по блокам
     public abstract class OleDbSource : SourceBase
@@ -50,13 +50,12 @@ namespace CommonTypes
             CloneCutFrequency = 10;
         }
 
-        //Выполняется чтение среза данных
-        protected bool IsCutReading { get; set; }
-
         //Общее количество прочитанных и сформированных значений
         protected int NumRead { get; set; }
         protected int NumWrite { get; set; }
 
+        //Выполняется чтение среза данных
+        protected bool IsCutReading { get; set; }
         //Период считывания данных по текущему блоку 
         private DateTime _begin;
         private DateTime _end;
@@ -112,8 +111,9 @@ namespace CommonTypes
                 }
                 else
                 {
-                    nadd += ProviderSignals.Values.Sum(sig => sig.MakeEnd());
-                    AddEvent("Добавлены значения в конец интервала", nadd + " значений сформировано");
+                    foreach (var sig in ProviderSignals.Values)
+                        sig.MakeEnd();
+                    AddEvent("Добавлены значения в конец интервала");
                 }
                 NumWrite += nadd;
 
@@ -139,7 +139,7 @@ namespace CommonTypes
 
         //Разбиение списка объектов на блоки
         private List<List<SourceObject>> MakeParts(IEnumerable<SourceObject> objects, //Список объектов
-                                                                            int partSize) //Размер одного блока
+                                                                          int partSize) //Размер одного блока
         {
             var parts = new List<List<SourceObject>>();
             int i = 0;
@@ -246,10 +246,10 @@ namespace CommonTypes
             while (Rec.Read())
             {
                 nread++;
-                SourceObject ob = null;
+                OleDbSourceObject ob = null;
                 try
                 {
-                    ob = DefineObject();
+                    ob = (OleDbSourceObject)DefineObject();
                     if (ob != null)
                     {
                         if (CloneRec == null)
@@ -281,14 +281,11 @@ namespace CommonTypes
         //Освобождение ресурсов, занятых провайдером
         public override void Dispose()
         {
-            try { if (Rec != null) Rec.Dispose(); }
-            catch { }
-            try
-            {
-                if (ProviderConnect != null)
-                    ProviderConnect.Dispose();
-            }
-            catch { }
+            base.Dispose();
+            if (Rec != null) Rec.Dispose();
+            if (CloneRec != null) CloneRec.Dispose();
+            if (CloneCutRec != null) CloneCutRec.Dispose();
+            if (CloneErrorRec != null) CloneErrorRec.Dispose();
         }
     }
 }

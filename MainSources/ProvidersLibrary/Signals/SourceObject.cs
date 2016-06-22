@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using BaseLibrary;
+using CommonTypes;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     //Один сигнал для чтения по блокам
     public class SourceObject : IContextable
@@ -41,7 +42,7 @@ namespace CommonTypes
             return ValueSignal = ValueSignal ?? sig;
         }
         
-        //Для объекта опредлено значение среза на время time
+        //Для объекта опредлено значение среза
         public bool HasBegin { get; private set; }
         
         //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
@@ -100,13 +101,6 @@ namespace CommonTypes
             return Source.MakeError(number, this);
         }
 
-        //Чтение одной строчки значений из рекордсета, возвращает количество используемых значений
-        public int MakeValueFromRec(IRecordRead rec)
-        {
-            ValueTime = ReadTime(rec);
-            ReadValue(rec);
-            return AddObjectMoments();
-        }
         protected virtual int AddObjectMoments()
         {
             return 0;
@@ -115,7 +109,7 @@ namespace CommonTypes
         //Запись в клон
         #region
         //Запись характеристик объекта в таблицу CloneSignals клон
-        public void WriteToClone(RecDao rec)
+        public void WritePropsToClone(RecDao rec)
         {
             rec.AddNew();
             rec.Put("SignalContext", Context);
@@ -127,53 +121,17 @@ namespace CommonTypes
 
         //Поля значения объекта для клона
         //Время последнего и текущего значения добавленного в клон
-        protected DateTime ValueTime { get; private set; }
-        protected DateTime CurValueTime { get; private set; }
+        protected DateTime ValueTime { get; set; }
+        protected DateTime CurValueTime { get; set; }
 
-        //Чтение одной строчки значений из рекордсета, и запись ее в клон
-        public int ReadValueToClone(IRecordRead rec, //Исходный рекордсет
-                                                   IRecordAdd recClone, //Рекордсет клона
-                                                   IRecordAdd recCut) //Рекордсет срезов клона
-        {
-            int nwrite = 0;
-            CurValueTime = ReadTime(rec);
-            var d1 = RemoveMinultes(CurValueTime);
-            var d = RemoveMinultes(ValueTime).AddMinutes(Source.CloneCutFrequency);
-            while (d <= d1)
-            {
-                recCut.AddNew();
-                recCut.Put("ValueTime", d);
-                PutValueToClone(recCut);
-                recCut.Update();
-                d = d.AddMinutes(Source.CloneCutFrequency);
-                nwrite++;
-            }
-            ValueTime = CurValueTime;
-            ReadValue(rec);
-            recClone.AddNew();
-            recCut.Put("ValueTime", ValueTime);
-            PutValueToClone(recClone);
-            recClone.Update();
-            return nwrite + 1;
-        }
-
-        private DateTime RemoveMinultes(DateTime time)
+        protected DateTime RemoveMinultes(DateTime time)
         {
             int m = time.Minute;
             int k = m / Source.CloneCutFrequency;
             var d = ValueTime.AddMinutes(ValueTime.Minute).AddSeconds(ValueTime.Second).AddMilliseconds(ValueTime.Millisecond);
             return d.AddMinutes(k*m);
         }
-
-        //Прочитать время
-        protected virtual DateTime ReadTime(IRecordRead rec)
-        {
-            return DateTime.MinValue;
-        }
-
-        //Чтение значений из источника для клона
-        protected virtual void ReadValue(IRecordRead rec) { }
-
+        
         //Запись одной строчки значений из полей в клон
         protected virtual void PutValueToClone(IRecordAdd rec) { }
         #endregion

@@ -56,7 +56,7 @@ namespace CommonTypes
         protected abstract void AddCurMomEnd();
         
         //Добавить время, ошибку и значение в списки
-        private int AddTimeErrorMean(DateTime time, ErrMom err)
+        private void AddTimeErrorMean(DateTime time, ErrMom err)
         {
             CurNum = Count - 1;
             if (Count == 0)
@@ -71,7 +71,6 @@ namespace CommonTypes
                 AddCurMom(CurNum);
                 AddError(err, CurNum);    
             }
-            return 1;
         }
 
         private void AddMomToEnd(DateTime time, ErrMom err)
@@ -83,52 +82,52 @@ namespace CommonTypes
         }
 
         //Добавление значений в список, возвращают количество реально добавленных значений
-        public int AddMom(IMom mom)
+        public void AddMom(IMom mom)
         {
             CurMean.CopyValueFrom(mom);
-            return AddTimeErrorMean(mom.Time, mom.Error);
+            AddTimeErrorMean(mom.Time, mom.Error);
         }
 
-        public int AddMom(DateTime time, IMean mean)
+        public void AddMom(DateTime time, IMean mean)
         {
             CurMean.CopyValueFrom(mean);
-            return AddTimeErrorMean(time, mean.Error);
+            AddTimeErrorMean(time, mean.Error);
         }
 
-        public int AddMom(DateTime time, bool b, ErrMom err = null)
+        public void AddMom(DateTime time, bool b, ErrMom err = null)
         {
             CurMean.Boolean = b;
-            return AddTimeErrorMean(time, err);
+            AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, int i, ErrMom err = null)
+        public void AddMom(DateTime time, int i, ErrMom err = null)
         {
             CurMean.Integer = i;
-            return AddTimeErrorMean(time, err);
+            AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, double r, ErrMom err = null)
+        public void AddMom(DateTime time, double r, ErrMom err = null)
         {
             CurMean.Real = r;
-            return AddTimeErrorMean(time, err);
+            AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, DateTime d, ErrMom err = null)
+        public void AddMom(DateTime time, DateTime d, ErrMom err = null)
         {
             CurMean.Date = d;
-            return AddTimeErrorMean(time, err);
+            AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, string s, ErrMom err = null)
+        public void AddMom(DateTime time, string s, ErrMom err = null)
         {
             CurMean.String = s;
-            return AddTimeErrorMean(time, err);
+            AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, object ob, ErrMom err = null)
+        public void AddMom(DateTime time, object ob, ErrMom err = null)
         {
             CurMean.Object = ob;
-            return AddTimeErrorMean(time, err);
+            AddTimeErrorMean(time, err);
         }
 
         //Очистка списка значений

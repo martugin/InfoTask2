@@ -1,13 +1,14 @@
 ﻿using System;
 using BaseLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace Provider
 {
     //Объект
     internal class ObjectWonderware : SourceObject
     {
-        public ObjectWonderware(WonderwareHistorianSource source, string tag) : base(source)
+        public ObjectWonderware(WonderwareSource source, string tag) : base(source)
         {
             Inf = TagName = tag;
         }

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using BaseLibrary;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     //Базовый класс для источников, получающих даннные через SQL-сервер
-    public abstract class SqlSourceBase : SourceBase
+    public abstract class SqlSourceConnect : SourceConnect
     {
         //Загрузка свойств из словаря
-        protected override void ReadDicS(DicS<string> dic)
+        protected override void ReadInf(DicS<string> dic)
         {
             bool e = dic["IndentType"].ToUpper() != "WINDOWS";
             string server = dic["SQLServer"], db = dic["Database"];
@@ -17,7 +17,7 @@ namespace CommonTypes
         }
 
         //Возвращает выпадающий список для поля настройки, props - словарь значение свойств, propname - имя свойства для ячейки со списком
-        public override List<string> ComboBoxList(Dictionary<string, string> props, string propname)
+        internal override List<string> ComboBoxList(Dictionary<string, string> props, string propname)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace CommonTypes
         }
 
         //Проверка настроек
-        public override string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
+        public override string CheckSettings(Dictionary<string, string> inf)
         {
             string err = "";
             if (inf["SQLServer"].IsEmpty()) err += "Не указано имя SQL-сервера" + Environment.NewLine;

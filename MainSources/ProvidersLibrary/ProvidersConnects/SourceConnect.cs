@@ -1,7 +1,7 @@
 ﻿using System;
 using BaseLibrary;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     //Базовый класс для соединений с источниками
     public abstract class SourceConnect : ProviderConnect, ISourceConnect

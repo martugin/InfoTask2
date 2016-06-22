@@ -1,4 +1,4 @@
-﻿namespace CommonTypes
+﻿namespace ProvidersLibrary
 {
     partial class ProviderSetupForm
     {

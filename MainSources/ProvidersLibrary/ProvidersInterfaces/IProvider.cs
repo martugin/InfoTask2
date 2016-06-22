@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BaseLibrary;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     //Стандартный интерфейс соединения с провайдером
     public interface IProviderConnect : IDisposable, IContextable
@@ -45,6 +45,8 @@ namespace CommonTypes
     {
         //Соединение с провайдером
         IProviderConnect ProviderConnect { get; }
+        //Комплект провайдера
+        string Complect { get; }
 
         //Подготовка провайдера к работе (во время PrepareCalc)
         void Prepare();

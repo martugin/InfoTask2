@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using BaseLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace Provider
 {

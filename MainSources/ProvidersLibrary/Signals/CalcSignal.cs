@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using CommonTypes;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     //Функции для расчетных сигналов
     internal enum SignalFunction

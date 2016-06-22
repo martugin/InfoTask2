@@ -1,6 +1,4 @@
-﻿using BaseLibrary;
-
-namespace CommonTypes
+﻿namespace ProvidersLibrary
 {
     //Один параметр для записи в OPC
     public class OpcItem : ReceiverSignal

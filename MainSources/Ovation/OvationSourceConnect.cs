@@ -1,5 +1,5 @@
 ﻿using BaseLibrary;
-using CommonTypes;
+using ProvidersLibrary;
 
 namespace Provider
 {
@@ -11,10 +11,10 @@ namespace Provider
         //Код провайдера
         public override string Code { get { return "OvationSource"; } }
         //Комплект провайдера
-        public override string Complect { get { return "Ovation"; } }
+        public override string Complect { get { return "Ovation"; } protected set {}}
 
         //Настройки провайдера
-        protected override void ReadDicS(DicS<string> dic)
+        protected override void ReadInf(DicS<string> dic)
         {
             _dataSource = dic["DataSource"];
             Hash = "OvationHistorian=" + _dataSource;
@@ -24,7 +24,7 @@ namespace Provider
         private string _dataSource;
 
         //Строка соединения с Historian
-        protected override string  ConnectinString
+        protected override string ConnectinString
         {
             get
             {

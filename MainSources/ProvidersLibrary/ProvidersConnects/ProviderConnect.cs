@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using BaseLibrary;
 
-namespace CommonTypes
+namespace ProvidersLibrary
 {
     //Базовый класс для соединений с провайдерами
     public abstract class ProviderConnect : ExternalLogger, IProviderConnect
@@ -39,12 +39,12 @@ namespace CommonTypes
                 ProviderInf = value;
                 var dic = ProviderInf.ToPropertyDicS();
                 dic.DefVal = "";
-                ReadDicS(dic);
+                ReadInf(dic);
             }
         }
 
         //Загрузка свойств из словаря
-        protected abstract void ReadDicS(DicS<string> dic);
+        protected abstract void ReadInf(DicS<string> dic);
 
         //Контекст и имя объекта для записи комманд и ошибок, заданные по умолчанию
         public override string Context
@@ -71,7 +71,7 @@ namespace CommonTypes
                 AddMenuCommands();
             }
             IsSetup = true;
-            new ProviderSetupForm { Provider = this }.ShowDialog();
+            new ProviderSetupForm { Connect = this }.ShowDialog();
             while (IsSetup) Thread.Sleep(500);
             return ProviderInf;
         }

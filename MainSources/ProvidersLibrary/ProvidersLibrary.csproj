@@ -45,16 +45,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\DifferentProviders.cs" />
+    <Compile Include="Common\Enums.cs" />
     <Compile Include="OPC\OpcItem.cs" />
     <Compile Include="OPC\OpcServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProvidersBase\OleDbSource.cs" />
-    <Compile Include="ProvidersConnects\CloneAccessConnect.cs" />
+    <Compile Include="Providers\OleDbSource.cs" />
+    <Compile Include="ProvidersConnects\CloneConnect.cs" />
     <Compile Include="ProvidersInterfaces\IProvider.cs" />
     <Compile Include="ProvidersInterfaces\IReceiver.cs" />
     <Compile Include="ProvidersInterfaces\ISource.cs" />
     <Compile Include="ProvidersConnects\OleDbSourceConnect.cs" />
-    <Compile Include="ProvidersBase\ProviderBase.cs" />
+    <Compile Include="Providers\ProviderBase.cs" />
     <Compile Include="ProvidersConnects\ProviderConnect.cs" />
     <Compile Include="ProvidersConnects\ProviderSetupForm.cs">
       <SubType>Form</SubType>
@@ -63,10 +65,11 @@
       <DependentUpon>ProviderSetupForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ProvidersConnects\SourceConnect.cs" />
-    <Compile Include="ProvidersBase\SqlSourceBase.cs" />
+    <Compile Include="ProvidersConnects\SqlSourceConnect.cs" />
     <Compile Include="Signals\CalcSignal.cs" />
+    <Compile Include="Signals\OleDbSourceObject.cs" />
     <Compile Include="Signals\ProviderSignal.cs" />
-    <Compile Include="ProvidersBase\SourceBase.cs" />
+    <Compile Include="Providers\SourceBase.cs" />
     <Compile Include="Signals\SourceObject.cs" />
     <Compile Include="Signals\ReceiverSignal.cs" />
     <Compile Include="Signals\SourceSignal.cs" />
