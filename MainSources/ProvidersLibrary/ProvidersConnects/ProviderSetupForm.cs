@@ -16,8 +16,8 @@ namespace ProvidersLibrary
         }
 
         //Ссылка на провайдер
-        private ProviderConnect _connect;
-        public ProviderConnect Connect
+        private ProvConn _connect;
+        public ProvConn Connect
         {
             get { return _connect; }
             set

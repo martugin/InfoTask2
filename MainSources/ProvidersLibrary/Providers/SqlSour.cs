@@ -4,8 +4,8 @@ using BaseLibrary;
 
 namespace ProvidersLibrary
 {
-    //Базовый класс для источников, получающих даннные через SQL-сервер
-    public abstract class SqlSourceConnect : SourceConnect
+    //Источник, использующий SQL-сервер
+    public abstract class SqlSour : AdoSour
     {
         //Загрузка свойств из словаря
         protected override void ReadInf(DicS<string> dic)
@@ -13,7 +13,11 @@ namespace ProvidersLibrary
             bool e = dic["IndentType"].ToUpper() != "WINDOWS";
             string server = dic["SQLServer"], db = dic["Database"];
             SqlProps = new SqlProps(server, db, e, dic["Login"], dic["Password"]);
-            Hash = "SQLServer=" + server + ";Database=" + db;
+        }
+
+        public override string Hash
+        {
+            get { return "SQLServer=" + SqlProps.ServerName + ";Database=" + SqlProps.DatabaseName; }
         }
 
         //Возвращает выпадающий список для поля настройки, props - словарь значение свойств, propname - имя свойства для ячейки со списком
@@ -32,7 +36,7 @@ namespace ProvidersLibrary
 
         //Настройки SQL Server
         protected SqlProps SqlProps { get; private set; }
-        
+
         //Проверка соединения
         public override bool Check()
         {
@@ -53,7 +57,7 @@ namespace ProvidersLibrary
         }
 
         //Проверка настроек
-        public override string CheckSettings(Dictionary<string, string> inf)
+        public override string CheckSettings(DicS<string> inf)
         {
             string err = "";
             if (inf["SQLServer"].IsEmpty()) err += "Не указано имя SQL-сервера" + Environment.NewLine;

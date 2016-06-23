@@ -20,22 +20,17 @@ namespace ProvidersLibrary
     //---------------------------------------------------------------------------------------------
     
     //Расчетный сигнал
-    public class CalcSignal : ProviderSignal, ISourceSignal
+    public class SourCalcSignal : SourSignal
     {
-        public CalcSignal(SourceSignal sourceSignal, string code, DataType dataType, string formula) 
-            : base(code, dataType)
+        public SourCalcSignal(SourConn conn, SourInitSignal initSignal, string code, DataType dataType, string formula) 
+            : base(conn, code, dataType)
         {
-            _sourceSignal = sourceSignal;
+            _initSignal = initSignal;
             ParseFormula(formula);
-            _momList = MFactory.NewList(dataType);
         }
 
         //Сигнал, на основе которого вычисляется значение
-        private readonly SourceSignal _sourceSignal;
-
-        //Возвращаемый список значений
-        private readonly MomList _momList;
-        public IMomListReadOnly MomList { get { return _momList; } }
+        private readonly SourInitSignal _initSignal;
 
         //Вычисляемая функция
         private SignalFunction _function;

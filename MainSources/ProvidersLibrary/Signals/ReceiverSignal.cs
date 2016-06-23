@@ -3,7 +3,7 @@
 namespace ProvidersLibrary
 {
     //Сигнал приемника
-    public class ReceiverSignal : ProviderSignal
+    public class ReceiverSignal : ProvSignal
     {
         public ReceiverSignal(IReceiver receiver, string code, DataType dataType, string signalInf)
             : base(code, dataType, signalInf)

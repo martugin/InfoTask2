@@ -25,7 +25,7 @@ namespace Provider
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
 
         //Добавить объект
-        protected override SourceObject AddObject(SourceSignal sig, string context)
+        protected override SourObject AddObject(SourInitSignal sig, string context)
         {
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))
@@ -65,7 +65,7 @@ namespace Provider
         }
 
         //Запрос значений из Historian по списку сигналов и интервалу
-        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en)
+        protected override bool QueryPartValues(List<SourObject> part, DateTime beg, DateTime en)
         {
             var sb = new StringBuilder("select ID, TIMESTAMP, TIME_NSEC, F_VALUE, RAW_VALUE, STS from PT_HF_HIST " + "where (");
             bool isFirst = true;
@@ -91,7 +91,7 @@ namespace Provider
         }
 
         //Определение текущего считываемого объекта
-        protected override SourceObject DefineObject()
+        protected override SourObject DefineObject()
         {
             return _objectsId[Rec.GetInt("Id")];
         }

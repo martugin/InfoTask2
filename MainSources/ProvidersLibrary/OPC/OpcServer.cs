@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Threading;
 using BaseLibrary;
+using CommonTypes;
 using OPCAutomation;
 
 namespace ProvidersLibrary
 {
     //Соединение с OPC-сервером
-    public abstract class OpcServer : ProviderBase, IReceiver
+    public abstract class OpcServer : ReceivBase
     {
         protected OpcServer() 
         {
@@ -19,8 +20,6 @@ namespace ProvidersLibrary
             Inf = inf;
         }
 
-        //Тип
-        public override ProviderType Type { get { return ProviderType.Receiver; } }
         //Допускается передача списка мгновенных значений за один раз
         public bool AllowListValues { get { return false; } }
 

@@ -45,34 +45,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonProviders\CloneObject.cs" />
     <Compile Include="Common\DifferentProviders.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="OPC\OpcItem.cs" />
     <Compile Include="OPC\OpcServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\OleDbSource.cs" />
-    <Compile Include="ProvidersConnects\CloneConnect.cs" />
-    <Compile Include="ProvidersInterfaces\IProvider.cs" />
-    <Compile Include="ProvidersInterfaces\IReceiver.cs" />
-    <Compile Include="ProvidersInterfaces\ISource.cs" />
-    <Compile Include="ProvidersConnects\OleDbSourceConnect.cs" />
-    <Compile Include="Providers\ProviderBase.cs" />
-    <Compile Include="ProvidersConnects\ProviderConnect.cs" />
+    <Compile Include="ProvidersConnects\ProvConn.cs" />
+    <Compile Include="ProvidersConnects\ReceivConn.cs" />
+    <Compile Include="ProvidersConnects\SourConn.cs" />
+    <Compile Include="Providers\AdoSour.cs" />
+    <Compile Include="CommonProviders\CloneSour.cs" />
+    <Compile Include="Providers\OleDbSour.cs" />
+    <Compile Include="Providers\ProvBase.cs" />
     <Compile Include="ProvidersConnects\ProviderSetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ProvidersConnects\ProviderSetupForm.designer.cs">
       <DependentUpon>ProviderSetupForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProvidersConnects\SourceConnect.cs" />
-    <Compile Include="ProvidersConnects\SqlSourceConnect.cs" />
-    <Compile Include="Signals\CalcSignal.cs" />
-    <Compile Include="Signals\OleDbSourceObject.cs" />
-    <Compile Include="Signals\ProviderSignal.cs" />
-    <Compile Include="Providers\SourceBase.cs" />
-    <Compile Include="Signals\SourceObject.cs" />
+    <Compile Include="Providers\ReceivBase.cs" />
+    <Compile Include="Providers\SourBase.cs" />
+    <Compile Include="Providers\SqlSour.cs" />
+    <Compile Include="Signals\SourCalcSignal.cs" />
+    <Compile Include="Signals\ProvSignal.cs" />
+    <Compile Include="Signals\SourObject.cs" />
     <Compile Include="Signals\ReceiverSignal.cs" />
-    <Compile Include="Signals\SourceSignal.cs" />
+    <Compile Include="Signals\SourInitSignal.cs" />
+    <Compile Include="Signals\SourSignal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
@@ -84,9 +84,7 @@
       <Name>CommonTypes</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CommonProviders\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="ProvidersConnects\ProviderSetupForm.resx">
       <DependentUpon>ProviderSetupForm.cs</DependentUpon>

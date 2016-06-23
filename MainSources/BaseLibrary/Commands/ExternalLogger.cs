@@ -5,6 +5,7 @@ namespace BaseLibrary
     //Класс для переопределения операций логгера
     public abstract class ExternalLogger : IContextable
     {
+        protected ExternalLogger() { }
         protected ExternalLogger(Logger logger)
         {
             Logger = logger;
@@ -14,7 +15,7 @@ namespace BaseLibrary
         public Logger Logger { get; set; }
 
         //Контекст заданный по умолчанию
-        public abstract string Context { get; }
+        public abstract string CodeObject { get; }
 
         public double Procent
         {
@@ -37,11 +38,11 @@ namespace BaseLibrary
 
         public void AddError(string text, Exception ex = null, string pars = "", string context = "")
         {
-            Logger.AddError(text, ex, pars, context.IsEmpty() ? Context : context);
+            Logger.AddError(text, ex, pars, context.IsEmpty() ? CodeObject : context);
         }
         public void AddWarning(string text, Exception ex = null, string pars = "", string context = "")
         {
-            Logger.AddWarning(text, ex, pars, context.IsEmpty() ? Context : context);
+            Logger.AddWarning(text, ex, pars, context.IsEmpty() ? CodeObject : context);
         }
 
         public Command Command { get { return Logger.Command; } }

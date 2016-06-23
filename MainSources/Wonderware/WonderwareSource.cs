@@ -16,7 +16,7 @@ namespace Provider
         private readonly Dictionary<string, ObjectWonderware> _objects = new Dictionary<string, ObjectWonderware>();
 
         //Добавить сигнал в провайдер
-        protected override SourceObject AddObject(SourceSignal sig, string context)
+        protected override SourObject AddObject(SourInitSignal sig, string context)
         {
             string tag = sig.Inf["TagName"];
             if (!_objects.ContainsKey(tag))
@@ -62,7 +62,7 @@ namespace Provider
         }
 
         //Запрос значений по одному блоку сигналов
-        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en)
+        protected override bool QueryPartValues(List<SourObject> part, DateTime beg, DateTime en)
         {
             var sb = new StringBuilder("SELECT TagName, DateTime = convert(nvarchar, DateTime, 21), Value, vValue, Quality, QualityDetail FROM History WHERE  TagName IN (");
             for (var n = 0; n < part.Count; n++)
@@ -82,7 +82,7 @@ namespace Provider
         }
 
         //Определение текущего считываемого объекта
-        protected override SourceObject DefineObject()
+        protected override SourObject DefineObject()
         {
             string code = Rec.GetString("TagName");
             if (_objects.ContainsKey(code))

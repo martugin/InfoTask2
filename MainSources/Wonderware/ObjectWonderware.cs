@@ -6,7 +6,7 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Объект
-    internal class ObjectWonderware : SourceObject
+    internal class ObjectWonderware : SourObject
     {
         public ObjectWonderware(WonderwareSource source, string tag) : base(source)
         {
