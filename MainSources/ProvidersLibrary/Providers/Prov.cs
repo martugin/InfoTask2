@@ -5,13 +5,13 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Базовый класс для всех провайдеров
-    public abstract class ProvBase : ExternalLogger
+    public abstract class Prov : ExternalLogger
     {
         //Ссылка на соединение
         public ProvConn Conn { get; set; }
         //Код провайдера
         public abstract string Code { get; }
-        //Кэш для идентификации настройки провайдера
+        //Хэш для идентификации настройки провайдера
         public abstract string Hash { get; }
 
         //Контекст для логгера
@@ -46,6 +46,10 @@ namespace ProvidersLibrary
         public virtual bool Check() { return true; }
         //Соединение установлено
         protected bool IsConnected { get; set; }
+
+        //Текущий период расчета
+        public DateTime PeriodBegin { get { return Conn.PeriodBegin; } }
+        public DateTime PeriodEnd { get { return Conn.PeriodEnd; } }
 
         //Настройка
         #region

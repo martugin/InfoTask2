@@ -8,35 +8,41 @@ using OPCAutomation;
 namespace ProvidersLibrary
 {
     //Соединение с OPC-сервером
-    public abstract class OpcServer : ReceivBase
+    public abstract class OpcServer : Receiv
     {
         protected OpcServer() 
         {
             _server = new OPCServer();
         }
-        protected OpcServer(string name, string inf, Logger logger) : base(name, logger)
-        {
-            _server = new OPCServer();
-            Inf = inf;
-        }
-
+        
         //Допускается передача списка мгновенных значений за один раз
         public bool AllowListValues { get { return false; } }
 
         //Настройки
-        protected override void ReadDicS(DicS<string> dic)
+        protected override void ReadInf(DicS<string> dic)
         {
             ServerName = dic["OPCServerName"];
             Node = dic["Node"];
-            Hash = "OPCServer=" + ServerName + ";Node=" + Node;
+        }
+        //Хэш для идентификации настройки провайдера
+        public override string Hash
+        {
+            get { return "OPCServer=" + ServerName + ";Node=" + Node; ; }
         }
 
         //Тип OPC-сервера
         public string ServerName { get; set; }
         //Имя компьютера
         public  string Node { get; set; }
-        //Соединение установлено и не закрыто
-        public bool IsConnected { get; protected set; }
+
+        //Массив корректно добавленых OPC-итемов
+        private OpcItem[] _itemsList;
+        //Словарь сигналов приемников, ключи - коды в нижнем регистре
+        private readonly Dictionary<string, OpcItem> _signalsCode = new Dictionary<string, OpcItem>();
+        public Dictionary<string, OpcItem> SignalsCode { get { return _signalsCode; } }
+        //Список сигналов приемника с мгновенными значениями
+        private readonly DicS<ReceivSignal> _signals = new DicS<ReceivSignal>();
+        public IDicSForRead<ReceivSignal> Signals { get { return _signals; } }
 
         //OPC сервер
         private readonly OPCServer _server;
@@ -47,15 +53,7 @@ namespace ProvidersLibrary
         private OPCGroup _group;
         //Словарь OPC-итемов, ключи - коды тегов
         private readonly Dictionary<string, OpcItem> _items = new Dictionary<string, OpcItem>();
-        //Массив корректно добавленых OPC-итемов
-        private OpcItem[] _itemsList;
-        //Словарь сигналов приемников, ключи - коды в нижнем регистре
-        private readonly Dictionary<string, OpcItem> _signalsCode = new Dictionary<string, OpcItem>();
-        public Dictionary<string, OpcItem> SignalsCode { get { return _signalsCode; }}
-        //Список сигналов приемника с мгновенными значениями
-        private readonly DicS<ReceiverSignal> _signals = new DicS<ReceiverSignal>();
-        public IDicSForRead<ReceiverSignal> Signals { get { return _signals; } }
-        
+
         //Список доступных OPC-серверов (не работает, а работает на VisualBasic)
         public List<string> ServersList(string node = null)
         {
@@ -101,7 +99,7 @@ namespace ProvidersLibrary
         }
 
         //Проверка настроек
-        public override string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
+        public override string CheckSettings(DicS<string> inf)
         {
             return !inf["OPCServerName"].IsEmpty() ? "" : "Не задано имя OPC-сервера";
         }
@@ -146,10 +144,10 @@ namespace ProvidersLibrary
         }
 
         //Добавить сигнал приемника
-        public ReceiverSignal AddSignal(string signalInf, string code, DataType dataType)
+        public ReceivSignal AddSignal(string signalInf, string code, DataType dataType)
         {
             if (_signalsCode.ContainsKey(code)) return _signalsCode[code];
-            var item = new OpcItem(signalInf, code, dataType, this);
+            var item = new OpcItem(ReceivConn, code, dataType, signalInf);
             _signals.Add(item.Code, item);
             _signalsCode.Add(code, item);
             item.Tag = GetOpcItemTag(item.Inf);
@@ -163,10 +161,10 @@ namespace ProvidersLibrary
         protected abstract string GetOpcItemTag(DicS<string> inf);
 
         //Добавить сигнал приемника, задав только тэг (для тестовой записи в настройках), сразу же передается значение как строка
-        public ReceiverSignal AddSignalByTag(string tag, DataType dataType, string v)
+        public ReceivSignal AddSignalByTag(string tag, DataType dataType, string v)
         {
             if (_signalsCode.ContainsKey(tag)) return _signalsCode[tag];
-            var item = new OpcItem("", tag, dataType, this);
+            var item = new OpcItem(ReceivConn, tag, dataType, "");
             _signals.Add(item.Code, item);
             _signalsCode.Add(tag, item);
             item.Tag = tag;
@@ -271,7 +269,6 @@ namespace ProvidersLibrary
     {
         public DebugOpcServer(string serverName, string node)
         {
-            Name = "Check";
             Inf = "OpcServerName=" + serverName + ";Node=" + (node ?? "");
             Logger = new Logger();
         }

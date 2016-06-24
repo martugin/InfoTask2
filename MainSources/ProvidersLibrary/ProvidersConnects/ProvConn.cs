@@ -26,8 +26,8 @@ namespace ProvidersLibrary
         }
 
         //Соединения с главным и резервным провайдером
-        public ProvBase MainProvider { get; set; }
-        public ProvBase ReserveProvider { get; set; }
+        public Prov MainProvider { get; internal set; }
+        public Prov ReserveProvider { get; internal set; }
 
         //Текущий период расчета
         public DateTime PeriodBegin { get; protected set; }

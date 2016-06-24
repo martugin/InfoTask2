@@ -130,7 +130,6 @@ namespace CommonTypes
             AddTimeErrorMean(time, err);
         }
 
-        //Очистка списка значений
         public void Clear()
         {
             _times.Clear();

@@ -4,68 +4,50 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using BaseLibrary;
-using CommonTypes;
 using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(IProvider))]
+    [Export(typeof(Prov))]
     [ExportMetadata("Code", "OvationSource")]
-    public class OvationSource : OleDbSource
+    public class OvationSource : OleDbSour
     {
-        protected override void MakeConnect(string name, Logger logger)
+        //Соединение
+        internal OvationConn OvationConn { get { return (OvationConn) Conn; } }
+        //Код провайдера
+        public override string Code { get { return "OvationSource"; } }
+
+        public override string Hash { get { return "OvationHistorian=" + _dataSource; } }
+        //Настройки провайдера
+        protected override void ReadInf(DicS<string> dic)
         {
-            ProviderConnect = new OvationSourceConnect(name, logger);
+            _dataSource = dic["DataSource"];
+        }
+        //Имя дропа
+        private string _dataSource;
+
+        protected override string ConnectionString
+        {
+            get { return "Provider=OvHOleDbProv.OvHOleDbProv.1;Persist Security Info=True;User ID='';" +
+                              "Data Source=" + _dataSource + ";Location='';Mode=ReadWrite;Extended Properties=''"; }
         }
 
-        //Комплект
-        public override string Complect { get { return "Ovation"; }}
-
-        //Словарь объектов по Id в Historian
-        private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
-
-        //Добавить объект
-        protected override SourObject AddObject(SourInitSignal sig, string context)
+                //Проверка соединения в настройке
+        public override bool CheckConnection()
         {
-            int id = sig.Inf.GetInt("Id");
-            if (!_objectsId.ContainsKey(id))
-                return _objectsId.Add(id, new ObjectOvation(this, id, context));
-            return _objectsId[id];
-        }
-        
-        //Удалить все сигналы
-        public override void ClearSignals()
-        {
-            base.ClearSignals();
-            _objectsId.Clear();
-        }
-
-        //Создание фабрики ошибок
-        protected override IErrMomFactory MakeErrFactory()
-        {
-            var factory = new ErrMomFactory(ProviderConnect.Code, ErrMomType.Source);
-            factory.AddGoodDescr(0);
-            factory.AddDescr(1, "FAIR", ErrorQuality.Warning);
-            factory.AddDescr(2, "POOR", ErrorQuality.Warning);
-            factory.AddDescr(3, "BAD");
-            factory.AddDescr(4, "Нет данных");
-            return factory;
+            if (Check())
+            {
+                CheckConnectionMessage = "Успешное соединение с Historian";
+                return true;
+            }
+            AddError(CheckConnectionMessage = "Ошибка соединения с Historian");
+            return false;
         }
 
         //Чтение значений
         #region
-        //Запись объектов в таблицу CloneSignals клона
-        protected override void WriteObjectsToClone(RecDao rec)
-        {
-            foreach (var ob in _objectsId.Values)
-            {
-                ob.WritePropsToClone(rec);
-                CloneObjects.Add(ob.IdInClone, ob);
-            }
-        }
-
         //Запрос значений из Historian по списку сигналов и интервалу
-        protected override bool QueryPartValues(List<SourObject> part, DateTime beg, DateTime en)
+        protected override IRecordRead QueryPartValues(List<SourObject> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("select ID, TIMESTAMP, TIME_NSEC, F_VALUE, RAW_VALUE, STS from PT_HF_HIST " + "where (");
             bool isFirst = true;
@@ -81,19 +63,20 @@ namespace Provider
               .Append(") and (TIMESTAMP <= ")
               .Append(en.ToOvationString())
               .Append(") order by TIMESTAMP, TIME_NSEC");
-            Rec = new ReaderAdo(Connection, sb.ToString());
-            if (en.Subtract(beg).TotalMinutes > 59 && (Rec == null || !Rec.HasRows))
+            var rec = new ReaderAdo(Connection, sb.ToString());
+            if (en.Subtract(beg).TotalMinutes > 59 && !rec.HasRows)
             {
-                AddWarning("Значения из источника не получены", null, beg + " - " + en +"; " + part.First().Inf + " и др.");
-                return IsConnected = false;
+                AddWarning("Значения из источника не получены", null, beg + " - " + en +"; " + part.First().CodeObject + " и др.");
+                IsConnected = false;
+                return null;
             }
-            return true;
+            return rec;
         }
 
         //Определение текущего считываемого объекта
-        protected override SourObject DefineObject()
+        protected override SourObject DefineObject(IRecordRead rec)
         {
-            return _objectsId[Rec.GetInt("Id")];
+            return OvationConn.ObjectsId[rec.GetInt("Id")];
         }
 
         //Задание нестандартных свойств получения данных
@@ -107,15 +90,15 @@ namespace Provider
         protected override void ReadCut()
         {
             using (Start(0, 50)) //Срез по 4 минутам
-                ReadValuesByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
+                ReadValuesByParts(OvationConn.ObjectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
             using (Start(50, 100)) //Срез по 61 минуте
-                ReadValuesByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
+                ReadValuesByParts(OvationConn.ObjectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
         }
 
         //Чтение изменений
         protected override void ReadChanges()
         {
-            ReadValuesByParts(_objectsId.Values, 200, PeriodBegin, PeriodEnd, false);
+            ReadValuesByParts(OvationConn.ObjectsId.Values, 200, PeriodBegin, PeriodEnd, false);
         }
         #endregion
     }

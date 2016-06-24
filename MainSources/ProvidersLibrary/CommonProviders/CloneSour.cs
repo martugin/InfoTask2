@@ -54,7 +54,7 @@ namespace ProvidersLibrary
 
         protected override void AddMenuCommands()
         {
-            base.AddMenuCommands();
+            throw new NotImplementedException();
         }
 
         protected override TimeInterval GetSourceTime()
@@ -87,7 +87,7 @@ namespace ProvidersLibrary
                     {
                         SourceConn.ProviderSignals[code].IdInClone = id;
                         rec.Put("Otm", true);
-                        var ob = new CloneObject(SourceConn, code);
+                        var ob = new CloneObject(SourceConn);
                         _objectsId.Add(id, ob);
                         _objects.Add(ob);
                     }
@@ -95,46 +95,43 @@ namespace ProvidersLibrary
                 }
         }
 
-        //Читать из таблицы срезов
-        private bool _isCutTable;
         //Читать из таблицы строковых значений
         private bool _isStrTable;
 
         //Чтение среза
         protected override void ReadCut()
         {
-            DateTime d = SourceConn.RemoveMinultes(SourceConn.PeriodBegin);
+            DateTime d = SourceConn.RemoveMinultes(PeriodBegin);
             AddEvent("Чтение среза действительных значений из таблицы изменений");
-            _isStrTable = _isCutTable = false;
-            ReadPart(_objects, d, SourceConn.PeriodBegin);
+            _isStrTable = false;
+            ReadPart(_objects, d, PeriodBegin, false);
             AddEvent("Чтение среза действительных значений из таблицы срезов");
-            _isStrTable = false; _isCutTable = true;
-            ReadPart(_objects, d.AddSeconds(-1), d.AddSeconds(1));
+            _isStrTable = false;
+            ReadPart(_objects, d.AddSeconds(-1), d.AddSeconds(1), true);
             AddEvent("Чтение среза строковых значений из таблицы изменений");
-            _isStrTable = true; _isCutTable = false;
-            ReadPart(_objects, d, SourceConn.PeriodBegin);
+            _isStrTable = true;
+            ReadPart(_objects, d, PeriodBegin, false);
             AddEvent("Чтение среза строковых значений из таблицы срезов");
-            _isStrTable = _isCutTable = true;
-            ReadPart(_objects, d.AddSeconds(-1), d.AddSeconds(1));
+            _isStrTable = true;
+            ReadPart(_objects, d.AddSeconds(-1), d.AddSeconds(1), true);
         }
 
         //Чтение изменений
         protected override void ReadChanges()
         {
-            _isCutTable = true;
             AddEvent("Чтение изменений действительных значений");
             _isStrTable = false;
-            ReadPart(_objects, Conn.PeriodBegin, Conn.PeriodEnd);
+            ReadPart(_objects, PeriodBegin, PeriodEnd, false);
             AddEvent("Чтение изменений строковых значений");
             _isStrTable = true;
-            ReadPart(_objects, Conn.PeriodBegin, Conn.PeriodEnd);
+            ReadPart(_objects, PeriodBegin, PeriodEnd, false);
         }
 
         //Запрос значений из клона
-        protected override IRecordRead QueryPartValues(List<SourObject> part, DateTime beg, DateTime en)
+        protected override IRecordRead QueryPartValues(List<SourObject> part, DateTime beg, DateTime en, bool isCut)
         {
-            string table = "Moment" + (_isStrTable ? "Str" : "") + "Values" + (_isCutTable ? "Cut" : "");
-            string timeField = (_isCutTable ? "Cut" : "") + "Time";
+            string table = "Moment" + (_isStrTable ? "Str" : "") + "Values" + (isCut ? "Cut" : "");
+            string timeField = (isCut ? "Cut" : "") + "Time";
             return new RecDao(_cloneFile, "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
                                                              " WHERE (Signals.Otm=True) AND (" + table + "." + timeField + ">=" + beg.ToAccessString() + ") AND (" + table + "." + timeField + "<=" + en.ToAccessString() + ")");
         }

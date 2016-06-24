@@ -7,13 +7,13 @@
         public override ProviderType Type { get { return ProviderType.Receiver; } }
 
         //Текущий провайдер-приемник
-        private ReceivBase _receiver;
-        public ReceivBase Receiver
+        private Receiv _receiver;
+        public Receiv Receiver
         {
             get
             {
                 if (_receiver == null && MainProvider != null)
-                    _receiver = (ReceivBase)MainProvider;
+                    _receiver = (Receiv)MainProvider;
                 return _receiver;
             }
         }

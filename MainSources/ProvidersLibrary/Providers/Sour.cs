@@ -4,19 +4,20 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Базовый класс для провайдеров источников 
-    public abstract class SourBase : ProvBase
+    public abstract class Sour : Prov
     {
-        protected SourBase()
+        protected Sour()
         {
             NeedCut = true;
         }
 
         //Ссылка на соединение
-        internal SourConn SourceConn { get { return (SourConn)Conn; } }
+        public SourConn SourceConn { get { return (SourConn)Conn; } }
 
         //Получение диапазона времени источника
-        internal TimeInterval GetTime()
+        internal protected TimeInterval GetTime()
         {
+            //Todo переделать на Danger
             try
             {
                 return GetSourceTime();

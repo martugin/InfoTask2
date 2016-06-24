@@ -8,18 +8,15 @@ namespace ProvidersLibrary
     //Один сигнал для чтения по блокам
     public abstract class SourObject : IContextable
     {
-        protected SourObject(SourConn conn, string codeObject)
+        protected SourObject(SourConn conn)
         {
             SourceConn = conn;
-            CodeObject = codeObject;
         }
 
         //Ссылка на источник
         protected SourConn SourceConn { get; private set; } 
-        //Информация по объекту
-        public string Inf { get; set; }
         //Код объекта для формирования ошибок
-        public string CodeObject { get; private set; }
+        public string CodeObject { get; internal set; }
 
         //Основной сигнал объекта
         public SourInitSignal ValueSignal { get; set; }
@@ -101,8 +98,8 @@ namespace ProvidersLibrary
             return SourceConn.MakeError(number, this);
         }
 
-        //Добавление по мгновенному значению во все сигналы объекта
-        protected virtual int AddObjectMoments(IRecordRead rec)
+        //Добавление мгновенных значений во все сигналы объекта, только если источник - наследник AdoSour
+        public virtual int ReadMoments(IRecordRead rec) //Рекордсет, из которого читаются значения
         {
             return 0;
         }

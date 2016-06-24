@@ -1,6 +1,5 @@
 ﻿using System;
 using BaseLibrary;
-using CommonTypes;
 using ProvidersLibrary;
 
 namespace Provider
@@ -23,13 +22,12 @@ namespace Provider
     //Для аналоговых - один ТМ, для выходов - один выход ТМ
     internal class ObjectKosm : SourObject
     {
-        public ObjectKosm(KosmotronikaRetroSource source, ObjectIndex ind) : base(source)
+        public ObjectKosm(KosmotronikaConn conn, ObjectIndex ind) : base(conn)
         {
             Sn = ind.Sn; 
             NumType = ind.NumType;
             Appartment = ind.Appartment;
             Out = ind.Out;
-            Inf = string.Concat("SN=", Sn, "; NumType=", NumType, ";Out=", Out, "; Appartment=", Appartment, ";");
         }
 
         //Добавить к объекту сигнал, если такого еще не было
@@ -58,11 +56,11 @@ namespace Provider
 
         //Чтение значений по одному объекту из рекордсета источника
         //Возвращает количество сформированных значений
-        public override int MakeValueFromRec(IRecordRead rec)
+        public override int ReadMoments(IRecordRead rec)
         {
             int nwrite = 0;
             DateTime time = rec.GetTime(3);
-            var isAnalog = ((KosmotronikaRetroSource) Source).IsAnalog;
+            var isAnalog = ((KosmotronikaBaseSource)SourceConn.Source).IsAnalog;
             int ndint = rec.GetInt(isAnalog ? 6 : 8);
             var err = MakeError(ndint);
 
@@ -74,8 +72,8 @@ namespace Provider
             {
                 var strValue = rec.GetString(9);
                 if (strValue.IndexOf("0x", StringComparison.Ordinal) >= 0)
-                    nwrite += ValueSignal.AddMom(time, Convert.ToUInt32(strValue, 16), err);
-                else nwrite += ValueSignal.AddMom(time, Convert.ToDouble(strValue), err);
+                    nwrite += AddMom(ValueSignal, time, Convert.ToUInt32(strValue, 16), err);
+                else nwrite += AddMom(ValueSignal, time, Convert.ToDouble(strValue), err);
             }
             return nwrite;
         }

@@ -1,10 +1,12 @@
-﻿namespace ProvidersLibrary
+﻿using CommonTypes;
+
+namespace ProvidersLibrary
 {
     //Один параметр для записи в OPC
-    public class OpcItem : ReceiverSignal
+    public class OpcItem : ReceivSignal
     {
-        internal OpcItem(string signalInf, string code, DataType dataType, IReceiver provider) 
-            : base(signalInf, code, dataType, provider)
+        internal OpcItem(ReceivConn receiver, string code, DataType dataType, string signalInf) 
+            : base(receiver, code, dataType, signalInf)
         {}
 
         //Стандартные свойства

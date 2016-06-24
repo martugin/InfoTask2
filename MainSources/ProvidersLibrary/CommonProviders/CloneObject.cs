@@ -6,10 +6,9 @@ namespace ProvidersLibrary
     //Объект для клона, содержит один сигнал
     public class CloneObject : SourObject
     {
-        public CloneObject(SourConn conn, string codeObject) 
-            : base(conn, codeObject) { }
+        public CloneObject(SourConn conn) : base(conn) { }
 
-        protected override int AddObjectMoments(IRecordRead rec)
+        public override int ReadMoments(IRecordRead rec)
         {
             var time = rec.GetTime("Time");
             var err = MakeError(rec.GetInt("ErrNum"));

@@ -7,7 +7,7 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Источник с чтением значений из рекордсета
-    public abstract class AdoSour : SourBase
+    public abstract class AdoSour : Sour
     {
         protected AdoSour()
         {
@@ -61,15 +61,15 @@ namespace ProvidersLibrary
                     {
                         if (i < ReconnectsCount)
                         {
-                            IsConnected = successRead = ReadPart(parts[i], beg, en);
+                            IsConnected = successRead = ReadPart(parts[i], beg, en, isCut);
                             if (!successRead)
                             {
                                 Thread.Sleep(ErrorWaiting);
-                                successRead |= ReadPartRecursive(parts[i], true, 1, beg, en, false);
+                                successRead |= ReadPartRecursive(parts[i], true, 1, beg, en, isCut, false);
                             }
                         }
                         else if (i < MaxErrorCount || successRead)
-                            successRead |= ReadPartRecursive(parts[i], successRead, 1, beg, en, successRead);
+                            successRead |= ReadPartRecursive(parts[i], successRead, 1, beg, en, isCut, successRead);
                     }
                 int nadd = 0;
                 var signals = SourceConn.ProviderSignals.Values;
@@ -86,7 +86,7 @@ namespace ProvidersLibrary
                 }
                 NumWrite += nadd;
 
-                WriteErrorObjects();
+                SourceConn.AddErrorObjectsWarning();
                 IsConnected &= successRead;
                 if (successRead)
                     AddEvent("Значения из источника прочитаны", NumRead + " значений прочитано, " + NumWrite + " значений сформировано");
@@ -123,23 +123,11 @@ namespace ProvidersLibrary
                 }
             return parts;
         }
-
-        //Запись списка непрочитанных объектов в ErrorList клона и лог
-        private void WriteErrorObjects()
-        {
-            if (ErrorObjects.Count > 0)
-            {
-                int i = 0;
-                string s = "";
-                foreach (var ob in ErrorObjects)
-                    if (++i < 10) s += ob.Key + ", ";
-                AddWarning("Не удалось прочитать значения по некоторым объектам", null,
-                           s + (ErrorObjects.Count > 10 ? " и др." : "") + "всего " + ErrorObjects.Count + " объектов не удалось прочитать");
-            }
-        }
-
-        //Чтение значений по одному блоку, за указанный период времени
-        protected bool ReadPart(List<SourObject> part, DateTime beg, DateTime en)
+        
+        //Чтение значений по одному блоку списка объектов
+        protected bool ReadPart(List<SourObject> part,
+                                             DateTime beg, DateTime en, //Период считывания
+                                             bool isCut) //Считывается срез
         {
             IRecordRead rec;
             using (Start(0, 50))
@@ -147,7 +135,7 @@ namespace ProvidersLibrary
                 try
                 {
                     AddEvent("Чтение значений блока объектов", part.Count + " объектов");
-                    rec = QueryPartValues(part, beg, en);
+                    rec = QueryPartValues(part, beg, en, isCut);
                     if (rec == null) return IsConnected = false;
                 }
                 catch (Exception ex)
@@ -182,29 +170,31 @@ namespace ProvidersLibrary
                                                        bool useRecursion, //Использовать рекурсивный вызов
                                                        int depth, //Глубина в дереве вызовов, начиная с 1
                                                        DateTime beg, DateTime en, //Период считывания
+                                                       bool isCut, //Считывается срез 
                                                        bool successRead) //Хотя бы одно из чтений значений было успешным
         { 
             if (!IsConnected && !Check()) return false;
-            bool b = ReadPart(part, beg, en);
+            bool b = ReadPart(part, beg, en, isCut);
             if (b) return true;
             if (part.Count == 1 || !useRecursion || (!successRead && depth >= MaxErrorDepth))
             {
                 foreach (var ob in part)
-                    AddErrorObject(ob.Inf, Command.ErrorMessage(false, true, false));
+                    SourceConn.AddErrorObject(ob.CodeObject, Command.ErrorMessage(false, true, false));
                 return false;
             }
             Thread.Sleep(ErrorWaiting);
             int m = part.Count / 2;
-            bool b1 = ReadPartRecursive(part.GetRange(0, m), true, depth + 1, beg, en, successRead);
+            bool b1 = ReadPartRecursive(part.GetRange(0, m), true, depth + 1, beg, en, isCut, successRead);
             if (!b1) Thread.Sleep(ErrorWaiting);
-            bool b2 = ReadPartRecursive(part.GetRange(m, part.Count - m), true, depth + 1, beg, en, successRead || b1);
+            bool b2 = ReadPartRecursive(part.GetRange(m, part.Count - m), true, depth + 1, beg, en, isCut, successRead || b1);
             if (!b2) Thread.Sleep(ErrorWaiting);
             return b1 || b2;
         }
 
         //Запрос рекордсета по одному блоку, возвращает запрошенный рекорсет, или null при неудаче
         protected abstract IRecordRead QueryPartValues(List<SourObject> part, //список объектов
-                                                         DateTime beg, DateTime en); //период считывания
+                                                         DateTime beg, DateTime en, //период считывания
+                                                         bool isCut); //считывается срез
 
         //Чтение значений из рекордсета по одному блоку
         protected Tuple<int, int> ReadPartValues(IRecordRead rec)
@@ -213,20 +203,16 @@ namespace ProvidersLibrary
             while (rec.Read())
             {
                 nread++;
-                OleDbSourceObject ob = null;
+                SourObject ob = null;
                 try
                 {
-                    ob = (OleDbSourceObject)DefineObject(rec);
+                    ob = DefineObject(rec);
                     if (ob != null)
-                    {
-                        if (CloneRec == null)
-                            nwrite += ob.MakeValueFromRec(rec);
-                        else nwrite += ob.ReadValueToClone(rec, CloneRec, CloneCutRec);
-                    }
+                        nwrite += ob.ReadMoments(rec);
                 }
                 catch (Exception ex)
                 {
-                    AddErrorObject(ob == null ? "" : ob.Inf, "Ошибка при чтении значений из рекордсета", ex);
+                    SourceConn.AddErrorObject(ob == null ? "" : ob.CodeObject, "Ошибка при чтении значений из рекордсета", ex);
                 }
             }
             return new Tuple<int, int>(nread, nwrite);

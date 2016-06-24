@@ -17,13 +17,13 @@ namespace ProvidersLibrary
         public override ProviderType Type { get { return ProviderType.Source;}}
 
         //Текущий провайдер-источник
-        private SourBase _source;
-        public SourBase Source 
+        private Sour _source;
+        public Sour Source 
         { 
             get
             {
                 if (_source == null && MainProvider != null)
-                    _source = (SourBase)MainProvider;
+                    _source = (Sour)MainProvider;
                 return _source;
             }
         }
@@ -40,13 +40,15 @@ namespace ProvidersLibrary
             if (ProviderSignals.ContainsKey(code))
                 return ProviderSignals[code];
             var sig = new SourInitSignal(this, code, dataType, signalInf);
-            sig = AddObject(sig, codeObject).AddSignal(sig);
+            var ob = AddObject(sig);
+            ob.CodeObject = codeObject;
+            sig = ob.AddSignal(sig);
             if (formula != null)
                 return new SourCalcSignal(this, sig, code, dataType, formula);
             return sig;
         }
         //Добавить объект содержащий заданный сигнал
-        protected abstract SourObject AddObject(SourInitSignal sig, string context);
+        protected abstract SourObject AddObject(SourInitSignal sig);
 
         //Очистка списка сигналов
         public virtual void ClearSignals()
@@ -55,9 +57,6 @@ namespace ProvidersLibrary
             CalcSignals.Clear();
             CloneSignalsId.Clear();
         }
-
-        //Откуда и куда грузятся значения при чтении из источника
-        protected ValuesDirection ValuesDirection { get; private set; }
 
         //Список сигналов, содержащих возвращаемые значения
         internal readonly DicS<SourInitSignal> ProviderSignals = new DicS<SourInitSignal>();
@@ -113,7 +112,7 @@ namespace ProvidersLibrary
         protected DicS<string> ErrorObjects { get { return _errorObjects; } }
 
         //Добавляет объект в ErrorsObjects
-        protected void AddErrorObject(string codeObject,  //Код сигнала
+        internal void AddErrorObject(string codeObject,  //Код сигнала
                                                         string errText,        //Сообщение об ошибке
                                                         Exception ex = null)  //Исключение
         {
@@ -121,10 +120,27 @@ namespace ProvidersLibrary
             {
                 var err = errText + (ex == null ? "" : (". " + ex.Message + ". " + ex.StackTrace));
                 ErrorObjects.Add(codeObject, err);
-                CloneErrorsRec.AddNew();
-                CloneErrorsRec.Put("CodeObject", codeObject);
-                CloneErrorsRec.Put("ErrorDescription", err);
-                CloneErrorsRec.Update();
+                if (CloneErrorsRec != null)
+                {
+                    CloneErrorsRec.AddNew();
+                    CloneErrorsRec.Put("CodeObject", codeObject);
+                    CloneErrorsRec.Put("ErrorDescription", err);
+                    CloneErrorsRec.Update();    
+                }
+            }
+        }
+
+        //Запись списка непрочитанных объектов в лог
+        internal void AddErrorObjectsWarning()
+        {
+            if (ErrorObjects.Count > 0)
+            {
+                int i = 0;
+                string s = "";
+                foreach (var ob in _errorObjects.Keys)
+                    if (++i < 10) s += ob + ", ";
+                AddWarning("Не удалось прочитать значения по некоторым объектам", null,
+                           s + (ErrorObjects.Count > 10 ? " и др." : "") + "всего " + ErrorObjects.Count + " объектов не удалось прочитать");
             }
         }
 

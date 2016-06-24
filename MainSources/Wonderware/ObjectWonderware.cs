@@ -8,9 +8,9 @@ namespace Provider
     //Объект
     internal class ObjectWonderware : SourObject
     {
-        public ObjectWonderware(WonderwareSource source, string tag) : base(source)
+        public ObjectWonderware(WonderwareConn conn, string tag) : base(conn)
         {
-            Inf = TagName = tag;
+            TagName = tag;
         }
 
         //Имя тэга 
@@ -18,7 +18,7 @@ namespace Provider
 
         //Чтение значений по одному объекту из рекордсета источника
         //Возвращает количество сформированных значений
-        public override int MakeValueFromRec(IRecordRead rec)
+        public override int ReadMoments(IRecordRead rec)
         {
             DateTime time = rec.GetTime("DateTime");
             var err = MakeError(rec.GetInt("QualityDetail"));
