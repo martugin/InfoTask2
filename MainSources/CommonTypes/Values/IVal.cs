@@ -65,8 +65,8 @@ namespace CommonTypes
     }
 
     //-----------------------------------------------------------------------------------------------
-    //Интерфейс для списков мгновенных значений и отдельных мгновенных значений
-    public interface IMomentsVal : IMom
+    //Интерфейс для списков мгновенных значений только для чтения
+    public interface IMomListReadOnly : IMom
     {
         //Текущий номер
         int CurNum { get; set; }
@@ -87,18 +87,21 @@ namespace CommonTypes
         IMom Clone(int i);
         IMom Clone(int i, DateTime time);
         IMom Clone(int i, DateTime time, ErrMom err);
+    }
 
+    //-----------------------------------------------------------------------------------------------
+    //Интерфейс для списков мгновенных значений 
+    public interface IMomList : IMomListReadOnly
+    {
         //Добавление мгновенного значения
-        //skipRepeats - если не добавлять значение в конец списка, если предыдущее с ним совпадает
-        //Возвращают количество добавленных значения
-        int AddMom(IMom mom, bool skipRepeats = false);
-        int AddMom(DateTime time, IMean mean, bool skipRepeats = false);
+        void AddMom(IMom mom);
+        void AddMom(DateTime time, IMean mean);
         //Дгобавление с указанием времени и значения
-        int AddMom(DateTime time, bool b, ErrMom err = null, bool skipRepeats = false);
-        int AddMom(DateTime time, int i, ErrMom err = null, bool skipRepeats = false);
-        int AddMom(DateTime time, double r, ErrMom err = null, bool skipRepeats = false);
-        int AddMom(DateTime time, DateTime d, ErrMom err = null, bool skipRepeats = false);
-        int AddMom(DateTime time, string s, ErrMom err = null, bool skipRepeats = false);
+        void AddMom(DateTime time, bool b, ErrMom err = null);
+        void AddMom(DateTime time, int i, ErrMom err = null);
+        void AddMom(DateTime time, double r, ErrMom err = null);
+        void AddMom(DateTime time, DateTime d, ErrMom err = null);
+        void AddMom(DateTime time, string s, ErrMom err = null);
 
         //Очистить список значений
         void Clear();

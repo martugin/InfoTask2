@@ -43,6 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ErrMomFactoryKosm.cs" />
+    <Compile Include="KosmotronikaArchDbSource.cs" />
+    <Compile Include="KosmotronikaBaseSource.cs" />
+    <Compile Include="KosmotronikaConn.cs" />
     <Compile Include="KosmotronikaOPCReceiver.cs" />
     <Compile Include="KosmotronikaRetroSource.cs" />
     <Compile Include="ObjectKosm.cs" />

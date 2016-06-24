@@ -12,7 +12,7 @@ namespace Provider
     {
         //Код провайдера
         public override string Code { get { return "MirSource"; } }
-
+        
         //Список сигналов
         #region
         //Словари объектов, ключи коды и IdChanell
@@ -22,17 +22,17 @@ namespace Provider
         //Очистка списка сигналов
         public override void ClearSignals()
         {
-            ProviderSignals.Clear();
+            base.ClearSignals();
             _objects.Clear();
             _objectsId.Clear();
         }
 
         //Добавляет один сигнал в список
-        protected override SourceObject AddObject(SourceSignal sig)
+        protected override SourceObject AddObject(SourceSignal sig, string context)
         {
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
             if (!_objects.ContainsKey(ocode))
-                return _objects.Add(ocode, new ObjectMir(ocode));
+                return _objects.Add(ocode, new ObjectMir(this, context));
             return _objects[ocode];
         }
         
@@ -79,18 +79,6 @@ namespace Provider
         protected override SourceObject DefineObject()
         {
             return _objectsId[Rec.GetInt("IDCHANNEL")];
-        }
-
-        //Чтение значений по одному объекту из рекордсета источника
-        //Возвращает количество сформированных значений
-        protected override int ReadObjectValue(SourceObject obj)
-        {
-            var ob = (ObjectMir)obj;
-            int nwrite = 0;
-            DateTime time = Rec.GetTime("TIME");
-            nwrite += AddMom(ob.IndicationSignal, time, Rec.GetDouble("VALUE_INDICATION"));
-            nwrite += AddMom(ob.IndicationSignal, time, Rec.GetDouble("VALUE_UNIT"));
-            return nwrite;
         }
 
         //Чтение среза

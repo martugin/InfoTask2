@@ -95,148 +95,6 @@ namespace CommonTypes
             return FunType.Val;
         }
 
-        //Определяет, является ли провайдер источником данных
-        public static bool IsProviderSource(this ProviderType t)
-        {
-            return t == ProviderType.Source || t == ProviderType.Imitator;
-        }
-
-        //Перевод из строки в ProviderType
-        public static ProviderType ToProviderType(this string t)
-        {
-            if (t == null) return ProviderType.Error;
-            switch (t.ToLower())
-            {
-                case "коммуникатор":
-                case "communicator":
-                    return ProviderType.Communicator;
-                case "коммуникаторприемника":
-                case "communicatorreceiver":
-                    return ProviderType.CommReceiver;
-                case "источник":
-                case "source":
-                    return ProviderType.Source;
-                case "архив":
-                case "archive":
-                    return ProviderType.Archive;
-                case "приемник":
-                case "receiver":
-                    return ProviderType.Receiver;
-                case "имитатор":
-                case "imitator":
-                    return ProviderType.Imitator;
-                case "поток":
-                case "thread":
-                    return ProviderType.Thread;
-                case "проект":
-                case "project":
-                    return ProviderType.Project;
-            }
-            return ProviderType.Error;
-        }
-
-        //Перевод из ProviderType в русское имя
-        public static string ToRussian(this ProviderType t)
-        {
-            switch (t)
-            {
-                case ProviderType.Communicator:
-                    return "Коммуникатор";
-                case ProviderType.CommReceiver:
-                    return "КоммуникаторПриемника";
-                case ProviderType.Source:
-                    return "Источник";
-                case ProviderType.Archive:
-                    return "Архив";
-                case ProviderType.Receiver:
-                    return "Приемник";
-                case ProviderType.Imitator:
-                    return "Имитатор";
-                case ProviderType.Thread:
-                    return "Поток";
-                case ProviderType.Project:
-                    return "Проект";
-            }
-            return "Ошибка";
-        }
-
-        //Перевод из ProviderType в английское имя
-        public static string ToEnglish(this ProviderType t)
-        {
-            switch (t)
-            {
-                case ProviderType.Communicator:
-                    return "Communicator";
-                case ProviderType.CommReceiver:
-                    return "CommunicatorReceiver";
-                case ProviderType.Source:
-                    return "Source";
-                case ProviderType.Archive:
-                    return "Archive";
-                case ProviderType.Receiver:
-                    return "Receiver";
-                case ProviderType.Imitator:
-                    return "Imitator";
-                case ProviderType.Thread:
-                    return "Thread";
-                case ProviderType.Project:
-                    return "Project";
-            }
-            return "Error";
-        }
-
-        //ToDo Переделать
-        //Список совместимых кодов провайдеров для выбранного кода провайдера
-        public static List<string> JointProviderCodes(this string code)
-        {
-            var list = new List<string> { code };
-            using (var rec = new RecDao(DifferentIT.GetInfoTaskDir() + @"General\Config.accdb", "SysTabl"))
-            {
-                if (code == "CloneSource")
-                {
-                    while (rec.Read())
-                        if (rec.GetString("ParamValue") == "Источник" && rec.GetString("ParamName") != "CloneSource")
-                            list.Add(rec.GetString("ParamName"));
-                }
-                else
-                {
-                    rec.FindFirst("ParamName", code);
-                    if (!rec.NoMatch())
-                    {
-                        var set = rec.GetString("ParamTag").ToPropertyDicS()["JointProviders"].ToPropertyHashSet();
-                        foreach (var c in set)
-                        {
-                            rec.FindFirst("ParamName", c);
-                            if (!rec.NoMatch()) list.Add(c);
-                        }
-                    }
-                }
-            }
-            return list;
-        }
-
-        //Перевод из строки в ProviderSetupType
-        public static ProviderSetupType ToProviderSetupType(this string s)
-        {
-            if (s.IsEmpty()) return ProviderSetupType.Error;
-            switch (s.ToLower())
-            {
-                case "reporter":
-                    return ProviderSetupType.Reporter;
-                case "controller":
-                    return ProviderSetupType.Controller;
-                case "reporterarchive":
-                    return ProviderSetupType.ReporterArchive;
-                case "analyzer":
-                    return ProviderSetupType.Analyzer;
-                case "constructor":
-                    return ProviderSetupType.Constructor;
-                case "default":
-                    return ProviderSetupType.Default;
-            }
-            return ProviderSetupType.Error;
-        }
-
         //Перевод строки в тип графика
         public static GraficType ToGraficType(this string t)
         {
@@ -268,37 +126,6 @@ namespace CommonTypes
             return "Ошибка";
         }
 
-        //Перевод из строки в InterpolationType
-        public static InterpolationType ToInterpolation(this string t)
-        {
-            if (t == null) return InterpolationType.None;
-            switch (t.ToLower())
-            {
-                case "ступенчатая":
-                case "constant":
-                    return InterpolationType.Constant;
-                case "линейная":
-                case "linear":
-                    return InterpolationType.Linear;
-                case "":
-                    return InterpolationType.None;
-            }
-            return InterpolationType.Error;
-        }
-
-        //Перевод из InterpolationType в строку
-        public static string ToRussian(this InterpolationType t)
-        {
-            switch (t)
-            {
-                case InterpolationType.Constant:
-                    return "Ступенчатая";
-                case InterpolationType.Linear:
-                    return "Линейная";
-            }
-            return null;
-        }
-
         //Перевод из строки в SuperProcessType
         public static SuperProcess ToSuperProcess(this string t)
         {
@@ -308,69 +135,24 @@ namespace CommonTypes
                 case "мгновенные":
                 case "moment":
                     return SuperProcess.Moment;
-                case "среднее(а)":
-                case "average(a)":
-                    return SuperProcess.AverageA;
-                case "среднее(п)":
-                case "average(p)":
-                    return SuperProcess.AverageP;
-                case "среднее(па)":
-                case "average(pa)":
-                    return SuperProcess.AveragePA;
-                case "среднеененоль(а)":
-                case "averagenonzero(a)":
-                    return SuperProcess.AvNonZeroA;
-                case "среднеененоль(п)":
-                case "averagenonzero(п)":
-                    return SuperProcess.AvNonZeroP;
-                case "среднеененоль(па)":
-                case "averagenonzero(пa)":
-                    return SuperProcess.AvNonZeroPA;
-                case "минимум(а)":
-                case "minimum(a)":
-                    return SuperProcess.MinA;
-                case "минимум(п)":
-                case "minimum(p)":
-                    return SuperProcess.MinP;
-                case "минимум(па)":
-                case "minimum(pa)":
-                    return SuperProcess.MinPA;
-                case "максимум(а)":
-                case "maximum(a)":
-                    return SuperProcess.MaxA;
-                case "максимум(п)":
-                case "maximum(p)":
-                    return SuperProcess.MaxP;
-                case "максимум(па)":
-                case "maximum(pa)":
-                    return SuperProcess.MaxPA;
-                case "первое(а)":
-                case "first(a)":
-                    return SuperProcess.FirstA;
-                case "первое(п)":
-                case "first(p)":
-                    return SuperProcess.FirstP;
-                case "первое(па)":
-                case "first(pa)":
-                    return SuperProcess.FirstPA;
-                case "последнее(а)":
-                case "last(a)":
-                    return SuperProcess.LastA;
-                case "последнее(п)":
-                case "last(p)":
-                    return SuperProcess.LastP;
-                case "последнее(па)":
-                case "last(pa)":
-                    return SuperProcess.LastPA;
-                case "сумма(а)":
-                case "summ(a)":
-                    return SuperProcess.SummA;
-                case "сумма(п)":
-                case "summ(p)":
-                    return SuperProcess.SummP;
-                case "сумма(па)":
-                case "summ(pa)":
-                    return SuperProcess.SummPA;
+                case "среднее":
+                case "average":
+                    return SuperProcess.Average;
+                case "минимум":
+                case "minimum":
+                    return SuperProcess.Min;
+                case "максимум":
+                case "maximum":
+                    return SuperProcess.Max;
+                case "первое":
+                case "first":
+                    return SuperProcess.First;
+                case "последнее":
+                case "last":
+                    return SuperProcess.Last;
+                case "сумма":
+                case "summ":
+                    return SuperProcess.Summ;
                 case "":
                     return SuperProcess.None;
             }
@@ -384,48 +166,18 @@ namespace CommonTypes
             {
                 case SuperProcess.Moment:
                     return "Мгновенные";
-                case SuperProcess.AverageA:
-                    return "Среднее(А)";
-                case SuperProcess.AverageP:
-                    return "Среднее(П)";
-                case SuperProcess.AveragePA:
-                    return "Среднее(ПА)";
-                case SuperProcess.AvNonZeroA:
-                    return "СреднееНеНоль(А)";
-                case SuperProcess.AvNonZeroP:
-                    return "СреднееНеНоль(П)";
-                case SuperProcess.AvNonZeroPA:
-                    return "СреднееНеНоль(ПА)";
-                case SuperProcess.MinA:
-                    return "Минимум(А)";
-                case SuperProcess.MinP:
-                    return "Минимум(П)";
-                case SuperProcess.MinPA:
-                    return "Минимум(ПА)";
-                case SuperProcess.MaxA:
-                    return "Максимум(А)";
-                case SuperProcess.MaxP:
-                    return "Максимум(П)";
-                case SuperProcess.MaxPA:
-                    return "Максимум(ПА)";
-                case SuperProcess.FirstA:
-                    return "Первое(А)";
-                case SuperProcess.FirstP:
-                    return "Первое(П)";
-                case SuperProcess.FirstPA:
-                    return "Первое(ПА)";
-                case SuperProcess.LastA:
-                    return "Последнее(А)";
-                case SuperProcess.LastP:
-                    return "Последнее(П)";
-                case SuperProcess.LastPA:
-                    return "Последнее(ПА)";
-                case SuperProcess.SummA:
-                    return "Сумма(А)";
-                case SuperProcess.SummP:
-                    return "Сумма(П)";
-                case SuperProcess.SummPA:
-                    return "Сумма(ПА)";
+                case SuperProcess.Average:
+                    return "Среднее";
+                case SuperProcess.Min:
+                    return "Минимум";
+                case SuperProcess.Max:
+                    return "Максимум";
+                case SuperProcess.First:
+                    return "Первое";
+                case SuperProcess.Last:
+                    return "Последнее";
+                case SuperProcess.Summ:
+                    return "Сумма";
             }
             return null;
         }
@@ -435,72 +187,13 @@ namespace CommonTypes
         {
             return t == SuperProcess.None || t == SuperProcess.Error;
         }
-
-        //True, если тип накопления предполагает абсолютное накопление
-        public static bool IsAbsolute(this SuperProcess t)
-        {
-            return (new HashSet<SuperProcess>
-                {SuperProcess.MinA, SuperProcess.MinPA, SuperProcess.MaxA, SuperProcess.MaxPA, SuperProcess.FirstA, SuperProcess.FirstPA, SuperProcess.LastA, SuperProcess.LastPA, 
-                 SuperProcess.SummA, SuperProcess.SummPA, SuperProcess.AverageA, SuperProcess.AveragePA, SuperProcess.AvNonZeroA, SuperProcess.AvNonZeroPA})
-                .Contains(t);
-        }
-
-        //True, если тип накопления предполагает периодическое накопление
-        public static bool IsPeriodic(this SuperProcess t)
-        {
-            return (new HashSet<SuperProcess>
-                {SuperProcess.MinP, SuperProcess.MinPA, SuperProcess.MaxP, SuperProcess.MaxPA, SuperProcess.FirstP, SuperProcess.FirstPA, SuperProcess.LastP, SuperProcess.LastPA, 
-                 SuperProcess.SummP, SuperProcess.SummPA, SuperProcess.AverageP, SuperProcess.AveragePA, SuperProcess.AvNonZeroP, SuperProcess.AvNonZeroPA})
-                .Contains(t);
-        }
-
-        //Убирает A из типа накопления (оставляет P)
-        public static SuperProcess ToProcess(this SuperProcess t)
-        {
-            switch (t)
-            {
-                case SuperProcess.None:
-                    return SuperProcess.None;
-                case SuperProcess.Moment:
-                    return SuperProcess.Moment;
-                case SuperProcess.AverageA:
-                case SuperProcess.AverageP:
-                case SuperProcess.AveragePA:
-                    return SuperProcess.AverageP;
-                case SuperProcess.AvNonZeroA:
-                case SuperProcess.AvNonZeroP:
-                case SuperProcess.AvNonZeroPA:
-                    return SuperProcess.AvNonZeroP;
-                case SuperProcess.MinA:
-                case SuperProcess.MinP:
-                case SuperProcess.MinPA:
-                    return SuperProcess.MinP;
-                case SuperProcess.MaxA:
-                case SuperProcess.MaxP:
-                case SuperProcess.MaxPA:
-                    return SuperProcess.MaxP;
-                case SuperProcess.FirstA:
-                case SuperProcess.FirstP:
-                case SuperProcess.FirstPA:
-                    return SuperProcess.FirstP;
-                case SuperProcess.LastA:
-                case SuperProcess.LastP:
-                case SuperProcess.LastPA:
-                    return SuperProcess.LastP;
-                case SuperProcess.SummA:
-                case SuperProcess.SummP:
-                case SuperProcess.SummPA:
-                    return SuperProcess.SummP;
-            }
-            return SuperProcess.Error;
-        }
+       
 
         //Как преобразуется тип расчетного параметра при преобразовании в архивный параметр с учетом типа накопления
         public static DataType AplySuperProcess(this DataType dt, SuperProcess sp)
         {
-            var s = sp.ToProcess();
-            if (s == SuperProcess.AverageP || s == SuperProcess.AvNonZeroP) return DataType.Real;
-            if (s == SuperProcess.SummP && dt == DataType.Boolean) return DataType.Integer;
+            if (sp == SuperProcess.Average ) return DataType.Real;
+            if (sp == SuperProcess.Summ && dt == DataType.Boolean) return DataType.Integer;
             return dt;
         }
 
@@ -573,21 +266,6 @@ namespace CommonTypes
                     return "PowerPoint";
             }
             return "Error";
-        }
-
-        //Перевод из режима расчета в режим натсроек
-        public static ProviderSetupType ToProviderSetupType(this ApplicationType m)
-        {
-            switch (m)
-            {
-                case ApplicationType.Constructor:
-                    return ProviderSetupType.Constructor;
-                case ApplicationType.Controller:
-                    return ProviderSetupType.Controller;
-                case ApplicationType.Analyzer:
-                    return ProviderSetupType.Analyzer;
-            }
-            return ProviderSetupType.Reporter;
         }
 
         //Приложение является посторителем отчетов

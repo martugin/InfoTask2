@@ -1,5 +1,6 @@
 ﻿using System;
-using CommonTypes;
+using BaseLibrary;
+using ProvidersLibrary;
 
 namespace Provider
 {
@@ -19,21 +20,18 @@ namespace Provider
     //---------------------------------------------------------------------------------------------------------------------------------
     //Один объект для непосредственного считывания с архива космотроники
     //Для аналоговых - один ТМ, для выходов - один выход ТМ
-    internal class ObjectKosm : SourceObject
+    internal class ObjectKosm : SourObject
     {
-        public ObjectKosm(ObjectIndex ind, string code) : base(code)
+        public ObjectKosm(KosmotronikaConn conn, ObjectIndex ind) : base(conn)
         {
             Sn = ind.Sn; 
             NumType = ind.NumType;
             Appartment = ind.Appartment;
             Out = ind.Out;
-            int p = code.LastIndexOf(".", StringComparison.Ordinal);
-            string s = p == -1 ? code : code.Substring(0, p);
-            Inf = string.Concat("Code=", s, "; SN=", Sn, "; NumType=", NumType, ";Out=", Out, "; Appartment=", Appartment, ";");
         }
 
         //Добавить к объекту сигнал, если такого еще не было
-        public override SourceSignal AddSignal(SourceSignal sig)
+        protected override SourInitSignal AddNewSignal(SourInitSignal sig)
         {
             if (sig.Inf["Prop"] == "ND")
                 return StateSignal = StateSignal ?? sig;
@@ -52,20 +50,32 @@ namespace Provider
         internal int Out { get; private set; }
 
         //Сигнал недостоверности
-        internal SourceSignal StateSignal { get; private set; }
+        internal SourInitSignal StateSignal { get; private set; }
         //Сигнал ПОК
-        internal SourceSignal PokSignal { get; private set; }
+        internal SourInitSignal PokSignal { get; private set; }
 
-        //Для объекта определен срез
-        public override bool HasBegin
+        //Чтение значений по одному объекту из рекордсета источника
+        //Возвращает количество сформированных значений
+        public override int ReadMoments(IRecordRead rec)
         {
-            get { return SignalsHasBegin(ValueSignal, StateSignal, PokSignal);}
-        }
+            int nwrite = 0;
+            DateTime time = rec.GetTime(3);
+            var isAnalog = ((KosmotronikaBaseSource)SourceConn.Source).IsAnalog;
+            int ndint = rec.GetInt(isAnalog ? 6 : 8);
+            var err = MakeError(ndint);
 
-        //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
-        public override int AddBegin()
-        {
-            return SignalsAddBegin(ValueSignal, StateSignal, PokSignal);
+            nwrite += AddMom(PokSignal, time, rec.GetInt(5), err);
+            nwrite += AddMom(StateSignal, time, ndint);
+            if (isAnalog)
+                nwrite += AddMom(ValueSignal, time, rec.GetDouble(8), err);
+            else
+            {
+                var strValue = rec.GetString(9);
+                if (strValue.IndexOf("0x", StringComparison.Ordinal) >= 0)
+                    nwrite += AddMom(ValueSignal, time, Convert.ToUInt32(strValue, 16), err);
+                else nwrite += AddMom(ValueSignal, time, Convert.ToDouble(strValue), err);
+            }
+            return nwrite;
         }
     }
 }

@@ -17,7 +17,7 @@
           <ModuleProperties.xml>Файл свойств модуля (исходный)</ModuleProperties.xml>
           <CalcParams.accdb>Файл расчетных параметров без генерации, шаблон Projects\Module\CalcParams.accdb (исходный)</CalcParams.accdb>
           <Grafics.accdb>Файл графиков, шаблон Projects\Module\Grafic.accdb (порожденный) </Grafics.accdb>
-          <Compilled.accdb>Файл результатов и ошибок компиляции, шаблон Projects\Module\Compiled.accdb (порожденный) </Compilled.accdb>
+          <Compilled.accdb>Файл результатов и ошибок генерации и компиляции, шаблон Projects\Module\Compiled.accdb (порожденный) </Compilled.accdb>
           <Tables.accdb>Файл таблиц пользовательских, шаблон Projects\Module\Tables.accdb (исходный) </Tables.accdb>
         </_КодМодуля>
       </Modules>
@@ -209,7 +209,9 @@
           <_КодКоммуникатора_History.accdb>История коммуникатора</_КодКоммуникатора_History.accdb>
         </Comm>
       </History>
-      <Calibrator><!--Локальные данные калибратора по одному проекту--></Calibrator>
+      <Calibrator>
+        <!--Локальные данные калибратора по одному проекту-->
+      </Calibrator>
     </_КодПроекта>
   </LocalData>
 </ФайловаяМодель>

@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.Composition;
 using BaseLibrary;
-using CommonTypes;
+using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(IProvider))]
+    [Export(typeof(Prov))]
     [ExportMetadata("Code", "OvationOpcReceiver")]
     public class OvationOpcReceiver : OpcServer
     {
@@ -16,5 +16,16 @@ namespace Provider
         {
             return inf["CodeObject"];
         }
+    }
+
+    //------------------------------------------------------------------------------------------------
+
+    [Export(typeof(Prov))]
+    [ExportMetadata("Complect", "OvationOpcConn")]
+    //Соединение приемника овации
+    public class OvationOpcConn : OpcServerConn
+    {
+        //Комплект
+        public override string Complect { get { return "Ovation"; } }
     }
 }

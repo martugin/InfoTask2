@@ -89,8 +89,8 @@ namespace BaseLibrary
             return s.ToUpper() == "TRUE";
         }
 
-        //Переводит строку в double, если нельзя, то возвращает def (NaN)
-        public static double ToDouble(this string s, double def = double.NaN)
+        //Переводит строку в double, если нельзя, то возвращает def
+        public static double ToDouble(this string s, double def = 0.0)
         {
             if (s.IsEmpty()) return def;
             string st = s.Replace(",", ".");

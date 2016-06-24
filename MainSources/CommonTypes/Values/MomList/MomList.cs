@@ -4,20 +4,21 @@ using BaseLibrary;
 
 namespace CommonTypes
 {
-    public abstract class MomList : Mean, IMomentsVal
+    //Список мгновенных значений
+    public abstract class MomList : Mean, IMomList
     {
         //Количество значений
-        public override int Count { get { return _times.Count; }}
+        public override int Count { get { return _times.Count; } }
         //Текущий номер значений
         public int CurNum { get; set; }
-        
+
         //Список времен
         private readonly List<DateTime> _times = new List<DateTime>();
         //Время текущего значения
         public DateTime Time { get { return _times[CurNum]; } }
         //Время i-ого значения
         public DateTime GetTime(int i) { return _times[i]; }
-        
+
         //Список ошибок
         private List<ErrMom> _errors;
         //Текущая ошибка
@@ -32,6 +33,11 @@ namespace CommonTypes
         //Ошибка i-ого значения
         public ErrMom GetError(int i) { return _errors[i]; }
 
+        //Мгновенное значение для добавления в список
+        protected Mean CurMean { get; set; }
+        //Тип данных
+        public override DataType DataType { get { return CurMean.DataType; } }
+
         //Добавить ошибку в i-ю позицию списка
         private void AddError(ErrMom err, int i)
         {
@@ -44,40 +50,27 @@ namespace CommonTypes
             }
             _errors[i] = err;
         }
-
-        //Тип данных
-        public override DataType DataType { get { return CurMean.DataType; } }
         
-        //Мгновенное значение для добавления в список
-        protected Mean CurMean { get; set; }
         //Добавить текущее значение для добавления в список по индексу или в конец
         protected abstract void AddCurMom(int i);
         protected abstract void AddCurMomEnd();
         
         //Добавить время, ошибку и значение в списки
-        private int AddTimeErrorMean(DateTime time, ErrMom err, bool skipRepeats)
+        private void AddTimeErrorMean(DateTime time, ErrMom err)
         {
-            if (Count == 0)
-            {
-                AddMomToEnd(time, err);
-                return 1;
-            }
             CurNum = Count - 1;
-            if (time >= _times[CurNum] )
+            if (Count == 0)
+                AddMomToEnd(time, err);
+            else if (time >= _times[CurNum])
+                AddMomToEnd(time, err);
+            else
             {
-                if (!skipRepeats || !CurMean.ValueEquals(this) || err != Error)
-                {
-                    AddMomToEnd(time, err);
-                    return 1;
-                }
-                return 0;
+                while (CurNum >= 0 && _times[CurNum] > time) CurNum--;
+                CurNum++;
+                _times.Insert(CurNum, time);
+                AddCurMom(CurNum);
+                AddError(err, CurNum);    
             }
-            while (CurNum >= 0 && _times[CurNum] > time) CurNum--;
-            CurNum++;
-            _times.Insert(CurNum, time);
-            AddCurMom(CurNum);
-            AddError(err, CurNum);
-            return 1;
         }
 
         private void AddMomToEnd(DateTime time, ErrMom err)
@@ -89,53 +82,62 @@ namespace CommonTypes
         }
 
         //Добавление значений в список, возвращают количество реально добавленных значений
-        public int AddMom(IMom mom, bool skipRepeats = false)
+        public void AddMom(IMom mom)
         {
             CurMean.CopyValueFrom(mom);
-            return AddTimeErrorMean(mom.Time, mom.Error, skipRepeats);
+            AddTimeErrorMean(mom.Time, mom.Error);
         }
 
-        public int AddMom(DateTime time, IMean mean, bool skipRepeats = false)
+        public void AddMom(DateTime time, IMean mean)
         {
             CurMean.CopyValueFrom(mean);
-            return AddTimeErrorMean(time, mean.Error, skipRepeats);
+            AddTimeErrorMean(time, mean.Error);
         }
 
-        public int AddMom(DateTime time, bool b, ErrMom err = null, bool skipRepeats = false)
+        public void AddMom(DateTime time, bool b, ErrMom err = null)
         {
             CurMean.Boolean = b;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, int i, ErrMom err = null, bool skipRepeats = false)
+        public void AddMom(DateTime time, int i, ErrMom err = null)
         {
             CurMean.Integer = i;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, double r, ErrMom err = null, bool skipRepeats = false)
+        public void AddMom(DateTime time, double r, ErrMom err = null)
         {
             CurMean.Real = r;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, DateTime d, ErrMom err = null, bool skipRepeats = false)
+        public void AddMom(DateTime time, DateTime d, ErrMom err = null)
         {
             CurMean.Date = d;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, string s, ErrMom err = null, bool skipRepeats = false)
+        public void AddMom(DateTime time, string s, ErrMom err = null)
         {
             CurMean.String = s;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            AddTimeErrorMean(time, err);
         }
 
-        public int AddMom(DateTime time, object ob, ErrMom err = null, bool skipRepeats = false)
+        public void AddMom(DateTime time, object ob, ErrMom err = null)
         {
             CurMean.Object = ob;
-            return AddTimeErrorMean(time, err, skipRepeats);
+            AddTimeErrorMean(time, err);
         }
+
+        public void Clear()
+        {
+            _times.Clear();
+            _errors = null;
+            ClearMeans();
+        }
+        //Очистка самих значений
+        protected abstract void ClearMeans();
 
         //Получение значений по индексу
         public bool GetBoolean(int i)
@@ -220,15 +222,15 @@ namespace CommonTypes
             {
                 if (Count == 0) return null;
                 CurNum = Count - 1;
-                return this;    
+                return this;
             }
         }
 
         //Итоговая ошибка
         public override ErrMom TotalError
         {
-            get 
-            { 
+            get
+            {
                 var terr = Error;
                 if (_errors != null)
                     foreach (var err in _errors)
@@ -236,16 +238,6 @@ namespace CommonTypes
                 return terr;
             }
         }
-
-        //Очистка списка значений
-        public void Clear()
-        {
-            _times.Clear();
-            _errors = null;
-            ClearMeans();
-        }
-        //Очистка самих значений
-        protected abstract void ClearMeans();
 
         //Todo Подумать, что сделать с интерполяций
         //Интерполяция типа type значений list на время time по точке с номером n и следующим за ней, если n = -1, то значение в начале

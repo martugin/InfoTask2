@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.Composition;
 using BaseLibrary;
-using CommonTypes;
+using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(IProvider))]
+    [Export(typeof(Prov))]
     [ExportMetadata("Code", "KosmotronikaOpcReceiver")]
     public class KosmotronikaOpcReceiver : OpcServer 
     {
@@ -14,9 +14,9 @@ namespace Provider
         //Серверная группа
         private string _serverGroup;
         //Загрузка дополнительных настроек провайдера из Inf
-        protected override void ReadDicS(DicS<string> dic)
+        protected override void ReadInf(DicS<string> dic)
         {
-            base.ReadDicS(dic);
+            base.ReadInf(dic);
             _serverGroup = dic["ServerGroup"];
         }
         
@@ -25,5 +25,16 @@ namespace Provider
         {
             return _serverGroup + ".point." + inf["SysNum"];
         }
+    }
+
+    //------------------------------------------------------------------------------------------------
+
+    [Export(typeof(Prov))]
+    [ExportMetadata("Complect", "KosmotronikaOpcConn")]
+    //Соединение приемника овации
+    public class KosmotronikaOpcConn : OpcServerConn
+    {
+        //Комплект
+        public override string Complect { get { return "Kosmotronika"; } }
     }
 }

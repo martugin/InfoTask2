@@ -158,19 +158,13 @@ namespace CommonTypes
             return false;
         }
 
-        //Возвращает общий минимум для двух типов
-        public static DataType Subtract(this DataType t1, DataType t2)
-        {
-            if (t2.LessOrEquals(t1)) return t2;
-            if (t1.LessOrEquals(t2)) return t1;
-            return DataType.Value;
-        }
-
         //Возвращает общий максимум для двух типов
         public static DataType Add(this DataType t1, DataType t2)
         {
             if (t2.LessOrEquals(t1)) return t1;
             if (t1.LessOrEquals(t2)) return t2;
+            if (t1 == DataType.Segments && t2 == DataType.Segments)
+                return DataType.Segments;
             if (t1 == DataType.Segments || t2 == DataType.Segments)
                 return DataType.Error;
             return DataType.String;
@@ -187,7 +181,7 @@ namespace CommonTypes
                     int resi;
                     return int.TryParse(s, out resi);
                 case DataType.Real:
-                    return !double.IsNaN(s.ToDouble());
+                    return !double.IsNaN(s.ToDouble(double.NaN));
                 case DataType.Time:
                     DateTime rest;
                     return DateTime.TryParse(s, out rest);

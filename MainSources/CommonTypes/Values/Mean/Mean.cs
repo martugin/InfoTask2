@@ -43,6 +43,7 @@ namespace CommonTypes
             switch (dt)
             {
                 case DataType.Real:
+                case DataType.Weighted:
                     return Real == mean.Real;
                 case DataType.String:
                     return String == mean.String;
@@ -62,6 +63,7 @@ namespace CommonTypes
             switch (dt)
             {
                 case DataType.Real:
+                case DataType.Weighted:
                     return Real < mean.Real;
                 case DataType.String:
                     return String.CompareTo(mean.String) < 0;
@@ -89,7 +91,12 @@ namespace CommonTypes
             get { return null; }
             internal set { }
         }
-        
+
+        public override ErrMom TotalError
+        {
+            get { return Error; }
+        }
+
         public virtual int Count { get { return 1; } }
         public virtual IMean LastMean { get { return this; } }
 

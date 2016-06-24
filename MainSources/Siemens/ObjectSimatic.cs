@@ -1,15 +1,17 @@
-﻿using CommonTypes;
+﻿using System;
+using BaseLibrary;
+using CommonTypes;
 
 namespace Provider
 {
     //Объект
     internal class ObjectSimatic : SourceObject
     {
-        internal ObjectSimatic(string archive, string code, int id) : base(code)
+        internal ObjectSimatic(SimaticSource source, string archive, string tag, int id) : base(source)
         {
             Id = id;
             Archive = archive;
-            FullCode = Archive + @"\" + Code;
+            FullCode = Archive + @"\" + tag;
         }
 
         //Сигналы: качество, флаги
@@ -23,7 +25,7 @@ namespace Provider
         //Id в таблице архива
         public int Id { get; private set; }
 
-        public override SourceSignal AddSignal(SourceSignal sig)
+        protected override SourceSignal AddNewSignal(SourceSignal sig)
         {
             switch (sig.Inf["Prop"].ToLower())
             {
@@ -36,16 +38,16 @@ namespace Provider
             }
         }
 
-        //Возвращает, есть ли у объекта неопределенные срезы
-        public override bool HasBegin
+        //Чтение значений по одному объекту из рекордсета источника
+        //Возвращает количество сформированных значений
+        public override int MakeValueFromRec(IRecordRead rec)
         {
-            get { return SignalsHasBegin(ValueSignal, QualitySignal, FlagsSignal); }
-        }
-
-        //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
-        public override int AddBegin()
-        {
-            return SignalsAddBegin(ValueSignal, QualitySignal, FlagsSignal);
+            DateTime time = rec.GetTime(1).ToLocalTime();
+            var quality = rec.GetInt(3);
+            var err = MakeError(quality);
+            return AddMom(FlagsSignal, time, rec.GetInt(4), err) +
+                      AddMom(QualitySignal, time, quality, err) +
+                      AddMom(ValueSignal, time, ((ReaderAdo)rec).Reader[2], err);
         }
     }
 }

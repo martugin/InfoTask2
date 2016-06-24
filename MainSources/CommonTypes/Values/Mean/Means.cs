@@ -151,7 +151,8 @@ namespace CommonTypes
         }
         public override int Integer
         {
-            get { return Convert.ToInt32(_real); }
+            get { try { return Convert.ToInt32(_real); }
+                    catch { return 0; } }
             internal set { _real = value; }
         }
         public override double Real

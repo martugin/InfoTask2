@@ -22,18 +22,26 @@ namespace Fictive
 
         public override void Prepare()
         {
-            throw new NotImplementedException();
+            foreach (var ob in _objects.Values)
+                ob.IsInitialized = true;
         }
 
+        //Словарь объектов, ключи - номера
+        private readonly DicI<ObjectFictive> _objects = new DicI<ObjectFictive>();
+
+        //Добавить объект по заданному сигналу
         protected override SourceObject AddObject(SourceSignal sig)
         {
-            throw new NotImplementedException();
+            var num = sig.Inf.GetInt("NumObject");
+            if (!_objects.ContainsKey(num))
+                return _objects.Add(num, new ObjectFictive(this, sig.Inf.GetInt("ValuesInterval")));
+            return _objects[num];
         }
 
         public override void ClearSignals()
         {
             ProviderSignals.Clear();
-            throw new NotImplementedException();
+            _objects.Clear();
         }
 
         public override TimeInterval GetTime()
@@ -50,9 +58,11 @@ namespace Fictive
             return factory;
         }
 
+        //Чтение списков равномерных значений
         public override void GetValues(DateTime beginRead, DateTime endRead)
         {
-            throw new NotImplementedException();
+            foreach (var ob in _objects.Values)
+                ob.MakeUniformValues(beginRead, endRead);
         }
     }
 }
