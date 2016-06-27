@@ -4,20 +4,13 @@ using BaseLibrary;
 
 namespace ProvidersLibrary
 {
-    //Базовый класс для всех провайдеров
-    public abstract class Prov : ExternalLogger
+    //Настройки одного подключения провайдера (основного или резервного)
+    public abstract class ProviderConnect : ExternalLogger, IDisposable
     {
-        //Ссылка на соединение
-        public ProvConn Conn { get; set; }
-        //Код провайдера
-        public abstract string Code { get; }
-        //Хэш для идентификации настройки провайдера
-        public abstract string Hash { get; }
-
         //Контекст для логгера
         public override string CodeObject
         {
-            get { return Conn.Type.ToRussian() + ": " + Conn.Name + ", " + Code; }
+            get { return Hash; }
         }
 
         //Загрузка настроек провайдера
@@ -36,21 +29,17 @@ namespace ProvidersLibrary
         //Загрузка свойств из словаря
         protected abstract void ReadInf(DicS<string> dic);
 
-        //Очистка ресурсов
-        public virtual void Dispose() { }
-        //Подготовка провайдера к работе (во время PrepareCalc)
-        public virtual void Prepare() { }
-       
+        //Хэш для идентификации настройки провайдера
+        public abstract string Hash { get; }
+
+        public virtual void Dispose() {}
+        
         //Проверка соединения с провайдером, вызывается когда уже произошла ошибка для повторной проверки соединения
         //Возвращает true, если соединение установлено
         public virtual bool Check() { return true; }
         //Соединение установлено
         protected bool IsConnected { get; set; }
-
-        //Текущий период расчета
-        public DateTime PeriodBegin { get { return Conn.PeriodBegin; } }
-        public DateTime PeriodEnd { get { return Conn.PeriodEnd; } }
-
+        
         //Настройка
         #region
         //Проверка соединения в форме настроек возвращает true, если соединение успешное
@@ -59,24 +48,6 @@ namespace ProvidersLibrary
         public string CheckConnectionMessage { get; protected set; }
         //Проверка корректности настроек, возвращает строку с ошибками, на входе словарь настроек
         public virtual string CheckSettings(DicS<string> infDic) { return ""; }
-
-        //Вызов окна настройки
-        public string Setup()
-        {
-            throw new NotImplementedException();
-            //if (MenuCommands == null)
-            //{
-            //    MenuCommands = new DicS<Dictionary<string, IMenuCommand>>();
-            //    AddMenuCommands();
-            //}
-            //IsSetup = true;
-            //new ProviderSetupForm { Conn = this }.ShowDialog();
-            //while (IsSetup) Thread.Sleep(500);
-            //return ProviderInf;
-        }
-
-        //True, пока идет настройка
-        internal bool IsSetup { get; set; }
 
         //Словарь комманд открытия дилогов, ключи - имена свойств, вторые ключи - названия пунктов меню
         internal DicS<Dictionary<string, IMenuCommand>> MenuCommands { get; private set; }

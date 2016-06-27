@@ -6,9 +6,9 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Объект
-    internal class ObjectWonderware : SourObject
+    internal class ObjectWonderware : SourceObject
     {
-        public ObjectWonderware(WonderwareConn conn, string tag) : base(conn)
+        public ObjectWonderware(WonderwareConn source, string tag) : base(source)
         {
             TagName = tag;
         }

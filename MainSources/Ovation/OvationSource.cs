@@ -10,7 +10,7 @@ namespace Provider
 {
     [Export(typeof(Prov))]
     [ExportMetadata("Code", "OvationSource")]
-    public class OvationSource : OleDbSour
+    public class OvationSource : OleDbSource
     {
         //Соединение
         internal OvationConn OvationConn { get { return (OvationConn) Conn; } }
@@ -47,7 +47,7 @@ namespace Provider
         //Чтение значений
         #region
         //Запрос значений из Historian по списку сигналов и интервалу
-        protected override IRecordRead QueryPartValues(List<SourObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("select ID, TIMESTAMP, TIME_NSEC, F_VALUE, RAW_VALUE, STS from PT_HF_HIST " + "where (");
             bool isFirst = true;
@@ -74,7 +74,7 @@ namespace Provider
         }
 
         //Определение текущего считываемого объекта
-        protected override SourObject DefineObject(IRecordRead rec)
+        protected override SourceObject DefineObject(IRecordRead rec)
         {
             return OvationConn.ObjectsId[rec.GetInt("Id")];
         }

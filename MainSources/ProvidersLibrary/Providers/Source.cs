@@ -4,51 +4,42 @@ using CommonTypes;
 
 namespace ProvidersLibrary
 {
-    //Соединение - источник
-    public abstract class SourConn : ProvConn
+    //Базовый класс для всех источников
+    public abstract class Source : Provider
     {
-        protected SourConn()
+        protected Source()
         {
             CloneCutFrequency = 10;
-            ErrPool = new ErrMomPool(MakeErrFactory());
         }
 
         //Тип провайдера
-        public override ProviderType Type { get { return ProviderType.Source;}}
-
-        //Текущий провайдер-источник
-        private Sour _source;
-        public Sour Source 
-        { 
-            get
-            {
-                if (_source == null && MainProvider != null)
-                    _source = (Sour)MainProvider;
-                return _source;
-            }
-        }
+        public override ProviderType Type { get { return ProviderType.Source; } }
+        //Текущее соединение
+        protected SourceConnect SourceConnect { get { return (SourceConnect)CurConnect; } }
 
         //Получение диапазона времени источника
         public TimeInterval GetTime()
         {
-            return Source.GetTime();
+            if (CurConnect != null)
+                return SourceConnect.GetTime();
+            return new TimeInterval(Different.MinDate, DateTime.Now);
         }
 
         //Добавить сигнал
-        public SourSignal AddSignal(string code, string codeObject, DataType dataType, string signalInf, string formula = null)
+        public SourceSignal AddSignal(string code, string codeObject, DataType dataType, string signalInf, string formula = null)
         {
             if (ProviderSignals.ContainsKey(code))
                 return ProviderSignals[code];
-            var sig = new SourInitSignal(this, code, dataType, signalInf);
+            var sig = new SourceInitSignal(this, code, dataType, signalInf);
             var ob = AddObject(sig);
             ob.CodeObject = codeObject;
             sig = ob.AddSignal(sig);
             if (formula != null)
-                return new SourCalcSignal(this, sig, code, dataType, formula);
+                return new SourceCalcSignal(this, sig, code, dataType, formula);
             return sig;
         }
         //Добавить объект содержащий заданный сигнал
-        protected abstract SourObject AddObject(SourInitSignal sig);
+        protected abstract SourceObject AddObject(SourceInitSignal sig);
 
         //Очистка списка сигналов
         public virtual void ClearSignals()
@@ -59,14 +50,14 @@ namespace ProvidersLibrary
         }
 
         //Список сигналов, содержащих возвращаемые значения
-        internal readonly DicS<SourInitSignal> ProviderSignals = new DicS<SourInitSignal>();
-        public IDicSForRead<SourInitSignal> Signals { get { return ProviderSignals; } }
+        internal readonly DicS<SourceInitSignal> ProviderSignals = new DicS<SourceInitSignal>();
+        public IDicSForRead<SourceInitSignal> Signals { get { return ProviderSignals; } }
         //Словарь расчетных сигналов
-        private readonly DicS<SourCalcSignal> _calcSignals = new DicS<SourCalcSignal>();
-        public DicS<SourCalcSignal> CalcSignals { get { return _calcSignals; } }
+        private readonly DicS<SourceCalcSignal> _calcSignals = new DicS<SourceCalcSignal>();
+        public DicS<SourceCalcSignal> CalcSignals { get { return _calcSignals; } }
         //Словарь сигналов клона, ключи Id в клоне, используется и при чтении из клона, и при записи в клон
-        private readonly DicI<SourInitSignal> _cloneSignalsId = new DicI<SourInitSignal>();
-        public DicI<SourInitSignal> CloneSignalsId { get { return _cloneSignalsId; } }
+        private readonly DicI<SourceInitSignal> _cloneSignalsId = new DicI<SourceInitSignal>();
+        public DicI<SourceInitSignal> CloneSignalsId { get { return _cloneSignalsId; } }
 
         //Создание фабрики ошибок
         protected virtual IErrMomFactory MakeErrFactory()
@@ -85,19 +76,31 @@ namespace ProvidersLibrary
         }
 
         //Чтение значений из источника
-        public void GetValues(DateTime periodBegin, DateTime periodEnd)
+        internal void GetValues(DateTime periodBegin, DateTime periodEnd)
         {
+            if (ErrPool == null)
+                ErrPool = new ErrMomPool(MakeErrFactory());
             foreach (var sig in ProviderSignals.Values)
                 sig.ClearMoments(periodBegin != PeriodEnd);
             PeriodBegin = periodBegin;
             PeriodEnd = periodEnd;
-            Source.GetValues();
+            if (NeedCut)
+                Start(ReadCut, 0, PeriodBegin < PeriodEnd ? 30 : 100);
+            if (!NeedCut || PeriodBegin < PeriodEnd)
+                Start(ReadChanges, Procent, 100);
         }
-        
+
+        //Нужно считывать срез
+        protected bool NeedCut { get; set; }
+        //Чтение среза
+        protected virtual void ReadCut() { }
+        //Чтение изменений
+        protected virtual void ReadChanges() { }
+
         //Создание клона
         #region
         //Частота в минутах фиксации среза в клоне, должна делить 60
-        public int CloneCutFrequency { get; private set; }
+        public int CloneCutFrequency { get; protected set; }
 
         //Рекордсеты таблиц значений клона
         internal RecDao CloneRec { get; private set; }
@@ -125,7 +128,7 @@ namespace ProvidersLibrary
                     CloneErrorsRec.AddNew();
                     CloneErrorsRec.Put("CodeObject", codeObject);
                     CloneErrorsRec.Put("ErrorDescription", err);
-                    CloneErrorsRec.Update();    
+                    CloneErrorsRec.Update();
                 }
             }
         }
@@ -175,11 +178,11 @@ namespace ProvidersLibrary
                 {
                     ReadCloneSignalsId(db);
                     using (CloneRec = new RecDao(db, "SELECT * FROM MomentValues"))
-                        using (CloneCutRec = new RecDao(db, "SELECT * FROM MomentValuesCut"))
-                            using (CloneStrRec = new RecDao(db, "SELECT * FROM MomentStrValues"))
-                                using (CloneStrCutRec = new RecDao(db, "SELECT * FROM MomentStrValuesCut"))
-                                    using (CloneErrorsRec = new RecDao(db, "SELECT * FROM ErrorsSignals"))
-                                        GetValues(beginRead, endRead);
+                    using (CloneCutRec = new RecDao(db, "SELECT * FROM MomentValuesCut"))
+                    using (CloneStrRec = new RecDao(db, "SELECT * FROM MomentStrValues"))
+                    using (CloneStrCutRec = new RecDao(db, "SELECT * FROM MomentStrValuesCut"))
+                    using (CloneErrorsRec = new RecDao(db, "SELECT * FROM ErrorsSignals"))
+                        GetValues(beginRead, endRead);
                     WriteMomentErrors(db);
                 }
             }

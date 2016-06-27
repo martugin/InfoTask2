@@ -30,7 +30,7 @@ namespace Provider
         }
 
         //Добавляет один сигнал в список
-        protected override SourObject AddObject(SourInitSignal sig)
+        protected override SourceObject AddObject(SourceInitSignal sig)
         {
             var ind = new ObjectIndex
             {

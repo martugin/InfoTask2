@@ -4,9 +4,9 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Объект для клона, содержит один сигнал
-    public class CloneObject : SourObject
+    public class CloneObject : SourceObject
     {
-        public CloneObject(SourConn conn) : base(conn) { }
+        public CloneObject(Source source) : base(source) { }
 
         public override int ReadMoments(IRecordRead rec)
         {

@@ -5,10 +5,10 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Один сигнал 
-    public class SourInitSignal : SourSignal
+    public class SourceInitSignal : SourceSignal
     {
-        public SourInitSignal(SourConn conn, string code, DataType dataType, string signalInf)
-            : base(conn, code, dataType, signalInf)
+        public SourceInitSignal(Source source, string code, DataType dataType, string signalInf)
+            : base(source, code, dataType, signalInf)
         {
             BufMom = new MomEdit(dataType);
             PrevMom = new MomEdit(dataType);
@@ -42,9 +42,9 @@ namespace ProvidersLibrary
         {
             BufMom.Time = time;
             BufMom.Error = err;
-            if (time <= SourceConn.PeriodBegin && _beginMom.Time <= time)
+            if (time <= Source.PeriodBegin && _beginMom.Time <= time)
                 _beginMom.CopyAllFrom(BufMom);
-            else if (time <= SourceConn.PeriodEnd)
+            else if (time <= Source.PeriodEnd)
             {
                 if (_endMom.Time <= time) _endMom.CopyAllFrom(BufMom);
                 return PutMom(BufMom);
@@ -78,16 +78,16 @@ namespace ProvidersLibrary
         //Чтение одной строчки значений из рекордсета, и запись ее в клон
         public int PutClone(IMom mom) //Рекордсет срезов клона
         {
-            var rec = IsReal ? SourceConn.CloneRec : SourceConn.CloneStrRec;
-            var recCut = IsReal ? SourceConn.CloneCutRec : SourceConn.CloneStrCutRec;
+            var rec = IsReal ? Source.CloneRec : Source.CloneStrRec;
+            var recCut = IsReal ? Source.CloneCutRec : Source.CloneStrCutRec;
             int nwrite = 0;
 
-            var d1 = SourceConn.RemoveMinultes(mom.Time);
-            var d = SourceConn.RemoveMinultes(PrevMom.Time).AddMinutes(SourceConn.CloneCutFrequency);
+            var d1 = Source.RemoveMinultes(mom.Time);
+            var d = Source.RemoveMinultes(PrevMom.Time).AddMinutes(Source.CloneCutFrequency);
             while (d <= d1)
             {
                 PutCloneRec(PrevMom, recCut, d);
-                d = d.AddMinutes(SourceConn.CloneCutFrequency);
+                d = d.AddMinutes(Source.CloneCutFrequency);
                 nwrite++;
             }
             PutCloneRec(mom, rec, mom.Time);

@@ -7,7 +7,7 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Базовый класс для источников космотроники
-    public abstract class KosmotronikaBaseSource : OleDbSour
+    public abstract class KosmotronikaBaseSource : OleDbSource
     {
         //Ссылка на соединение
         internal KosmotronikaConn KosmotronikaConn { get { return (KosmotronikaConn) Conn; } }
@@ -72,7 +72,7 @@ namespace Provider
         }
 
         //Запрос значений по одному блоку сигналов
-        protected override IRecordRead QueryPartValues(List<SourObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             var nums = new ushort[part.Count, IsAnalog ? 3 : 4];
             for (int i = 0; i < part.Count; i++)
@@ -100,7 +100,7 @@ namespace Provider
         }
 
         //Определение текущего считываемого объекта
-        protected override SourObject DefineObject(IRecordRead rec)
+        protected override SourceObject DefineObject(IRecordRead rec)
         {
             var ind = new ObjectIndex
             {

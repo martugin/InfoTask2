@@ -7,11 +7,12 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Источник с чтением значений из рекордсета
-    public abstract class AdoSour : Sour
+    public abstract class AdoSource : Source
     {
-        protected AdoSour()
+        protected AdoSource()
         {
             NeedCut = true;
+            CloneCutFrequency = 10;
             ReconnectsCount = 2;
             MaxErrorCount = 3;
             MaxErrorDepth = 3;
@@ -33,7 +34,7 @@ namespace ProvidersLibrary
         protected int NumWrite { get; set; }
 
         //Чтение значений по блокам объектов
-        protected void ReadValuesByParts(IEnumerable<SourObject> objects, //список объектов
+        protected void ReadValuesByParts(IEnumerable<SourceObject> objects, //список объектов
                                                            int partSize, //размер одного блока
                                                            DateTime beg, //период считывания
                                                            DateTime en,
@@ -72,7 +73,7 @@ namespace ProvidersLibrary
                             successRead |= ReadPartRecursive(parts[i], successRead, 1, beg, en, isCut, successRead);
                     }
                 int nadd = 0;
-                var signals = SourceConn.ProviderSignals.Values;
+                var signals = ProviderSignals.Values;
                 if (isCut)
                 {
                     nadd += signals.Sum(sig => sig.MakeBegin());
@@ -86,7 +87,7 @@ namespace ProvidersLibrary
                 }
                 NumWrite += nadd;
 
-                SourceConn.AddErrorObjectsWarning();
+                AddErrorObjectsWarning();
                 IsConnected &= successRead;
                 if (successRead)
                     AddEvent("Значения из источника прочитаны", NumRead + " значений прочитано, " + NumWrite + " значений сформировано");
@@ -99,7 +100,7 @@ namespace ProvidersLibrary
         }
 
         //Количество объектов, для чтения значений
-        private int ObjectsToReadCount(IEnumerable<SourObject> objects, bool isCut)
+        private int ObjectsToReadCount(IEnumerable<SourceObject> objects, bool isCut)
         {
             return !isCut
                 ? objects.Count()
@@ -107,25 +108,25 @@ namespace ProvidersLibrary
         }
 
         //Разбиение списка объектов на блоки
-        private List<List<SourObject>> MakeParts(IEnumerable<SourObject> objects, //Список объектов
+        private List<List<SourceObject>> MakeParts(IEnumerable<SourceObject> objects, //Список объектов
                                                                           int partSize, //Размер одного блока
                                                                           bool isCut) //Выполняется считываение среза
         {
-            var parts = new List<List<SourObject>>();
+            var parts = new List<List<SourceObject>>();
             int i = 0;
-            List<SourObject> part = null;
+            List<SourceObject> part = null;
             foreach (var ob in objects)
                 if (!isCut || !ob.HasBegin)
                 {
                     if (i++ % partSize == 0)
-                        parts.Add(part = new List<SourObject>());
+                        parts.Add(part = new List<SourceObject>());
                     part.Add(ob);
                 }
             return parts;
         }
         
         //Чтение значений по одному блоку списка объектов
-        protected bool ReadPart(List<SourObject> part,
+        protected bool ReadPart(List<SourceObject> part,
                                              DateTime beg, DateTime en, //Период считывания
                                              bool isCut) //Считывается срез
         {
@@ -166,7 +167,7 @@ namespace ProvidersLibrary
         }
 
         //Считывает значения по блоку сигналов, в случае ошибки рекурсивно считает для половин блока
-        private bool ReadPartRecursive(List<SourObject> part, //Блок сигналов 
+        private bool ReadPartRecursive(List<SourceObject> part, //Блок сигналов 
                                                        bool useRecursion, //Использовать рекурсивный вызов
                                                        int depth, //Глубина в дереве вызовов, начиная с 1
                                                        DateTime beg, DateTime en, //Период считывания
@@ -179,7 +180,7 @@ namespace ProvidersLibrary
             if (part.Count == 1 || !useRecursion || (!successRead && depth >= MaxErrorDepth))
             {
                 foreach (var ob in part)
-                    SourceConn.AddErrorObject(ob.CodeObject, Command.ErrorMessage(false, true, false));
+                    AddErrorObject(ob.CodeObject, Command.ErrorMessage(false, true, false));
                 return false;
             }
             Thread.Sleep(ErrorWaiting);
@@ -192,7 +193,7 @@ namespace ProvidersLibrary
         }
 
         //Запрос рекордсета по одному блоку, возвращает запрошенный рекорсет, или null при неудаче
-        protected abstract IRecordRead QueryPartValues(List<SourObject> part, //список объектов
+        protected abstract IRecordRead QueryPartValues(List<SourceObject> part, //список объектов
                                                          DateTime beg, DateTime en, //период считывания
                                                          bool isCut); //считывается срез
 
@@ -203,7 +204,7 @@ namespace ProvidersLibrary
             while (rec.Read())
             {
                 nread++;
-                SourObject ob = null;
+                SourceObject ob = null;
                 try
                 {
                     ob = DefineObject(rec);
@@ -212,13 +213,13 @@ namespace ProvidersLibrary
                 }
                 catch (Exception ex)
                 {
-                    SourceConn.AddErrorObject(ob == null ? "" : ob.CodeObject, "Ошибка при чтении значений из рекордсета", ex);
+                    AddErrorObject(ob == null ? "" : ob.CodeObject, "Ошибка при чтении значений из рекордсета", ex);
                 }
             }
             return new Tuple<int, int>(nread, nwrite);
         }
 
         //Определение текущего считываемого объекта
-        protected abstract SourObject DefineObject(IRecordRead rec);
+        protected abstract SourceObject DefineObject(IRecordRead rec);
     }
 }

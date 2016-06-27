@@ -4,15 +4,15 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Базовый класс для всех сигналов источников и приемников
-    public abstract class ProvSignal 
+    public abstract class ProviderSignal 
     {
-        protected ProvSignal(string code, DataType dataType)
+        protected ProviderSignal(string code, DataType dataType)
         {
             Code = code;
             DataType = dataType;
             IsReal = dataType.LessOrEquals(DataType.Real);
         }
-        protected ProvSignal(string code, DataType dataType, string signalInf) 
+        protected ProviderSignal(string code, DataType dataType, string signalInf) 
             : this(code, dataType)
         {
             Inf = signalInf.ToPropertyDicS();

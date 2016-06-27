@@ -6,20 +6,20 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Один объект (дисктретная, аналоговая или упакованная точка)
-    internal class ObjectOvation : SourObject
+    internal class ObjectOvation : SourceObject
     {
-        internal ObjectOvation(OvationConn conn, int id) : base(conn)
+        internal ObjectOvation(OvationConn source, int id) : base(source)
         {
             Id = id;
         }
         
         //Сигнал со словом состояния
-        internal SourInitSignal StateSignal { get; set; }
+        internal SourceInitSignal StateSignal { get; set; }
         //Id в Historian
         internal int Id { get; private set; }
         
         //Добавить к объекту сигнал, если такого еще не было
-        protected override SourInitSignal AddNewSignal(SourInitSignal sig)
+        protected override SourceInitSignal AddNewSignal(SourceInitSignal sig)
         {
             if (sig.Inf["Prop"] == "STAT")
                 return StateSignal = StateSignal ?? sig;

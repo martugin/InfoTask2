@@ -18,7 +18,7 @@ namespace Provider
         internal Dictionary<string, ObjectWonderware> Objects {  get { return _objects; } }
 
         //Добавить сигнал в провайдер
-        protected override SourObject AddObject(SourInitSignal sig)
+        protected override SourceObject AddObject(SourceInitSignal sig)
         {
             string tag = sig.Inf["TagName"];
             if (!_objects.ContainsKey(tag))

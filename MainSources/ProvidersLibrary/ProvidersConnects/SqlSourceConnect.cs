@@ -5,7 +5,7 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Источник, использующий SQL-сервер
-    public abstract class SqlSour : AdoSour
+    public class SqlSourceConnect : SourceConnect
     {
         //Загрузка свойств из словаря
         protected override void ReadInf(DicS<string> dic)

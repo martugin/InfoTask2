@@ -3,27 +3,27 @@
 namespace ProvidersLibrary
 {
     //Базовый класс для всех сигналов источников
-    public abstract class SourSignal : ProvSignal
+    public abstract class SourceSignal : ProviderSignal
     {
-        protected SourSignal(SourConn conn, string code, DataType dataType, string signalInf)
+        protected SourceSignal(Source source, string code, DataType dataType, string signalInf)
             : base(code, dataType, signalInf)
         {
-            SourceConn = conn;
+            Source = source;
             MList = MFactory.NewList(dataType);
             MomList = new MomListReadOnly(MList);
         }
-        protected SourSignal(SourConn conn, string code, DataType dataType)
+        protected SourceSignal(Source conn, string code, DataType dataType)
             : base(code, dataType)
         {
-            SourceConn = conn;
+            Source = conn;
             MList = MFactory.NewList(dataType);
             MomList = new MomListReadOnly(MList);
         }
 
         //Соединение - источник
-        protected SourConn SourceConn { get; private set; }
+        protected Source Source { get; private set; }
         //Объект
-        internal SourObject SourObject { get; set; }
+        internal SourceObject SourceObject { get; set; }
 
         //Возвращаемый список значений
         protected MomList MList { get; private set; }

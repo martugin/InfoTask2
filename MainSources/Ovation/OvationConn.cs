@@ -18,7 +18,7 @@ namespace Provider
         internal DicI<ObjectOvation> ObjectsId { get { return _objectsId; } }
 
         //Добавить объект
-        protected override SourObject AddObject(SourInitSignal sig)
+        protected override SourceObject AddObject(SourceInitSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))

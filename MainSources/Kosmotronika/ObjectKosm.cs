@@ -20,9 +20,9 @@ namespace Provider
     //---------------------------------------------------------------------------------------------------------------------------------
     //Один объект для непосредственного считывания с архива космотроники
     //Для аналоговых - один ТМ, для выходов - один выход ТМ
-    internal class ObjectKosm : SourObject
+    internal class ObjectKosm : SourceObject
     {
-        public ObjectKosm(KosmotronikaConn conn, ObjectIndex ind) : base(conn)
+        public ObjectKosm(KosmotronikaConn source, ObjectIndex ind) : base(source)
         {
             Sn = ind.Sn; 
             NumType = ind.NumType;
@@ -31,7 +31,7 @@ namespace Provider
         }
 
         //Добавить к объекту сигнал, если такого еще не было
-        protected override SourInitSignal AddNewSignal(SourInitSignal sig)
+        protected override SourceInitSignal AddNewSignal(SourceInitSignal sig)
         {
             if (sig.Inf["Prop"] == "ND")
                 return StateSignal = StateSignal ?? sig;
@@ -50,9 +50,9 @@ namespace Provider
         internal int Out { get; private set; }
 
         //Сигнал недостоверности
-        internal SourInitSignal StateSignal { get; private set; }
+        internal SourceInitSignal StateSignal { get; private set; }
         //Сигнал ПОК
-        internal SourInitSignal PokSignal { get; private set; }
+        internal SourceInitSignal PokSignal { get; private set; }
 
         //Чтение значений по одному объекту из рекордсета источника
         //Возвращает количество сформированных значений

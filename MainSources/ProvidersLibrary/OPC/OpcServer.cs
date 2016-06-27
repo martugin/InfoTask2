@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using BaseLibrary;
 using CommonTypes;
 using OPCAutomation;
@@ -8,32 +7,13 @@ using OPCAutomation;
 namespace ProvidersLibrary
 {
     //Соединение с OPC-сервером
-    public abstract class OpcServer : Receiv
+    public abstract class OpcServer : Receiver
     {
-        protected OpcServer() 
+        //Подключение
+        private OpcServerConnect OpcConnect
         {
-            _server = new OPCServer();
+            get { return (OpcServerConnect) CurConnect; }
         }
-        
-        //Допускается передача списка мгновенных значений за один раз
-        public bool AllowListValues { get { return false; } }
-
-        //Настройки
-        protected override void ReadInf(DicS<string> dic)
-        {
-            ServerName = dic["OPCServerName"];
-            Node = dic["Node"];
-        }
-        //Хэш для идентификации настройки провайдера
-        public override string Hash
-        {
-            get { return "OPCServer=" + ServerName + ";Node=" + Node; ; }
-        }
-
-        //Тип OPC-сервера
-        public string ServerName { get; set; }
-        //Имя компьютера
-        public  string Node { get; set; }
 
         //Массив корректно добавленых OPC-итемов
         private OpcItem[] _itemsList;
@@ -41,13 +21,8 @@ namespace ProvidersLibrary
         private readonly Dictionary<string, OpcItem> _signalsCode = new Dictionary<string, OpcItem>();
         public Dictionary<string, OpcItem> SignalsCode { get { return _signalsCode; } }
         //Список сигналов приемника с мгновенными значениями
-        private readonly DicS<ReceivSignal> _signals = new DicS<ReceivSignal>();
-        public IDicSForRead<ReceivSignal> Signals { get { return _signals; } }
-
-        //OPC сервер
-        private readonly OPCServer _server;
-        //Состояние сервера
-        public int State { get { return _server.ServerState; } }
+        private readonly DicS<ReceiverSignal> _signals = new DicS<ReceiverSignal>();
+        public IDicSForRead<ReceiverSignal> Signals { get { return _signals; } }
 
         //Ссылка на группу
         private OPCGroup _group;
@@ -58,85 +33,21 @@ namespace ProvidersLibrary
         public List<string> ServersList(string node = null)
         {
             var list = new List<string>();
-            Array arr = node == null ? _server.GetOPCServers() : _server.GetOPCServers(node);
+            Array arr = node == null ? OpcConnect.Server.GetOPCServers() : OpcConnect.Server.GetOPCServers(node);
             foreach (string a in arr)
                 list.Add(a);
             return list;
         }
 
-        //Соединение
-        public bool Connect()
-        {
-            try
-            {
-                IsConnected = false;
-                Dispose();
-                Thread.Sleep(500);
-            }
-            catch { }
-            try
-            {
-                if (Node.IsEmpty()) _server.Connect(ServerName);
-                else _server.Connect(ServerName, Node);
-                if (State != 1)//Для Овации этой проверки не было !!!!!
-                {
-                    AddError("Ошибка соединения с OPC-сервером", null , "Состояние = " + State);
-                    return IsConnected = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка соединения с OPC-сервером", ex);
-                return IsConnected = false;
-            }
-            return IsConnected = true;
-        }
-
-        //Проверка соединения
-        public override bool Check()
-        {
-            return Danger(Connect, 2, 500, "Ошибка соединения с OPC-сервером");
-        }
-
-        //Проверка настроек
-        public override string CheckSettings(DicS<string> inf)
-        {
-            return !inf["OPCServerName"].IsEmpty() ? "" : "Не задано имя OPC-сервера";
-        }
-
-        //Проверка соединения
-        public override bool CheckConnection()
-        {
-            if (Check())
-            {
-                CheckConnectionMessage = "Успешное соединение";
-                return true;
-            }
-            AddError(CheckConnectionMessage = "Ошибка соединения с OPC-сервером");
-            return false;
-        }
-
-        //Разрыв соединения
-        public override void Dispose()
-        {
-            try
-            {
-                _server.OPCGroups.RemoveAll();
-                _server.Disconnect();
-                IsConnected = false;
-            }
-            catch { }
-        }
-
         //Создается группа с именем name
         public void AddGroup(string name)
         {
-            if (_server.OPCGroups.Count > 0)
+            if (OpcConnect.Server.OPCGroups.Count > 0)
             {
-                _server.OPCGroups.RemoveAll();
+                OpcConnect.Server.OPCGroups.RemoveAll();
                 _items.Clear();   
             }
-            _group = _server.OPCGroups.Add(name);
+            _group = OpcConnect.Server.OPCGroups.Add(name);
            // _group.IsSubscribed = true;
             _group.UpdateRate = 1000;
             _group.IsActive = true;
@@ -144,10 +55,10 @@ namespace ProvidersLibrary
         }
 
         //Добавить сигнал приемника
-        public ReceivSignal AddSignal(string signalInf, string code, DataType dataType)
+        public ReceiverSignal AddSignal(string signalInf, string code, DataType dataType)
         {
             if (_signalsCode.ContainsKey(code)) return _signalsCode[code];
-            var item = new OpcItem(ReceivConn, code, dataType, signalInf);
+            var item = new OpcItem(this, code, dataType, signalInf);
             _signals.Add(item.Code, item);
             _signalsCode.Add(code, item);
             item.Tag = GetOpcItemTag(item.Inf);
@@ -161,10 +72,10 @@ namespace ProvidersLibrary
         protected abstract string GetOpcItemTag(DicS<string> inf);
 
         //Добавить сигнал приемника, задав только тэг (для тестовой записи в настройках), сразу же передается значение как строка
-        public ReceivSignal AddSignalByTag(string tag, DataType dataType, string v)
+        public ReceiverSignal AddSignalByTag(string tag, DataType dataType, string v)
         {
             if (_signalsCode.ContainsKey(tag)) return _signalsCode[tag];
-            var item = new OpcItem(ReceivConn, tag, dataType, "");
+            var item = new OpcItem(this, tag, dataType, "");
             _signals.Add(item.Code, item);
             _signalsCode.Add(tag, item);
             item.Tag = tag;
@@ -178,10 +89,10 @@ namespace ProvidersLibrary
         //Добавление итемов на сервер
         private bool TryPrepare()
         {
-            if (!IsConnected && !Connect()) return false;
+            if (!IsConnected && !Check()) return false;
             try
             {
-                if (_group == null) AddGroup("Gr" + (_server.OPCGroups.Count + 1));
+                if (_group == null) AddGroup("Gr" + (OpcConnect.Server.OPCGroups.Count + 1));
                 int n = _items.Count;
                 var list = new OpcItem[n + 1];
                 int i = 1;
@@ -261,19 +172,5 @@ namespace ProvidersLibrary
             if (!Logger.IsRepeat) Danger(TryWriteValues, 2, 500, "Ошибка записи значений в OPC-сервер");
             else Danger(() => Danger(TryWriteValues, 2, 500, "Ошибка записи значений в OPC-сервер"), 3, 10000, "Ошибка подготовки OPC-сервера", TryPrepare);
         }
-    }
-
-    //--------------------------------------------------------------------------------------
-    //Отладочный OPC-сервер
-    public class DebugOpcServer : OpcServer
-    {
-        public DebugOpcServer(string serverName, string node)
-        {
-            Inf = "OpcServerName=" + serverName + ";Node=" + (node ?? "");
-            Logger = new Logger();
-        }
-
-        public override string Code { get { return "DebugOpcServer"; } }
-        protected override string GetOpcItemTag(DicS<string> inf) { return ""; }
     }
 }

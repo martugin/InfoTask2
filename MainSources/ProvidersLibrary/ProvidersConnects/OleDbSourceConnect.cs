@@ -4,7 +4,7 @@ using System.Data.OleDb;
 
 namespace ProvidersLibrary
 {
-    public abstract class OleDbSour : AdoSour
+    public abstract class OleDbSourceConnect : SourceConnect
     {
         //Соединение с провайдером OleDb
         protected OleDbConnection Connection { get; set; }
@@ -15,7 +15,7 @@ namespace ProvidersLibrary
             try { Connection.Close(); } catch { }
             try
             {
-                AddEvent("Соединение с провайдером", SourceConn.Name + "; " + Code + "; " + Inf);
+                AddEvent("Соединение с провайдером", Inf);
                 Connection = new OleDbConnection(ConnectionString);
                 Connection.Open();
                 return IsConnected = Connection.State == ConnectionState.Open;

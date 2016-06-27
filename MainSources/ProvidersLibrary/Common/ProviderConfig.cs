@@ -25,6 +25,7 @@ namespace ProvidersLibrary
         public ProviderType Type { get; private set; }
         //Код провайдера
         public string Code { get; private set; }
+
         //Пути к файлу и папке dll провайдера
         private string _file;
         public string File
@@ -39,10 +40,10 @@ namespace ProvidersLibrary
         public string Dir { get; private set; }
 
         //Запуск экземпляра провайдера через MEF, позднее связывание с dll
-        [ImportMany(typeof(Prov))]
-        private Lazy<Prov, IDictionary<string, object>>[] ImportProvs { get; set; }
+        [ImportMany(typeof(Provider))]
+        private Lazy<Provider, IDictionary<string, object>>[] ImportProvs { get; set; }
 
-        public Prov RunProv(string inf, Logger logger)
+        public Provider RunProvider(Logger logger, string inf, string reserveInf = "")
         {
             var prc = Factory.ProviderConfigs[Code];
             var catalog = new AggregateCatalog();
@@ -55,7 +56,8 @@ namespace ProvidersLibrary
                           where (string)codeVault.Metadata["Code"] == Code
                           select codeVault).Single().Value;
                 pr.Logger = logger;
-                pr.Inf = inf;
+                pr.AddMainConnect(inf);
+                if (!reserveInf.IsEmpty()) pr.AddReserveConnect(reserveInf);
                 return pr;
             }
             catch { return null; }

@@ -10,7 +10,7 @@ namespace Provider
     //Провайдер источника Wonderware
     [Export(typeof(Prov))]
     [ExportMetadata("Code", "WonderwareSource")]
-    public class WonderwareSour : SqlSour
+    public class WonderwareSour : SqlSourceConnect
     {
         //Код провайдера
         public override string Code { get { return "WonderwareSource"; } }
@@ -43,7 +43,7 @@ namespace Provider
         }
 
         //Запрос значений по одному блоку сигналов
-        protected override IRecordRead QueryPartValues(List<SourObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("SELECT TagName, DateTime = convert(nvarchar, DateTime, 21), Value, vValue, Quality, QualityDetail FROM History WHERE  TagName IN (");
             for (var n = 0; n < part.Count; n++)
@@ -62,7 +62,7 @@ namespace Provider
         }
 
         //Определение текущего считываемого объекта
-        protected override SourObject DefineObject(IRecordRead rec)
+        protected override SourceObject DefineObject(IRecordRead rec)
         {
             string code = rec.GetString("TagName");
             if ( WonderwareConn.Objects.ContainsKey(code))
