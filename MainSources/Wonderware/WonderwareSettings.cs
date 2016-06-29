@@ -5,7 +5,7 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Поключение к Wonderware Historian
-    public class WonderwareConnect : SqlSourceConnect
+    public class WonderwareSettings : SqlSourceSettings
     {
         //Получение диапазона архива по блокам истории
         protected override TimeInterval GetSourceTime()

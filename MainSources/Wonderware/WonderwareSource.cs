@@ -18,12 +18,12 @@ namespace Provider
         //Код провайдера
         public override string Code { get { return "WonderwareSource"; } }
         //Создание подключения
-        protected override ProviderConnect CreateConnect()
+        protected override ProviderSettings CreateConnect()
         {
-            return new WonderwareConnect();
+            return new WonderwareSettings();
         }
         //Ссылка на соединение
-        public WonderwareConnect Connect { get { return (WonderwareConnect)CurConnect; } }
+        public WonderwareSettings Settings { get { return (WonderwareSettings)CurSettings; } }
 
         //Словарь объектов по TagName
         private readonly Dictionary<string, ObjectWonderware> _objects = new Dictionary<string, ObjectWonderware>();
@@ -39,7 +39,7 @@ namespace Provider
         }
 
         //Очистка списка сигналов
-        public override void ClearObjects()
+        protected override void ClearObjects()
         {
             Objects.Clear();
         }
@@ -88,7 +88,7 @@ namespace Provider
                 sb.Append(" AND DateTime <").Append(en.ToSqlString());
             sb.Append(" ORDER BY DateTime");
 
-            return new ReaderAdo(Connect.SqlProps, sb.ToString(), 10000);
+            return new ReaderAdo(Settings.SqlProps, sb.ToString(), 10000);
         }
 
         //Определение текущего считываемого объекта

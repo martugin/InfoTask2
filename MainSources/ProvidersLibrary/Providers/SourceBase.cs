@@ -9,18 +9,25 @@ namespace ProvidersLibrary
     {
         protected SourceBase()
         {
+            NeedCut = true;
             CloneCutFrequency = 10;
         }
+
+        //Изменяемые настройки
+        //Нужно считывать срез
+        protected bool NeedCut { get; set; }
+        //Частота в минутах фиксации среза в клоне, должна делить 60
+        public int CloneCutFrequency { get; protected set; }
 
         //Тип провайдера
         public override ProviderType Type { get { return ProviderType.Source; } }
         //Текущее соединение
-        protected SourceConnect SourceConnect { get { return (SourceConnect)CurConnect; } }
+        protected SourceSettings SourceSettings { get { return (SourceSettings)CurSettings; } }
 
         //Получение диапазона времени источника
         public TimeInterval GetTime()
         {
-            return SourceConnect.GetTime();
+            return SourceSettings.GetTime();
         }
 
         //Добавить сигнал
@@ -31,9 +38,9 @@ namespace ProvidersLibrary
             var sig = new SourceSignal(this, code, dataType, signalInf);
             ProviderSignals.Add(code, sig);
             var ob = AddObject(sig);
-            if (ob != null)
+            if (ob != null) //Для источника клона
             {
-                ob.CodeObject = codeObject;
+                ob.Context = codeObject;
                 sig = ob.AddSignal(sig);    
             }
             if (formula != null)
@@ -52,7 +59,7 @@ namespace ProvidersLibrary
             ClearObjects();
         }
         //Очистка списков объектов
-        public abstract void ClearObjects();
+        protected abstract void ClearObjects();
 
         //Список сигналов, содержащих возвращаемые значения
         internal readonly DicS<SourceSignal> ProviderSignals = new DicS<SourceSignal>();
@@ -60,9 +67,6 @@ namespace ProvidersLibrary
         //Словарь расчетных сигналов
         private readonly DicS<CalcSignal> _calcSignals = new DicS<CalcSignal>();
         public DicS<CalcSignal> CalcSignals { get { return _calcSignals; } }
-        //Словарь сигналов клона, ключи Id в клоне, используется и при чтении из клона, и при записи в клон
-        private readonly DicI<SourceSignal> _cloneSignalsId = new DicI<SourceSignal>();
-        public DicI<SourceSignal> CloneSignalsId { get { return _cloneSignalsId; } }
 
         //Создание фабрики ошибок
         protected virtual IErrMomFactory MakeErrFactory()
@@ -95,8 +99,6 @@ namespace ProvidersLibrary
                 Start(ReadChanges, Procent, 100);
         }
 
-        //Нужно считывать срез
-        protected bool NeedCut { get; set; }
         //Чтение среза
         protected virtual void ReadCut() { }
         //Чтение изменений
@@ -104,9 +106,6 @@ namespace ProvidersLibrary
 
         //Создание клона
         #region
-        //Частота в минутах фиксации среза в клоне, должна делить 60
-        public int CloneCutFrequency { get; protected set; }
-
         //Рекордсеты таблиц значений клона
         internal RecDao CloneRec { get; private set; }
         internal RecDao CloneCutRec { get; private set; }
@@ -115,6 +114,9 @@ namespace ProvidersLibrary
         //Рекордсет таблицы ошибок создания клона
         internal RecDao CloneErrorsRec { get; private set; }
 
+        //Словарь сигналов клона, ключи Id в клоне, используется при записи в клон
+        private readonly DicI<SourceSignal> _cloneSignalsId = new DicI<SourceSignal>();
+        public DicI<SourceSignal> CloneSignalsId { get { return _cloneSignalsId; } }
         //Словарь ошибочных объектов, ключи - коды объектов
         private readonly DicS<string> _errorObjects = new DicS<string>();
         protected DicS<string> ErrorObjects { get { return _errorObjects; } }

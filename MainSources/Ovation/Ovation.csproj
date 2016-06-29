@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ObjectOvation.cs" />
-    <Compile Include="OvationConnect.cs" />
+    <Compile Include="OvationSettings.cs" />
     <Compile Include="OvationOPCReceiver.cs" />
     <Compile Include="OvationSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

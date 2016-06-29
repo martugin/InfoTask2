@@ -18,12 +18,12 @@ namespace Provider
         //Комплект
         public override string Complect { get { return "Ovation"; } }
         //Создание подключения
-        protected override ProviderConnect CreateConnect()
+        protected override ProviderSettings CreateConnect()
         {
-            return new OvationConnect();
+            return new OvationSettings();
         }
         //Подключение
-        internal OvationConnect Connect { get { return (OvationConnect)CurConnect; } }
+        internal OvationSettings Settings { get { return (OvationSettings)CurSettings; } }
 
         //Словарь объектов по Id в Historian
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
@@ -38,7 +38,7 @@ namespace Provider
         }
 
         //Удалить все сигналы
-        public override void ClearObjects()
+        protected override void ClearObjects()
         {
             _objectsId.Clear();
         }
@@ -72,10 +72,10 @@ namespace Provider
               .Append(") and (TIMESTAMP <= ")
               .Append(en.ToOvationString())
               .Append(") order by TIMESTAMP, TIME_NSEC");
-            var rec = new ReaderAdo(Connect.Connection, sb.ToString());
+            var rec = new ReaderAdo(Settings.Connection, sb.ToString());
             if (en.Subtract(beg).TotalMinutes > 59 && !rec.HasRows)
             {
-                AddWarning("Значения из источника не получены", null, beg + " - " + en +"; " + part.First().CodeObject + " и др.");
+                AddWarning("Значения из источника не получены", null, beg + " - " + en +"; " + part.First().Context + " и др.");
                 IsConnected = false;
                 return null;
             }

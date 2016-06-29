@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonProviders\CloneObject.cs" />
-    <Compile Include="CommonProviders\CloneSourceConnect.cs" />
+    <Compile Include="CommonProviders\CloneSourceSettings.cs" />
     <Compile Include="Common\DifferentProviders.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Common\ProviderConfig.cs" />
@@ -55,13 +55,13 @@
     <Compile Include="OPC\DebugOpcServer.cs" />
     <Compile Include="OPC\OpcItem.cs" />
     <Compile Include="OPC\OpcServer.cs" />
-    <Compile Include="OPC\OpcServerConnect.cs" />
+    <Compile Include="OPC\OpcServerSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\Receiver.cs" />
     <Compile Include="Providers\SourceBase.cs" />
     <Compile Include="Providers\AdoSource.cs" />
     <Compile Include="CommonProviders\CloneSource.cs" />
-    <Compile Include="ProvidersConnects\OleDbSourceConnect.cs" />
+    <Compile Include="ProvidersConnects\OleDbSourceSettings.cs" />
     <Compile Include="Providers\ProviderSetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,9 +69,9 @@
       <DependentUpon>ProviderSetupForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Providers\ProviderBase.cs" />
-    <Compile Include="ProvidersConnects\ProviderConnect.cs" />
-    <Compile Include="ProvidersConnects\SourceConnect.cs" />
-    <Compile Include="ProvidersConnects\SqlSourceConnect.cs" />
+    <Compile Include="ProvidersConnects\ProviderSettings.cs" />
+    <Compile Include="ProvidersConnects\SourceSettings.cs" />
+    <Compile Include="ProvidersConnects\SqlSourceSettings.cs" />
     <Compile Include="Signals\CalcSignal.cs" />
     <Compile Include="Signals\ProviderSignal.cs" />
     <Compile Include="Signals\SourceObject.cs" />

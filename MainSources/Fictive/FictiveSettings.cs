@@ -5,7 +5,7 @@ using ProvidersLibrary;
 namespace Fictive
 {
     //Подключение к тестовому источнику
-    public class FictiveConnect : SourceConnect
+    public class FictiveSettings : SourceSettings
     {
         public override string Hash { get { return "Fictive"; } }
 

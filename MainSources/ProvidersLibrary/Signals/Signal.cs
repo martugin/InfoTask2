@@ -22,8 +22,6 @@ namespace ProvidersLibrary
 
         //Соединение - источник
         protected SourceBase Source { get; private set; }
-        //Объект
-        internal SourceObject SourceObject { get; set; }
 
         //Возвращаемый список значений
         protected MomList MList { get; private set; }

@@ -11,7 +11,8 @@ namespace ProvidersLibrary
         public override int ReadMoments(IRecordRead rec)
         {
             var time = rec.GetTime("Time");
-            var err = MakeError(rec.GetInt("ErrNum"));
+            var errNum = rec.GetIntNull("ErrNum");
+            var err = errNum == null ? null : MakeError((int)errNum);
             if (ValueSignal.IsReal)
                 return AddMom(ValueSignal, time, rec.GetDouble("RealValue"), err);
             if (ValueSignal.DataType == DataType.String)

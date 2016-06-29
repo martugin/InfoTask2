@@ -14,24 +14,24 @@ namespace Provider
         public override string Complect { get { return "Kosmotronika"; } }
 
         //Создание подключения
-        protected override ProviderConnect CreateConnect()
+        protected override ProviderSettings CreateConnect()
         {
-            return new KosmotronikaOpcConnect();
+            return new KosmotronikaOpcSettings();
         }
         //Ссылка на соединение
-        public KosmotronikaOpcConnect Connect { get { return (KosmotronikaOpcConnect)CurConnect; } }
+        public KosmotronikaOpcSettings Settings { get { return (KosmotronikaOpcSettings)CurSettings; } }
 
         //Получение Tag точки по сигналу
         protected override string GetOpcItemTag(DicS<string> inf)
         {
-            return Connect.ServerGroup + ".point." + inf["SysNum"];
+            return Settings.ServerGroup + ".point." + inf["SysNum"];
         }
     }
 
     //------------------------------------------------------------------------------------------------
 
     //Соединение приемника 
-    public class KosmotronikaOpcConnect : OpcServerConnect
+    public class KosmotronikaOpcSettings : OpcServerSettings
     {
         //Серверная группа
         internal string ServerGroup { get; private set; }

@@ -11,9 +11,9 @@ namespace Provider
         public override string Code { get { return "KosmotronikaArchDbSource"; } }
 
         //Создание подключения
-        protected override ProviderConnect CreateConnect()
+        protected override ProviderSettings CreateConnect()
         {
-            return new KosmotronikaArchDbConnect();
+            return new KosmotronikaArchDbSettings();
         }
     }
 }

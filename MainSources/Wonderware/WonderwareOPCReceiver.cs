@@ -14,22 +14,22 @@ namespace Provider
         //Код
         public override string Code { get { return "WonderwareOpcReceiver"; } }
         //Создание подключения
-        protected override ProviderConnect CreateConnect()
+        protected override ProviderSettings CreateConnect()
         {
-            return new WoderwareOpcConnect();
+            return new WoderwareOpcSettings();
         }
         //Ссылка на соединение
-        public WoderwareOpcConnect Connect { get { return (WoderwareOpcConnect)CurConnect; } }
+        public WoderwareOpcSettings Settings { get { return (WoderwareOpcSettings)CurSettings; } }
 
         //Получение Tag точки по сигналу
         protected override string GetOpcItemTag(DicS<string> inf)
         {
-            return Connect.ServerNode + "." + Connect.ServerGroup + "." + inf["TagName"];
+            return Settings.ServerNode + "." + Settings.ServerGroup + "." + inf["TagName"];
         }
     }
 
     //----------------------------------------------------------------------------------------------
-    public class WoderwareOpcConnect : OpcServerConnect
+    public class WoderwareOpcSettings : OpcServerSettings
     {
         //Загрузка дополнительных настроек провайдера из Inf
         protected override void ReadInf(DicS<string> dic)

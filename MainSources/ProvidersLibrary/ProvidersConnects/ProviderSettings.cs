@@ -5,38 +5,33 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Настройки одного подключения провайдера (основного или резервного)
-    public abstract class ProviderConnect : ExternalLogger, IDisposable
+    public abstract class ProviderSettings : ExternalLogger, IDisposable
     {
+        //Ссылка на провайдер
+        public ProviderBase Provider { get; set; }
         //Контекст для логгера
-        public override string CodeObject
-        {
-            get { return Hash; }
-        }
+        public override string Context { get { return Provider.Context; } }
 
         //Загрузка настроек провайдера
         public string Inf
         {
-            get { return ProviderInf; }
             set
             {
-                ProviderInf = value;
                 var dic = value.ToPropertyDicS();
                 dic.DefVal = "";
                 ReadInf(dic);
             }
         }
-        protected string ProviderInf { get; set; }
         //Загрузка свойств из словаря
         protected abstract void ReadInf(DicS<string> dic);
-
         //Хэш для идентификации настройки провайдера
         public abstract string Hash { get; }
 
+        //Очистка ресурсов
         public virtual void Dispose() {}
-        
-        //Проверка соединения с провайдером, вызывается когда уже произошла ошибка для повторной проверки соединения
-        //Возвращает true, если соединение установлено
-        public virtual bool Check() { return true; }
+
+        //Открытие подключения, возвращает true, если соединение установлено
+        public virtual bool Connect() { return true; }
         //Соединение установлено
         protected bool IsConnected { get; set; }
         

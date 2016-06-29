@@ -17,12 +17,12 @@ namespace Provider
         //Комплект
         public override string Complect { get { return "Siemens"; } }
         //Создание подключения
-        protected override ProviderConnect CreateConnect()
+        protected override ProviderSettings CreateConnect()
         {
-            return new SimaticConnect();
+            return new SimaticSettings();
         }
         //Подключение
-        internal SimaticConnect Connect { get { return (SimaticConnect)CurConnect; } }
+        internal SimaticSettings Settings { get { return (SimaticSettings)CurSettings; } }
 
         //Словари сигналов, ключи полные коды и Id
         private readonly DicI<ObjectSimatic> _objectsId = new DicI<ObjectSimatic>();
@@ -37,7 +37,7 @@ namespace Provider
         }
         
         //Очистка списка сигналов
-        public override void ClearObjects()
+        protected override void ClearObjects()
         {
             _objectsId.Clear();
         }
@@ -67,7 +67,7 @@ namespace Provider
             sb.Append(", ").Append(en.ToSimaticString());
             
             AddEvent("Запрос значений из архива", part.Count + " тегов");
-            return new ReaderAdo(Connect.Connection, sb.ToString());
+            return new ReaderAdo(Settings.Connection, sb.ToString());
         }
 
         //Определение текущего считываемого объекта

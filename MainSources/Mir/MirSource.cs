@@ -15,19 +15,19 @@ namespace Provider
         //Комплект
         public override string Complect { get { return "Mir"; }}
         //Создание подключения
-        protected override ProviderConnect CreateConnect()
+        protected override ProviderSettings CreateConnect()
         {
-            return new SqlSourceConnect();
+            return new SqlSourceSettings();
         }
         //Ссылка на соединение
-        public SqlSourceConnect Connect { get { return (SqlSourceConnect)CurConnect; } }
+        public SqlSourceSettings Settings { get { return (SqlSourceSettings)CurSettings; } }
         
         //Словари объектов, ключи коды и IdChanell
         private readonly DicS<ObjectMir> _objects = new DicS<ObjectMir>();
         private readonly DicI<ObjectMir> _objectsId = new DicI<ObjectMir>();
         
         //Очистка списка сигналов
-        public override void ClearObjects()
+        protected override void ClearObjects()
         {
             _objects.Clear();
             _objectsId.Clear();
@@ -46,7 +46,7 @@ namespace Provider
         public override void Prepare()
         {
             _objectsId.Clear();
-            using (var rec = new ReaderAdo(Connect.SqlProps, "SELECT OBJECTS.NAME_OBJECT, DEVICES.NAME_DEVICE, LIB_CHANNELS.NAME_TYPE, LIB_CHANNELS.UNIT, CHANNELS.IDCHANNEL, LIB_CHANNELS.TABLE_NAME " +
+            using (var rec = new ReaderAdo(Settings.SqlProps, "SELECT OBJECTS.NAME_OBJECT, DEVICES.NAME_DEVICE, LIB_CHANNELS.NAME_TYPE, LIB_CHANNELS.UNIT, CHANNELS.IDCHANNEL, LIB_CHANNELS.TABLE_NAME " +
             "FROM CHANNELS INNER JOIN DEVICES ON CHANNELS.IDDEVICE = DEVICES.IDDEVICE INNER JOIN " +
             "LIB_CHANNELS ON dbo.CHANNELS.IDTYPE_CHANNEL = dbo.LIB_CHANNELS.IDTYPE_CHANNEL INNER JOIN " +
             "POINT_DEVICES ON dbo.DEVICES.IDDEVICE = dbo.POINT_DEVICES.IDDEVICE INNER JOIN " +
@@ -71,7 +71,7 @@ namespace Provider
         {
             string queryString = "SELECT IDCHANNEL, TIME, VALUE, VALUE_UNIT, VALUE_INDICATION FROM IZM_TII" +
                                      " WHERE (TIME >= " + beg.ToSqlString() + ") AND (TIME <=" + en.ToSqlString() + ") ORDER BY TIME";
-            return new ReaderAdo(Connect.SqlProps, queryString);
+            return new ReaderAdo(Settings.SqlProps, queryString);
         }
 
         //Определение текущего считываемого объекта

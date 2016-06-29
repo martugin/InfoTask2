@@ -6,7 +6,7 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Подключение к архиву SIMATIC
-    public class SimaticConnect : OleDbSourceConnect
+    public class SimaticSettings : OleDbSourceSettings
     {
         //Имя сервера
         private string _serverName;
@@ -46,7 +46,7 @@ namespace Provider
         {
             try
             {
-                if (Check() && Connection.State == ConnectionState.Open)
+                if (Connect() && Connection.State == ConnectionState.Open)
                 {
                     CheckConnectionMessage += "Успешное соединение с архивом";
                     return true;

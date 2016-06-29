@@ -4,7 +4,7 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Поключение к Historian Овации
-    public class OvationConnect : OleDbSourceConnect
+    public class OvationSettings : OleDbSourceSettings
     {
         public override string Hash { get { return "OvationHistorian=" + _dataSource; } }
         //Настройки провайдера
@@ -27,7 +27,7 @@ namespace Provider
         //Проверка соединения в настройке
         public override bool CheckConnection()
         {
-            if (Check())
+            if (Connect())
             {
                 CheckConnectionMessage = "Успешное соединение с Historian";
                 return true;

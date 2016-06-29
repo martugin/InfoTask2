@@ -5,7 +5,7 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Источник, использующий SQL-сервер
-    public class SqlSourceConnect : SourceConnect
+    public class SqlSourceSettings : SourceSettings
     {
         //Загрузка свойств из словаря
         protected override void ReadInf(DicS<string> dic)
@@ -20,29 +20,11 @@ namespace ProvidersLibrary
             get { return "SQLServer=" + SqlProps.ServerName + ";Database=" + SqlProps.DatabaseName; }
         }
 
-        //Возвращает выпадающий список для поля настройки, props - словарь значение свойств, propname - имя свойства для ячейки со списком
-        internal override List<string> ComboBoxList(Dictionary<string, string> props, string propname)
-        {
-            try
-            {
-                bool hasServer = props.ContainsKey("SQLServer") && !props["SQLServer"].IsEmpty();
-                var hasLogin = (props["IndentType"].ToUpper() == "WINDOWS" || (props.ContainsKey("Login") && !props["Login"].IsEmpty()));
-                if (propname == "Database" && hasServer && hasLogin)
-                    return SqlDb.SqlDatabasesList(props["SQLServer"], props["IndentType"].ToUpper() != "WINDOWS", props["Login"], props["Password"]);
-            }
-            catch { }
-            return new List<string>();
-        }
-
         //Настройки SQL Server
         public SqlProps SqlProps { get; private set; }
 
         //Проверка соединения
-        public override bool Check()
-        {
-            return Danger(TryCheck, 2, 500, "Не удалось соединиться с SQL-сервером");
-        }
-        private bool TryCheck()
+        public override bool Connect()
         {
             try
             {
@@ -56,6 +38,21 @@ namespace ProvidersLibrary
             }
         }
 
+        //Возвращает выпадающий список для поля настройки 
+        internal override List<string> ComboBoxList(Dictionary<string, string> props, //словарь значение свойств
+                                                                         string propname) //имя свойства для ячейки со списком
+        {
+            try
+            {
+                bool hasServer = props.ContainsKey("SQLServer") && !props["SQLServer"].IsEmpty();
+                var hasLogin = (props["IndentType"].ToUpper() == "WINDOWS" || (props.ContainsKey("Login") && !props["Login"].IsEmpty()));
+                if (propname == "Database" && hasServer && hasLogin)
+                    return SqlDb.SqlDatabasesList(props["SQLServer"], props["IndentType"].ToUpper() != "WINDOWS", props["Login"], props["Password"]);
+            }
+            catch { }
+            return new List<string>();
+        }
+        
         //Проверка настроек
         public override string CheckSettings(DicS<string> inf)
         {
@@ -70,7 +67,7 @@ namespace ProvidersLibrary
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (Check())
+            if (Connect())
             {
                 CheckConnectionMessage = "Успешное соединение";
                 return true;

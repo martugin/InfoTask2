@@ -15,23 +15,20 @@ namespace ProvidersLibrary
 
         //Ссылка на источник
         protected SourceBase Source { get; private set; } 
-        //Код объекта для формирования ошибок
-        public string CodeObject { get; internal set; }
+        //Код объекта - контекст для формирования ошибок
+        public string Context { get; internal set; }
 
         //Основной сигнал объекта
         public SourceSignal ValueSignal { get; set; }
         //Список сигналов объекта
-        protected HashSet<SourceSignal> Signals = new HashSet<SourceSignal>();
+        private readonly HashSet<SourceSignal> _signals = new HashSet<SourceSignal>();
 
         //Добавить к объекту сигнал, если такого еще не было
-        public SourceSignal AddSignal(SourceSignal sig)
+        internal SourceSignal AddSignal(SourceSignal sig)
         {
             var s = AddNewSignal(sig);
-            if (!Signals.Contains(s))
-            {
-                Signals.Add(s);
-                s.SourceObject = this;
-            }
+            if (!_signals.Contains(s))
+                _signals.Add(s);
             return s;
         }
         protected virtual SourceSignal AddNewSignal(SourceSignal sig)
@@ -47,7 +44,7 @@ namespace ProvidersLibrary
         {
             HasBegin = true;
             int n = 0;
-            foreach (var sig in Signals)
+            foreach (var sig in _signals)
                 if (sig != null)
                     n += sig.MakeBegin();
             return n;

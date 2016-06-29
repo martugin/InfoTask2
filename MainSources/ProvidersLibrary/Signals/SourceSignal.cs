@@ -76,7 +76,7 @@ namespace ProvidersLibrary
 
         //Запись значения в клон
         //Чтение одной строчки значений из рекордсета, и запись ее в клон
-        public int PutClone(IMom mom) //Рекордсет срезов клона
+        private int PutClone(IMom mom) //Рекордсет срезов клона
         {
             var rec = IsReal ? Source.CloneRec : Source.CloneStrRec;
             var recCut = IsReal ? Source.CloneCutRec : Source.CloneStrCutRec;
@@ -99,7 +99,6 @@ namespace ProvidersLibrary
                                               RecDao rec, //Рекордсет
                                               bool isCutTable, //Запись в таблицу срезов
                                               DateTime d) //Время среза
-                                              
         {
             rec.AddNew();
             rec.Put("SignalId", IdInClone);

@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FictiveConnect.cs" />
+    <Compile Include="FictiveSettings.cs" />
     <Compile Include="ObjectFictive.cs" />
     <Compile Include="FictiveSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -5,7 +5,5 @@
     {
         //Тип провайдера
         public override ProviderType Type { get { return ProviderType.Receiver; } }
-
-
     }
 }

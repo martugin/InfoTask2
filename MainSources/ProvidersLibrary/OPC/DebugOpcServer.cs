@@ -9,7 +9,7 @@ namespace ProvidersLibrary
 
         public DebugOpcServer(string serverName, string node)
         {
-            var conn = (OpcServerConnect)CreateConnect();
+            var conn = (OpcServerSettings)CreateConnect();
             conn.ServerName = serverName;
             conn.Node = node;
             Logger = new Logger();
@@ -20,9 +20,9 @@ namespace ProvidersLibrary
 
         protected override string GetOpcItemTag(DicS<string> inf) { return ""; }
 
-        protected override ProviderConnect CreateConnect()
+        protected override ProviderSettings CreateConnect()
         {
-            return new OpcServerConnect();
+            return new OpcServerSettings();
         }
     }
 }

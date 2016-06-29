@@ -6,9 +6,9 @@ using OPCAutomation;
 namespace ProvidersLibrary
 {
     //Подключение приемника к OPC-серверу
-    public class OpcServerConnect : ProviderConnect
+    public class OpcServerSettings : ProviderSettings
     {
-        internal protected OpcServerConnect() 
+        internal protected OpcServerSettings() 
         {
             Server = new OPCServer();
         }
@@ -38,8 +38,8 @@ namespace ProvidersLibrary
         //Состояние сервера
         public int State { get { return Server.ServerState; } }
 
-        //Соединение
-        public bool Connect()
+        //Проверка соединения
+        public override bool Connect()
         {
             try
             {
@@ -66,12 +66,6 @@ namespace ProvidersLibrary
             return IsConnected = true;
         }
 
-        //Проверка соединения
-        public override bool Check()
-        {
-            return Danger(Connect, 2, 500, "Ошибка соединения с OPC-сервером");
-        }
-
         //Проверка настроек
         public override string CheckSettings(DicS<string> inf)
         {
@@ -81,7 +75,7 @@ namespace ProvidersLibrary
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (Check())
+            if (Connect())
             {
                 CheckConnectionMessage = "Успешное соединение";
                 return true;

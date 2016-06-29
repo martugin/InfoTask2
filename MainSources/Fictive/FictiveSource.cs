@@ -20,12 +20,12 @@ namespace Fictive
         //Комплект
         public override string Complect { get { return "Fictive"; } }
         //Создание подключения
-        protected override ProviderConnect CreateConnect()
+        protected override ProviderSettings CreateConnect()
         {
-            return new FictiveConnect();
+            return new FictiveSettings();
         }
         //Ссылка на подключение
-        internal FictiveConnect Connect { get { return (FictiveConnect)CurConnect; } }
+        internal FictiveSettings Settings { get { return (FictiveSettings)CurSettings; } }
 
         //Словарь объектов, ключи - номера
         private readonly DicI<ObjectFictive> _objects = new DicI<ObjectFictive>();
@@ -40,7 +40,7 @@ namespace Fictive
         }
 
         //Очистка списков объектов
-        public override void ClearObjects()
+        protected override void ClearObjects()
         {
             _objects.Clear();
         }

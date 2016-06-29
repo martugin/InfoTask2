@@ -3,12 +3,12 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    public abstract class KosmotronikaBaseConnect : OleDbSourceConnect
+    public abstract class KosmotronikaBaseSettings : OleDbSourceSettings
     {
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (Check() && GetTime() != null)
+            if (Connect() && GetTime() != null)
             {
                 var ti = GetTime();
                 if (ti != null)

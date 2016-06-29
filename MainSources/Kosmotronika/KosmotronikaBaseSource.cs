@@ -13,17 +13,15 @@ namespace Provider
         //Комплект провайдеров
         public override string Complect { get { return "Kosmotronika"; } }
         //Ссылка на соединение
-        internal KosmotronikaBaseConnect Connect { get { return (KosmotronikaBaseConnect)CurConnect; } }
+        internal KosmotronikaBaseSettings Settings { get { return (KosmotronikaBaseSettings)CurSettings; } }
         
         //Словарь объектов. Один элемент словаря - один выход, для выхода список битов
         private readonly Dictionary<ObjectIndex, ObjectKosm> _outs = new Dictionary<ObjectIndex, ObjectKosm>();
-        internal Dictionary<ObjectIndex, ObjectKosm> Outs { get { return _outs; } }
         //Словарь аналоговых объектов
         private readonly Dictionary<ObjectIndex, ObjectKosm> _analogs = new Dictionary<ObjectIndex, ObjectKosm>();
-        internal Dictionary<ObjectIndex, ObjectKosm> Analogs { get { return _analogs; } }
 
         //Очистка списка сигналов
-        public override void ClearObjects()
+        protected override void ClearObjects()
         {
             _outs.Clear();
             _analogs.Clear();
@@ -89,12 +87,12 @@ namespace Provider
             var parBeginTime = new OleDbParameter("BeginTime", OleDbType.DBTimeStamp) { Value = beg };
             var parEndTime = new OleDbParameter("EndTime", OleDbType.DBTimeStamp) { Value = en };
             var rec = isCut
-                ? new ReaderAdo(Connect.Connection, IsAnalog ? "Exec ST_ANALOG ?, ?" : "Exec ST_OUT ?, ?", parBeginTime, parSysNums)
-                : new ReaderAdo(Connect.Connection, IsAnalog ? "Exec RT_ANALOGREAD ? , ? , ?" : "Exec RT_EXTREAD ? , ? , ?", parBeginTime, parEndTime, parSysNums);
+                ? new ReaderAdo(Settings.Connection, IsAnalog ? "Exec ST_ANALOG ?, ?" : "Exec ST_OUT ?, ?", parBeginTime, parSysNums)
+                : new ReaderAdo(Settings.Connection, IsAnalog ? "Exec RT_ANALOGREAD ? , ? , ?" : "Exec RT_EXTREAD ? , ? , ?", parBeginTime, parEndTime, parSysNums);
 
             if (isCut && !rec.HasRows)
             {
-                AddWarning("Значения из источника не получены", null, part[0].CodeObject + " и др.");
+                AddWarning("Значения из источника не получены", null, part[0].Context + " и др.");
                 IsConnected = false;
             }
             return rec;
@@ -110,17 +108,17 @@ namespace Provider
                 Appartment = rec.GetInt(2),
                 Out = IsAnalog ? 1 : rec.GetInt(6)
             };
-            if (IsAnalog && Analogs.ContainsKey(ind))
-                return Analogs[ind];
-            if (Outs.ContainsKey(ind))
-                return Outs[ind];
+            if (IsAnalog && _analogs.ContainsKey(ind))
+                return _analogs[ind];
+            if (_outs.ContainsKey(ind))
+                return _outs[ind];
             return null;
         }
 
         private double AnalogsProcent()
         {
-            if (Outs.Count + Analogs.Count == 0) return 0;
-            return Analogs.Count * 100.0 / (Outs.Count + Analogs.Count);
+            if (_outs.Count + _analogs.Count == 0) return 0;
+            return _analogs.Count * 100.0 / (_outs.Count + _analogs.Count);
         }
 
         //Чтение среза
@@ -128,11 +126,11 @@ namespace Provider
         {
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                ReadValuesByParts(Analogs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
+                ReadValuesByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), 100))
-                ReadValuesByParts(Outs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по выходам");
+                ReadValuesByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по выходам");
         }
 
         //Чтение изменений
@@ -140,11 +138,11 @@ namespace Provider
         {
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                ReadValuesByParts(Analogs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по аналоговым сигналам");
+                ReadValuesByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по аналоговым сигналам");
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), 100))
-                ReadValuesByParts(Outs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по выходам");
+                ReadValuesByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по выходам");
         }
     }
 }

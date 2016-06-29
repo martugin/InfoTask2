@@ -4,7 +4,7 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Подключение к клону
-    public class CloneSourceConnect : SourceConnect
+    public class CloneSourceSettings : SourceSettings
     {
         //Комплект источника и коммуникатора, через которые сделан клон
         internal string Complect { get; set; }
@@ -20,7 +20,7 @@ namespace ProvidersLibrary
         }
 
         //Проверка соединения
-        public override bool Check()
+        public override bool Connect()
         {
             bool b = DaoDb.Check(CloneFile, "InfoTaskClone");
             return b;
@@ -29,7 +29,7 @@ namespace ProvidersLibrary
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (!Check())
+            if (!Connect())
             {
                 AddError(CheckConnectionMessage = "Файл не найден или не является файлом клона");
                 return false;

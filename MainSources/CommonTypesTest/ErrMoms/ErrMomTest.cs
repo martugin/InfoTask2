@@ -118,8 +118,8 @@ namespace CommonTypesTest
     {
         public ContextTest(string context)
         {
-            CodeObject = context;
+            Context = context;
         }
-        public string CodeObject { get; private set; }
+        public string Context { get; private set; }
     }
 }

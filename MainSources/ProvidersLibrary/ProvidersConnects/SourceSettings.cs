@@ -4,7 +4,7 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Настройки одного подключения источника
-    public abstract class SourceConnect : ProviderConnect
+    public abstract class SourceSettings : ProviderSettings
     {
         //Получение диапазона времени источника
         //Возвращает TimeInterval(Different.MinDate, DateTime.MaxValue) если нет связи с источником
@@ -26,7 +26,7 @@ namespace ProvidersLibrary
                 return TimeInterval.CreateDefault();
             }
         }
-        //Получение времени источника,
+        //Получение времени источника 
         protected virtual TimeInterval GetSourceTime()
         {
             return new TimeInterval(Different.MinDate, DateTime.Now);

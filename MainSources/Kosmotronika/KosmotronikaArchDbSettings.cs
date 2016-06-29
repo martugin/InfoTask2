@@ -3,7 +3,7 @@
 namespace Provider
 {
     //Подкличение к архиву
-    public class KosmotronikaArchDbConnect : KosmotronikaBaseConnect
+    public class KosmotronikaArchDbSettings : KosmotronikaBaseSettings
     {
         //Настройки провайдера
         protected override void ReadInf(DicS<string> dic)

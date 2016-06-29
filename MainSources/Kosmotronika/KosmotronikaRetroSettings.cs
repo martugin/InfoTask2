@@ -3,7 +3,7 @@
 namespace Provider
 {
     //Подключение к Ретро-серверу
-    public class KosmotronikaRetroConnect : KosmotronikaBaseConnect
+    public class KosmotronikaRetroSettings : KosmotronikaBaseSettings
     {
         //Настройки провайдера
         protected override void ReadInf(DicS<string> dic)

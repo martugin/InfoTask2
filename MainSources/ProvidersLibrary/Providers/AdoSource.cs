@@ -180,7 +180,7 @@ namespace ProvidersLibrary
             if (part.Count == 1 || !useRecursion || (!successRead && depth >= MaxErrorDepth))
             {
                 foreach (var ob in part)
-                    AddErrorObject(ob.CodeObject, Command.ErrorMessage(false, true, false));
+                    AddErrorObject(ob.Context, Command.ErrorMessage(false, true, false));
                 return false;
             }
             Thread.Sleep(ErrorWaiting);
@@ -213,7 +213,7 @@ namespace ProvidersLibrary
                 }
                 catch (Exception ex)
                 {
-                    AddErrorObject(ob == null ? "" : ob.CodeObject, "Ошибка при чтении значений из рекордсета", ex);
+                    AddErrorObject(ob == null ? "" : ob.Context, "Ошибка при чтении значений из рекордсета", ex);
                 }
             }
             return new Tuple<int, int>(nread, nwrite);

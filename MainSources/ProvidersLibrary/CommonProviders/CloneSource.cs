@@ -19,12 +19,12 @@ namespace ProvidersLibrary
         //Код провайдера
         public override string Code { get { return "CloneSource"; } }
         //Подготовка клона к чтению значений
-        protected override ProviderConnect CreateConnect()
+        protected override ProviderSettings CreateConnect()
         {
-            return new CloneSourceConnect { Complect = Complect };
+            return new CloneSourceSettings { Complect = Complect };
         }
         //Подключение 
-        internal CloneSourceConnect Connect { get { return (CloneSourceConnect)CurConnect; } }
+        internal CloneSourceSettings Settings { get { return (CloneSourceSettings)CurSettings; } }
 
         //Настройка свойств получения данных
         protected override void SetReadProperties()
@@ -45,7 +45,7 @@ namespace ProvidersLibrary
         }
 
         //Очистка списка обхектов
-        public override void ClearObjects()
+        protected override void ClearObjects()
         {
             _objectsId.Clear();
             _objects.Clear();
@@ -55,14 +55,13 @@ namespace ProvidersLibrary
         protected override IErrMomFactory MakeErrFactory()
         {
             var factory = new ErrMomFactory(Name, ErrMomType.Source);
-            using (var rec = new RecDao(Connect.CloneFile, "MomentErrors"))
+            using (var rec = new RecDao(Settings.CloneFile, "MomentErrors"))
                 while (rec.Read())
                 {
                     int quality = rec.GetInt("Quality");
                     int num = rec.GetInt("NumError");
                     string text = rec.GetString("TextError");
-                    if (quality == 0)
-                        factory.AddGoodDescr(num);
+                    if (quality == 0) factory.AddGoodDescr(num);
                     else factory.AddDescr(num, text, quality == 1 ? ErrorQuality.Warning : ErrorQuality.Error);
                 }
             return factory;
@@ -71,7 +70,7 @@ namespace ProvidersLibrary
         //Отметка в клоне считывемых сигналов, получение Id сигналов
         public override void Prepare()
         {
-            using (var rec = new RecDao(Connect.CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
+            using (var rec = new RecDao(Settings.CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
                 while (rec.Read())
                 {
                     string code = rec.GetString("FullCode");
@@ -96,7 +95,7 @@ namespace ProvidersLibrary
         {
             string table = "Moment" + (_isStrTable ? "Str" : "") + "Values" + (isCut ? "Cut" : "");
             string timeField = (isCut ? "Cut" : "") + "Time";
-            return new RecDao(Connect.CloneFile, "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
+            return new RecDao(Settings.CloneFile, "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
                                                              " WHERE (Signals.Otm=True) AND (" + table + "." + timeField + ">=" + beg.ToAccessString() + ") AND (" + table + "." + timeField + "<=" + en.ToAccessString() + ")");
         }
 
