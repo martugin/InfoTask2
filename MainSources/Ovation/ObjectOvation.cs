@@ -8,25 +8,25 @@ namespace Provider
     //Один объект (дисктретная, аналоговая или упакованная точка)
     internal class ObjectOvation : SourceObject
     {
-        internal ObjectOvation(OvationConn source, int id) : base(source)
+        internal ObjectOvation(OvationSource source, int id) : base(source)
         {
             Id = id;
         }
         
         //Сигнал со словом состояния
-        internal SourceInitSignal StateSignal { get; set; }
+        internal SourceSignal StateSignal { get; set; }
         //Id в Historian
         internal int Id { get; private set; }
         
         //Добавить к объекту сигнал, если такого еще не было
-        protected override SourceInitSignal AddNewSignal(SourceInitSignal sig)
+        protected override SourceSignal AddNewSignal(SourceSignal sig)
         {
             if (sig.Inf["Prop"] == "STAT")
                 return StateSignal = StateSignal ?? sig;
             return ValueSignal = ValueSignal ?? sig;
         }
 
-        //Чтение значений по одному объекту из рекордсета источника
+        //Чтение значений по одному объекту из рекордсета источника и добавление их в список или клон
         //Возвращает количество сформированных значений
         public override int ReadMoments(IRecordRead rec)
         {
@@ -70,7 +70,5 @@ namespace Provider
             DateTime time = time1.ToLocalTime();
             return time;
         }
-
-        
     }
 }

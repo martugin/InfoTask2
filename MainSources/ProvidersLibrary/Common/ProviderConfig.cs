@@ -40,10 +40,10 @@ namespace ProvidersLibrary
         public string Dir { get; private set; }
 
         //Запуск экземпляра провайдера через MEF, позднее связывание с dll
-        [ImportMany(typeof(Provider))]
-        private Lazy<Provider, IDictionary<string, object>>[] ImportProvs { get; set; }
+        [ImportMany(typeof(ProviderBase))]
+        private Lazy<ProviderBase, IDictionary<string, object>>[] ImportProvs { get; set; }
 
-        public Provider RunProvider(Logger logger, string inf, string reserveInf = "")
+        public ProviderBase RunProvider(Logger logger, string inf, string reserveInf = "")
         {
             var prc = Factory.ProviderConfigs[Code];
             var catalog = new AggregateCatalog();

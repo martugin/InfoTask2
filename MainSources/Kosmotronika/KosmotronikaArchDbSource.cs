@@ -1,40 +1,19 @@
 ﻿using System.ComponentModel.Composition;
-using BaseLibrary;
 using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(Prov))]
+    [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "KosmotronikaArchDbSource")]
     public class KosmotronikaArchDbSource : KosmotronikaBaseSource
     {
         //Код провайдера
         public override string Code { get { return "KosmotronikaArchDbSource"; } }
-        
-        //Настройки провайдера
-        protected override void ReadInf(DicS<string> dic)
+
+        //Создание подключения
+        protected override ProviderConnect CreateConnect()
         {
-            _dataSource = dic["ArchiveDir"] ?? "";
-            _location = dic.GetInt("Location");
-        }
-
-        public override string Hash { get { return "ArchDbArchive=" + _dataSource; }}
-
-        //Имя ретро-сервера или путь к архиву
-        private string _dataSource;
-        //Временной сдвиг
-        private int _location;
-
-        //Строка соединения с провайдером
-        protected override string ConnectionString
-        {
-            get { return "Provider=ArchDB.OpenSQL;Data Source=" + _dataSource + ";Location=" + _location; }
-        }
-
-        //Проверка настроек
-        public override string CheckSettings(DicS<string> inf)
-        {
-            return !inf["ArchiveDir"].IsEmpty() ? "" : "Не задан путь к каталогу архива";
+            return new KosmotronikaArchDbConnect();
         }
     }
 }

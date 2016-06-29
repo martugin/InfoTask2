@@ -7,7 +7,7 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Источник с чтением значений из рекордсета
-    public abstract class AdoSource : Source
+    public abstract class AdoSource : SourceBase
     {
         protected AdoSource()
         {

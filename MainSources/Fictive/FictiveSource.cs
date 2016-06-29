@@ -1,30 +1,31 @@
-﻿using System;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using BaseLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace Fictive
 {
     //Фиктивный тестовый источник, реализация без чтения по блокам и OleDb
-    [Export(typeof(IProvider))]
+    [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "FictiveSource")]
     public class FictiveSource : SourceBase
     {
+        public FictiveSource()
+        {
+            NeedCut = false;
+        }
+
+        //Код
         public override string Code { get { return "FictiveSource"; } }
-
-        protected override void ReadDicS(DicS<string> dic)
+        //Комплект
+        public override string Complect { get { return "Fictive"; } }
+        //Создание подключения
+        protected override ProviderConnect CreateConnect()
         {
-            Frequency = dic.GetInt("Frequency");
+            return new FictiveConnect();
         }
-
-        //С какой частотой в секундах добавлять значения в результат
-        internal int Frequency { get; private set; }
-
-        public override void Prepare()
-        {
-            foreach (var ob in _objects.Values)
-                ob.IsInitialized = true;
-        }
+        //Ссылка на подключение
+        internal FictiveConnect Connect { get { return (FictiveConnect)CurConnect; } }
 
         //Словарь объектов, ключи - номера
         private readonly DicI<ObjectFictive> _objects = new DicI<ObjectFictive>();
@@ -38,17 +39,20 @@ namespace Fictive
             return _objects[num];
         }
 
-        public override void ClearSignals()
+        //Очистка списков объектов
+        public override void ClearObjects()
         {
-            ProviderSignals.Clear();
             _objects.Clear();
         }
 
-        public override TimeInterval GetTime()
+        //Подготока источника
+        public override void Prepare()
         {
-            return new TimeInterval(new DateTime(2000, 1, 1), new DateTime(2100, 1, 1));
+            foreach (var ob in _objects.Values)
+                ob.IsInitialized = true;
         }
-
+        
+        //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
             var factory = new ErrMomFactory(Code, ErrMomType.Source);
@@ -59,10 +63,15 @@ namespace Fictive
         }
 
         //Чтение списков равномерных значений
-        public override void GetValues(DateTime beginRead, DateTime endRead)
+        protected override void ReadCut()
         {
             foreach (var ob in _objects.Values)
-                ob.MakeUniformValues(beginRead, endRead);
+                ob.MakeUniformValues(PeriodBegin, PeriodBegin, true);
+        }
+        protected override void ReadChanges()
+        {
+            foreach (var ob in _objects.Values)
+                ob.MakeUniformValues(PeriodBegin, PeriodEnd, false);
         }
     }
 }

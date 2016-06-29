@@ -22,7 +22,7 @@ namespace Provider
     //Для аналоговых - один ТМ, для выходов - один выход ТМ
     internal class ObjectKosm : SourceObject
     {
-        public ObjectKosm(KosmotronikaConn source, ObjectIndex ind) : base(source)
+        public ObjectKosm(KosmotronikaBaseSource source, ObjectIndex ind) : base(source)
         {
             Sn = ind.Sn; 
             NumType = ind.NumType;
@@ -31,7 +31,7 @@ namespace Provider
         }
 
         //Добавить к объекту сигнал, если такого еще не было
-        protected override SourceInitSignal AddNewSignal(SourceInitSignal sig)
+        protected override SourceSignal AddNewSignal(SourceSignal sig)
         {
             if (sig.Inf["Prop"] == "ND")
                 return StateSignal = StateSignal ?? sig;
@@ -50,9 +50,9 @@ namespace Provider
         internal int Out { get; private set; }
 
         //Сигнал недостоверности
-        internal SourceInitSignal StateSignal { get; private set; }
+        internal SourceSignal StateSignal { get; private set; }
         //Сигнал ПОК
-        internal SourceInitSignal PokSignal { get; private set; }
+        internal SourceSignal PokSignal { get; private set; }
 
         //Чтение значений по одному объекту из рекордсета источника
         //Возвращает количество сформированных значений
@@ -60,7 +60,7 @@ namespace Provider
         {
             int nwrite = 0;
             DateTime time = rec.GetTime(3);
-            var isAnalog = ((KosmotronikaBaseSource)SourceConn.Source).IsAnalog;
+            var isAnalog = ((KosmotronikaBaseSource)Source).IsAnalog;
             int ndint = rec.GetInt(isAnalog ? 6 : 8);
             var err = MakeError(ndint);
 

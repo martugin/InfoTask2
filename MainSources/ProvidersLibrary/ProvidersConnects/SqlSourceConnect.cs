@@ -35,7 +35,7 @@ namespace ProvidersLibrary
         }
 
         //Настройки SQL Server
-        protected SqlProps SqlProps { get; private set; }
+        public SqlProps SqlProps { get; private set; }
 
         //Проверка соединения
         public override bool Check()

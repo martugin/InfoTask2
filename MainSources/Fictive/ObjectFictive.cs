@@ -1,5 +1,5 @@
 ﻿using System;
-using CommonTypes;
+using ProvidersLibrary;
 
 namespace Fictive
 {
@@ -47,11 +47,12 @@ namespace Fictive
         }
 
         //Заполняет значения сигналов равномерным списком значений
-        internal int MakeUniformValues(DateTime beg, DateTime en)
+        internal int MakeUniformValues(DateTime beg, DateTime en, bool isCut)
         {
             int n = 0;
             int nwrite = 0;
             DateTime t = beg;
+            if (!isCut) t = t.AddSeconds(ValuesInterval);
             while (t <= en)
             {
                 nwrite += AddMom(StateSignal, t, 10);

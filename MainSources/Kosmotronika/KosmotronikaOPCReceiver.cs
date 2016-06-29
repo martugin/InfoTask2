@@ -4,37 +4,44 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(Prov))]
+    [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "KosmotronikaOpcReceiver")]
     public class KosmotronikaOpcReceiver : OpcServer 
     {
         //Код
         public override string Code { get { return "KosmotronikaOPCReceiver"; } }
-        
-        //Серверная группа
-        private string _serverGroup;
-        //Загрузка дополнительных настроек провайдера из Inf
-        protected override void ReadInf(DicS<string> dic)
+        //Комплект
+        public override string Complect { get { return "Kosmotronika"; } }
+
+        //Создание подключения
+        protected override ProviderConnect CreateConnect()
         {
-            base.ReadInf(dic);
-            _serverGroup = dic["ServerGroup"];
+            return new KosmotronikaOpcConnect();
         }
-        
+        //Ссылка на соединение
+        public KosmotronikaOpcConnect Connect { get { return (KosmotronikaOpcConnect)CurConnect; } }
+
         //Получение Tag точки по сигналу
         protected override string GetOpcItemTag(DicS<string> inf)
         {
-            return _serverGroup + ".point." + inf["SysNum"];
+            return Connect.ServerGroup + ".point." + inf["SysNum"];
         }
     }
 
     //------------------------------------------------------------------------------------------------
 
-    [Export(typeof(Prov))]
-    [ExportMetadata("Complect", "KosmotronikaOpcConn")]
-    //Соединение приемника овации
-    public class KosmotronikaOpcConn : OpcServerConn
+    //Соединение приемника 
+    public class KosmotronikaOpcConnect : OpcServerConnect
     {
-        //Комплект
-        public override string Complect { get { return "Kosmotronika"; } }
+        //Серверная группа
+        internal string ServerGroup { get; private set; }
+
+        //Загрузка дополнительных настроек провайдера из Inf
+        protected override void ReadInf(DicS<string> dic)
+        {
+            ServerName = dic["OPCServerName"];
+            Node = dic["Node"];
+            ServerGroup = dic["ServerGroup"];
+        }
     }
 }

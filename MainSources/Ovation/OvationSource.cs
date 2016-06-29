@@ -4,48 +4,57 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using BaseLibrary;
+using CommonTypes;
 using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(Prov))]
+    [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "OvationSource")]
-    public class OvationSource : OleDbSource
+    public class OvationSource : AdoSource
     {
-        //Соединение
-        internal OvationConn OvationConn { get { return (OvationConn) Conn; } }
         //Код провайдера
         public override string Code { get { return "OvationSource"; } }
-
-        public override string Hash { get { return "OvationHistorian=" + _dataSource; } }
-        //Настройки провайдера
-        protected override void ReadInf(DicS<string> dic)
+        //Комплект
+        public override string Complect { get { return "Ovation"; } }
+        //Создание подключения
+        protected override ProviderConnect CreateConnect()
         {
-            _dataSource = dic["DataSource"];
+            return new OvationConnect();
         }
-        //Имя дропа
-        private string _dataSource;
+        //Подключение
+        internal OvationConnect Connect { get { return (OvationConnect)CurConnect; } }
 
-        protected override string ConnectionString
-        {
-            get { return "Provider=OvHOleDbProv.OvHOleDbProv.1;Persist Security Info=True;User ID='';" +
-                              "Data Source=" + _dataSource + ";Location='';Mode=ReadWrite;Extended Properties=''"; }
-        }
+        //Словарь объектов по Id в Historian
+        private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
 
-                //Проверка соединения в настройке
-        public override bool CheckConnection()
+        //Добавить объект
+        protected override SourceObject AddObject(SourceSignal sig)
         {
-            if (Check())
-            {
-                CheckConnectionMessage = "Успешное соединение с Historian";
-                return true;
-            }
-            AddError(CheckConnectionMessage = "Ошибка соединения с Historian");
-            return false;
+            int id = sig.Inf.GetInt("Id");
+            if (!_objectsId.ContainsKey(id))
+                return _objectsId.Add(id, new ObjectOvation(this, id));
+            return _objectsId[id];
         }
 
-        //Чтение значений
-        #region
+        //Удалить все сигналы
+        public override void ClearObjects()
+        {
+            _objectsId.Clear();
+        }
+
+        //Создание фабрики ошибок
+        protected override IErrMomFactory MakeErrFactory()
+        {
+            var factory = new ErrMomFactory(Name, ErrMomType.Source);
+            factory.AddGoodDescr(0);
+            factory.AddDescr(1, "FAIR", ErrorQuality.Warning);
+            factory.AddDescr(2, "POOR", ErrorQuality.Warning);
+            factory.AddDescr(3, "BAD");
+            factory.AddDescr(4, "Нет данных");
+            return factory;
+        }
+
         //Запрос значений из Historian по списку сигналов и интервалу
         protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
@@ -63,7 +72,7 @@ namespace Provider
               .Append(") and (TIMESTAMP <= ")
               .Append(en.ToOvationString())
               .Append(") order by TIMESTAMP, TIME_NSEC");
-            var rec = new ReaderAdo(Connection, sb.ToString());
+            var rec = new ReaderAdo(Connect.Connection, sb.ToString());
             if (en.Subtract(beg).TotalMinutes > 59 && !rec.HasRows)
             {
                 AddWarning("Значения из источника не получены", null, beg + " - " + en +"; " + part.First().CodeObject + " и др.");
@@ -76,7 +85,7 @@ namespace Provider
         //Определение текущего считываемого объекта
         protected override SourceObject DefineObject(IRecordRead rec)
         {
-            return OvationConn.ObjectsId[rec.GetInt("Id")];
+            return _objectsId[rec.GetInt("Id")];
         }
 
         //Задание нестандартных свойств получения данных
@@ -90,16 +99,15 @@ namespace Provider
         protected override void ReadCut()
         {
             using (Start(0, 50)) //Срез по 4 минутам
-                ReadValuesByParts(OvationConn.ObjectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
+                ReadValuesByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
             using (Start(50, 100)) //Срез по 61 минуте
-                ReadValuesByParts(OvationConn.ObjectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
+                ReadValuesByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
         }
 
         //Чтение изменений
         protected override void ReadChanges()
         {
-            ReadValuesByParts(OvationConn.ObjectsId.Values, 200, PeriodBegin, PeriodEnd, false);
+            ReadValuesByParts(_objectsId.Values, 200, PeriodBegin, PeriodEnd, false);
         }
-        #endregion
     }
 }

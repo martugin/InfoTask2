@@ -2,37 +2,43 @@
 using System.ComponentModel.Composition;
 using System.Collections.Generic;
 using BaseLibrary;
-using CommonTypes;
+using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(IProvider))]
+    [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "MirSource")]
-    public class MirSource : SqlSourceBase
+    public class MirSource : AdoSource
     {
         //Код провайдера
         public override string Code { get { return "MirSource"; } }
+        //Комплект
+        public override string Complect { get { return "Mir"; }}
+        //Создание подключения
+        protected override ProviderConnect CreateConnect()
+        {
+            return new SqlSourceConnect();
+        }
+        //Ссылка на соединение
+        public SqlSourceConnect Connect { get { return (SqlSourceConnect)CurConnect; } }
         
-        //Список сигналов
-        #region
         //Словари объектов, ключи коды и IdChanell
         private readonly DicS<ObjectMir> _objects = new DicS<ObjectMir>();
         private readonly DicI<ObjectMir> _objectsId = new DicI<ObjectMir>();
         
         //Очистка списка сигналов
-        public override void ClearSignals()
+        public override void ClearObjects()
         {
-            base.ClearSignals();
             _objects.Clear();
             _objectsId.Clear();
         }
-
+        
         //Добавляет один сигнал в список
-        protected override SourceObject AddObject(SourceSignal sig, string context)
+        protected override SourceObject AddObject(SourceSignal sig)
         {
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
             if (!_objects.ContainsKey(ocode))
-                return _objects.Add(ocode, new ObjectMir(this, context));
+                return _objects.Add(ocode, new ObjectMir(this));
             return _objects[ocode];
         }
         
@@ -40,7 +46,7 @@ namespace Provider
         public override void Prepare()
         {
             _objectsId.Clear();
-            using (var rec = new ReaderAdo(SqlProps, "SELECT OBJECTS.NAME_OBJECT, DEVICES.NAME_DEVICE, LIB_CHANNELS.NAME_TYPE, LIB_CHANNELS.UNIT, CHANNELS.IDCHANNEL, LIB_CHANNELS.TABLE_NAME " +
+            using (var rec = new ReaderAdo(Connect.SqlProps, "SELECT OBJECTS.NAME_OBJECT, DEVICES.NAME_DEVICE, LIB_CHANNELS.NAME_TYPE, LIB_CHANNELS.UNIT, CHANNELS.IDCHANNEL, LIB_CHANNELS.TABLE_NAME " +
             "FROM CHANNELS INNER JOIN DEVICES ON CHANNELS.IDDEVICE = DEVICES.IDDEVICE INNER JOIN " +
             "LIB_CHANNELS ON dbo.CHANNELS.IDTYPE_CHANNEL = dbo.LIB_CHANNELS.IDTYPE_CHANNEL INNER JOIN " +
             "POINT_DEVICES ON dbo.DEVICES.IDDEVICE = dbo.POINT_DEVICES.IDDEVICE INNER JOIN " +
@@ -59,26 +65,19 @@ namespace Provider
                     }
                 }
         }
-        #endregion
 
-        //Чтение данных из архива
-        #region
         //Запрос значений по одному блоку сигналов
-        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en)
+        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             string queryString = "SELECT IDCHANNEL, TIME, VALUE, VALUE_UNIT, VALUE_INDICATION FROM IZM_TII" +
-                                     " WHERE (TIME >= " + beg.ToSqlString() + ") AND (TIME <=" + en.ToSqlString() +
-                                     ") ORDER BY TIME";
-            AddEvent("Запрос значений из базы");
-            Rec = new ReaderAdo(SqlProps, queryString);
-            AddEvent("Запрос из базы отработал");
-            return true;
+                                     " WHERE (TIME >= " + beg.ToSqlString() + ") AND (TIME <=" + en.ToSqlString() + ") ORDER BY TIME";
+            return new ReaderAdo(Connect.SqlProps, queryString);
         }
 
         //Определение текущего считываемого объекта
-        protected override SourceObject DefineObject()
+        protected override SourceObject DefineObject(IRecordRead rec)
         {
-            return _objectsId[Rec.GetInt("IDCHANNEL")];
+            return _objectsId[rec.GetInt("IDCHANNEL")];
         }
 
         //Чтение среза
@@ -92,6 +91,5 @@ namespace Provider
         {
             ReadValuesByParts(_objects.Values, 5000, PeriodBegin, PeriodEnd, false);
         }
-        #endregion
     }
 }

@@ -16,8 +16,8 @@ namespace ProvidersLibrary
         }
 
         //Ссылка на провайдер
-        private Provider _provider;
-        public Provider Provider
+        private ProviderBase _provider;
+        public ProviderBase Provider
         {
             get { return _provider; }
             set

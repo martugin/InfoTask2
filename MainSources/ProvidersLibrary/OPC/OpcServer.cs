@@ -9,11 +9,14 @@ namespace ProvidersLibrary
     //Соединение с OPC-сервером
     public abstract class OpcServer : Receiver
     {
-        //Подключение
-        private OpcServerConnect OpcConnect
+        //Создание подключения
+        protected override ProviderConnect CreateConnect()
         {
-            get { return (OpcServerConnect) CurConnect; }
+            return new OpcServerConnect();
         }
+
+        //Подключение
+        private OpcServerConnect Connect { get { return (OpcServerConnect) CurConnect; } }
 
         //Массив корректно добавленых OPC-итемов
         private OpcItem[] _itemsList;
@@ -33,7 +36,7 @@ namespace ProvidersLibrary
         public List<string> ServersList(string node = null)
         {
             var list = new List<string>();
-            Array arr = node == null ? OpcConnect.Server.GetOPCServers() : OpcConnect.Server.GetOPCServers(node);
+            Array arr = node == null ? Connect.Server.GetOPCServers() : Connect.Server.GetOPCServers(node);
             foreach (string a in arr)
                 list.Add(a);
             return list;
@@ -42,12 +45,12 @@ namespace ProvidersLibrary
         //Создается группа с именем name
         public void AddGroup(string name)
         {
-            if (OpcConnect.Server.OPCGroups.Count > 0)
+            if (Connect.Server.OPCGroups.Count > 0)
             {
-                OpcConnect.Server.OPCGroups.RemoveAll();
+                Connect.Server.OPCGroups.RemoveAll();
                 _items.Clear();   
             }
-            _group = OpcConnect.Server.OPCGroups.Add(name);
+            _group = Connect.Server.OPCGroups.Add(name);
            // _group.IsSubscribed = true;
             _group.UpdateRate = 1000;
             _group.IsActive = true;
@@ -92,7 +95,7 @@ namespace ProvidersLibrary
             if (!IsConnected && !Check()) return false;
             try
             {
-                if (_group == null) AddGroup("Gr" + (OpcConnect.Server.OPCGroups.Count + 1));
+                if (_group == null) AddGroup("Gr" + (Connect.Server.OPCGroups.Count + 1));
                 int n = _items.Count;
                 var list = new OpcItem[n + 1];
                 int i = 1;

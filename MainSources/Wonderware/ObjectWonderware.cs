@@ -8,7 +8,7 @@ namespace Provider
     //Объект
     internal class ObjectWonderware : SourceObject
     {
-        public ObjectWonderware(WonderwareConn source, string tag) : base(source)
+        public ObjectWonderware(WonderwareSource source, string tag) : base(source)
         {
             TagName = tag;
         }

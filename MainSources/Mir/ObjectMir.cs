@@ -1,15 +1,12 @@
-﻿using System;
-using BaseLibrary;
-using CommonTypes;
+﻿using BaseLibrary;
+using ProvidersLibrary;
 
 namespace Provider
 {
     //Один объект (дисктретная, аналоговая или упакованная точка)
     internal class ObjectMir : SourceObject
     {
-        public ObjectMir(SourceBase source, string context) 
-            : base(source, context)
-        { }
+        public ObjectMir(SourceBase source) : base(source) { }
 
         //Cигналы Unit и Indcation
         internal SourceSignal UnitSignal { get; set; }
@@ -17,6 +14,7 @@ namespace Provider
         //Id для получения значений из IZM_TII
         public int IdChannel { get; set; }
 
+        //Добавить к объекту сигнал, если такого еще не было
         protected override SourceSignal AddNewSignal(SourceSignal sig)
         {
             if (sig.Inf.Get("ValueType") == "Indication")
@@ -24,29 +22,13 @@ namespace Provider
             return UnitSignal = UnitSignal ?? sig;
         }
         
-        protected override int AddObjectMoments()
+        //Чтение значений по одному объекту из рекордсета источника и добавление их в список или клон
+        //Возвращает количество сформированных значений
+        public override int ReadMoments(IRecordRead rec)
         {
-            return AddMom(IndicationSignal, ValueTime, _valueIndication) +
-                      AddMom(UnitSignal, ValueTime, _valueUnit);
-        }
-
-        //Создание клона
-        private double _valueIndication;
-        private double _valueUnit;
-
-        protected override DateTime ReadTime(IRecordRead rec)
-        {
-            return rec.GetTime("TIME");
-        }
-        protected override void ReadValue(IRecordRead rec)
-        {
-            _valueIndication = rec.GetDouble("VALUE_INDICATION");
-            _valueUnit = rec.GetDouble("VALUE_UNIT");
-        }
-        protected override void PutValueToClone(IRecordAdd rec)
-        {
-            rec.Put("VALUE_INDICATION", _valueIndication);
-            rec.Put("VALUE_UNIT", _valueUnit);
+            var time = rec.GetTime("TIME");
+            return AddMom(IndicationSignal, time, rec.GetDouble("VALUE_INDICATION")) +
+                      AddMom(UnitSignal, time, rec.GetDouble("VALUE_UNIT"));
         }
     }
 }

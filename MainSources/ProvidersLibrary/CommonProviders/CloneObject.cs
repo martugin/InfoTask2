@@ -6,7 +6,7 @@ namespace ProvidersLibrary
     //Объект для клона, содержит один сигнал
     public class CloneObject : SourceObject
     {
-        public CloneObject(Source source) : base(source) { }
+        public CloneObject(SourceBase source) : base(source) { }
 
         public override int ReadMoments(IRecordRead rec)
         {

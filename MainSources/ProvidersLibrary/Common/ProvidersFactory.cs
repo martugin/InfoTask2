@@ -17,7 +17,7 @@ namespace ProvidersLibrary
         public DicS<ProviderConfig> ProviderConfigs { get { return _providerConfigs; } }
 
         //Создание провайдера
-        public Provider CreateProv(Logger logger, //Логгер, например поток расчета
+        public ProviderBase CreateProv(Logger logger, //Логгер, например поток расчета
                                                  string code, //Код
                                                  string inf, string reserveInf = "") //Настройки основного и резервного подключения
         {

@@ -7,7 +7,7 @@ namespace ProvidersLibrary
     public abstract class OleDbSourceConnect : SourceConnect
     {
         //Соединение с провайдером OleDb
-        protected OleDbConnection Connection { get; set; }
+        public OleDbConnection Connection { get; set; }
 
         //Открытие соединения
         public override bool Check()

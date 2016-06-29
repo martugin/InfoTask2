@@ -206,12 +206,9 @@
     <Siemens Description="Провайдеры для Siemens" DllFile="Providers\Siemens\Siemens.dll">
       <SimaticSource ProviderType="Источник" Description="Источник OLE DB ПТК SIMATIC">
         <ProviderProps>
-          <MainSQLServer PropNum="1" Description="Имя основного SQL-сервера архива">
+          <SQLServer PropNum="1" Description="Имя SQL-сервера архива">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
-          </MainSQLServer>
-          <ReserveSQLServer PropNum="2" Description="Имя резервного SQL-сервера архива">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
-          </ReserveSQLServer>
+          </SQLServer>
         </ProviderProps>
       </SimaticSource>
       <SimaticComm ProviderType="Коммуникатор" Description="Коммуникатор OLE DB ПТК SIMATIC" ProviderFile="\Providers\Siemens\SimaticComm.accdb">

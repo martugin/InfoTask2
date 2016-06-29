@@ -20,17 +20,17 @@ namespace ProvidersLibrary
     //---------------------------------------------------------------------------------------------
     
     //Расчетный сигнал
-    public class SourceCalcSignal : SourceSignal
+    public class CalcSignal : Signal
     {
-        public SourceCalcSignal(Source source, SourceInitSignal initSignal, string code, DataType dataType, string formula) 
+        public CalcSignal(SourceBase source, SourceSignal signal, string code, DataType dataType, string formula) 
             : base(source, code, dataType)
         {
-            _initSignal = initSignal;
+            _signal = signal;
             ParseFormula(formula);
         }
 
         //Сигнал, на основе которого вычисляется значение
-        private readonly SourceInitSignal _initSignal;
+        private readonly SourceSignal _signal;
 
         //Вычисляемая функция
         private SignalFunction _function;

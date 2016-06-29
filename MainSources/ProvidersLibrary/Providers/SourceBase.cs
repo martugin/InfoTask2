@@ -5,9 +5,9 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Базовый класс для всех источников
-    public abstract class Source : Provider
+    public abstract class SourceBase : ProviderBase
     {
-        protected Source()
+        protected SourceBase()
         {
             CloneCutFrequency = 10;
         }
@@ -20,44 +20,49 @@ namespace ProvidersLibrary
         //Получение диапазона времени источника
         public TimeInterval GetTime()
         {
-            if (CurConnect != null)
-                return SourceConnect.GetTime();
-            return new TimeInterval(Different.MinDate, DateTime.Now);
+            return SourceConnect.GetTime();
         }
 
         //Добавить сигнал
-        public SourceSignal AddSignal(string code, string codeObject, DataType dataType, string signalInf, string formula = null)
+        public Signal AddSignal(string code, string codeObject, DataType dataType, string signalInf, string formula = null)
         {
             if (ProviderSignals.ContainsKey(code))
                 return ProviderSignals[code];
-            var sig = new SourceInitSignal(this, code, dataType, signalInf);
+            var sig = new SourceSignal(this, code, dataType, signalInf);
+            ProviderSignals.Add(code, sig);
             var ob = AddObject(sig);
-            ob.CodeObject = codeObject;
-            sig = ob.AddSignal(sig);
+            if (ob != null)
+            {
+                ob.CodeObject = codeObject;
+                sig = ob.AddSignal(sig);    
+            }
             if (formula != null)
-                return new SourceCalcSignal(this, sig, code, dataType, formula);
+                return new CalcSignal(this, sig, code, dataType, formula);
             return sig;
         }
         //Добавить объект содержащий заданный сигнал
-        protected abstract SourceObject AddObject(SourceInitSignal sig);
+        protected abstract SourceObject AddObject(SourceSignal sig);
 
         //Очистка списка сигналов
-        public virtual void ClearSignals()
+        public void ClearSignals()
         {
             ProviderSignals.Clear();
             CalcSignals.Clear();
             CloneSignalsId.Clear();
+            ClearObjects();
         }
+        //Очистка списков объектов
+        public abstract void ClearObjects();
 
         //Список сигналов, содержащих возвращаемые значения
-        internal readonly DicS<SourceInitSignal> ProviderSignals = new DicS<SourceInitSignal>();
-        public IDicSForRead<SourceInitSignal> Signals { get { return ProviderSignals; } }
+        internal readonly DicS<SourceSignal> ProviderSignals = new DicS<SourceSignal>();
+        public IDicSForRead<SourceSignal> Signals { get { return ProviderSignals; } }
         //Словарь расчетных сигналов
-        private readonly DicS<SourceCalcSignal> _calcSignals = new DicS<SourceCalcSignal>();
-        public DicS<SourceCalcSignal> CalcSignals { get { return _calcSignals; } }
+        private readonly DicS<CalcSignal> _calcSignals = new DicS<CalcSignal>();
+        public DicS<CalcSignal> CalcSignals { get { return _calcSignals; } }
         //Словарь сигналов клона, ключи Id в клоне, используется и при чтении из клона, и при записи в клон
-        private readonly DicI<SourceInitSignal> _cloneSignalsId = new DicI<SourceInitSignal>();
-        public DicI<SourceInitSignal> CloneSignalsId { get { return _cloneSignalsId; } }
+        private readonly DicI<SourceSignal> _cloneSignalsId = new DicI<SourceSignal>();
+        public DicI<SourceSignal> CloneSignalsId { get { return _cloneSignalsId; } }
 
         //Создание фабрики ошибок
         protected virtual IErrMomFactory MakeErrFactory()
@@ -76,7 +81,7 @@ namespace ProvidersLibrary
         }
 
         //Чтение значений из источника
-        internal void GetValues(DateTime periodBegin, DateTime periodEnd)
+        public void GetValues(DateTime periodBegin, DateTime periodEnd)
         {
             if (ErrPool == null)
                 ErrPool = new ErrMomPool(MakeErrFactory());
@@ -95,7 +100,7 @@ namespace ProvidersLibrary
         //Чтение среза
         protected virtual void ReadCut() { }
         //Чтение изменений
-        protected virtual void ReadChanges() { }
+        protected abstract void ReadChanges();
 
         //Создание клона
         #region

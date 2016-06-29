@@ -1,6 +1,6 @@
 ﻿using System;
 using BaseLibrary;
-using CommonTypes;
+using ProvidersLibrary;
 
 namespace Provider
 {
@@ -25,6 +25,7 @@ namespace Provider
         //Id в таблице архива
         public int Id { get; private set; }
 
+        //Добавление сигнала
         protected override SourceSignal AddNewSignal(SourceSignal sig)
         {
             switch (sig.Inf["Prop"].ToLower())
@@ -38,9 +39,9 @@ namespace Provider
             }
         }
 
-        //Чтение значений по одному объекту из рекордсета источника
+        //Чтение значений по одному объекту из рекордсета источника и добавление их в список или клон
         //Возвращает количество сформированных значений
-        public override int MakeValueFromRec(IRecordRead rec)
+        public override int ReadMoments(IRecordRead rec)
         {
             DateTime time = rec.GetTime(1).ToLocalTime();
             var quality = rec.GetInt(3);

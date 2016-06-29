@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BaseLibrary;
+using CommonTypes;
 
 namespace ProvidersLibrary
 {
@@ -12,14 +13,18 @@ namespace ProvidersLibrary
             _complect = complect;
         }
 
-        //Подключение 
-        internal CloneSourceConnect CloneConnect { get { return (CloneSourceConnect) CurConnect; } }
-
-        //Код провайдера
+        //Комплект
         private readonly string _complect;
         public override string Complect { get { return _complect; } }
-
+        //Код провайдера
         public override string Code { get { return "CloneSource"; } }
+        //Подготовка клона к чтению значений
+        protected override ProviderConnect CreateConnect()
+        {
+            return new CloneSourceConnect { Complect = Complect };
+        }
+        //Подключение 
+        internal CloneSourceConnect Connect { get { return (CloneSourceConnect)CurConnect; } }
 
         //Настройка свойств получения данных
         protected override void SetReadProperties()
@@ -33,16 +38,40 @@ namespace ProvidersLibrary
         private readonly DicI<SourceObject> _objectsId = new DicI<SourceObject>();
         //Список объектов
         private readonly List<SourceObject> _objects = new List<SourceObject>();
-        
-        //Подготовка клона к чтению значений
-        protected override ProviderConnect CreateConnect()
+
+        protected override SourceObject AddObject(SourceSignal sig)
         {
-            return new CloneSourceConnect {Complect = Complect};
+            return null;
         }
 
+        //Очистка списка обхектов
+        public override void ClearObjects()
+        {
+            _objectsId.Clear();
+            _objects.Clear();
+        }
+
+        //Создание фабрики ошибок
+        protected override IErrMomFactory MakeErrFactory()
+        {
+            var factory = new ErrMomFactory(Name, ErrMomType.Source);
+            using (var rec = new RecDao(Connect.CloneFile, "MomentErrors"))
+                while (rec.Read())
+                {
+                    int quality = rec.GetInt("Quality");
+                    int num = rec.GetInt("NumError");
+                    string text = rec.GetString("TextError");
+                    if (quality == 0)
+                        factory.AddGoodDescr(num);
+                    else factory.AddDescr(num, text, quality == 1 ? ErrorQuality.Warning : ErrorQuality.Error);
+                }
+            return factory;
+        }
+
+        //Отметка в клоне считывемых сигналов, получение Id сигналов
         public override void Prepare()
         {
-            using (var rec = new RecDao(CloneConnect.CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
+            using (var rec = new RecDao(Connect.CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
                 while (rec.Read())
                 {
                     string code = rec.GetString("FullCode");
@@ -61,13 +90,23 @@ namespace ProvidersLibrary
 
         //Читать из таблицы строковых значений
         private bool _isStrTable;
-
-        //Чтение среза
-        protected override SourceObject AddObject(SourceInitSignal sig)
+        
+        //Запрос значений из клона
+        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
-            throw new NotImplementedException();
+            string table = "Moment" + (_isStrTable ? "Str" : "") + "Values" + (isCut ? "Cut" : "");
+            string timeField = (isCut ? "Cut" : "") + "Time";
+            return new RecDao(Connect.CloneFile, "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
+                                                             " WHERE (Signals.Otm=True) AND (" + table + "." + timeField + ">=" + beg.ToAccessString() + ") AND (" + table + "." + timeField + "<=" + en.ToAccessString() + ")");
         }
 
+        //Определение объекта строки значений
+        protected override SourceObject DefineObject(IRecordRead rec)
+        {
+            return _objectsId[rec.GetInt("SignalId")];
+        }
+
+        //Чтение среза
         protected override void ReadCut()
         {
             DateTime d = RemoveMinultes(PeriodBegin);
@@ -94,21 +133,6 @@ namespace ProvidersLibrary
             AddEvent("Чтение изменений строковых значений");
             _isStrTable = true;
             ReadPart(_objects, PeriodBegin, PeriodEnd, false);
-        }
-
-        //Запрос значений из клона
-        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
-        {
-            string table = "Moment" + (_isStrTable ? "Str" : "") + "Values" + (isCut ? "Cut" : "");
-            string timeField = (isCut ? "Cut" : "") + "Time";
-            return new RecDao(CloneConnect.CloneFile, "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
-                                                             " WHERE (Signals.Otm=True) AND (" + table + "." + timeField + ">=" + beg.ToAccessString() + ") AND (" + table + "." + timeField + "<=" + en.ToAccessString() + ")");
-        }
-
-        //Определение объекта строки значений
-        protected override SourceObject DefineObject(IRecordRead rec)
-        {
-            return _objectsId[rec.GetInt("SignalId")];
         }
     }
 }

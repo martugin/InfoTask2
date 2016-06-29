@@ -4,7 +4,7 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Один провайдер
-    public abstract class Provider : ExternalLogger
+    public abstract class ProviderBase : ExternalLogger
     {
         //Код соединения
         public string Name { get; set; }

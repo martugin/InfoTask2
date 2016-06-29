@@ -4,37 +4,45 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(Prov))]
+    //OPC-сервер Wonderware
+    [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "WonderwareOpcReceiver")]
     public class WonderwareOpcReceiver : OpcServer
     {
+        //Комплект
+        public override string Complect { get { return "Wonderware"; } }
         //Код
         public override string Code { get { return "WonderwareOpcReceiver"; } }
-        //Серверный узел
-        private string _serverNode;
-        //Серверная группа
-        private string _serverGroup;
-        //Загрузка дополнительных настроек провайдера из Inf
-        protected override void ReadInf(DicS<string> dic)
+        //Создание подключения
+        protected override ProviderConnect CreateConnect()
         {
-            base.ReadInf(dic);
-            _serverNode = dic["ServerNode"];
-            _serverGroup = dic["ServerGroup"];
+            return new WoderwareOpcConnect();
         }
+        //Ссылка на соединение
+        public WoderwareOpcConnect Connect { get { return (WoderwareOpcConnect)CurConnect; } }
 
         //Получение Tag точки по сигналу
         protected override string GetOpcItemTag(DicS<string> inf)
         {
-            return _serverNode + "." + _serverGroup + "." + inf["TagName"];
+            return Connect.ServerNode + "." + Connect.ServerGroup + "." + inf["TagName"];
         }
     }
 
-    //--------------------------------------------------------------------------------------------------------------------
-
-    [Export(typeof(ProvConn))]
-    [ExportMetadata("Complect", "WonderwareOpcConn")]
-    public class WonderwareOpcConn : ReceivConn
+    //----------------------------------------------------------------------------------------------
+    public class WoderwareOpcConnect : OpcServerConnect
     {
-        public override string Complect { get { return "Wonderware"; }}
+        //Загрузка дополнительных настроек провайдера из Inf
+        protected override void ReadInf(DicS<string> dic)
+        {
+            ServerName = dic["OPCServerName"];
+            Node = dic["Node"];
+            ServerNode = dic["ServerNode"];
+            ServerGroup = dic["ServerGroup"];
+        }
+
+        //Серверный узел
+        internal string ServerNode { get; private set; }
+        //Серверная группа
+        internal string ServerGroup { get; private set; }
     }
 }
