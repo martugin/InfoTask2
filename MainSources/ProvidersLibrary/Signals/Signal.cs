@@ -24,7 +24,7 @@ namespace ProvidersLibrary
         protected SourceBase Source { get; private set; }
 
         //Возвращаемый список значений
-        protected MomList MList { get; private set; }
+        internal protected MomList MList { get; protected set; }
         public IMomListReadOnly MomList { get; private set; }
     }
 }

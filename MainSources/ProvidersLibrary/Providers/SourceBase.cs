@@ -97,6 +97,8 @@ namespace ProvidersLibrary
                 Start(ReadCut, 0, PeriodBegin < PeriodEnd ? 30 : 100);
             if (!NeedCut || PeriodBegin < PeriodEnd)
                 Start(ReadChanges, Procent, 100);
+            foreach (var sig in CalcSignals.Values)
+                sig.Calculate();
         }
 
         //Чтение среза
