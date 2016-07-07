@@ -32,9 +32,9 @@ namespace Provider
             _objects.Clear();
             _objectsId.Clear();
         }
-        
-        //Добавляет один сигнал в список
-        protected override SourceObject AddObject(SourceSignal sig)
+
+        //Добавить объект в провайдер
+        protected override SourceObject AddObject(InitialSignal sig)
         {
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
             if (!_objects.ContainsKey(ocode))

@@ -29,8 +29,8 @@ namespace Provider
         private readonly Dictionary<string, ObjectWonderware> _objects = new Dictionary<string, ObjectWonderware>();
         internal Dictionary<string, ObjectWonderware> Objects { get { return _objects; } }
 
-        //Добавить сигнал в провайдер
-        protected override SourceObject AddObject(SourceSignal sig)
+        //Добавить объект в провайдер
+        protected override SourceObject AddObject(InitialSignal sig)
         {
             string tag = sig.Inf["TagName"];
             if (!_objects.ContainsKey(tag))

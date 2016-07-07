@@ -8,6 +8,9 @@ namespace ProvidersLibrary
     {
         public CloneObject(SourceBase source) : base(source) { }
 
+        //Id в клоне
+        internal int CloneId { get; set; }
+
         public override int ReadMoments(IRecordRead rec)
         {
             var time = rec.GetTime("Time");

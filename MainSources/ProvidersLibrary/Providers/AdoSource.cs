@@ -73,7 +73,7 @@ namespace ProvidersLibrary
                             successRead |= ReadPartRecursive(parts[i], successRead, 1, beg, en, isCut, successRead);
                     }
                 int nadd = 0;
-                var signals = ProviderSignals.Values;
+                var signals = InitialSignals.Values;
                 if (isCut)
                 {
                     nadd += signals.Sum(sig => sig.MakeBegin());

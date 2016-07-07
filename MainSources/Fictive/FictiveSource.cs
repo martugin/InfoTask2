@@ -11,7 +11,7 @@ namespace Fictive
     public class FictiveSource : SourceBase
     {
         public FictiveSource()
-        {
+        { 
             NeedCut = false;
         }
 
@@ -29,9 +29,10 @@ namespace Fictive
 
         //Словарь объектов, ключи - номера
         private readonly DicI<ObjectFictive> _objects = new DicI<ObjectFictive>();
+        public DicI<ObjectFictive> Objects { get { return _objects; } }
 
-        //Добавить объект по заданному сигналу
-        protected override SourceObject AddObject(SourceSignal sig)
+        //Добавить объект в провайдер
+        protected override SourceObject AddObject(InitialSignal sig)
         {
             var num = sig.Inf.GetInt("NumObject");
             if (!_objects.ContainsKey(num))

@@ -8,14 +8,8 @@ namespace ProvidersLibrary
     //Источник, читающий из клона
     public class CloneSource : AdoSource
     {
-        public CloneSource(string complect)
-        {
-            _complect = complect;
-        }
-
         //Комплект
-        private readonly string _complect;
-        public override string Complect { get { return _complect; } }
+        public override string Complect { get { return "Clones"; } }
         //Код провайдера
         public override string Code { get { return "CloneSource"; } }
         //Подготовка клона к чтению значений
@@ -34,14 +28,15 @@ namespace ProvidersLibrary
             MaxErrorDepth = 1;
         }
 
-        //Словарь объектов, каждый содержит один сигнал, ключи - SignalId в клоне
-        private readonly DicI<SourceObject> _objectsId = new DicI<SourceObject>();
+        //Словари объектов, каждый содержит один сигнал, ключи - SignalId в клоне и коды
+        private readonly DicI<CloneObject> _objectsId = new DicI<CloneObject>();
+        private readonly DicS<CloneObject> _objects = new DicS<CloneObject>();
         //Список объектов
-        private readonly List<SourceObject> _objects = new List<SourceObject>();
+        private readonly List<SourceObject> _objectsList = new List<SourceObject>(); 
 
-        protected override SourceObject AddObject(SourceSignal sig)
+        protected override SourceObject AddObject(InitialSignal sig)
         {
-            return null;
+            return _objects.Add(sig.Code, new CloneObject(this));
         }
 
         //Очистка списка обхектов
@@ -49,6 +44,7 @@ namespace ProvidersLibrary
         {
             _objectsId.Clear();
             _objects.Clear();
+            _objectsList.Clear();
         }
 
         //Создание фабрики ошибок
@@ -75,13 +71,13 @@ namespace ProvidersLibrary
                 {
                     string code = rec.GetString("FullCode");
                     var id = rec.GetInt("SignalId");
-                    if (ProviderSignals.ContainsKey(code))
+                    if (_objects.ContainsKey(code))
                     {
-                        ProviderSignals[code].IdInClone = id;
                         rec.Put("Otm", true);
-                        var ob = new CloneObject(this);
+                        var ob = _objects[code];
+                        ob.CloneId = id;
                         _objectsId.Add(id, ob);
-                        _objects.Add(ob);
+                        _objectsList.Add(ob);
                     }
                     else rec.Put("Otm", false);
                 }
@@ -111,16 +107,16 @@ namespace ProvidersLibrary
             DateTime d = RemoveMinultes(PeriodBegin);
             AddEvent("Чтение среза действительных значений из таблицы изменений");
             _isStrTable = false;
-            ReadPart(_objects, d, PeriodBegin, false);
+            ReadPart(_objectsList, d, PeriodBegin, false);
             AddEvent("Чтение среза действительных значений из таблицы срезов");
             _isStrTable = false;
-            ReadPart(_objects, d.AddSeconds(-1), d.AddSeconds(1), true);
+            ReadPart(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
             AddEvent("Чтение среза строковых значений из таблицы изменений");
             _isStrTable = true;
-            ReadPart(_objects, d, PeriodBegin, false);
+            ReadPart(_objectsList, d, PeriodBegin, false);
             AddEvent("Чтение среза строковых значений из таблицы срезов");
             _isStrTable = true;
-            ReadPart(_objects, d.AddSeconds(-1), d.AddSeconds(1), true);
+            ReadPart(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
         }
 
         //Чтение изменений
@@ -128,10 +124,10 @@ namespace ProvidersLibrary
         {
             AddEvent("Чтение изменений действительных значений");
             _isStrTable = false;
-            ReadPart(_objects, PeriodBegin, PeriodEnd, false);
+            ReadPart(_objectsList, PeriodBegin, PeriodEnd, false);
             AddEvent("Чтение изменений строковых значений");
             _isStrTable = true;
-            ReadPart(_objects, PeriodBegin, PeriodEnd, false);
+            ReadPart(_objectsList, PeriodBegin, PeriodEnd, false);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using BaseLibrary;
 
 namespace CommonTypes
 {
@@ -13,7 +14,7 @@ namespace CommonTypes
         //Обертываемый список значений
         private readonly MomList _momList;
         //Загрузить в буферное значение
-        public Mean Mom(int i) { return _momList.Mom(i);}
+        public Mean Mean(int i) { return _momList.Mean(i);}
 
         public override DataType DataType { get { return _momList.DataType; } }
         public override ErrMom TotalError { get { return _momList.TotalError; } }
@@ -26,6 +27,8 @@ namespace CommonTypes
         public double Real(int i) { return _momList.Real(i); }
         public DateTime Date(int i) { return _momList.Date(i); }
         public string String(int i) { return _momList.String(i); }
+        public void ValueToRec(IRecordAdd rec, string field, int i) { _momList.ValueToRec(rec, field, i); }
+        
         public IMom Clone(int i) { return _momList.Clone(i); }
         public IMom Clone(int i, DateTime time) { return _momList.Clone(i, time); }
         public IMom Clone(int i, DateTime time, ErrMom err) { return _momList.Clone(i, time, err); }

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("Fictive")]
-[assembly: AssemblyDescription("Набор отладочных провайдеров")]
+[assembly: AssemblyTitle("Experiments")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("InfoTask")]
-[assembly: AssemblyProduct("Fictive")]
-[assembly: AssemblyCopyright("Copyright © InfoTask  2017")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Experiments")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
-[assembly: Guid("ec1534ab-5a22-4b7a-9b5f-24b203e782f4")]
+[assembly: Guid("a25c83a7-694e-4bb9-9f56-39a49970a921")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //
@@ -34,5 +34,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
-[assembly: InternalsVisibleTo("ProvidersLibraryTest")]

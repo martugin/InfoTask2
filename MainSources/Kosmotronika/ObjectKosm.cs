@@ -31,7 +31,7 @@ namespace Provider
         }
 
         //Добавить к объекту сигнал, если такого еще не было
-        protected override SourceSignal AddNewSignal(SourceSignal sig)
+        protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
             if (sig.Inf["Prop"] == "ND")
                 return StateSignal = StateSignal ?? sig;
@@ -50,9 +50,9 @@ namespace Provider
         internal int Out { get; private set; }
 
         //Сигнал недостоверности
-        internal SourceSignal StateSignal { get; private set; }
+        internal InitialSignal StateSignal { get; private set; }
         //Сигнал ПОК
-        internal SourceSignal PokSignal { get; private set; }
+        internal InitialSignal PokSignal { get; private set; }
 
         //Чтение значений по одному объекту из рекордсета источника
         //Возвращает количество сформированных значений

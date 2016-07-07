@@ -7,10 +7,10 @@ namespace CommonTypes
     public static class DifferentIT
     {
         //Чтение из реестра пути к каталогу InfoTask, в возвращаемом пути \ на конце
-        public static string GetInfoTaskDir()
+        public static string InfoTaskDir()
         {
-            var dir = Different.GetRegistry(@"software\InfoTask", "InfoTaskPath");
-            if (dir == "") dir = Different.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTaskPath");
+            var dir = Different.GetRegistry(@"software\InfoTask", "InfoTask2Path");
+            if (dir == "") dir = Different.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
             if (!dir.EndsWith(@"\")) dir += @"\";
             return dir;
         }
@@ -18,7 +18,7 @@ namespace CommonTypes
         //Путь к каталогу разработки InfoTask
         public static string GetInfoTaskDevelopDir()
         {
-            var itd = GetInfoTaskDir();
+            var itd = InfoTaskDir();
             var n = itd.LastIndexOf(@"\", itd.Length - 2);
             return itd.Substring(0, n + 1);
         }

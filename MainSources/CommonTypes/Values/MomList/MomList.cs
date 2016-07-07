@@ -25,15 +25,16 @@ namespace CommonTypes
         }
 
         //Мгновенное значение для добавления в список и получения из списка
-        internal protected Mean BufMean { get; set; }
+        protected Mean BufMean { get; set; }
         //Тип данных
         public override DataType DataType { get { return BufMean.DataType; } }
 
         //Добавить буферное значение в список по индексу или в конец
         protected abstract void AddBufMom(int i);
         protected abstract void AddBufMomEnd();
-        //Загрузить буферное значение из списка 
-        public abstract Mean Mom(int i);
+
+        //Получить значение из списка по индексу
+        public abstract Mean Mean(int i);
 
         //Добавить ошибку в i-ю позицию списка
         private void AddError(ErrMom err, int i)
@@ -70,7 +71,7 @@ namespace CommonTypes
         private void AddMomToEnd(DateTime time, ErrMom err)
         {
             _times.Add(time);
-            if (err != null) AddError(err, Count - 1);
+            AddError(err, Count - 1);
             AddBufMomEnd();
         }
 
@@ -135,55 +136,46 @@ namespace CommonTypes
         //Получение значений по индексу
         public bool Boolean(int i)
         {
-            Mom(i);   
-            return BufMean.Boolean;
+            return Mean(i).Boolean;
         }
         public int Integer(int i)
         {
-            Mom(i);   
-            return BufMean.Integer;
+            return Mean(i).Integer;
         }
 
         public double Real(int i)
         {
-            Mom(i);   
-            return BufMean.Real;
+            return Mean(i).Real;
         }
 
         public DateTime Date(int i)
         {
-            Mom(i);   
-            return BufMean.Date;
+            return Mean(i).Date;
         }
 
         public string String(int i)
         {
-            Mom(i);   
-            return BufMean.String;
+            return Mean(i).String;
         }
 
         //Запись значения в рекордсет rec, поле field
         public void ValueToRec(IRecordAdd rec, string field, int i)
         {
-            Mom(i);   
-            BufMean.ValueToRec(rec, field);
+            Mean(i).ValueToRec(rec, field);
         }
 
         //Клонирование текущего значения
         public IMom Clone(int i)
         {
-            Mom(i);   
-            return BufMean.Clone(Time(i), Error(i));
+            return Mean(i).Clone(Time(i), Error(i));
         }
         public IMom Clone(int i, DateTime time)
         {
-            Mom(i);   
-            return BufMean.Clone(time, Error(i));
+            return Mean(i).Clone(time, Error(i));
         }
         public IMom Clone(int i, DateTime time, ErrMom err)
         {
-            Mom(i);   
-            return BufMean.Clone(time, err);
+            return Mean(i).Clone(time, err);
         }
         
         //Последнее значение

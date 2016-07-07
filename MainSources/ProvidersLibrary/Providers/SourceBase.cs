@@ -31,30 +31,34 @@ namespace ProvidersLibrary
         }
 
         //Добавить сигнал
-        public Signal AddSignal(string code, string codeObject, DataType dataType, string signalInf, string formula = null)
+        public SourceSignal AddSignal(string code, string codeObject, DataType dataType, string signalInf, string formula = null)
         {
             if (ProviderSignals.ContainsKey(code))
                 return ProviderSignals[code];
-            var sig = new SourceSignal(this, code, dataType, signalInf);
-            ProviderSignals.Add(code, sig);
-            var ob = AddObject(sig);
-            if (ob != null) //Для источника клона
-            {
-                ob.Context = codeObject;
-                sig = ob.AddSignal(sig);    
-            }
+
             if (formula != null)
-                return new CalcSignal(this, sig, code, dataType, formula);
-            return sig;
+            {
+                var calc = new CalcSignal(this, signalInf, code, dataType, formula);
+                ProviderSignals.Add(code, calc);
+                return CalcSignals.Add(code, calc);
+            }
+
+            var sig = new InitialSignal(this, code, dataType, signalInf);
+            var ob = AddObject(sig);
+            ob.Context = codeObject;
+            sig = ob.AddSignal(sig);
+            ProviderSignals.Add(code, sig);
+            return InitialSignals.Add(code, sig);
         }
         //Добавить объект содержащий заданный сигнал
-        protected abstract SourceObject AddObject(SourceSignal sig);
+        protected abstract SourceObject AddObject(InitialSignal sig);
 
         //Очистка списка сигналов
         public void ClearSignals()
         {
             ProviderSignals.Clear();
             CalcSignals.Clear();
+            InitialSignals.Clear();
             CloneSignalsId.Clear();
             ClearObjects();
         }
@@ -64,6 +68,9 @@ namespace ProvidersLibrary
         //Список сигналов, содержащих возвращаемые значения
         internal readonly DicS<SourceSignal> ProviderSignals = new DicS<SourceSignal>();
         public IDicSForRead<SourceSignal> Signals { get { return ProviderSignals; } }
+        //Множество исходных сигналов
+        private readonly DicS<InitialSignal> _initialSignals = new DicS<InitialSignal>();
+        protected DicS<InitialSignal> InitialSignals { get { return _initialSignals; } }
         //Словарь расчетных сигналов
         private readonly DicS<CalcSignal> _calcSignals = new DicS<CalcSignal>();
         public DicS<CalcSignal> CalcSignals { get { return _calcSignals; } }
@@ -117,8 +124,8 @@ namespace ProvidersLibrary
         internal RecDao CloneErrorsRec { get; private set; }
 
         //Словарь сигналов клона, ключи Id в клоне, используется при записи в клон
-        private readonly DicI<SourceSignal> _cloneSignalsId = new DicI<SourceSignal>();
-        public DicI<SourceSignal> CloneSignalsId { get { return _cloneSignalsId; } }
+        private readonly DicI<InitialSignal> _cloneSignalsId = new DicI<InitialSignal>();
+        public DicI<InitialSignal> CloneSignalsId { get { return _cloneSignalsId; } }
         //Словарь ошибочных объектов, ключи - коды объектов
         private readonly DicS<string> _errorObjects = new DicS<string>();
         protected DicS<string> ErrorObjects { get { return _errorObjects; } }
@@ -163,8 +170,8 @@ namespace ProvidersLibrary
                 while (rec.Read())
                 {
                     var code = rec.GetString("FullCode");
-                    if (ProviderSignals.ContainsKey(code))
-                        ProviderSignals[code].IdInClone = rec.GetInt("SignalId");
+                    if (InitialSignals.ContainsKey(code))
+                        InitialSignals[code].IdInClone = rec.GetInt("SignalId");
                 }
         }
 

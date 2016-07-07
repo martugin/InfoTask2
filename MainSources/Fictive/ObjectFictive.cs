@@ -6,27 +6,27 @@ namespace Fictive
     public class ObjectFictive : SourceObject 
     {
         //Фиктивный объект
-        //Сигналы задаются свойствами NumObject - номер объекта, Signal - код сигнала, ValuesInterval - частота возвращаемых значений в секундах
+        //Сигналы задаются свойствами ValuesInterval - частота возвращаемых значений в секундах
         public ObjectFictive(FictiveSource source, int valuesInterval) : base(source)
         {
             ValuesInterval = valuesInterval;
         }
 
         //Сигнал недостоверности
-        internal SourceSignal StateSignal { get; private set; }
+        internal InitialSignal StateSignal { get; private set; }
         //Сигналы разного типа
-        internal SourceSignal BoolSignal { get; private set; }
-        internal SourceSignal IntSignal { get; private set; }
-        internal SourceSignal RealSignal { get; private set; }
-        internal SourceSignal TimeSignal { get; private set; }
-        internal SourceSignal StringSignal { get; private set; }
+        internal InitialSignal BoolSignal { get; private set; }
+        internal InitialSignal IntSignal { get; private set; }
+        internal InitialSignal RealSignal { get; private set; }
+        internal InitialSignal TimeSignal { get; private set; }
+        internal InitialSignal StringSignal { get; private set; }
 
         //Частота возвращаемых значений в секундах
         internal int ValuesInterval { get; private set; }
         //Объект инициализирован
         internal bool IsInitialized { get; set; }
 
-        protected override SourceSignal AddNewSignal(SourceSignal sig)
+        protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
             switch (sig.Inf["Signal"])
             {

@@ -36,7 +36,7 @@ namespace ProvidersLibrary
             }
             if (SysTabl.ValueS(CloneFile, "CloneComplect") != Complect)
             {
-                AddError(CheckConnectionMessage = "Файл является клоном для другого несовместимого источника");
+                AddError(CheckConnectionMessage = "Файл является клоном для другого, несовместимого источника");
                 return false;
             }
             CheckConnectionMessage = "Успешное соединение";

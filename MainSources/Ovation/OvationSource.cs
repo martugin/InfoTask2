@@ -28,8 +28,8 @@ namespace Provider
         //Словарь объектов по Id в Historian
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
 
-        //Добавить объект
-        protected override SourceObject AddObject(SourceSignal sig)
+        //Добавить объект в провайдер
+        protected override SourceObject AddObject(InitialSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))

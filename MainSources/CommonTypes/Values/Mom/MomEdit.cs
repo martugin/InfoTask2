@@ -102,7 +102,7 @@ namespace CommonTypes
         public MomEdit CopyValueFrom(IMomListReadOnly list, //список значений
                                                         int i) //Позиция
         {
-            var buf = list.Mom(i);
+            var buf = list.Mean(i);
             _mean.CopyValueFrom(buf);
             return this;
         }
@@ -110,7 +110,7 @@ namespace CommonTypes
         public MomEdit CopyAllFrom(IMomListReadOnly list, //список значений
                                                         int i) //Позиция
         {
-            var buf = list.Mom(i);
+            var buf = list.Mean(i);
             _mean.CopyValueFrom(buf);
             Time = list.Time(i);
             Error = list.Error(i);

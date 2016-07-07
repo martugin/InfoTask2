@@ -345,5 +345,10 @@
         </ProviderProps>
       </ArchiveModuleComm>
     </Archives>
+    <Fictive Description="Отладочные провайдеры" DllFile="Providers\Fictive\Fictive.dll">
+      <FictiveSource ProviderType="Источник" Description="Простой отладочный источник">
+        <ProviderProps></ProviderProps>
+      </FictiveSource>
+    </Fictive>
   </Providers>
 </Config>

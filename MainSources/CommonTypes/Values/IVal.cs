@@ -84,13 +84,15 @@ namespace CommonTypes
         double Real(int i);
         DateTime Date(int i);
         string String(int i);
-
+        //Запись значения в рекордсет rec, поле field
+        void ValueToRec(IRecordAdd rec, string field, int i);
+        
         //Копия значения по индексу, возможно с новым временем и ошибкой
         IMom Clone(int i);
         IMom Clone(int i, DateTime time);
         IMom Clone(int i, DateTime time, ErrMom err);
         //Загрузить буферное значение из списка 
-        Mean Mom(int i);
+        Mean Mean(int i);
     }
 
     //-----------------------------------------------------------------------------------------------
@@ -106,6 +108,7 @@ namespace CommonTypes
         void AddMom(DateTime time, double r, ErrMom err = null);
         void AddMom(DateTime time, DateTime d, ErrMom err = null);
         void AddMom(DateTime time, string s, ErrMom err = null);
+        void AddMom(DateTime time, object ob, ErrMom err = null);
 
         //Очистить список значений
         void Clear();

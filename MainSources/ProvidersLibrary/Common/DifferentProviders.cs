@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using BaseLibrary;
-using CommonTypes;
-
-namespace ProvidersLibrary
+﻿namespace ProvidersLibrary
 {
     //Общие функции для InfoTask и конвертеры 
     public static class DifferentProviders
@@ -81,36 +77,6 @@ namespace ProvidersLibrary
                     return "Imitator";
             }
             return "Error";
-        }
-
-        //ToDo Переделать
-        //Список совместимых кодов провайдеров для выбранного кода провайдера
-        public static List<string> JointProviderCodes(this string code)
-        {
-            var list = new List<string> { code };
-            using (var rec = new RecDao(DifferentIT.GetInfoTaskDir() + @"General\Config.accdb", "SysTabl"))
-            {
-                if (code == "CloneSource")
-                {
-                    while (rec.Read())
-                        if (rec.GetString("ParamValue") == "Источник" && rec.GetString("ParamName") != "CloneSource")
-                            list.Add(rec.GetString("ParamName"));
-                }
-                else
-                {
-                    rec.FindFirst("ParamName", code);
-                    if (!rec.NoMatch())
-                    {
-                        var set = rec.GetString("ParamTag").ToPropertyDicS()["JointProviders"].ToPropertyHashSet();
-                        foreach (var c in set)
-                        {
-                            rec.FindFirst("ParamName", c);
-                            if (!rec.NoMatch()) list.Add(c);
-                        }
-                    }
-                }
-            }
-            return list;
         }
     }
 }

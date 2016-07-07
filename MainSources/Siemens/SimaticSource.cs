@@ -27,8 +27,8 @@ namespace Provider
         //Словари сигналов, ключи полные коды и Id
         private readonly DicI<ObjectSimatic> _objectsId = new DicI<ObjectSimatic>();
 
-        //Добавить сигнал в провайдер
-        protected override SourceObject AddObject(SourceSignal sig)
+        //Добавить объект в провайдер
+        protected override SourceObject AddObject(InitialSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))

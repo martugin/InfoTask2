@@ -19,19 +19,19 @@ namespace ProvidersLibrary
         public string Context { get; internal set; }
 
         //Основной сигнал объекта
-        public SourceSignal ValueSignal { get; set; }
+        public InitialSignal ValueSignal { get; set; }
         //Список сигналов объекта
-        private readonly HashSet<SourceSignal> _signals = new HashSet<SourceSignal>();
+        private readonly HashSet<InitialSignal> _signals = new HashSet<InitialSignal>();
 
         //Добавить к объекту сигнал, если такого еще не было
-        internal SourceSignal AddSignal(SourceSignal sig)
+        internal InitialSignal AddSignal(InitialSignal sig)
         {
             var s = AddNewSignal(sig);
             if (!_signals.Contains(s))
                 _signals.Add(s);
             return s;
         }
-        protected virtual SourceSignal AddNewSignal(SourceSignal sig)
+        protected virtual InitialSignal AddNewSignal(InitialSignal sig)
         {
             return ValueSignal = ValueSignal ?? sig;
         }
@@ -51,38 +51,38 @@ namespace ProvidersLibrary
         }
 
         //Добавка мгновенных значений разного типа в указанный сигнал
-        public int AddMom(SourceSignal sig, DateTime time, bool b, ErrMom err = null)
+        public int AddMom(InitialSignal sig, DateTime time, bool b, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Boolean = b;
             return sig.AddMom(time, err);
         }
-        public int AddMom(SourceSignal sig, DateTime time, int i, ErrMom err = null)
+        public int AddMom(InitialSignal sig, DateTime time, int i, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Integer = i;
             return sig.AddMom(time, err);
         }
-        public int AddMom(SourceSignal sig, DateTime time, double r, ErrMom err = null)
+        public int AddMom(InitialSignal sig, DateTime time, double r, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Real = r;
             return sig.AddMom(time, err);
         }
-        public int AddMom(SourceSignal sig, DateTime time, DateTime d, ErrMom err = null)
+        public int AddMom(InitialSignal sig, DateTime time, DateTime d, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Date = d;
             return sig.AddMom(time, err);
         }
-        public int AddMom(SourceSignal sig, DateTime time, string s, ErrMom err = null)
+        public int AddMom(InitialSignal sig, DateTime time, string s, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.String = s;
             return sig.AddMom(time, err);
         }
         //Добавка мгновенных значений, значение берется из типа object
-        public int AddMom(SourceSignal sig, DateTime time, object ob, ErrMom err = null)
+        public int AddMom(InitialSignal sig, DateTime time, object ob, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Object = ob;

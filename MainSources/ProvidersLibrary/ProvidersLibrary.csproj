@@ -76,8 +76,8 @@
     <Compile Include="Signals\ProviderSignal.cs" />
     <Compile Include="Signals\SourceObject.cs" />
     <Compile Include="Signals\ReceiverSignal.cs" />
+    <Compile Include="Signals\InitialSignal.cs" />
     <Compile Include="Signals\SourceSignal.cs" />
-    <Compile Include="Signals\Signal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">

@@ -9,13 +9,8 @@ namespace Fictive
     {
         public override string Hash { get { return "Fictive"; } }
 
-        protected override void ReadInf(DicS<string> dic)
-        {
-            Frequency = dic.GetInt("Frequency");
-        }
-        //С какой частотой в секундах добавлять значения в результат
-        internal int Frequency { get; private set; }
-
+        protected override void ReadInf(DicS<string> dic) { }
+        
         //Диапазон источника
         protected override TimeInterval GetSourceTime()
         {
