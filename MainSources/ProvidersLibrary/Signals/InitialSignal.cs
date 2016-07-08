@@ -7,8 +7,8 @@ namespace ProvidersLibrary
     //Один сигнал 
     public class InitialSignal : SourceSignal
     {
-        public InitialSignal(SourceBase source, string code, DataType dataType, string signalInf)
-            : base(source, code, dataType, signalInf)
+        public InitialSignal(SourceBase source, DataType dataType, string signalInf)
+            : base(source, dataType, signalInf)
         {
             BufMom = new MomEdit(dataType);
             PrevMom = new MomEdit(dataType);
@@ -78,8 +78,9 @@ namespace ProvidersLibrary
         //Чтение одной строчки значений из рекордсета, и запись ее в клон
         private int PutClone(IMom mom) //Рекордсет срезов клона
         {
-            var rec = IsReal ? Source.CloneRec : Source.CloneStrRec;
-            var recCut = IsReal ? Source.CloneCutRec : Source.CloneStrCutRec;
+            bool isReal = DataType.LessOrEquals(DataType.Real);
+            var rec = isReal ? Source.CloneRec : Source.CloneStrRec;
+            var recCut = isReal ? Source.CloneCutRec : Source.CloneStrCutRec;
             int nwrite = 0;
 
             var d1 = Source.RemoveMinultes(mom.Time);
@@ -106,7 +107,8 @@ namespace ProvidersLibrary
             rec.Put("Time", mom.Time);
             if (mom.Error != null)
                 rec.Put("ErrNum", mom.Error.Number);
-            if (IsReal) rec.Put("RealValue", mom.Real);
+            if (DataType.LessOrEquals(DataType.Real)) 
+                rec.Put("RealValue", mom.Real);
             else if (DataType == DataType.String)
                 rec.Put("StrValue", mom.String);
             else if (DataType == DataType.Time)

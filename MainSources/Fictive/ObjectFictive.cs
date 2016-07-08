@@ -52,17 +52,17 @@ namespace Fictive
             int n = 0;
             int nwrite = 0;
             DateTime t = beg;
-            if (!isCut) t = t.AddSeconds(ValuesInterval);
+            if (!isCut) t = t.AddMilliseconds(ValuesInterval);
             while (t <= en)
             {
                 nwrite += AddMom(StateSignal, t, 10);
                 nwrite += AddMom(BoolSignal, t, n%2 == 1);
                 nwrite += AddMom(IntSignal, t, n);
-                nwrite += AddMom(ValueSignal, t, n);
+                nwrite += AddMom(ValueSignal, t, n, MakeError(n % 3));
                 nwrite += AddMom(RealSignal, t, n / 2.0);
                 nwrite += AddMom(StringSignal, t, "ss" + n);
                 nwrite += AddMom(TimeSignal, t, t.AddSeconds(1));
-                t = t.AddSeconds(ValuesInterval);
+                t = t.AddMilliseconds(ValuesInterval);
                 n++;
             }
             return nwrite;

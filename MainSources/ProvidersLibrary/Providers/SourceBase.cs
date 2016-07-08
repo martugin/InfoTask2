@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BaseLibrary;
 using CommonTypes;
 
@@ -36,19 +37,20 @@ namespace ProvidersLibrary
             if (ProviderSignals.ContainsKey(code))
                 return ProviderSignals[code];
 
-            if (formula != null)
-            {
-                var calc = new CalcSignal(this, signalInf, code, dataType, formula);
-                ProviderSignals.Add(code, calc);
-                return CalcSignals.Add(code, calc);
-            }
-
-            var sig = new InitialSignal(this, code, dataType, signalInf);
-            var ob = AddObject(sig);
+            var sig = new InitialSignal(this, dataType, signalInf);
+            var ob = this is CloneSource 
+                         ? ((CloneSource)this).AddCloneObject(sig, code) 
+                         : AddObject(sig);
             ob.Context = codeObject;
             sig = ob.AddSignal(sig);
-            ProviderSignals.Add(code, sig);
-            return InitialSignals.Add(code, sig);
+            if (!_initialSignals.Contains(sig))
+                _initialSignals.Add(sig);
+            if (formula == null)
+                return ProviderSignals.Add(code, sig);
+            
+            var calc = new CalcSignal(sig, formula);
+            ProviderSignals.Add(code, calc);
+            return CalcSignals.Add(code, calc);
         }
         //Добавить объект содержащий заданный сигнал
         protected abstract SourceObject AddObject(InitialSignal sig);
@@ -69,8 +71,8 @@ namespace ProvidersLibrary
         internal readonly DicS<SourceSignal> ProviderSignals = new DicS<SourceSignal>();
         public IDicSForRead<SourceSignal> Signals { get { return ProviderSignals; } }
         //Множество исходных сигналов
-        private readonly DicS<InitialSignal> _initialSignals = new DicS<InitialSignal>();
-        protected DicS<InitialSignal> InitialSignals { get { return _initialSignals; } }
+        private readonly HashSet<InitialSignal> _initialSignals = new HashSet<InitialSignal>();
+        protected HashSet<InitialSignal> InitialSignals { get { return _initialSignals; } }
         //Словарь расчетных сигналов
         private readonly DicS<CalcSignal> _calcSignals = new DicS<CalcSignal>();
         public DicS<CalcSignal> CalcSignals { get { return _calcSignals; } }
@@ -170,8 +172,8 @@ namespace ProvidersLibrary
                 while (rec.Read())
                 {
                     var code = rec.GetString("FullCode");
-                    if (InitialSignals.ContainsKey(code))
-                        InitialSignals[code].IdInClone = rec.GetInt("SignalId");
+                    if (ProviderSignals.ContainsKey(code) && ProviderSignals[code] is InitialSignal)
+                        ((InitialSignal)ProviderSignals[code]).IdInClone = rec.GetInt("SignalId");
                 }
         }
 

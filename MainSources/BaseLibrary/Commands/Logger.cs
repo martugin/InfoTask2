@@ -20,8 +20,8 @@ namespace BaseLibrary
         //Процент текущей комманды
         public double Procent
         {
-            get { return Command.Procent; }
-            set { Command.Procent = value; }
+            get { return Command == null ? 0 : Command.Procent;}
+            set { if (Command != null) Command.Procent = value; }
         }
 
         //Работа с файлами истории

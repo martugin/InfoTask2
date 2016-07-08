@@ -1,13 +1,12 @@
 ﻿using CommonTypes;
-using BaseLibrary;
 
 namespace ProvidersLibrary
 {
     //Сигнал приемника
     public class ReceiverSignal : ProviderSignal
     {
-        public ReceiverSignal(Receiver receiver, string code, DataType dataType, string signalInf)
-            : base(code, dataType, signalInf)
+        public ReceiverSignal(Receiver receiver, DataType dataType, string signalInf)
+            : base(dataType, signalInf)
         {
             Receiver = receiver;
         }

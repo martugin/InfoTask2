@@ -8,22 +8,17 @@ namespace ProvidersLibrary
     //Расчетный сигнал
     public class CalcSignal : SourceSignal
     {
-        public CalcSignal(SourceBase source, string initialSignalCode, string code, DataType dataType, string formula) 
-            : base(source, code, dataType)
+        public CalcSignal(InitialSignal initialSignal, string formula) 
+            : base(initialSignal.Source)
         {
-            _initialSignalCode = initialSignalCode;
+            _initialSignal = initialSignal;
             ParseFormula(formula);
         }
 
         //Вычисление вынкции
         public Action Calculate { get; private set; }
-        //Код сигнала и сам сигнал, на основе которого вычисляется значение
-        private readonly string _initialSignalCode;
-        private InitialSignal _initialSignal;
-        protected InitialSignal InitialSignal
-        {
-            get { return _initialSignal ?? (_initialSignal = (InitialSignal) Source.Signals[_initialSignalCode]); }
-        }
+        //Сигнал, на основе которого вычисляется значение
+        private readonly InitialSignal _initialSignal;
 
         //Дополнительные параметры
         private IMean[] _pars;
@@ -33,26 +28,37 @@ namespace ProvidersLibrary
         private void ParseFormula(string formula)
         {
             var lexemes = formula.Split(';');
-            MethodInfo met = typeof(CalcSignal).GetMethod(lexemes[0]);
-            if (met != null) Calculate = (Action)Delegate.CreateDelegate(typeof(Action), met);
+            var funName = lexemes[0];
+            DefineDtataType(funName);
+            MethodInfo met = typeof(CalcSignal).GetMethod(funName);
+            if (met != null) Calculate = (Action)Delegate.CreateDelegate(typeof(Action), this, met);
             _pars = new IMean[lexemes[1].ToInt()];
             for (int i = 0; i < _pars.Length; i++)
                 _pars[i] = MFactory.NewMean(DataType.Integer, lexemes[i + 2]);
         }
 
+        //Определение типа данных возвращаемых значений
+        private void DefineDtataType(string funName)
+        {
+            if (funName.StartsWith("Bit")) DataType = DataType.Boolean;
+            else if (funName == "Average") DataType = DataType.Real;
+            else DataType = _initialSignal.DataType;
+            MList = MFactory.NewList(DataType);
+        }
+
         //Взятие бита, pars[0] - номер бита
-        private void Bit()
+        public void Bit()
         {
             int bit = _pars[0].Integer;
-            var moms = InitialSignal.MomList;
+            var moms = _initialSignal.MomList;
             for (int i = 0; i < moms.Count; i++)
                 MList.AddMom(moms.Time(i), moms.Integer(i).GetBit(bit), moms.Error(i));
         }
 
         //Взятие битов и сложение по Or, pars - номера битов
-        private void BitOr()
+        public void BitOr()
         {
-            var moms = InitialSignal.MomList;
+            var moms = _initialSignal.MomList;
             for (int i = 0; i < moms.Count; i++)
             {
                 var v = moms.Integer(i);
@@ -64,9 +70,9 @@ namespace ProvidersLibrary
         }
 
         //Взятие битов и сложение по And, pars - номера битов
-        private void BitAnd()
+        public void BitAnd()
         {
-            var moms = InitialSignal.MomList;
+            var moms = _initialSignal.MomList;
             for (int i = 0; i < moms.Count; i++)
             {
                 var v = moms.Integer(i);
@@ -81,18 +87,18 @@ namespace ProvidersLibrary
         //pars[0] - длина сегмента в секундах, pars[1] - сдвиг итогового значения, по умолчанию 0
         
         //Среднее по равномерным сегментам, 
-        private void Average() { Agregate(AverageScalar); }
+        public void Average() { Agregate(AverageScalar); }
         private void AverageScalar(MomEdit res, MomList mlist, int i)
         {
             res.Real += mlist.Real(i) * (mlist.Time(i+1).Subtract(mlist.Time(i)).TotalSeconds) /_pars[0].Real;
         }
 
         //Первое по равномерным сегментам, pars[0] - длина сегмента в секундах
-        private void First() { Agregate(FirstScalar); }
+        public void First() { Agregate(FirstScalar); }
         private void FirstScalar(MomEdit res, MomList mlist, int i) { }
         
         //Последнее по равномерным сегментам, pars[0] - длина сегмента в секундах
-        private void Last() { Agregate( LastScalar); }
+        public void Last() { Agregate( LastScalar); }
         private void LastScalar(MomEdit res, MomList mlist, int i)
         {
             res.CopyValueFrom(mlist, i);
@@ -100,7 +106,7 @@ namespace ProvidersLibrary
         }
 
         //Минимум по равномерным сегментам, pars[0] - длина сегмента в секундах
-        private void Min() { Agregate(MinScalar); }
+        public void Min() { Agregate(MinScalar); }
         private void MinScalar(MomEdit res, MomList mlist, int i)
         {
             if (mlist.Mean(i).ValueLess(res))
@@ -111,7 +117,7 @@ namespace ProvidersLibrary
         }
 
         //Максимум по равномерным сегментам, pars[0] - длина сегмента в секундах
-        private void Max() { Agregate(MaxScalar); }
+        public void Max() { Agregate(MaxScalar); }
         private void MaxScalar(MomEdit res, MomList mlist, int i)
         {
             if (res.ValueLess(mlist.Mean(i)))
@@ -126,7 +132,7 @@ namespace ProvidersLibrary
         private void Agregate(Action<MomEdit, MomList, int> fun)
         {
             double seglen = _pars[0].Real, segshift = _pars.Length < 2 ? 0 : _pars[1].Real * seglen;
-            var moms = InitialSignal.MomList;
+            var moms = _initialSignal.MomList;
             var mlist = MFactory.NewList(DataType);
             //Добавляем в список границы сегментов
             var t = Source.PeriodBegin;

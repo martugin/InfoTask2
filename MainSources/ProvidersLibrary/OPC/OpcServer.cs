@@ -21,9 +21,6 @@ namespace ProvidersLibrary
         //Массив корректно добавленых OPC-итемов
         private OpcItem[] _itemsList;
         //Словарь сигналов приемников, ключи - коды в нижнем регистре
-        private readonly Dictionary<string, OpcItem> _signalsCode = new Dictionary<string, OpcItem>();
-        public Dictionary<string, OpcItem> SignalsCode { get { return _signalsCode; } }
-        //Список сигналов приемника с мгновенными значениями
         private readonly DicS<ReceiverSignal> _signals = new DicS<ReceiverSignal>();
         public IDicSForRead<ReceiverSignal> Signals { get { return _signals; } }
 
@@ -60,10 +57,9 @@ namespace ProvidersLibrary
         //Добавить сигнал приемника
         public ReceiverSignal AddSignal(string signalInf, string code, DataType dataType)
         {
-            if (_signalsCode.ContainsKey(code)) return _signalsCode[code];
-            var item = new OpcItem(this, code, dataType, signalInf);
-            _signals.Add(item.Code, item);
-            _signalsCode.Add(code, item);
+            if (_signals.ContainsKey(code)) return _signals[code];
+            var item = new OpcItem(this, dataType, signalInf);
+            _signals.Add(code, item);
             item.Tag = GetOpcItemTag(item.Inf);
             item.ClientHandler = _signals.Count;
             if (!_items.ContainsKey(item.Tag))
@@ -77,10 +73,9 @@ namespace ProvidersLibrary
         //Добавить сигнал приемника, задав только тэг (для тестовой записи в настройках), сразу же передается значение как строка
         public ReceiverSignal AddSignalByTag(string tag, DataType dataType, string v)
         {
-            if (_signalsCode.ContainsKey(tag)) return _signalsCode[tag];
-            var item = new OpcItem(this, tag, dataType, "");
-            _signals.Add(item.Code, item);
-            _signalsCode.Add(tag, item);
+            if (_signals.ContainsKey(tag)) return _signals[tag];
+            var item = new OpcItem(this, dataType, "");
+            _signals.Add(tag, item);
             item.Tag = tag;
             item.ClientHandler = _signals.Count;
             item.Value = MFactory.NewMean(dataType, v); 

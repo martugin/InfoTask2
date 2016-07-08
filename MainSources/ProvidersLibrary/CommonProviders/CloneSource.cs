@@ -32,12 +32,14 @@ namespace ProvidersLibrary
         private readonly DicI<CloneObject> _objectsId = new DicI<CloneObject>();
         private readonly DicS<CloneObject> _objects = new DicS<CloneObject>();
         //Список объектов
-        private readonly List<SourceObject> _objectsList = new List<SourceObject>(); 
+        private readonly List<SourceObject> _objectsList = new List<SourceObject>();
 
-        protected override SourceObject AddObject(InitialSignal sig)
+        //Добавляет объект, содержащий один сигнал
+        internal SourceObject AddCloneObject(InitialSignal sig, string code)
         {
-            return _objects.Add(sig.Code, new CloneObject(this));
+            return _objects.Add(code, new CloneObject(this));
         }
+        protected override SourceObject AddObject(InitialSignal sig) { return null;}
 
         //Очистка списка обхектов
         protected override void ClearObjects()

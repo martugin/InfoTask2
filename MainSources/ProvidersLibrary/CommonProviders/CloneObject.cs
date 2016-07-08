@@ -16,7 +16,7 @@ namespace ProvidersLibrary
             var time = rec.GetTime("Time");
             var errNum = rec.GetIntNull("ErrNum");
             var err = errNum == null ? null : MakeError((int)errNum);
-            if (ValueSignal.IsReal)
+            if (ValueSignal.DataType.LessOrEquals(DataType.Real))
                 return AddMom(ValueSignal, time, rec.GetDouble("RealValue"), err);
             if (ValueSignal.DataType == DataType.String)
                 return AddMom(ValueSignal, time, rec.GetDouble("StrValue"), err);

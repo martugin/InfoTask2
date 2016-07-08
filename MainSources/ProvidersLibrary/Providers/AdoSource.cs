@@ -73,15 +73,14 @@ namespace ProvidersLibrary
                             successRead |= ReadPartRecursive(parts[i], successRead, 1, beg, en, isCut, successRead);
                     }
                 int nadd = 0;
-                var signals = InitialSignals.Values;
                 if (isCut)
                 {
-                    nadd += signals.Sum(sig => sig.MakeBegin());
+                    nadd += InitialSignals.Sum(sig => sig.MakeBegin());
                     AddEvent("Сформирован срез", nadd + " значений сформировано");
                 }
                 else
                 {
-                    foreach (var sig in signals)
+                    foreach (var sig in InitialSignals)
                         sig.MakeEnd();
                     AddEvent("Добавлены значения в конец интервала");
                 }

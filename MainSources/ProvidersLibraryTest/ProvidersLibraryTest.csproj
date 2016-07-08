@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SignalsTest.cs" />
+    <Compile Include="FictiveSourceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">

@@ -39,14 +39,16 @@ namespace ProvidersLibrary
 
         //Создание провайдера
         public ProviderBase CreateProvider(Logger logger, //Логгер, например поток расчета
-                                                 string code, //Код
+                                                 string code, //Код провайдера
+                                                 string name, //Имя соединения
                                                  string inf, string reserveInf = null) //Настройки основного и резервного подключения
         {
             var prc = ProviderConfigs[code];
             var pr = prc.Complect.Complect == "Clone" || prc.Complect.Complect == "Archive"
                          ? NewStandardProvider(prc)
                          : NewProvider(prc);
-                         
+
+            pr.Name = name;
             pr.Logger = logger;
             pr.AddMainConnect(inf);
             if (reserveInf != null) pr.AddReserveConnect(reserveInf);
