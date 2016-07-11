@@ -72,41 +72,38 @@ namespace BaseLibrary
             } catch {}
         }
 
-        //Выполнить запрос StSql - строка запроса, options - опции запроса
-        public void Execute(string stSql, object options = null)
+        //Выполнить запрос DAO
+        public void Execute(string stSql, //строка запроса
+                                     object options = null) //опции запроса
         {
             ConnectDao();
             if (options == null) Database.Execute(stSql);
             else Database.Execute(stSql, options);
         }
 
-        public void ExecuteAdo(string stSql)
+        //Выполнить запрос ADO
+        public void ExecuteAdo(string stSql) //строка запроса
         {
-            if (Connection == null)
-            {
-                Connection = new OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + File);
-                Connection.Open();
-            }
-            var command = new OleDbCommand(stSql,Connection);
-            command.ExecuteNonQuery();
+            ConnectAdo();
+            new OleDbCommand(stSql, Connection).ExecuteNonQuery();
         }
 
         //Работа с таблицами
 
         //Проверка на наличие поля в таблице
-        private bool ColumnExists(string tableName, string columnName)
+        public bool ColumnExists(string tableName, string columnName)
         {
             ConnectDao();
             return Database.TableDefs[tableName].Fields.Cast<Field>().Any(c => c.Name.ToUpper().Equals(columnName.ToUpper()));
         }
         //Проверка на наличие таблицы в БД
-        private bool TableExists(string tableName)
+        public bool TableExists(string tableName)
         {
             ConnectDao();
             return Database.TableDefs.Cast<TableDef>().Any(t => t.Name.ToUpper().Equals(tableName.ToUpper()));
         }
         //Проверка на наличие индекса в БД
-        private bool IndexExists(string tableName, string indexName)
+        public bool IndexExists(string tableName, string indexName)
         {
             ConnectDao();
             return Database.TableDefs[tableName].Indexes.Cast<Index>().Any(i => i.Name.ToUpper().Equals(indexName.ToUpper()));
@@ -116,11 +113,11 @@ namespace BaseLibrary
         public void SetColumnBool(string tableName, string columnName, IndexModes indexMode = IndexModes.WithoutChange,
             bool? defaultValue = null)
         {
-            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] YESNO";
-            if (!ColumnExists(tableName, columnName)) Execute(stSql);
-            else ExecuteAdo(stSql);
+            if (!ColumnExists(tableName, columnName))
+                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] YESNO");
+            else ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] YESNO");
+                
             Dispose();
-
             ConnectDao();
             try
             {
@@ -138,9 +135,10 @@ namespace BaseLibrary
         public void SetColumnDouble(string tableName, string columnName, IndexModes indexMode = IndexModes.WithoutChange,
             double? defaultValue = null, bool required = false)
         {
-            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] DOUBLE";
-            if (!ColumnExists(tableName, columnName)) Execute(stSql);
-            else ExecuteAdo(stSql);
+            if (!ColumnExists(tableName, columnName))
+                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] DOUBLE");
+            else ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] DOUBLE");
+            
             Dispose();
             SetColumnIndex(tableName, columnName, indexMode);
 
@@ -153,9 +151,9 @@ namespace BaseLibrary
         public void SetColumnLong(string tableName, string columnName, IndexModes indexMode = IndexModes.WithoutChange,
             long? defaultValue = null, bool required = false)
         {
-            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] LONG";
-            if (!ColumnExists(tableName, columnName)) Execute(stSql);
-            else ExecuteAdo(stSql);
+            if (!ColumnExists(tableName, columnName))
+                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] LONG");
+            else ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] LONG");
             
             Dispose();
             SetColumnIndex(tableName, columnName, indexMode);
@@ -169,15 +167,13 @@ namespace BaseLibrary
         public void SetColumnString(string tableName, string columnName, int length = 255,
             IndexModes indexMode = IndexModes.WithoutChange, string defaultValue = null, bool required = false, bool emptyStrings = true)
         {
-            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] TEXT(" + length + ")";
             if (!ColumnExists(tableName, columnName))
             {
-                Execute(stSql);
+                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] TEXT(" + length + ")");
                 Dispose();
             }
-            ExecuteAdo(stSql + " WITH COMPRESSION");
+            ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] TEXT(" + length + ") WITH COMPRESSION");
             Dispose();
-
             SetColumnIndex(tableName, columnName, indexMode);
 
             ConnectDao();
@@ -189,14 +185,12 @@ namespace BaseLibrary
 
         public void SetColumnMemo(string tableName, string columnName, string defaultValue = null, bool required = false, bool emptyStrings = true)
         {
-            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] MEMO";
             if (!ColumnExists(tableName, columnName))
             {
-                Execute(stSql);
+                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] MEMO");
                 Dispose();
-                ExecuteAdo(stSql + " MEMO WITH COMPRESSION");
             }
-            else ExecuteAdo(stSql + " MEMO WITH COMPRESSION");
+            ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] MEMO WITH COMPRESSION");
             Dispose();
 
             ConnectDao();
@@ -209,10 +203,9 @@ namespace BaseLibrary
         public void SetColumnDateTime(string tableName, string columnName, IndexModes indexMode = IndexModes.WithoutChange,
             DateTime? defaultValue = null, bool required = false)
         {
-            var stSql = "ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] DATETIME";
             if (!ColumnExists(tableName, columnName))
-                Execute(stSql);
-            else ExecuteAdo(stSql);
+                Execute("ALTER TABLE " + tableName + " ADD COLUMN [" + columnName + "] DATETIME");
+            else ExecuteAdo("ALTER TABLE " + tableName + " ALTER COLUMN [" + columnName + "] DATETIME");
             Dispose();
             SetColumnIndex(tableName, columnName, indexMode);
 
@@ -355,8 +348,10 @@ namespace BaseLibrary
 
         //Статические члены
 
-        //Выполнить запрос file - путь к файлу базы данных или сама база, StSql - строка запроса, options - опции запроса
-        public static void Execute(string file, string stSql, object options = null)
+        //Выполнить запрос 
+        public static void Execute(string file, //путь к файлу базы данных
+                                               string stSql, //строка запроса
+                                               object options = null) //опции запроса
         {
             if (file.IsEmpty() || stSql.IsEmpty())
                 throw new NullReferenceException("Файл базы данных и строка запроса не могут быть пустыми или null");
@@ -376,7 +371,10 @@ namespace BaseLibrary
             }
         }
 
-        public static void ExecuteAdo(string file, string stSql, object options = null)
+        //Выполнить запрос ADO
+        public static void ExecuteAdo(string file, //путь к файлу базы данных
+                                                     string stSql, //строка запроса
+                                                     object options = null) //опции запроса
         {
             if (file.IsEmpty() || stSql.IsEmpty())
                 throw new NullReferenceException("Файл базы данных и строка запроса не могут быть пустыми или null");
@@ -440,10 +438,11 @@ namespace BaseLibrary
             return Check(file, "", tables);
         }
 
-        //Сжатие базы данных, file - файл базы, size - размер а байтах, после которого нужно сжимать, 
-        //tmpDir - каталог временных фалов, timeout - время ожидания после сжатия в мс
-        //Возвращает nul если все хорошо или Exception
-        public static void Compress(string file, int size, string tmpDir = null, int timeout = 0)
+        //Сжатие базы данных
+        public static void Compress(string file, //файл базы
+                                                 int size, //размер а байтах, после которого нужно сжимать
+                                                 string tmpDir = null, //каталог временных фалов
+                                                 int timeout = 0) //время ожидания после сжатия в мс
         {
             if (file.IsEmpty())
                 throw new NullReferenceException("Файл сжимаемой базы данных не может быть пустой строкой или null");
@@ -469,11 +468,12 @@ namespace BaseLibrary
             if (timeout > 0) Thread.Sleep(timeout);
         }
 
-        //Создает новый файл из шаблона, если его еще нет или версия не совпадает с шаблоном и checkVersion = true
-        //template - путь к шаблону, file - путь к создаваемому файлу, 
-        //saveOld - если true, то копирует старый файл в текущий каталог, добавляя на конце _1, _2 и т. д.
+        //Создает новый файл из шаблона, если его еще нет или версия не совпадает с шаблоном
         //Возвращает true, если файл был скопирован
-        public static bool FromTemplate(string template, string file, ReplaceByTemplate replace = ReplaceByTemplate.IfNewVersion, bool saveOld = false)
+        public static bool FromTemplate(string template, //путь к шаблону
+                                                        string file, //путь к создаваемому файлу, 
+                                                        ReplaceByTemplate replace, //когда заменять сущесвующий файл
+                                                        bool saveOld = false) //копировать старый файл в текущий каталог, добавляя на конце _1, _2 и т. д.
         {
             var f = new FileInfo(file);
             if (!f.Directory.Exists) f.Directory.Create();
