@@ -493,7 +493,7 @@ namespace BaseLibrary
         public bool FindPrevious(string criteria)
         {
             Update();
-            Recordset.FindNext(criteria);
+            Recordset.FindPrevious(criteria);
             _isMove = true;
             return !Recordset.NoMatch;
         }
