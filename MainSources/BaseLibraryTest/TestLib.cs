@@ -19,23 +19,21 @@ namespace BaseLibraryTest
                 return dir.Substring(0, n + 1);    
             }
         }
-
-        //Открывает DaoDb предварительно копируя файл из Tests в TestsRun
-        //file - относительный путь к файлу
-        public static DaoDb RunCopyDb(string file)
+        //Путь к каталогу TestRun
+        public static string TestRunDir
         {
-            var itd = InfoTaskDevelopDir;
-            var f = new FileInfo(itd + @"Tests\" + file);
-            string s = itd + @"TestsRun\" + file;
-            f.CopyTo(s, true);
-            return new DaoDb(s);
+            get { return InfoTaskDevelopDir + @"TestRun\"; }
         }
-
-        //Открывает DaoDb из TestsRun
-        //file - относительный путь к файлу
-        public static DaoDb RunDb(string file)
+        
+        //Копирует файл из Tests в TestsRun, возвращает полный путь к итоговому файлу
+        public static string CopyFile(string file)//относительный путь к файлу
         {
-            return new DaoDb(InfoTaskDevelopDir + @"TestsRun\" + file);
+            var f = new FileInfo(InfoTaskDevelopDir + @"Tests\" + file);
+            string s = TestRunDir + file;
+            var d = new FileInfo(s).Directory;
+            if (!d.Exists) d.Create();
+            f.CopyTo(s, true);
+            return s;
         }
     }
 }

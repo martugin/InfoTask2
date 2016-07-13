@@ -16,14 +16,15 @@ namespace ProvidersLibrary
         //Чтение настроек провайдера
         protected override void ReadInf(DicS<string> dic)
         {
-            CloneFile = dic["CloneDir"] + @"\Clone.accdb";
+            var dir = dic["CloneDir"];
+            if (!dir.EndsWith(@"\")) dir += @"\";
+            CloneFile = dir + @"Clone.accdb";
         }
 
         //Проверка соединения
         public override bool Connect()
         {
-            bool b = DaoDb.Check(CloneFile, "InfoTaskClone");
-            return b;
+            return DaoDb.Check(CloneFile, "InfoTaskClone");
         }
 
         //Проверка соединения

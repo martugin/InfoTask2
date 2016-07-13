@@ -9,15 +9,11 @@ namespace BaseLibraryTest
     public class RecDaoTest
     {
         //Каталог запуска тестовых баз
-        private readonly string _dir = TestLib.InfoTaskDevelopDir + @"TestsRun\BaseLibrary\Databases\";
+        private readonly string _dir = TestLib.TestRunDir + @"BaseLibrary\";
         //Открытие тестовых баз с копированием и без
         private DaoDb CopyDb(string fileName) //Имя файла
         {
-            return TestLib.RunCopyDb(@"BaseLibrary\Databases\" + fileName);
-        }
-        private DaoDb RunDb(string fileName) //Имя файла
-        {
-            return TestLib.RunDb(@"BaseLibrary\Databases\" + fileName);
+            return new DaoDb(TestLib.CopyFile(@"BaseLibrary\" + fileName));
         }
 
         [TestMethod]
@@ -182,7 +178,7 @@ namespace BaseLibraryTest
                 Assert.AreEqual(1, (int)rec.Recordset.Fields["Id"].Value);
             }
 
-            using (var rec = new RecDao(RunDb("DbDao.accdb"),
+            using (var rec = new RecDao(_dir + "DbDao.accdb",
                 "SELECT Tabl.Id, Tabl.IntField AS IntF, Tabl.RealField, SubTabl.StringSubField AS StringF " +
                 "FROM Tabl LEFT JOIN SubTabl ON Tabl.Id = SubTabl.ParentId ORDER BY Tabl.Id, SubTabl.StringSubField;"))
             {

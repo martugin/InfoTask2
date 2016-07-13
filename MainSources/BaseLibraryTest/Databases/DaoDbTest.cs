@@ -12,15 +12,11 @@ namespace BaseLibraryTest
     public class DaoTest
     {
         //Каталог запуска тестовых баз
-        private readonly string _dir = TestLib.InfoTaskDevelopDir + @"TestsRun\BaseLibrary\Databases\";
+        private readonly string _dir = TestLib.TestRunDir + @"BaseLibrary\";
         //Открытие тестовых баз с копированием и без
         private DaoDb CopyDb(string fileName) //Имя файла
         {
-            return TestLib.RunCopyDb(@"BaseLibrary\Databases\" + fileName);
-        }
-        private DaoDb RunDb(string fileName) //Имя файла
-        {
-            return TestLib.RunDb(@"BaseLibrary\Databases\" + fileName);
+            return new DaoDb(TestLib.CopyFile(@"BaseLibrary\" + fileName));
         }
 
         [TestMethod]

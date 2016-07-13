@@ -44,7 +44,7 @@ namespace ProvidersLibrary
                                                  string inf, string reserveInf = null) //Настройки основного и резервного подключения
         {
             var prc = ProviderConfigs[code];
-            var pr = prc.Complect.Complect == "Clone" || prc.Complect.Complect == "Archive"
+            var pr = prc.Complect.Complect == "Clones" || prc.Complect.Complect == "Archives"
                          ? NewStandardProvider(prc)
                          : NewProvider(prc);
 
