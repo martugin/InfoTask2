@@ -57,6 +57,7 @@
     <Compile Include="Databases\DaoDbTest.cs" />
     <Compile Include="Databases\ReaderAdoTest.cs" />
     <Compile Include="Databases\RecDaoTest.cs" />
+    <Compile Include="Databases\SysTablTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Collections\DicITest.cs" />
     <Compile Include="TestLib.cs" />

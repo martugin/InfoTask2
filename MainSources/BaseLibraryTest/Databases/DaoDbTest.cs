@@ -11,23 +11,26 @@ namespace BaseLibraryTest
     [TestClass]
     public class DaoTest
     {
-        //Каталог запуска тестовых баз
-        private readonly string _dir = TestLib.TestRunDir + @"BaseLibrary\";
-        //Открытие тестовых баз с копированием и без
-        private DaoDb CopyDb(string fileName) //Имя файла
+        //Файлы используемых баз данных
+        private readonly string _file = TestLib.TestRunDir + @"BaseLibrary\DbDao.accdb";
+        private readonly string _fileWrong = TestLib.TestRunDir + @"BaseLibrary\DbDao2.accdb";
+        private readonly string _fileCopy = TestLib.TestRunDir + @"BaseLibrary\DbDaoCopy.accdb";
+        private readonly string _fileTmp = TestLib.TestRunDir + @"BaseLibrary\TmpDbDao.accdb";
+        //Открытие тестовых баз с копированием 
+        private DaoDb CopyDb()
         {
-            return new DaoDb(TestLib.CopyFile(@"BaseLibrary\" + fileName));
+            return new DaoDb(TestLib.CopyFile(@"BaseLibrary\DbDao.accdb"));
         }
 
         [TestMethod]
         public void DaoDbTest()
         {
-            var db = CopyDb("DbDao.accdb");
+            var db = CopyDb();
             db.ConnectDao();
-            Assert.AreEqual(_dir + "DbDao.accdb", db.File);
+            Assert.AreEqual(_file, db.File);
             Assert.IsNull(db.Connection);
             Assert.IsNotNull(db.Database);
-            Assert.AreEqual(_dir + "DbDao.accdb", db.Database.Name);
+            Assert.AreEqual(_file, db.Database.Name);
             db.ConnectAdo();
             Assert.IsNotNull(db.Connection);
             Assert.IsNotNull(db.Database);
@@ -90,41 +93,41 @@ namespace BaseLibraryTest
         [TestMethod]
         public void DaoDbStatic()
         {
-            var db = CopyDb("DbDao.accdb");
+            var db = CopyDb();
             db.Dispose();
             Assert.IsNull(db.Database);
             Assert.IsNull(db.Connection);
-            Assert.IsTrue(DaoDb.Check(_dir + "DbDao.accdb", "DaoTest"));
-            Assert.IsTrue(DaoDb.Check(_dir + "DbDao.accdb", "DaoTest", new[] { "Tabl", "SubTabl", "EmptyTabl", "SysTabl", "SysSubTabl" }));
-            Assert.IsTrue(DaoDb.Check(_dir + "DbDao.accdb", new[] { "Tabl", "SubTabl", "EmptyTabl" }));
-            Assert.IsFalse(DaoDb.Check(_dir + "DbDao.accdb", "Fignia"));
+            Assert.IsTrue(DaoDb.Check(_file, "DaoTest"));
+            Assert.IsTrue(DaoDb.Check(_file, "DaoTest", new[] { "Tabl", "SubTabl", "EmptyTabl", "SysTabl", "SysSubTabl" }));
+            Assert.IsTrue(DaoDb.Check(_file, new[] { "Tabl", "SubTabl", "EmptyTabl" }));
+            Assert.IsFalse(DaoDb.Check(_fileWrong, "Fignia"));
             Assert.IsFalse(DaoDb.Check(null, "Fignia"));
-            Assert.IsFalse(DaoDb.Check(_dir + "Dao.accdb", "Fignia"));
-            Assert.IsFalse(DaoDb.Check(_dir + "Dao.accdb", new[] { "Tabl" }));
-            Assert.IsFalse(DaoDb.Check(_dir + "DbDao.accdb", new[] { "Tabl", "SubTabl", "EmptyTabl1" }));
+            Assert.IsFalse(DaoDb.Check(_fileWrong, "Fignia"));
+            Assert.IsFalse(DaoDb.Check(_fileWrong, new[] { "Tabl" }));
+            Assert.IsFalse(DaoDb.Check(_file, new[] { "Tabl", "SubTabl", "EmptyTabl1" }));
 
-            DaoDb.Compress(_dir + "DbDao.accdb", 10000000);
-            DaoDb.Compress(_dir + "DbDao.accdb", 10000);
-            Assert.IsTrue(new FileInfo(_dir + "TmpDbDao.accdb").Exists);
+            DaoDb.Compress(_file, 10000000);
+            DaoDb.Compress(_file, 10000);
+            Assert.IsTrue(new FileInfo(_fileTmp).Exists);
 
-            Assert.IsTrue(DaoDb.FromTemplate(_dir + "DbDao.accdb", _dir + "DbDaoCopy.accdb", ReplaceByTemplate.Always));
-            Assert.IsFalse(DaoDb.FromTemplate(_dir + "DbDao.accdb", _dir + "DbDaoCopy.accdb", ReplaceByTemplate.IfNotExists));
-            Assert.IsFalse(DaoDb.FromTemplate(_dir + "DbDao.accdb", _dir + "DbDaoCopy.accdb", ReplaceByTemplate.IfNewVersion));
-            new FileInfo(_dir + "DbDaoCopy.accdb").Delete();
-            Assert.IsTrue(DaoDb.FromTemplate(_dir + "DbDao.accdb", _dir + "DbDaoCopy.accdb", ReplaceByTemplate.IfNotExists));
-            new FileInfo(_dir + "DbDaoCopy.accdb").Delete();
-            Assert.IsTrue(DaoDb.FromTemplate(_dir + "DbDao.accdb", _dir + "DbDaoCopy.accdb", ReplaceByTemplate.IfNewVersion));
-            Assert.IsTrue(new FileInfo(_dir + "DbDaoCopy.accdb").Exists);
+            Assert.IsTrue(DaoDb.FromTemplate(_file,_fileCopy, ReplaceByTemplate.Always));
+            Assert.IsFalse(DaoDb.FromTemplate(_file, _fileCopy, ReplaceByTemplate.IfNotExists));
+            Assert.IsFalse(DaoDb.FromTemplate(_file, _fileCopy, ReplaceByTemplate.IfNewVersion));
+            new FileInfo(_fileCopy).Delete();
+            Assert.IsTrue(DaoDb.FromTemplate(_file, _fileCopy, ReplaceByTemplate.IfNotExists));
+            new FileInfo(_fileCopy).Delete();
+            Assert.IsTrue(DaoDb.FromTemplate(_file, _fileCopy, ReplaceByTemplate.IfNewVersion));
+            Assert.IsTrue(new FileInfo(_fileCopy).Exists);
 
-            DaoDb.Execute(_dir + "DbDao.accdb", "DELETE * FROM Tabl");
-            DaoDb.ExecuteAdo(_dir + "DbDao.accdb", "DELETE * FROM SysTabl");
-            using (var rec = new ReaderAdo(_dir + "DbDao.accdb", "SELECT * FROM Tabl"))
+            DaoDb.Execute(_file, "DELETE * FROM Tabl");
+            DaoDb.ExecuteAdo(_file, "DELETE * FROM SysTabl");
+            using (var rec = new ReaderAdo(_file, "SELECT * FROM Tabl"))
                 Assert.IsFalse(rec.HasRows);
-            using (var rec = new ReaderAdo(_dir + "DbDao.accdb", "SELECT * FROM SubTabl"))
+            using (var rec = new ReaderAdo(_file, "SELECT * FROM SubTabl"))
                 Assert.IsFalse(rec.HasRows);
-            using (var rec = new RecDao(_dir + "DbDao.accdb", "SysTabl"))
+            using (var rec = new RecDao(_file, "SysTabl"))
                 Assert.IsFalse(rec.HasRows);
-            using (var rec = new RecDao(_dir + "DbDao.accdb", "SysSubTabl"))
+            using (var rec = new RecDao(_file, "SysSubTabl"))
                 Assert.IsFalse(rec.HasRows);
         }
     }

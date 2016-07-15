@@ -32,25 +32,30 @@ namespace ProvidersLibrary
         }
 
         //Добавить сигнал
-        public SourceSignal AddSignal(string code, string codeObject, DataType dataType, string signalInf, string formula = null)
+        public SourceSignal AddSignal(string fullCode,  //Полный код сигнала
+                                                      string codeObject,  //Код объекта
+                                                      DataType dataType, //Тип данных
+                                                      string signalInf,  //Настройки сигнала
+                                                      string formula = null, //Формула для расчетных сигнлов
+                                                      string initialSignal = null) //Исходный сигнал для расчетных сигналов
         {
-            if (ProviderSignals.ContainsKey(code))
-                return ProviderSignals[code];
+            if (ProviderSignals.ContainsKey(fullCode))
+                return ProviderSignals[fullCode];
 
             var sig = new InitialSignal(this, dataType, signalInf);
             var ob = this is CloneSource 
-                         ? ((CloneSource)this).AddCloneObject(sig, code) 
+                         ? ((CloneSource)this).AddCloneObject(sig, fullCode) 
                          : AddObject(sig);
             ob.Context = codeObject;
             sig = ob.AddSignal(sig);
             if (!_initialSignals.Contains(sig))
                 _initialSignals.Add(sig);
             if (formula == null)
-                return ProviderSignals.Add(code, sig);
+                return ProviderSignals.Add(fullCode, sig);
             
             var calc = new CalcSignal(sig, formula);
-            ProviderSignals.Add(code, calc);
-            return CalcSignals.Add(code, calc);
+            ProviderSignals.Add(fullCode, calc);
+            return CalcSignals.Add(fullCode, calc);
         }
         //Добавить объект содержащий заданный сигнал
         protected abstract SourceObject AddObject(InitialSignal sig);

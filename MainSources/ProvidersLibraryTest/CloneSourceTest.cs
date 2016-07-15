@@ -47,7 +47,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual("Успешное соединение", source.Settings.CheckConnectionMessage);
          
             Assert.AreEqual(new DateTime(2016, 7, 8), source.GetTime().Begin);
-            Assert.AreEqual(new DateTime(2016, 7, 8, 1, 0, 0), source.GetTime().End);
+            Assert.AreEqual(new DateTime(2016, 7, 8, 0, 30, 0), source.GetTime().End);
         }
 
         [TestMethod]
@@ -90,6 +90,8 @@ namespace ProvidersLibraryTest
             Assert.IsTrue(source.Signals.ContainsKey("ObConst.SigS"));
 
             source.Prepare();
+
+
             source.GetValues(new DateTime(2016, 7, 8), new DateTime(2016, 7, 8, 1, 0, 0));
         }
     }

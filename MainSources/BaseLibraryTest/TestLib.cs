@@ -22,7 +22,7 @@ namespace BaseLibraryTest
         //Путь к каталогу TestRun
         public static string TestRunDir
         {
-            get { return InfoTaskDevelopDir + @"TestRun\"; }
+            get { return InfoTaskDevelopDir + @"TestsRun\"; }
         }
         
         //Копирует файл из Tests в TestsRun, возвращает полный путь к итоговому файлу
