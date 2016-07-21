@@ -15,6 +15,7 @@ namespace Provider
         //Имя дропа
         private string _dataSource;
 
+        //Строка соединения с OleDb
         protected override string ConnectionString
         {
             get

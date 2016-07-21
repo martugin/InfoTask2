@@ -7,8 +7,8 @@ namespace ProvidersLibrary
     //Один сигнал 
     public class InitialSignal : SourceSignal
     {
-        public InitialSignal(SourceBase source, DataType dataType, string signalInf)
-            : base(source, dataType, signalInf)
+        public InitialSignal(SourceBase source, string code, DataType dataType, string signalInf)
+            : base(source, code, dataType, signalInf)
         {
             BufMom = new MomEdit(dataType);
             PrevMom = new MomEdit(dataType);

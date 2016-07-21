@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Management.Instrumentation;
 using BaseLibrary;
 using CommonTypes;
 
@@ -31,34 +31,36 @@ namespace ProvidersLibrary
             return SourceSettings.GetTime();
         }
 
-        //Добавить сигнал
-        public SourceSignal AddSignal(string fullCode,  //Полный код сигнала
-                                                      string codeObject,  //Код объекта
-                                                      DataType dataType, //Тип данных
-                                                      string signalInf,  //Настройки сигнала
-                                                      string formula = null, //Формула для расчетных сигнлов
-                                                      string initialSignal = null) //Исходный сигнал для расчетных сигналов
+        //Добавить исходный сигнал
+        public InitialSignal AddInitialSignal(string fullCode, //Полный код сигнала
+                                                                string codeObject, //Код объекта
+                                                                DataType dataType, //Тип данных
+                                                                string signalInf) //Настройки сигнала
         {
-            if (ProviderSignals.ContainsKey(fullCode))
-                return ProviderSignals[fullCode];
-
-            var sig = new InitialSignal(this, dataType, signalInf);
-            var ob = this is CloneSource 
-                         ? ((CloneSource)this).AddCloneObject(sig, fullCode) 
-                         : AddObject(sig);
+            if (InitialSignals.ContainsKey(fullCode))
+                return InitialSignals[fullCode];
+            var sig = new InitialSignal(this, fullCode, dataType, signalInf);
+            var ob = AddObject(sig);
             ob.Context = codeObject;
-            sig = ob.AddSignal(sig);
-            if (!_initialSignals.Contains(sig))
-                _initialSignals.Add(sig);
-            if (formula == null)
-                return ProviderSignals.Add(fullCode, sig);
-            
-            var calc = new CalcSignal(sig, formula);
+            ProviderSignals.Add(fullCode, ob.AddSignal(sig));
+            return InitialSignals.Add(fullCode, sig);
+        }
+        //Добавить объект содержащий заданный сигнал
+        protected abstract SourceObject AddObject(InitialSignal sig);                                              
+
+        //Добавить расчетный сигнал
+        public CalcSignal AddCalcSignal(string fullCode, //Полный код сигнала
+                                                            string initialSignal, //Код исходного сигнала
+                                                            string formula) //Формула
+        {
+            if (CalcSignals.ContainsKey(fullCode))
+                return CalcSignals[fullCode];
+            if (!_initialSignals.ContainsKey(initialSignal))
+                throw new InstanceNotFoundException("Не найден исходный сигнал " + initialSignal);
+            var calc = new CalcSignal(fullCode, _initialSignals[initialSignal], formula);
             ProviderSignals.Add(fullCode, calc);
             return CalcSignals.Add(fullCode, calc);
         }
-        //Добавить объект содержащий заданный сигнал
-        protected abstract SourceObject AddObject(InitialSignal sig);
 
         //Очистка списка сигналов
         public void ClearSignals()
@@ -76,11 +78,11 @@ namespace ProvidersLibrary
         internal readonly DicS<SourceSignal> ProviderSignals = new DicS<SourceSignal>();
         public IDicSForRead<SourceSignal> Signals { get { return ProviderSignals; } }
         //Множество исходных сигналов
-        private readonly HashSet<InitialSignal> _initialSignals = new HashSet<InitialSignal>();
-        protected HashSet<InitialSignal> InitialSignals { get { return _initialSignals; } }
+        private readonly DicS<InitialSignal> _initialSignals = new DicS<InitialSignal>();
+        internal DicS<InitialSignal> InitialSignals { get { return _initialSignals; } }
         //Словарь расчетных сигналов
         private readonly DicS<CalcSignal> _calcSignals = new DicS<CalcSignal>();
-        public DicS<CalcSignal> CalcSignals { get { return _calcSignals; } }
+        internal DicS<CalcSignal> CalcSignals { get { return _calcSignals; } }
 
         //Создание фабрики ошибок
         protected virtual IErrMomFactory MakeErrFactory()
@@ -200,11 +202,11 @@ namespace ProvidersLibrary
                 using (var db = new DaoDb(cloneFile))
                 {
                     ReadCloneSignalsId(db);
-                    using (CloneRec = new RecDao(db, "SELECT * FROM MomentValues"))
-                    using (CloneCutRec = new RecDao(db, "SELECT * FROM MomentValuesCut"))
-                    using (CloneStrRec = new RecDao(db, "SELECT * FROM MomentStrValues"))
-                    using (CloneStrCutRec = new RecDao(db, "SELECT * FROM MomentStrValuesCut"))
-                    using (CloneErrorsRec = new RecDao(db, "SELECT * FROM ErrorsSignals"))
+                    using (CloneRec = new RecDao(db, "MomentValues"))
+                    using (CloneCutRec = new RecDao(db, "MomentValuesCut"))
+                    using (CloneStrRec = new RecDao(db, "MomentStrValues"))
+                    using (CloneStrCutRec = new RecDao(db, "MomentStrValuesCut"))
+                    using (CloneErrorsRec = new RecDao(db, "ErrorsObjects"))
                         GetValues(beginRead, endRead);
                     WriteMomentErrors(db);
                 }

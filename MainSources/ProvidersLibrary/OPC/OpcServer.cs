@@ -58,7 +58,7 @@ namespace ProvidersLibrary
         public ReceiverSignal AddSignal(string signalInf, string code, DataType dataType)
         {
             if (_signals.ContainsKey(code)) return _signals[code];
-            var item = new OpcItem(this, dataType, signalInf);
+            var item = new OpcItem(this, code, dataType, signalInf);
             _signals.Add(code, item);
             item.Tag = GetOpcItemTag(item.Inf);
             item.ClientHandler = _signals.Count;
@@ -74,7 +74,7 @@ namespace ProvidersLibrary
         public ReceiverSignal AddSignalByTag(string tag, DataType dataType, string v)
         {
             if (_signals.ContainsKey(tag)) return _signals[tag];
-            var item = new OpcItem(this, dataType, "");
+            var item = new OpcItem(this, tag, dataType, "");
             _signals.Add(tag, item);
             item.Tag = tag;
             item.ClientHandler = _signals.Count;

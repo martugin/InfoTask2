@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FictiveSettings.cs" />
+    <Compile Include="FictiveTableSettings.cs" />
+    <Compile Include="FictiveTableSource.cs" />
     <Compile Include="ObjectFictive.cs" />
     <Compile Include="FictiveSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

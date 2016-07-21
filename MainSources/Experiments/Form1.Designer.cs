@@ -29,12 +29,13 @@
         private void InitializeComponent()
         {
             this.butXml = new System.Windows.Forms.Button();
+            this.butSiemens = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // butXml
             // 
             this.butXml.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butXml.Location = new System.Drawing.Point(13, 36);
+            this.butXml.Location = new System.Drawing.Point(12, 12);
             this.butXml.Name = "butXml";
             this.butXml.Size = new System.Drawing.Size(119, 46);
             this.butXml.TabIndex = 0;
@@ -42,11 +43,23 @@
             this.butXml.UseVisualStyleBackColor = true;
             this.butXml.Click += new System.EventHandler(this.butXml_Click);
             // 
+            // butSiemens
+            // 
+            this.butSiemens.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butSiemens.Location = new System.Drawing.Point(203, 12);
+            this.butSiemens.Name = "butSiemens";
+            this.butSiemens.Size = new System.Drawing.Size(125, 46);
+            this.butSiemens.TabIndex = 1;
+            this.butSiemens.Text = "Siemens";
+            this.butSiemens.UseVisualStyleBackColor = true;
+            this.butSiemens.Click += new System.EventHandler(this.butSiemens_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(528, 287);
+            this.Controls.Add(this.butSiemens);
             this.Controls.Add(this.butXml);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -57,6 +70,7 @@
         #endregion
 
         private System.Windows.Forms.Button butXml;
+        private System.Windows.Forms.Button butSiemens;
     }
 }
 

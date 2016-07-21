@@ -75,12 +75,12 @@ namespace ProvidersLibrary
                 int nadd = 0;
                 if (isCut)
                 {
-                    nadd += InitialSignals.Sum(sig => sig.MakeBegin());
+                    nadd += InitialSignals.Values.Sum(sig => sig.MakeBegin());
                     AddEvent("Сформирован срез", nadd + " значений сформировано");
                 }
                 else
                 {
-                    foreach (var sig in InitialSignals)
+                    foreach (var sig in InitialSignals.Values)
                         sig.MakeEnd();
                     AddEvent("Добавлены значения в конец интервала");
                 }

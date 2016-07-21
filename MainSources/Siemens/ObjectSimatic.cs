@@ -28,7 +28,7 @@ namespace Provider
         //Добавление сигнала
         protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
-            switch (sig.Inf["Prop"].ToLower())
+            switch (sig.Inf.Get("Prop", "").ToLower())
             {
                 case "quality":
                     return QualitySignal = QualitySignal ?? sig;
@@ -43,12 +43,12 @@ namespace Provider
         //Возвращает количество сформированных значений
         public override int ReadMoments(IRecordRead rec)
         {
-            DateTime time = rec.GetTime(1).ToLocalTime();
-            var quality = rec.GetInt(3);
+            DateTime time = rec.GetTime("TimeStamp").ToLocalTime();
+            var quality = rec.GetInt("Quality");
             var err = MakeError(quality);
-            return AddMom(FlagsSignal, time, rec.GetInt(4), err) +
+            return AddMom(FlagsSignal, time, rec.GetInt("Flags"), err) +
                       AddMom(QualitySignal, time, quality, err) +
-                      AddMom(ValueSignal, time, ((ReaderAdo)rec).Reader[2], err);
+                      AddMom(ValueSignal, time, ((ReaderAdo)rec).Reader["RealValue"], err);
         }
     }
 }

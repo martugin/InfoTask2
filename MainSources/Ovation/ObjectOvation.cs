@@ -65,10 +65,9 @@ namespace Provider
         //Чтение времени из рекордсета источника
         private DateTime ReadTime(IRecordRead rec)
         {
-            var time1 = rec.GetTime("TIMESTAMP");
-            time1 = time1.AddMilliseconds(rec.GetInt("TIME_NSEC") / 1000000.0);
-            DateTime time = time1.ToLocalTime();
-            return time;
+            return rec.GetTime("TIMESTAMP")
+                .AddMilliseconds(rec.GetInt("TIME_NSEC") / 1000000.0)
+                    .ToLocalTime();
         }
     }
 }

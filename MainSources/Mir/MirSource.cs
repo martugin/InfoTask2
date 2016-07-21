@@ -26,7 +26,7 @@ namespace Provider
         private readonly DicS<ObjectMir> _objects = new DicS<ObjectMir>();
         private readonly DicI<ObjectMir> _objectsId = new DicI<ObjectMir>();
         
-        //Очистка списка сигналов
+        //Очистка списка объектов
         protected override void ClearObjects()
         {
             _objects.Clear();

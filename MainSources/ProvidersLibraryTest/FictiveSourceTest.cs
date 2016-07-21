@@ -22,9 +22,10 @@ namespace ProvidersLibraryTest
         {
             FictiveSource source = MakeFictiveSource();
             Assert.AreEqual(0, source.Signals.Count);
-            var sig1 = (InitialSignal)source.AddSignal("Ob.Int", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=2000");
+            var sig1 = source.AddInitialSignal("Ob.Int", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=2000");
             Assert.AreEqual(1, source.Signals.Count);
             Assert.AreEqual(1, source.ProviderSignals.Count);
+            Assert.AreEqual(1, source.InitialSignals.Count);
             Assert.AreEqual(0, source.CalcSignals.Count);
             Assert.AreEqual(1, source.Objects.Count);
             
@@ -45,9 +46,10 @@ namespace ProvidersLibraryTest
             Assert.IsFalse(ob1.IsInitialized);
             Assert.AreEqual(2000, ob1.ValuesInterval);
             
-            var sig2 = (InitialSignal)source.AddSignal("Ob.Value", "Ob", DataType.Real, "NumObject=1;Signal=Value;ValuesInterval=2000");
+            var sig2 = source.AddInitialSignal("Ob.Value", "Ob", DataType.Real, "NumObject=1;Signal=Value;ValuesInterval=2000");
             Assert.AreEqual(2, source.Signals.Count);
             Assert.AreEqual(2, source.ProviderSignals.Count);
+            Assert.AreEqual(2, source.InitialSignals.Count);
             Assert.AreEqual(0, source.CalcSignals.Count);
             Assert.AreEqual(1, source.Objects.Count);
 
@@ -58,9 +60,10 @@ namespace ProvidersLibraryTest
             Assert.AreEqual("2000", sig2.Inf["ValuesInterval"]);
             Assert.IsNotNull(ob1.ValueSignal);
 
-            var sig3 = (CalcSignal)source.AddSignal("Ob.Bit3", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=2000", "Bit;1;3");
+            var sig3 = source.AddCalcSignal("Ob.Bit3", "Ob.Int", "Bit;1;3");
             Assert.AreEqual(3, source.Signals.Count);
             Assert.AreEqual(3, source.ProviderSignals.Count);
+            Assert.AreEqual(2, source.InitialSignals.Count);
             Assert.AreEqual(1, source.CalcSignals.Count);
             Assert.AreEqual(1, source.Objects.Count);
 
@@ -70,9 +73,12 @@ namespace ProvidersLibraryTest
             Assert.AreEqual("FictiveSource", sig3.Source.Code);
             Assert.AreEqual("TestSource", sig3.Source.Name);
 
-            var sig4 = (CalcSignal)source.AddSignal("Ob2.Bit4or5", "Ob2", DataType.Integer, "NumObject=2;Signal=Int;ValuesInterval=1000", "BitOr;2;4;5");
-            Assert.AreEqual(4, source.Signals.Count);
-            Assert.AreEqual(4, source.ProviderSignals.Count);
+            source.AddInitialSignal("Ob2.Int", "Ob2", DataType.Integer, "NumObject=2;Signal=Int;ValuesInterval=1000");
+
+            var sig4 = source.AddCalcSignal("Ob2.Bit4or5", "Ob2.Int", "BitOr;2;4;5");
+            Assert.AreEqual(5, source.Signals.Count);
+            Assert.AreEqual(5, source.ProviderSignals.Count);
+            Assert.AreEqual(3, source.InitialSignals.Count);
             Assert.AreEqual(2, source.CalcSignals.Count);
             Assert.AreEqual(2, source.Objects.Count);
 
@@ -107,14 +113,16 @@ namespace ProvidersLibraryTest
         public void InitialValues()
         {
             FictiveSource source = MakeFictiveSource();
+            source.Prepare();
             var beg = new DateTime(2007, 11, 20, 10, 30, 0);
             var en = new DateTime(2007, 11, 20, 10, 40, 0);
             source.GetValues(beg, en);
             Assert.AreEqual(0, source.Signals.Count);
 
-            var sigi = source.AddSignal("Ob.Int", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=1000");
-            var sigr = source.AddSignal("Ob.Real", "Ob", DataType.Real, "NumObject=1;Signal=Real;ValuesInterval=1000");
+            var sigi = source.AddInitialSignal("Ob.Int", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=1000");
+            var sigr = source.AddInitialSignal("Ob.Real", "Ob", DataType.Real, "NumObject=1;Signal=Real;ValuesInterval=1000");
             Assert.AreEqual(2, source.Signals.Count);
+            source.Prepare();
             source.GetValues(beg, en);
             Assert.AreEqual(600, sigi.MomList.Count);
             Assert.AreEqual(beg.AddSeconds(1), sigi.MomList.Time(0));
@@ -148,6 +156,99 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(299.5, sigr.MomList.Real(599));
             Assert.AreEqual("299,5", sigr.MomList.String(599));
             Assert.IsNull(sigr.MomList.Error(599));
+        }
+
+        [TestMethod]
+        public void CalcValues()
+        {
+            FictiveSource source = MakeFictiveSource();
+            var sigi = source.AddInitialSignal("Ob.Int", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=1000");
+            var sigr = source.AddInitialSignal("Ob.Real", "Ob", DataType.Real, "NumObject=1;Signal=Real;ValuesInterval=1000");
+            Assert.AreEqual(2, source.Signals.Count);
+            Assert.AreEqual(2, source.InitialSignals.Count);
+            Assert.AreEqual(0, source.CalcSignals.Count);
+            Assert.AreEqual(1, source.Objects.Count);
+
+            var sigBit = source.AddCalcSignal("Ob.Bit2", "Ob.Int", "Bit;1;2");
+            var sigBitOr = source.AddCalcSignal("Ob.Bit1Or2", "Ob.Int", "BitOr;2;1;2");
+            var sigBitAnd = source.AddCalcSignal("Ob.Bit1And2", "Ob.Int", "BitAnd;2;1;2");
+            var sigFirst = source.AddCalcSignal("Ob.First", "Ob.Real", "First;1;5");
+            var sigLast = source.AddCalcSignal("Ob.First", "Ob.Real", "Last;2;5;1");
+            var sigMin = source.AddCalcSignal("Ob.First", "Ob.Real", "Min;1;5");
+            var sigMax = source.AddCalcSignal("Ob.First", "Ob.Real", "Max;2;5;1");
+            var sigAverage = source.AddCalcSignal("Ob.First", "Ob.Real", "Average;1;5;0.5");
+
+            source.Prepare();
+            var beg = new DateTime(2007, 11, 20, 10, 30, 0);
+            var en = new DateTime(2007, 11, 20, 10, 40, 0);
+            source.GetValues(beg, en);
+
+            Assert.AreEqual(600, sigBit.MomList.Count);
+            Assert.AreEqual(beg.AddSeconds(1), sigBit.MomList.Time(0));
+            Assert.AreEqual(0, sigBit.MomList.Integer(0));
+            Assert.AreEqual(0.0, sigBit.MomList.Real(0));
+            Assert.IsNull(sigBit.MomList.Error(0));
+            Assert.AreEqual(beg.AddSeconds(6), sigBit.MomList.Time(5));
+            Assert.AreEqual(1, sigBit.MomList.Integer(5));
+            Assert.AreEqual(true, sigBit.MomList.Boolean(5));
+            Assert.IsNull(sigBit.MomList.Error(5));
+            Assert.AreEqual(beg.AddSeconds(11), sigBit.MomList.Time(10));
+            Assert.AreEqual(false, sigBit.MomList.Boolean(10));
+            Assert.IsNull(sigBit.MomList.Error(10));
+            Assert.AreEqual(beg.AddSeconds(600), sigBit.MomList.Time(599));
+            Assert.AreEqual(true, sigBit.MomList.Boolean(599));
+            Assert.AreEqual("1", sigBit.MomList.String(599));
+            Assert.IsNull(sigBit.MomList.Error(599));
+
+            Assert.AreEqual(600, sigBitOr.MomList.Count);
+            Assert.AreEqual(beg.AddSeconds(1), sigBitOr.MomList.Time(0));
+            Assert.AreEqual(false, sigBitOr.MomList.Boolean(0));
+            Assert.AreEqual(0.0, sigBitOr.MomList.Real(0));
+            Assert.IsNull(sigBitOr.MomList.Error(0));
+            Assert.AreEqual(beg.AddSeconds(6), sigBitOr.MomList.Time(5));
+            Assert.AreEqual(1, sigBitOr.MomList.Integer(5));
+            Assert.AreEqual(true, sigBitOr.MomList.Boolean(5));
+            Assert.IsNull(sigBitOr.MomList.Error(5));
+            Assert.AreEqual(beg.AddSeconds(11), sigBitOr.MomList.Time(10));
+            Assert.AreEqual(true, sigBitOr.MomList.Boolean(10));
+            Assert.IsNull(sigBitOr.MomList.Error(10));
+            Assert.AreEqual(beg.AddSeconds(600), sigBitOr.MomList.Time(599));
+            Assert.AreEqual(true, sigBitOr.MomList.Boolean(599));
+            Assert.AreEqual("1", sigBitOr.MomList.String(599));
+            Assert.IsNull(sigBitOr.MomList.Error(599));
+
+            Assert.AreEqual(600, sigBitAnd.MomList.Count);
+            Assert.AreEqual(beg.AddSeconds(1), sigBitAnd.MomList.Time(0));
+            Assert.AreEqual(false, sigBitAnd.MomList.Boolean(0));
+            Assert.AreEqual(0.0, sigBitAnd.MomList.Real(0));
+            Assert.IsNull(sigBitAnd.MomList.Error(0));
+            Assert.AreEqual(beg.AddSeconds(8), sigBitAnd.MomList.Time(7));
+            Assert.AreEqual(1, sigBitAnd.MomList.Integer(7));
+            Assert.AreEqual(true, sigBitAnd.MomList.Boolean(7));
+            Assert.IsNull(sigBitAnd.MomList.Error(7));
+            Assert.AreEqual(beg.AddSeconds(11), sigBitAnd.MomList.Time(10));
+            Assert.AreEqual(false, sigBitAnd.MomList.Boolean(10));
+            Assert.AreEqual("0", sigBitAnd.MomList.String(10));
+            Assert.IsNull(sigBitAnd.MomList.Error(10));
+            Assert.AreEqual(beg.AddSeconds(600), sigBitAnd.MomList.Time(599));
+            Assert.AreEqual(true, sigBitAnd.MomList.Boolean(599));
+            Assert.IsNull(sigBitOr.MomList.Error(599));
+
+            Assert.AreEqual(120, sigFirst.MomList.Count);
+            Assert.AreEqual(beg, sigFirst.MomList.Time(0));
+            Assert.AreEqual(0.0, sigFirst.MomList.Real(0));
+            Assert.IsNull(sigFirst.MomList.Error(0));
+            Assert.AreEqual(beg.AddSeconds(25), sigFirst.MomList.Time(5));
+            Assert.AreEqual(12.5, sigFirst.MomList.Real(5));
+            Assert.AreEqual("12.5", sigFirst.MomList.String(5));
+            Assert.IsNull(sigFirst.MomList.Error(5));
+            Assert.AreEqual(beg.AddSeconds(50), sigFirst.MomList.Time(10));
+            Assert.AreEqual(25.0, sigFirst.MomList.Real(10));
+            Assert.AreEqual(25, sigFirst.MomList.Integer(10));
+            Assert.IsNull(sigFirst.MomList.Error(10));
+            Assert.AreEqual(beg.AddSeconds(595), sigFirst.MomList.Time(119));
+            Assert.AreEqual(297.5, sigFirst.MomList.Real(119));
+            Assert.IsNull(sigFirst.MomList.Error(119));
         }
     }
 }

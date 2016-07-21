@@ -93,6 +93,10 @@
       <Project>{819FEFDE-4840-45CD-BF58-B528821E3098}</Project>
       <Name>ProvidersLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Siemens\Siemens.csproj">
+      <Project>{37989224-CC06-4653-8FC3-C4874BB38EFC}</Project>
+      <Name>Siemens</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tablik\Tablik.csproj">
       <Project>{2828EE50-3906-40D8-BBAC-2B75F9BEE24E}</Project>
       <Name>Tablik</Name>

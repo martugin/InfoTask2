@@ -35,13 +35,12 @@ namespace ProvidersLibrary
         private readonly List<SourceObject> _objectsList = new List<SourceObject>();
 
         //Добавляет объект, содержащий один сигнал
-        internal SourceObject AddCloneObject(InitialSignal sig, string code)
+        protected override SourceObject AddObject(InitialSignal sig)
         {
-            return _objects.Add(code, new CloneObject(this));
+            return _objects.Add(sig.Code, new CloneObject(this));
         }
-        protected override SourceObject AddObject(InitialSignal sig) { return null;}
 
-        //Очистка списка обхектов
+        //Очистка списка объектов
         protected override void ClearObjects()
         {
             _objectsId.Clear();

@@ -5,16 +5,17 @@ namespace ProvidersLibrary
     //Базовый класс для всех сигналов источников
     public abstract class SourceSignal : ProviderSignal
     {
-        protected SourceSignal(SourceBase source, DataType dataType, string signalInf)
-            : base(dataType, signalInf)
+        protected SourceSignal(SourceBase source, string code, DataType dataType, string signalInf)
+            : base(code, dataType, signalInf)
         {
             Source = source;
             MList = MFactory.NewList(dataType);
             MomList = new MomListReadOnly(MList);
         }
-        protected SourceSignal(SourceBase conn)
+        protected SourceSignal(SourceBase source, string code) 
+            : base(code)
         {
-            Source = conn;
+            Source = source;
         }
 
         //Соединение - источник
@@ -22,7 +23,7 @@ namespace ProvidersLibrary
 
         //Возвращаемый список значений
         internal protected MomList MList { get; protected set; }
-        public IMomListReadOnly MomList { get; private set; }
+        public IMomListReadOnly MomList { get; protected set; }
 
         //Очистка списка значений
         internal virtual void ClearMoments(bool clearBegin)

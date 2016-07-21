@@ -8,8 +8,8 @@ namespace ProvidersLibrary
     //Расчетный сигнал
     public class CalcSignal : SourceSignal
     {
-        public CalcSignal(InitialSignal initialSignal, string formula) 
-            : base(initialSignal.Source)
+        public CalcSignal(string code, InitialSignal initialSignal, string formula)
+            : base(initialSignal.Source, code)
         {
             _initialSignal = initialSignal;
             ParseFormula(formula);
@@ -44,6 +44,7 @@ namespace ProvidersLibrary
             else if (funName == "Average") DataType = DataType.Real;
             else DataType = _initialSignal.DataType;
             MList = MFactory.NewList(DataType);
+            MomList = new MomListReadOnly(MList);
         }
 
         //Взятие бита, pars[0] - номер бита

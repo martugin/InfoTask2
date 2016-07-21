@@ -19,9 +19,9 @@ namespace ProvidersLibrary
             if (ValueSignal.DataType.LessOrEquals(DataType.Real))
                 return AddMom(ValueSignal, time, rec.GetDouble("RealValue"), err);
             if (ValueSignal.DataType == DataType.String)
-                return AddMom(ValueSignal, time, rec.GetDouble("StrValue"), err);
+                return AddMom(ValueSignal, time, rec.GetString("StrValue"), err);
             if (ValueSignal.DataType == DataType.Time)
-                return AddMom(ValueSignal, time, rec.GetDouble("TimeValue"), err);
+                return AddMom(ValueSignal, time, rec.GetTime("TimeValue"), err);
             return 0;
         }
     }

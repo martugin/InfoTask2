@@ -1,4 +1,5 @@
 ﻿using System;
+using BaseLibrary;
 using ProvidersLibrary;
 
 namespace Fictive
@@ -7,10 +8,12 @@ namespace Fictive
     {
         //Фиктивный объект
         //Сигналы задаются свойствами ValuesInterval - частота возвращаемых значений в секундах
-        public ObjectFictive(FictiveSource source, int valuesInterval) : base(source)
+        public ObjectFictive(SourceBase source, int valuesInterval) : base(source)
         {
             ValuesInterval = valuesInterval;
         }
+        public ObjectFictive(SourceBase source) 
+            : base(source) { }
 
         //Сигнал недостоверности
         internal InitialSignal StateSignal { get; private set; }
@@ -25,6 +28,9 @@ namespace Fictive
         internal int ValuesInterval { get; private set; }
         //Объект инициализирован
         internal bool IsInitialized { get; set; }
+
+        //Id в таблице объектов
+        internal int Id { get; set; }
 
         protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
@@ -67,5 +73,19 @@ namespace Fictive
             }
             return nwrite;
         }
+
+        //Чтение одной строчки значений
+        public override int ReadMoments(IRecordRead rec)
+        {
+            var time = rec.GetTime("Time");
+            var state = rec.GetInt("StateSignal");
+            return AddMom(ValueSignal, time, rec.GetDouble("ValueSignal")) +
+                   AddMom(StateSignal, time, state) +
+                   AddMom(BoolSignal, time, rec.GetBool("BoolSignal")) +
+                   AddMom(IntSignal, time, rec.GetInt("IntSignal")) +
+                   AddMom(RealSignal, time, rec.GetDouble("RealSignal"), Source.MakeError(state, this)) +
+                   AddMom(StringSignal, time, rec.GetString("StringSignal"), Source.MakeError(state, this)) +
+                   AddMom(TimeSignal, time, rec.GetTime("TimeSignal"));
+        }
     }
-}
+} 
