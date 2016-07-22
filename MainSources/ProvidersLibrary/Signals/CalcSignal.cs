@@ -34,7 +34,7 @@ namespace ProvidersLibrary
             if (met != null) Calculate = (Action)Delegate.CreateDelegate(typeof(Action), this, met);
             _pars = new IMean[lexemes[1].ToInt()];
             for (int i = 0; i < _pars.Length; i++)
-                _pars[i] = MFactory.NewMean(DataType.Integer, lexemes[i + 2]);
+                _pars[i] = MFactory.NewMean(DataType.Real, lexemes[i + 2]);
         }
 
         //Определение типа данных возвращаемых значений
@@ -89,18 +89,19 @@ namespace ProvidersLibrary
         
         //Среднее по равномерным сегментам, 
         public void Average() { Agregate(AverageScalar); }
-        private void AverageScalar(MomEdit res, MomList mlist, int i)
+        private void AverageScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
-            res.Real += mlist.Real(i) * (mlist.Time(i+1).Subtract(mlist.Time(i)).TotalSeconds) /_pars[0].Real;
+            DateTime time = (i >= mlist.Count - 1 || mlist.Time(i + 1) > t) ? t : mlist.Time(i + 1);
+            res.Real += mlist.Real(i) * (time.Subtract(mlist.Time(i)).TotalSeconds) /_pars[0].Real;
         }
 
         //Первое по равномерным сегментам, pars[0] - длина сегмента в секундах
         public void First() { Agregate(FirstScalar); }
-        private void FirstScalar(MomEdit res, MomList mlist, int i) { }
+        private void FirstScalar(MomEdit res, MomList mlist, int i, DateTime t) { }
         
         //Последнее по равномерным сегментам, pars[0] - длина сегмента в секундах
         public void Last() { Agregate( LastScalar); }
-        private void LastScalar(MomEdit res, MomList mlist, int i)
+        private void LastScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             res.CopyValueFrom(mlist, i);
             res.Error = mlist.Error(i);
@@ -108,7 +109,7 @@ namespace ProvidersLibrary
 
         //Минимум по равномерным сегментам, pars[0] - длина сегмента в секундах
         public void Min() { Agregate(MinScalar); }
-        private void MinScalar(MomEdit res, MomList mlist, int i)
+        private void MinScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             if (mlist.Mean(i).ValueLess(res))
             {
@@ -119,7 +120,7 @@ namespace ProvidersLibrary
 
         //Максимум по равномерным сегментам, pars[0] - длина сегмента в секундах
         public void Max() { Agregate(MaxScalar); }
-        private void MaxScalar(MomEdit res, MomList mlist, int i)
+        private void MaxScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             if (res.ValueLess(mlist.Mean(i)))
             {
@@ -130,40 +131,49 @@ namespace ProvidersLibrary
 
         //Агрегация по равномерным сегментам
         //На входе функция с параметрами: текущий результат, список и обрабатываемый номер
-        private void Agregate(Action<MomEdit, MomList, int> fun)
+        private void Agregate(Action<MomEdit, MomList, int, DateTime> fun)
         {
             double seglen = _pars[0].Real, segshift = _pars.Length < 2 ? 0 : _pars[1].Real * seglen;
             var moms = _initialSignal.MomList;
+            if (moms.Count == 0) return;
             var mlist = MFactory.NewList(DataType);
             //Добавляем в список границы сегментов
             var t = Source.PeriodBegin;
             int i = 0;
-            while (t < Source.PeriodEnd)
+            while (t < Source.PeriodEnd.AddMilliseconds(1))
             {
-                while (i < moms.Count && moms.Time(i) <= t)
+                while (i < moms.Count && moms.Time(i) < t)
                 {
-                    if (moms.Time(i) > Source.PeriodBegin && moms.Time(i) <= Source.PeriodEnd)
+                    if (moms.Time(i) >= Source.PeriodBegin && moms.Time(i) <= Source.PeriodEnd)
                         mlist.AddMom(moms.Clone(i));
                     i++;
                 }
-                if (i > 0) i--;
-                mlist.AddMom(moms.Clone(i, t));
+                AddUniformMom(moms, mlist, i, t);
                 t = t.AddSeconds(seglen);
             }
+            if (i < moms.Count && moms.Time(i) == Source.PeriodEnd)
+                mlist.AddMom(moms.Clone(i));
 
             t = Source.PeriodBegin;
             i = 0;
-            while (t < Source.PeriodEnd)
+            while (t < Source.PeriodEnd.AddMilliseconds(-1))
             {
                 var me = new MomEdit(DataType, t.AddSeconds(segshift));
                 if (fun.Method.Name == "AverageScalar")
                     me.Real = 0;
                 else me.CopyValueFrom(mlist, i);
                 t = t.AddSeconds(seglen);
-                while (i < mlist.Count && mlist.Time(i) < t)
-                    fun(me, mlist, i++);
+                while (i < mlist.Count && mlist.Time(i) <= t)
+                    fun(me, mlist, i++, t);
+                if (i > 0 && mlist.Time(i-1) == t) i--;
                 MList.AddMom(me);
             }
+        }
+
+        private void AddUniformMom(IMomListReadOnly fromList, MomList toList, int i, DateTime t)
+        {
+            if (i < fromList.Count && fromList.Time(i) == t) return;
+            toList.AddMom(fromList.Clone(i == 0 ? 0 : i - 1, t));
         }
     }
 }

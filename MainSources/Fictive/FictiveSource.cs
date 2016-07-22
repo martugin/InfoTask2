@@ -10,11 +10,6 @@ namespace Fictive
     [ExportMetadata("Code", "FictiveSource")]
     public class FictiveSource : SourceBase
     {
-        public FictiveSource()
-        { 
-            NeedCut = false;
-        }
-
         //Код
         public override string Code { get { return "FictiveSource"; } }
         //Комплект

@@ -55,7 +55,7 @@ namespace Fictive
         //Заполняет значения сигналов равномерным списком значений
         internal int MakeUniformValues(DateTime beg, DateTime en, bool isCut)
         {
-            int n = 0;
+            int n = isCut ? 0 : 1;
             int nwrite = 0;
             DateTime t = beg;
             if (!isCut) t = t.AddMilliseconds(ValuesInterval);

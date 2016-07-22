@@ -110,7 +110,11 @@ namespace ProvidersLibrary
             PeriodBegin = periodBegin;
             PeriodEnd = periodEnd;
             if (NeedCut)
+            {
                 Start(ReadCut, 0, PeriodBegin < PeriodEnd ? 30 : 100);
+                foreach (var sig in InitialSignals.Values)
+                    sig.MakeBegin();
+            }
             if (!NeedCut || PeriodBegin < PeriodEnd)
                 Start(ReadChanges, Procent, 100);
             foreach (var sig in CalcSignals.Values)
