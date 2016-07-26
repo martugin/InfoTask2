@@ -428,9 +428,9 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(beg.AddSeconds(16.25), sigAverage.MomList.Time(6));
             Assert.AreEqual(7.9, sigAverage.MomList.Real(6));
             Assert.AreEqual(beg.AddSeconds(28.75), sigAverage.MomList.Time(11));
-            Assert.AreEqual(14.1, sigAverage.MomList.Real(11));
-            Assert.AreEqual(beg.AddSeconds(59.25), sigAverage.MomList.Time(39));
-            Assert.AreEqual(30, sigAverage.MomList.Real(39));
+            Assert.IsTrue(Math.Abs(sigAverage.MomList.Real(11)-14.1) < 0.0001);
+            Assert.AreEqual(beg.AddSeconds(58.75), sigAverage.MomList.Time(23));
+            Assert.IsTrue(Math.Abs(sigAverage.MomList.Real(23) - 29.1) < 0.0001);
         }
     }
 }
