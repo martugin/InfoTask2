@@ -35,7 +35,7 @@ namespace ProvidersLibrary
         private readonly List<SourceObject> _objectsList = new List<SourceObject>();
 
         //Добавляет объект, содержащий один сигнал
-        protected override SourceObject AddObject(InitialSignal sig)
+        protected override SourceObject AddObject(UniformSignal sig)
         {
             return _objects.Add(sig.Code, new CloneObject(this));
         }

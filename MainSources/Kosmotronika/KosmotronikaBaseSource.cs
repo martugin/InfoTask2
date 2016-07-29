@@ -28,7 +28,7 @@ namespace Provider
         }
 
         //Добавляет один сигнал в список
-        protected override SourceObject AddObject(InitialSignal sig)
+        protected override SourceObject AddObject(UniformSignal sig)
         {
             var ind = new ObjectIndex
             {

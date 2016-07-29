@@ -16,13 +16,13 @@ namespace Fictive
             : base(source) { }
 
         //Сигнал недостоверности
-        internal InitialSignal StateSignal { get; private set; }
+        internal UniformSignal StateSignal { get; private set; }
         //Сигналы разного типа
-        internal InitialSignal BoolSignal { get; private set; }
-        internal InitialSignal IntSignal { get; private set; }
-        internal InitialSignal RealSignal { get; private set; }
-        internal InitialSignal TimeSignal { get; private set; }
-        internal InitialSignal StringSignal { get; private set; }
+        internal UniformSignal BoolSignal { get; private set; }
+        internal UniformSignal IntSignal { get; private set; }
+        internal UniformSignal RealSignal { get; private set; }
+        internal UniformSignal TimeSignal { get; private set; }
+        internal UniformSignal StringSignal { get; private set; }
 
         //Частота возвращаемых значений в секундах
         internal int ValuesInterval { get; private set; }
@@ -32,7 +32,7 @@ namespace Fictive
         //Id в таблице объектов
         internal int Id { get; set; }
 
-        protected override InitialSignal AddNewSignal(InitialSignal sig)
+        protected override UniformSignal AddNewSignal(UniformSignal sig)
         {
             switch (sig.Inf["Signal"])
             {

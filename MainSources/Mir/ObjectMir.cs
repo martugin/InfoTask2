@@ -9,13 +9,13 @@ namespace Provider
         public ObjectMir(SourceBase source) : base(source) { }
 
         //Cигналы Unit и Indcation
-        internal InitialSignal UnitSignal { get; set; }
-        internal InitialSignal IndicationSignal { get; set; }
+        internal UniformSignal UnitSignal { get; set; }
+        internal UniformSignal IndicationSignal { get; set; }
         //Id для получения значений из IZM_TII
         public int IdChannel { get; set; }
 
         //Добавить к объекту сигнал, если такого еще не было
-        protected override InitialSignal AddNewSignal(InitialSignal sig)
+        protected override UniformSignal AddNewSignal(UniformSignal sig)
         {
             if (sig.Inf.Get("ValueType") == "Indication")
                 return IndicationSignal = IndicationSignal ?? sig;

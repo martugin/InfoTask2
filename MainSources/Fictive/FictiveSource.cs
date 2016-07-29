@@ -27,7 +27,7 @@ namespace Fictive
         public DicI<ObjectFictive> Objects { get { return _objects; } }
 
         //Добавить объект в провайдер
-        protected override SourceObject AddObject(InitialSignal sig)
+        protected override SourceObject AddObject(UniformSignal sig)
         {
             var num = sig.Inf.GetInt("NumObject");
             if (!_objects.ContainsKey(num))

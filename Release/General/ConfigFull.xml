@@ -351,11 +351,27 @@
       </FictiveSource>
       <FictiveTableSource ProviderType="Источник" Description="Сложный отладочный источник">
         <ProviderProps>
-          <TableFile PropNum="1" Description="Файл со списком значений" ButText="...">
+          <DbFile PropNum="1" Description="Файл со списком значений" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл отладочных значений&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
-          </TableFile>
+          </DbFile>
         </ProviderProps>
       </FictiveTableSource>
     </Fictive>
+    <Logika Description="Провайдеры для архивов программ НПФ Логика" DllFile="Providers\Logika\Logika.dll">
+      <PrologSource ProviderType="Источник" Description="Источник для программы Пролог">
+        <ProviderProps>
+          <DbFile PropNum="1" Description="Путь к базе данных архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </DbFile>
+        </ProviderProps>
+      </PrologSource>
+      <PrologComm ProviderType="Коммуникатор" Description="Источник для программы Пролог">
+        <ProviderProps>
+          <DbFile PropNum="1" Description="Путь к базе данных архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </DbFile>
+        </ProviderProps>
+      </PrologComm>
+    </Logika>
   </Providers>
 </Config>

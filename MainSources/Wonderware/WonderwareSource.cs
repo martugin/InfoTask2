@@ -22,8 +22,6 @@ namespace Provider
         {
             return new WonderwareSettings();
         }
-        //Ссылка на соединение
-        public WonderwareSettings Settings { get { return (WonderwareSettings)CurSettings; } }
 
         //Словарь объектов по TagName
         private readonly Dictionary<string, ObjectWonderware> _objects = new Dictionary<string, ObjectWonderware>();
@@ -73,7 +71,7 @@ namespace Provider
         }
 
         //Запрос значений по одному блоку сигналов
-        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("SELECT TagName, DateTime = convert(nvarchar, DateTime, 21), Value, vValue, Quality, QualityDetail FROM History WHERE  TagName IN (");
             for (var n = 0; n < part.Count; n++)
@@ -88,7 +86,7 @@ namespace Provider
                 sb.Append(" AND DateTime <").Append(en.ToSqlString());
             sb.Append(" ORDER BY DateTime");
 
-            return new ReaderAdo(Settings.SqlProps, sb.ToString(), 10000);
+            return new ReaderAdo(((WonderwareSettings)Source.CurSettings).SqlProps, sb.ToString(), 10000);
         }
 
         //Определение текущего считываемого объекта
@@ -109,6 +107,11 @@ namespace Provider
 
         //Чтение данных из Historian за период
         protected override void ReadChanges()
+        {
+
+        }
+
+        protected override ValuesCount ReadChanges()
         {
             ReadValuesByParts(Objects.Values, 500, PeriodBegin, PeriodEnd, false);
         }

@@ -29,7 +29,7 @@ namespace Provider
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
 
         //Добавить объект в провайдер
-        protected override SourceObject AddObject(InitialSignal sig)
+        protected override SourceObject AddObject(UniformSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))

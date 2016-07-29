@@ -33,7 +33,7 @@ namespace Fictive
         public DicS<ObjectFictive> Objects { get { return _objects; } }
 
         //Добавление объекта
-        protected override SourceObject AddObject(InitialSignal sig)
+        protected override SourceObject AddObject(UniformSignal sig)
         {
             var code = sig.Inf.Get("CodeObject");
             if (!Objects.ContainsKey(code))
@@ -52,7 +52,7 @@ namespace Fictive
         public override void Prepare()
         {
             _objectsId.Clear();
-            using (var rec = new RecDao(Settings.TableFile, "Objects"))
+            using (var rec = new RecDao(Settings.DbFile, "Objects"))
                 while (rec.Read())
                 {
                     var code = rec.GetString("Code");

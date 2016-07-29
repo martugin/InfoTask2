@@ -34,7 +34,7 @@ namespace Provider
         }
 
         //Добавить объект в провайдер
-        protected override SourceObject AddObject(InitialSignal sig)
+        protected override SourceObject AddObject(UniformSignal sig)
         {
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
             if (!_objects.ContainsKey(ocode))

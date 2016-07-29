@@ -35,11 +35,13 @@ namespace ProvidersLibrary
         public InitialSignal AddInitialSignal(string fullCode, //Полный код сигнала
                                                                 string codeObject, //Код объекта
                                                                 DataType dataType, //Тип данных
-                                                                string signalInf) //Настройки сигнала
+                                                                string signalInf, //Настройки сигнала
+                                                                bool needCut) //Нужно считывать срез значений
         {
             if (InitialSignals.ContainsKey(fullCode))
                 return InitialSignals[fullCode];
-            var sig = new InitialSignal(this, fullCode, dataType, signalInf);
+            var sig = needCut ? new UniformSignal(this, fullCode, dataType, signalInf) 
+                                      : new InitialSignal(this, fullCode, dataType, signalInf);
             var ob = AddObject(sig);
             ob.Context = codeObject;
             ProviderSignals.Add(fullCode, ob.AddSignal(sig));
@@ -50,8 +52,8 @@ namespace ProvidersLibrary
 
         //Добавить расчетный сигнал
         public CalcSignal AddCalcSignal(string fullCode, //Полный код сигнала
-                                                            string initialSignal, //Код исходного сигнала
-                                                            string formula) //Формула
+                                                         string initialSignal, //Код исходного сигнала
+                                                         string formula) //Формула
         {
             if (CalcSignals.ContainsKey(fullCode))
                 return CalcSignals[fullCode];
@@ -101,30 +103,66 @@ namespace ProvidersLibrary
         }
 
         //Чтение значений из источника
-        public void GetValues(DateTime periodBegin, DateTime periodEnd)
+        //Возвращает пару: количество прочитаных значений объектов и количество сформированных значений сигналов
+        public ValuesCount GetValues(DateTime periodBegin, DateTime periodEnd)
         {
-            if (ErrPool == null)
-                ErrPool = new ErrMomPool(MakeErrFactory());
-            foreach (var sig in ProviderSignals.Values)
-                sig.ClearMoments(periodBegin != PeriodEnd);
-            PeriodBegin = periodBegin;
-            PeriodEnd = periodEnd;
-            if (NeedCut)
+            var res = new ValuesCount();
+            try
             {
-                Start(ReadCut, 0, PeriodBegin < PeriodEnd ? 30 : 100);
-                foreach (var sig in InitialSignals.Values)
-                    sig.MakeBegin();
+                if (ErrPool == null)
+                    ErrPool = new ErrMomPool(MakeErrFactory());
+                foreach (var sig in ProviderSignals.Values)
+                    sig.ClearMoments(periodBegin != PeriodEnd);
+                PeriodBegin = periodBegin;
+                PeriodEnd = periodEnd;
+
+                if (NeedCut)
+                    using (Start(5, PeriodBegin < PeriodEnd ? 30 : 100))
+                    {
+                        res.ReadCount = ReadCut();
+                        Procent = 90;
+                        res.WriteCount = 0;
+                        foreach (var sig in InitialSignals.Values)
+                            if (sig is UniformSignal)
+                                ((UniformSignal) sig).MakeBegin();
+                        AddEvent("Срез значений получен", res.ReadCount + " значений прочитано, " + res.WriteCount + " значений сформировано");
+                    }
+
+                if (!NeedCut || PeriodBegin < PeriodEnd)
+                    using (Start(Procent, 90))
+                    {
+                        var changes = ReadChanges();
+                        Procent = 90;
+                        foreach (var sig in InitialSignals.Values)
+                            if (sig is UniformSignal)
+                                changes.WriteCount += ((UniformSignal)sig).MakeEnd();
+                        AddEvent("Изменения значений получены", changes.ReadCount + " значений прочитано, " + changes.WriteCount + " значений сформировано");
+                        res += changes;
+                    }
+
+                if (CalcSignals.Count > 0)
+                {
+                    int calc = 0;
+                    foreach (var sig in CalcSignals.Values)
+                    {
+                        sig.Calculate();
+                        calc += sig.MList.Count;
+                    }
+                    AddEvent("Значения расчетных сигналов прочитаны", calc + " значений сформировано");
+                }
+                AddEvent("Значения из источника прочитаны", res.ReadCount + " значений прочитано, " + res.WriteCount + " значений сформировано");
             }
-            if (!NeedCut || PeriodBegin < PeriodEnd)
-                Start(ReadChanges, Procent, 100);
-            foreach (var sig in CalcSignals.Values)
-                sig.Calculate();
+            catch (Exception ex)
+            {
+                AddError("Ошибка при чтении значений из источника", ex);
+            }
+            return res;
         }
 
-        //Чтение среза
-        protected virtual void ReadCut() { }
-        //Чтение изменений
-        protected abstract void ReadChanges();
+        //Чтение среза, возврашает количество прочитанных значений
+        protected virtual int ReadCut() { return 0; }
+        //Чтение изменений, возврашает количество прочитанных и сформированных значений
+        protected abstract ValuesCount ReadChanges();
 
         //Создание клона
         #region
@@ -137,8 +175,8 @@ namespace ProvidersLibrary
         internal RecDao CloneErrorsRec { get; private set; }
 
         //Словарь сигналов клона, ключи Id в клоне, используется при записи в клон
-        private readonly DicI<InitialSignal> _cloneSignalsId = new DicI<InitialSignal>();
-        public DicI<InitialSignal> CloneSignalsId { get { return _cloneSignalsId; } }
+        private readonly DicI<UniformSignal> _cloneSignalsId = new DicI<UniformSignal>();
+        public DicI<UniformSignal> CloneSignalsId { get { return _cloneSignalsId; } }
         //Словарь ошибочных объектов, ключи - коды объектов
         private readonly DicS<string> _errorObjects = new DicS<string>();
         protected DicS<string> ErrorObjects { get { return _errorObjects; } }
@@ -183,8 +221,8 @@ namespace ProvidersLibrary
                 while (rec.Read())
                 {
                     var code = rec.GetString("FullCode");
-                    if (ProviderSignals.ContainsKey(code) && ProviderSignals[code] is InitialSignal)
-                        ((InitialSignal)ProviderSignals[code]).IdInClone = rec.GetInt("SignalId");
+                    if (ProviderSignals.ContainsKey(code) && ProviderSignals[code] is UniformSignal)
+                        ((UniformSignal)ProviderSignals[code]).IdInClone = rec.GetInt("SignalId");
                 }
         }
 
@@ -230,5 +268,27 @@ namespace ProvidersLibrary
             return d.AddMinutes(k * m);
         }
         #endregion
+    }
+
+    //-----------------------------------------------------------------------------------------------------
+    //Количество прочитанных и сформированных значений
+    public class ValuesCount
+    {
+        public ValuesCount() { }
+        public ValuesCount(int readCount, int writeCount)
+        {
+            ReadCount = readCount;
+            WriteCount = writeCount;
+        }
+
+        //Количество прочитанных и сформированных значений
+        public int ReadCount { get; set; }
+        public int WriteCount { get; set; }
+
+        //Покомпонентное сложение
+        public static ValuesCount operator +(ValuesCount pair1, ValuesCount pair2)
+        {
+            return new ValuesCount(pair1.ReadCount + pair2.ReadCount, pair1.WriteCount + pair2.WriteCount);
+        }
     }
 }

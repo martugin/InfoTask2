@@ -24,7 +24,7 @@ namespace ProvidersLibrary
         protected ProviderSettings MainSettings { get; private set; }
         protected ProviderSettings ReserveSettings { get; private set; }
         //Текущее подключение 
-        protected ProviderSettings CurSettings { get; set; }
+        public ProviderSettings CurSettings { get; set; }
 
         //Создание основного и резервного подключения по заданным настройкам
         public void AddMainConnect(string inf)

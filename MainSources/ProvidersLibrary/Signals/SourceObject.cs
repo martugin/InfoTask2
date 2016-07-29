@@ -22,13 +22,14 @@ namespace ProvidersLibrary
         public InitialSignal ValueSignal { get; set; }
         //Список сигналов объекта
         private readonly HashSet<InitialSignal> _signals = new HashSet<InitialSignal>();
+        protected HashSet<InitialSignal> Signals { get { return _signals; } }
 
         //Добавить к объекту сигнал, если такого еще не было
         internal InitialSignal AddSignal(InitialSignal sig)
         {
             var s = AddNewSignal(sig);
-            if (!_signals.Contains(s))
-                _signals.Add(s);
+            if (!Signals.Contains(s))
+                Signals.Add(s);
             return s;
         }
         protected virtual InitialSignal AddNewSignal(InitialSignal sig)
@@ -44,9 +45,9 @@ namespace ProvidersLibrary
         {
             HasBegin = true;
             int n = 0;
-            foreach (var sig in _signals)
-                if (sig != null)
-                    n += sig.MakeBegin();
+            foreach (var sig in Signals)
+                if (sig is UniformSignal)
+                    n += ((UniformSignal)sig).MakeBegin();
             return n;
         }
 

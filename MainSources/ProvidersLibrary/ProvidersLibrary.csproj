@@ -57,9 +57,12 @@
     <Compile Include="OPC\OpcServer.cs" />
     <Compile Include="OPC\OpcServerSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProvidersConnects\AccessSourceSettings.cs" />
+    <Compile Include="Providers\AdoSource.cs" />
+    <Compile Include="Providers\AdoSourceReader.cs" />
+    <Compile Include="Providers\IAdoSourceReader.cs" />
     <Compile Include="Providers\Receiver.cs" />
     <Compile Include="Providers\SourceBase.cs" />
-    <Compile Include="Providers\AdoSource.cs" />
     <Compile Include="CommonProviders\CloneSource.cs" />
     <Compile Include="ProvidersConnects\OleDbSourceSettings.cs" />
     <Compile Include="Providers\ProviderSetupForm.cs">
@@ -73,10 +76,11 @@
     <Compile Include="ProvidersConnects\SourceSettings.cs" />
     <Compile Include="ProvidersConnects\SqlSourceSettings.cs" />
     <Compile Include="Signals\CalcSignal.cs" />
+    <Compile Include="Signals\InitialSignal.cs" />
     <Compile Include="Signals\ProviderSignal.cs" />
     <Compile Include="Signals\SourceObject.cs" />
     <Compile Include="Signals\ReceiverSignal.cs" />
-    <Compile Include="Signals\InitialSignal.cs" />
+    <Compile Include="Signals\UniformSignal.cs" />
     <Compile Include="Signals\SourceSignal.cs" />
   </ItemGroup>
   <ItemGroup>

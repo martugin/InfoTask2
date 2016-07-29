@@ -15,7 +15,7 @@ namespace ProvidersLibrary
             ParseFormula(formula);
         }
 
-        //Вычисление вынкции
+        //Вычисление функции, возвращает количество сформированных значений
         public Action Calculate { get; private set; }
         //Сигнал, на основе которого вычисляется значение
         private readonly InitialSignal _initialSignal;
