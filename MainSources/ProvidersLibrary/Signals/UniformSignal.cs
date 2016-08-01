@@ -7,8 +7,8 @@ namespace ProvidersLibrary
     //Сигнал, значение которого считывается из источника, с работой со срезами
     public class UniformSignal : InitialSignal
     {
-        public UniformSignal(SourceBase source, string code, DataType dataType, string signalInf)
-            : base(source, code, dataType, signalInf)
+        public UniformSignal(SourceConnect connect, string code, string codeObject, DataType dataType, string signalInf)
+            : base(connect, code, codeObject, dataType, signalInf)
         {
             PrevMom = new MomEdit(dataType);
             _beginMom = new MomEdit(dataType);
@@ -36,9 +36,9 @@ namespace ProvidersLibrary
         {
             BufMom.Time = time;
             BufMom.Error = err;
-            if (time <= Source.PeriodBegin && _beginMom.Time <= time)
+            if (time <= Connect.PeriodBegin && _beginMom.Time <= time)
                 _beginMom.CopyAllFrom(BufMom);
-            else if (time <= Source.PeriodEnd)
+            else if (time <= Connect.PeriodEnd)
             {
                 if (_endMom.Time <= time) 
                     _endMom.CopyAllFrom(BufMom);
@@ -68,16 +68,16 @@ namespace ProvidersLibrary
         protected override int PutClone(IMom mom) //Рекордсет срезов клона
         {
             bool isReal = DataType.LessOrEquals(DataType.Real);
-            var rec = isReal ? Source.CloneRec : Source.CloneStrRec;
-            var recCut = isReal ? Source.CloneCutRec : Source.CloneStrCutRec;
+            var rec = isReal ? Connect.CloneRec : Connect.CloneStrRec;
+            var recCut = isReal ? Connect.CloneCutRec : Connect.CloneStrCutRec;
             int nwrite = 0;
 
-            var d1 = Source.RemoveMinultes(mom.Time);
-            var d = Source.RemoveMinultes(PrevMom.Time).AddMinutes(Source.CloneCutFrequency);
+            var d1 = Connect.RemoveMinultes(mom.Time);
+            var d = Connect.RemoveMinultes(PrevMom.Time).AddMinutes(10);
             while (d <= d1)
             {
                 PutCloneRec(PrevMom, recCut, true, d);
-                d = d.AddMinutes(Source.CloneCutFrequency);
+                d = d.AddMinutes(10);
                 nwrite++;
             }
             PutCloneRec(mom, rec, false, mom.Time);

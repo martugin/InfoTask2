@@ -8,8 +8,8 @@ namespace ProvidersLibrary
     //Расчетный сигнал
     public class CalcSignal : SourceSignal
     {
-        public CalcSignal(string code, InitialSignal initialSignal, string formula)
-            : base(initialSignal.Source, code)
+        public CalcSignal(string code, string codeObject, InitialSignal initialSignal, string formula)
+            : base(initialSignal.Connect, code, codeObject)
         {
             _initialSignal = initialSignal;
             ParseFormula(formula);
@@ -138,25 +138,25 @@ namespace ProvidersLibrary
             if (moms.Count == 0) return;
             var mlist = MFactory.NewList(DataType);
             //Добавляем в список границы сегментов
-            var t = Source.PeriodBegin;
+            var t = Connect.PeriodBegin;
             int i = 0;
-            while (t < Source.PeriodEnd.AddMilliseconds(1))
+            while (t < Connect.PeriodEnd.AddMilliseconds(1))
             {
                 while (i < moms.Count && moms.Time(i) < t)
                 {
-                    if (moms.Time(i) >= Source.PeriodBegin && moms.Time(i) <= Source.PeriodEnd)
+                    if (moms.Time(i) >= Connect.PeriodBegin && moms.Time(i) <= Connect.PeriodEnd)
                         mlist.AddMom(moms.Clone(i));
                     i++;
                 }
                 AddUniformMom(moms, mlist, i, t);
                 t = t.AddSeconds(seglen);
             }
-            if (i < moms.Count && moms.Time(i) == Source.PeriodEnd)
+            if (i < moms.Count && moms.Time(i) == Connect.PeriodEnd)
                 mlist.AddMom(moms.Clone(i));
 
-            t = Source.PeriodBegin;
+            t = Connect.PeriodBegin;
             i = 0;
-            while (t < Source.PeriodEnd.AddMilliseconds(-1))
+            while (t < Connect.PeriodEnd.AddMilliseconds(-1))
             {
                 var me = new MomEdit(DataType, t.AddSeconds(segshift));
                 if (fun.Method.Name == "AverageScalar")

@@ -5,8 +5,8 @@ namespace ProvidersLibrary
     //Один параметр для записи в OPC
     public class OpcItem : ReceiverSignal
     {
-        internal OpcItem(Receiver receiver, string code, DataType dataType, string signalInf)
-            : base(receiver, code, dataType, signalInf)
+        internal OpcItem(Receiver receiver, string code, string codeObject, DataType dataType, string signalInf)
+            : base(receiver, code, codeObject, dataType, signalInf)
         {}
 
         //Стандартные свойства

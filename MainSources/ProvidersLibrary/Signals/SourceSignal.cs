@@ -5,21 +5,21 @@ namespace ProvidersLibrary
     //Базовый класс для всех сигналов источников
     public abstract class SourceSignal : ProviderSignal
     {
-        protected SourceSignal(SourceBase source, string code, DataType dataType, string signalInf)
-            : base(code, dataType, signalInf)
+        protected SourceSignal(SourceConnect connect, string code, string codeObject, DataType dataType, string signalInf)
+            : base(code, codeObject, dataType, signalInf)
         {
-            Source = source;
+            Connect = connect;
             MList = MFactory.NewList(dataType);
             MomList = new MomListReadOnly(MList);
         }
-        protected SourceSignal(SourceBase source, string code) 
-            : base(code)
+        protected SourceSignal(SourceConnect connect, string code, string codeObject) 
+            : base(code, codeObject)
         {
-            Source = source;
+            Connect = connect;
         }
 
-        //Соединение - источник
-        internal protected SourceBase Source { get; private set; }
+        //Соединение
+        internal protected SourceConnect Connect { get; private set; }
 
         //Возвращаемый список значений
         internal protected MomList MList { get; protected set; }

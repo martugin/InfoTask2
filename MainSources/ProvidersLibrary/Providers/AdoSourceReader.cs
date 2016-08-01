@@ -33,85 +33,10 @@ namespace ProvidersLibrary
 
         private bool _isConnected;
 
-        //Чтение значений по блокам объектов
-        protected void ReadValuesByParts(IEnumerable<SourceObject> objects, //список объектов
-                                                           int partSize, //размер одного блока
-                                                           DateTime beg, //период считывания
-                                                           DateTime en,
-                                                           bool isCut,  //считывается срез
-                                                           string msg = null) //Сообщение для истории о запуске чтения данных
-        {
-            try
-            {
-                int n = ObjectsToReadCount(objects, isCut);
-                if (n == 0)
-                {
-                    AddEvent("Пустой список объектов для считывания" + (isCut ? " среза" : ""), beg + " - " + en);
-                    return;
-                }
-                if (!_isConnected && !Source.Check()) return;
-                NumRead = NumWrite = 0;
-
-                AddEvent(msg ?? ("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов"), n + " объектов, " + beg + " - " + en);
-                var parts = MakeParts(objects, partSize, isCut);
-                var successRead = false;
-
-                double d = 100.0 / parts.Count;
-                for (int i = 0; i < parts.Count; i++)
-                    using (Start(i * d, i * d + d, CommandFlags.Danger))
-                    {
-                        if (i < ReconnectsCount)
-                        {
-                            _isConnected = successRead = ReadPart(parts[i], beg, en, isCut);
-                            if (!successRead)
-                            {
-                                Thread.Sleep(ErrorWaiting);
-                                successRead |= ReadPartRecursive(parts[i], true, 1, beg, en, isCut, false);
-                            }
-                        }
-                        else if (i < MaxErrorCount || successRead)
-                            successRead |= ReadPartRecursive(parts[i], successRead, 1, beg, en, isCut, successRead);
-                    }
-                Source.AddErrorObjectsWarning();
-                _isConnected &= successRead;
-                if (successRead)
-                    AddEvent("Значения из источника прочитаны", NumRead + " значений прочитано, " + NumWrite + " значений сформировано");
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка при получении данных", ex);
-                _isConnected = false;
-            }
-        }
-
-        //Количество объектов, для чтения значений
-        private int ObjectsToReadCount(IEnumerable<SourceObject> objects, bool isCut)
-        {
-            return !isCut
-                ? objects.Count()
-                : objects.Count(ob => ob.HasBegin);
-        }
-
-        //Разбиение списка объектов на блоки
-        private List<List<SourceObject>> MakeParts(IEnumerable<SourceObject> objects, //Список объектов
-                                                                          int partSize, //Размер одного блока
-                                                                          bool isCut) //Выполняется считываение среза
-        {
-            var parts = new List<List<SourceObject>>();
-            int i = 0;
-            List<SourceObject> part = null;
-            foreach (var ob in objects)
-                if (!isCut || !ob.HasBegin)
-                {
-                    if (i++ % partSize == 0)
-                        parts.Add(part = new List<SourceObject>());
-                    part.Add(ob);
-                }
-            return parts;
-        }
+        
 
         //Чтение значений по одному блоку списка объектов
-        protected bool ReadPart(List<SourceObject> part,
+        protected ValuesCount ReadPart(List<SourceObject> part,
                                              DateTime beg, DateTime en, //Период считывания
                                              bool isCut) //Считывается срез
         {
@@ -149,32 +74,6 @@ namespace ProvidersLibrary
                 }
             }
             return true;
-        }
-
-        //Считывает значения по блоку сигналов, в случае ошибки рекурсивно считает для половин блока
-        private bool ReadPartRecursive(List<SourceObject> part, //Блок сигналов 
-                                                       bool useRecursion, //Использовать рекурсивный вызов
-                                                       int depth, //Глубина в дереве вызовов, начиная с 1
-                                                       DateTime beg, DateTime en, //Период считывания
-                                                       bool isCut, //Считывается срез 
-                                                       bool successRead) //Хотя бы одно из чтений значений было успешным
-        {
-            if (!_isConnected && !Source.Check()) return false;
-            bool b = ReadPart(part, beg, en, isCut);
-            if (b) return true;
-            if (part.Count == 1 || !useRecursion || (!successRead && depth >= MaxErrorDepth))
-            {
-                foreach (var ob in part)
-                    Source.AddErrorObject(ob.Context, Command.ErrorMessage(false, true, false));
-                return false;
-            }
-            Thread.Sleep(ErrorWaiting);
-            int m = part.Count / 2;
-            bool b1 = ReadPartRecursive(part.GetRange(0, m), true, depth + 1, beg, en, isCut, successRead);
-            if (!b1) Thread.Sleep(ErrorWaiting);
-            bool b2 = ReadPartRecursive(part.GetRange(m, part.Count - m), true, depth + 1, beg, en, isCut, successRead || b1);
-            if (!b2) Thread.Sleep(ErrorWaiting);
-            return b1 || b2;
         }
 
         //Чтение значений из рекордсета по одному блоку

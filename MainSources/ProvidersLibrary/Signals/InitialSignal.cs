@@ -8,8 +8,8 @@ namespace ProvidersLibrary
     //Используется для событий, сигнализации, действий оператора и т.д.
     public class InitialSignal : SourceSignal
     {
-        public InitialSignal(SourceBase source, string code, DataType dataType, string signalInf)
-            : base(source, code, dataType, signalInf)
+        public InitialSignal(SourceConnect connect, string code, string codeObject, DataType dataType, string signalInf)
+            : base(connect, code, codeObject, dataType, signalInf)
         {
             BufMom = new MomEdit(dataType);
         }
@@ -32,7 +32,7 @@ namespace ProvidersLibrary
         {
             BufMom.Time = time;
             BufMom.Error = err;
-            if (time >= Source.PeriodBegin && time <= Source.PeriodEnd)
+            if (time >= Connect.PeriodBegin && time <= Connect.PeriodEnd)
                 return PutMom(BufMom);
             return 0;
         }
@@ -50,7 +50,7 @@ namespace ProvidersLibrary
         protected virtual int PutClone(IMom mom) //Рекордсет срезов клона
         {
             bool isReal = DataType.LessOrEquals(DataType.Real);
-            var rec = isReal ? Source.CloneRec : Source.CloneStrRec;
+            var rec = isReal ? Connect.CloneRec : Connect.CloneStrRec;
             PutCloneRec(mom, rec, false, mom.Time);
             return 1;
         }

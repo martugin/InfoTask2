@@ -61,6 +61,8 @@
     <Compile Include="Providers\AdoSource.cs" />
     <Compile Include="Providers\AdoSourceReader.cs" />
     <Compile Include="Providers\IAdoSourceReader.cs" />
+    <Compile Include="Providers\PartsSource.cs" />
+    <Compile Include="Providers\ProviderConnect.cs" />
     <Compile Include="Providers\Receiver.cs" />
     <Compile Include="Providers\SourceBase.cs" />
     <Compile Include="CommonProviders\CloneSource.cs" />
@@ -72,9 +74,8 @@
       <DependentUpon>ProviderSetupForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Providers\ProviderBase.cs" />
-    <Compile Include="ProvidersConnects\ProviderSettings.cs" />
-    <Compile Include="ProvidersConnects\SourceSettings.cs" />
     <Compile Include="ProvidersConnects\SqlSourceSettings.cs" />
+    <Compile Include="Providers\SourceConnect.cs" />
     <Compile Include="Signals\CalcSignal.cs" />
     <Compile Include="Signals\InitialSignal.cs" />
     <Compile Include="Signals\ProviderSignal.cs" />
