@@ -21,6 +21,7 @@ namespace ProvidersLibrary
             try
             {
                 AddEvent("Определение диапазона источника");
+                if (!ConnectProvider(false)) return TimeInterval.CreateDefault();
                 var ti = GetSourceTime();
                 if (!ti.IsDefault)
                     AddEvent("Диапазон источника определен", ti.Begin + " - " + ti.End);
@@ -96,40 +97,5 @@ namespace ProvidersLibrary
         internal protected virtual ValuesCount ReadCut() { return new ValuesCount(); }
         //Чтение изменений, возврашает количество прочитанных и сформированных значений
         internal protected abstract ValuesCount ReadChanges();
-    }
-
-    //-----------------------------------------------------------------------------------------------------
-    //Результат чтения значений из источника
-    public class ValuesCount
-    {
-        public ValuesCount(bool isSuccessfull = true)
-        {
-            IsSuccess = isSuccessfull;
-        }
-        public ValuesCount(int readCount, int writeCount, bool isSuccessfull = true)
-        {
-            IsSuccess = isSuccessfull;
-            ReadCount = readCount;
-            WriteCount = writeCount;
-        }
-        
-        //Чтение значений прошло удачно
-        public bool IsSuccess { get; set; } 
-
-        //Количество прочитанных и сформированных значений
-        public int ReadCount { get; set; }
-        public int WriteCount { get; set; }
-
-        //Покомпонентное сложение
-        public static ValuesCount operator +(ValuesCount pair1, ValuesCount pair2)
-        {
-            return new ValuesCount(pair1.ReadCount + pair2.ReadCount, pair1.WriteCount + pair2.WriteCount, pair1.IsSuccess || pair2.IsSuccess);
-        }
-
-        //Строка для записи в историю
-        public override string ToString()
-        {
-            return ReadCount + " значений прочитано, " + WriteCount + " значений сформировано";
-        }
     }
 }

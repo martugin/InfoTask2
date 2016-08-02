@@ -9,11 +9,13 @@ namespace ProvidersLibrary
         protected ProviderSignal(string code, string codeObject)
         {
             Code = code;
+            CodeObject = codeObject;
         }
 
         protected ProviderSignal(string code, string codeObject, DataType dataType, string signalInf)
         {
             Code = code;
+            CodeObject = codeObject;
             DataType = dataType;
             Inf = signalInf.ToPropertyDicS();
         }

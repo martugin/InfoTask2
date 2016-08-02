@@ -91,19 +91,20 @@ namespace ProvidersLibrary
         {
             try
             {
+                if (!CurSource.ConnectProvider(false))
+                    return false;
                 if (!CurSource.IsPrepared)
                     CurSource.Prepare();
-                ValuesCount vcount;
+                var vcount = new ValuesCount();
                 using (Start(0, PeriodBegin < PeriodEnd ? 30 : 100))
                 {
-                    vcount = CurSource.ReadCut();
+                    vcount += CurSource.ReadCut();
                     Procent = 90;
-                    vcount.WriteCount = 0;
                     foreach (var sig in InitialSignals.Values)
                         if (sig is UniformSignal)
                             vcount.WriteCount += ((UniformSignal)sig).MakeBegin();
                     AddEvent("Срез значений получен", vcount.ReadCount + " значений прочитано, " + vcount.WriteCount + " значений сформировано");
-                    if (!vcount.IsSuccess) return false;
+                    if (vcount.NeedBreak) return false;
                 }
                 
                 if (PeriodBegin < PeriodEnd)
@@ -116,7 +117,7 @@ namespace ProvidersLibrary
                                 changes.WriteCount += ((UniformSignal)sig).MakeEnd();
                         AddEvent("Изменения значений получены", changes.ReadCount + " значений прочитано, " + changes.WriteCount + " значений сформировано");
                         vcount += changes;
-                        if (!vcount.IsSuccess) return false;
+                        if (vcount.NeedBreak) return false;
                     }
 
                 if (CalcSignals.Count > 0)

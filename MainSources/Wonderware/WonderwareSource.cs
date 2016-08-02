@@ -11,16 +11,26 @@ namespace Provider
     //Провайдер источника Wonderware
     [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "WonderwareSource")]
-    public class WonderwareSource : AdoSource
+    public class WonderwareSource : SqlServerSource
     {
-        //Комплект
-        public override string Complect { get { return "Wonderware"; } }
         //Код провайдера
         public override string Code { get { return "WonderwareSource"; } }
-        //Создание подключения
-        protected override ProviderSettings CreateConnect()
+
+        //Получение диапазона архива по блокам истории
+        protected override TimeInterval GetSourceTime()
         {
-            return new WonderwareSettings();
+            DateTime mind = Different.MaxDate, maxd = Different.MinDate;
+            using (var rec = new ReaderAdo(SqlProps, "SELECT FromDate, ToDate FROM v_HistoryBlock ORDER BY FromDate, ToDate DESC"))
+                while (rec.Read())
+                {
+                    var fromd = rec.GetTime("FromDate");
+                    var tod = rec.GetTime("ToDate");
+                    if (fromd < mind) mind = fromd;
+                    if (maxd < tod) maxd = tod;
+                }
+            if (mind == Different.MaxDate && maxd == Different.MinDate)
+                return TimeInterval.CreateDefault();
+            return new TimeInterval(mind, maxd);
         }
 
         //Словарь объектов по TagName
@@ -45,7 +55,7 @@ namespace Provider
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(Name, ErrMomType.Source);
+            var factory = new ErrMomFactory(SourceConnect.Name, ErrMomType.Source);
             factory.AddGoodDescr(192);
             factory.AddDescr(0, "Bad Quality of undetermined state");
             factory.AddDescr(1, "No data available, tag did not exist at the time");
@@ -71,7 +81,7 @@ namespace Provider
         }
 
         //Запрос значений по одному блоку сигналов
-        protected override IRecordRead QueryValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("SELECT TagName, DateTime = convert(nvarchar, DateTime, 21), Value, vValue, Quality, QualityDetail FROM History WHERE  TagName IN (");
             for (var n = 0; n < part.Count; n++)
@@ -86,7 +96,7 @@ namespace Provider
                 sb.Append(" AND DateTime <").Append(en.ToSqlString());
             sb.Append(" ORDER BY DateTime");
 
-            return new ReaderAdo(((WonderwareSettings)Source.CurSettings).SqlProps, sb.ToString(), 10000);
+            return new ReaderAdo(SqlProps, sb.ToString(), 10000);
         }
 
         //Определение текущего считываемого объекта
@@ -97,23 +107,11 @@ namespace Provider
                 return Objects[code];
             return null;
         }
-
-        //Задание нестандартных свойств получения данных
-        protected override void SetReadProperties()
-        {
-            NeedCut = false;
-            ReconnectsCount = 1;
-        }
-
+        
         //Чтение данных из Historian за период
-        protected override void ReadChanges()
-        {
-
-        }
-
         protected override ValuesCount ReadChanges()
         {
-            ReadValuesByParts(Objects.Values, 500, PeriodBegin, PeriodEnd, false);
+            return ReadValuesByParts(Objects.Values, 500, PeriodBegin, PeriodEnd, false);
         }
     }
 }

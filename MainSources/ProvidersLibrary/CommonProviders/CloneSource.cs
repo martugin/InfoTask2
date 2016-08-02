@@ -8,24 +8,61 @@ namespace ProvidersLibrary
     //Источник, читающий из клона
     public class CloneSource : AdoSource
     {
-        //Комплект
-        public override string Complect { get { return "Clones"; } }
         //Код провайдера
         public override string Code { get { return "CloneSource"; } }
-        //Подготовка клона к чтению значений
-        protected override ProviderSettings CreateConnect()
-        {
-            return new CloneSourceSettings { Complect = Complect };
-        }
-        //Подключение 
-        internal CloneSourceSettings Settings { get { return (CloneSourceSettings)CurSettings; } }
 
-        //Настройка свойств получения данных
-        protected override void SetReadProperties()
+        //Файл клона
+        internal string CloneFile { get; private set; }
+        //Кэш для идентификации соединения
+        public override string Hash { get { return "Db=" + CloneFile; } }
+
+        //Чтение настроек провайдера
+        protected override void ReadInf(DicS<string> dic)
         {
-            ReconnectsCount = 1;
-            MaxErrorCount = 1;
-            MaxErrorDepth = 1;
+            var dir = dic["CloneDir"];
+            if (!dir.EndsWith(@"\")) dir += @"\";
+            CloneFile = dir + @"Clone.accdb";
+        }
+
+        //Проверка соединения
+        protected override bool Connect()
+        {
+            return DaoDb.Check(CloneFile, "InfoTaskClone");
+        }
+
+        //Проверка соединения
+        public override bool CheckConnection()
+        {
+            if (!Connect())
+            {
+                AddError(CheckConnectionMessage = "Файл не найден или не является файлом клона");
+                return false;
+            }
+            if (SysTabl.ValueS(CloneFile, "CloneComplect") != SourceConnect.Complect)
+            {
+                AddError(CheckConnectionMessage = "Файл является клоном для другого, несовместимого источника");
+                return false;
+            }
+            CheckConnectionMessage = "Успешное соединение";
+            return true;
+        }
+
+        public override string CheckSettings(DicS<string> infDic)
+        {
+            if (infDic["CloneDir"].IsEmpty())
+                return "Не указан каталог клона";
+            return "";
+        }
+
+        protected override void AddMenuCommands()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override TimeInterval GetSourceTime()
+        {
+            using (var sys = new SysTabl(CloneFile, false))
+                return new TimeInterval(sys.Value("BeginInterval").ToDateTime(), sys.Value("EndInterval").ToDateTime());
         }
 
         //Словари объектов, каждый содержит один сигнал, ключи - SignalId в клоне и коды
@@ -35,13 +72,13 @@ namespace ProvidersLibrary
         private readonly List<SourceObject> _objectsList = new List<SourceObject>();
 
         //Добавляет объект, содержащий один сигнал
-        protected override SourceObject AddObject(UniformSignal sig)
+        internal protected override SourceObject AddObject(InitialSignal sig)
         {
             return _objects.Add(sig.Code, new CloneObject(this));
         }
 
         //Очистка списка объектов
-        protected override void ClearObjects()
+        internal protected override void ClearObjects()
         {
             _objectsId.Clear();
             _objects.Clear();
@@ -51,8 +88,8 @@ namespace ProvidersLibrary
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(Name, ErrMomType.Source);
-            using (var rec = new RecDao(Settings.CloneFile, "MomentErrors"))
+            var factory = new ErrMomFactory(SourceConnect.Name, ErrMomType.Source);
+            using (var rec = new RecDao(CloneFile, "MomentErrors"))
                 while (rec.Read())
                 {
                     int quality = rec.GetInt("Quality");
@@ -67,7 +104,7 @@ namespace ProvidersLibrary
         //Отметка в клоне считывемых сигналов, получение Id сигналов
         public override void Prepare()
         {
-            using (var rec = new RecDao(Settings.CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
+            using (var rec = new RecDao(CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
                 while (rec.Read())
                 {
                     string code = rec.GetString("FullCode");
@@ -86,13 +123,13 @@ namespace ProvidersLibrary
 
         //Читать из таблицы строковых значений
         private bool _isStrTable;
-        
+
         //Запрос значений из клона
-        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             string table = "Moment" + (_isStrTable ? "Str" : "") + "Values" + (isCut ? "Cut" : "");
             string timeField = (isCut ? "Cut" : "") + "Time";
-            return new RecDao(Settings.CloneFile, "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
+            return new RecDao(CloneFile, "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
                                                              " WHERE (Signals.Otm=True) AND (" + table + "." + timeField + ">=" + beg.ToAccessString() + ") AND (" + table + "." + timeField + "<=" + en.ToAccessString() + ")");
         }
 
@@ -103,32 +140,40 @@ namespace ProvidersLibrary
         }
 
         //Чтение среза
-        protected override void ReadCut()
+        internal protected override ValuesCount ReadCut()
         {
-            DateTime d = RemoveMinultes(PeriodBegin);
+            var vc = new ValuesCount();
+            DateTime d = SourceConnect.RemoveMinultes(PeriodBegin);
             AddEvent("Чтение среза действительных значений из таблицы изменений");
             _isStrTable = false;
-            ReadPart(_objectsList, d, PeriodBegin, false);
+            vc += ReadWhole(_objectsList, d, PeriodBegin, false);
+            if (vc.NeedBreak) return vc;
             AddEvent("Чтение среза действительных значений из таблицы срезов");
             _isStrTable = false;
-            ReadPart(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
+            vc += ReadWhole(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
+            if (vc.NeedBreak) return vc;
             AddEvent("Чтение среза строковых значений из таблицы изменений");
             _isStrTable = true;
-            ReadPart(_objectsList, d, PeriodBegin, false);
+            vc += ReadWhole(_objectsList, d, PeriodBegin, false);
+            if (vc.NeedBreak) return vc;
             AddEvent("Чтение среза строковых значений из таблицы срезов");
             _isStrTable = true;
-            ReadPart(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
+            vc += ReadWhole(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
+            return vc;
         }
 
         //Чтение изменений
-        protected override void ReadChanges()
+        internal protected override ValuesCount ReadChanges()
         {
+            var vc = new ValuesCount();
             AddEvent("Чтение изменений действительных значений");
             _isStrTable = false;
-            ReadPart(_objectsList, PeriodBegin, PeriodEnd, false);
+            vc += ReadWhole(_objectsList, PeriodBegin, PeriodEnd, false);
+            if (vc.NeedBreak) return vc;
             AddEvent("Чтение изменений строковых значений");
             _isStrTable = true;
-            ReadPart(_objectsList, PeriodBegin, PeriodEnd, false);
+            vc += ReadWhole(_objectsList, PeriodBegin, PeriodEnd, false);
+            return vc;
         }
     }
 }

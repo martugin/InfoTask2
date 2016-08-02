@@ -4,8 +4,8 @@ using BaseLibrary;
 
 namespace ProvidersLibrary
 {
-    //Источник, использующий SQL-сервер
-    public class SqlSourceSettings : SourceSettings
+    //Источник данных, получаемых из базы данных SQL Server
+    public abstract class SqlServerSource : AdoSource
     {
         //Загрузка свойств из словаря
         protected override void ReadInf(DicS<string> dic)
@@ -14,7 +14,6 @@ namespace ProvidersLibrary
             string server = dic["SQLServer"], db = dic["Database"];
             SqlProps = new SqlProps(server, db, e, dic["Login"], dic["Password"]);
         }
-
         public override string Hash
         {
             get { return "SQLServer=" + SqlProps.ServerName + ";Database=" + SqlProps.DatabaseName; }
@@ -24,7 +23,7 @@ namespace ProvidersLibrary
         public SqlProps SqlProps { get; private set; }
 
         //Проверка соединения
-        public override bool Connect()
+        protected override bool Connect()
         {
             try
             {
@@ -52,7 +51,7 @@ namespace ProvidersLibrary
             catch { }
             return new List<string>();
         }
-        
+
         //Проверка настроек
         public override string CheckSettings(DicS<string> inf)
         {

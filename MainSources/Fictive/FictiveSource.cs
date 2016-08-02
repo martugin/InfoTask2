@@ -1,53 +1,76 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Text;
 using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
 namespace Fictive
 {
-    //Фиктивный тестовый источник, реализация без чтения по блокам и OleDb
+    //Фиктивный тестовый источник с чтением по блокам, OleDb, резервным подключением
     [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "FictiveSource")]
-    public class FictiveSource : SourceBase
+    public class FictiveSource : AccessSource
     {
         //Код
         public override string Code { get { return "FictiveSource"; } }
-        //Комплект
-        public override string Complect { get { return "Fictive"; } }
-        //Создание подключения
-        protected override ProviderSettings CreateConnect()
-        {
-            return new FictiveSettings();
-        }
-        //Ссылка на подключение
-        internal FictiveSettings Settings { get { return (FictiveSettings)CurSettings; } }
 
-        //Словарь объектов, ключи - номера
-        private readonly DicI<ObjectFictive> _objects = new DicI<ObjectFictive>();
-        public DicI<ObjectFictive> Objects { get { return _objects; } }
-
-        //Добавить объект в провайдер
-        protected override SourceObject AddObject(UniformSignal sig)
+        //Каждый второй раз соедиение не проходит
+        private int _numConnect;
+        protected override bool Connect()
         {
-            var num = sig.Inf.GetInt("NumObject");
-            if (!_objects.ContainsKey(num))
-                return _objects.Add(num, new ObjectFictive(this, sig.Inf.GetInt("ValuesInterval")));
-            return _objects[num];
+            return _numConnect++ % 2 == 1;
         }
 
-        //Очистка списков объектов
+        //Диапазон источника
+        protected override TimeInterval GetSourceTime()
+        {
+            if (!Connect()) return TimeInterval.CreateDefault();
+            using (var sys = new SysTabl(DbFile))
+                return new TimeInterval(sys.Value("BeginInterval").ToDateTime(), sys.Value("EndInterval").ToDateTime());
+        }
+        
+        //Словари объектов, ключи - номера и коды
+        private readonly DicI<ObjectFictive> _objectsId = new DicI<ObjectFictive>();
+        public DicI<ObjectFictive> ObjectsId { get { return _objectsId; } }
+        private readonly DicS<ObjectFictive> _objects = new DicS<ObjectFictive>();
+        public DicS<ObjectFictive> Objects { get { return _objects; } }
+
+        //Добавление объекта
+        protected override SourceObject AddObject(InitialSignal sig)
+        {
+            var code = sig.Inf.Get("CodeObject");
+            if (!Objects.ContainsKey(code))
+                return _objects.Add(code, new ObjectFictive(this));
+            return _objects[code];
+        }
+
+        //Очистка списка объектов
         protected override void ClearObjects()
         {
             _objects.Clear();
+            _objectsId.Clear();
         }
 
-        //Подготока источника
+        //Подготова источника
         public override void Prepare()
         {
-            foreach (var ob in _objects.Values)
-                ob.IsInitialized = true;
+            _objectsId.Clear();
+            using (var rec = new RecDao(DbFile, "Objects"))
+                while (rec.Read())
+                {
+                    var code = rec.GetString("Code");
+                    var id = rec.GetInt("ObjectId");
+                    if (_objects.ContainsKey(code))
+                    {
+                        var ob = _objects[code];
+                        ob.IsInitialized = true;
+                        _objectsId.Add(id, ob).Id = id;
+                    }
+                }
         }
-        
+
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
@@ -58,16 +81,33 @@ namespace Fictive
             return factory;
         }
 
-        //Чтение списков равномерных значений
-        protected override void ReadCut()
+        //Чтение среза
+        protected override ValuesCount ReadCut()
         {
-            foreach (var ob in _objects.Values)
-                ob.MakeUniformValues(PeriodBegin, PeriodBegin, true);
+            return ReadValuesByParts(_objectsId.Values, 2, PeriodBegin.AddMinutes(-5), PeriodBegin, true);
         }
-        protected override void ReadChanges()
+        //Чтение изменений
+        protected override ValuesCount ReadChanges()
         {
-            foreach (var ob in _objects.Values)
-                ob.MakeUniformValues(PeriodBegin, PeriodEnd, false);
+            return ReadValuesByParts(_objectsId.Values, 2, PeriodBegin, PeriodEnd, false);
+        }
+
+        //Запрос значений по одному блоку
+        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        {
+            var sb = new StringBuilder("SELECT * FROM Values WHERE (ObjectId = " + ((ObjectFictive)part[0]).Id + ")");
+            for (int i = 1; i < part.Count; i++)
+            {
+                sb.Append(" Or ");
+                sb.Append("(ObjectId = " + ((ObjectFictive) part[0]).Id + ")");
+            }
+            return new RecDao(DbFile, sb.ToString());
+        }
+
+        //Определение текущего считываемого объекта
+        protected override SourceObject DefineObject(IRecordRead rec)
+        {
+            return _objectsId[rec.GetInt("ObjectId")];
         }
     }
 }

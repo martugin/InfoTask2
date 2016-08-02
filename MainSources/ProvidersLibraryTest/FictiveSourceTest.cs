@@ -10,17 +10,17 @@ namespace ProvidersLibraryTest
     [TestClass]
     public class FictiveSourceTest
     {
-        private FictiveSource MakeFictiveSource()
+        private FictiveSimpleSource MakeFictiveSource()
         {
             var logger = new Logger();
             var factory = new ProvidersFactory();
-            return (FictiveSource)factory.CreateProvider(logger, "FictiveSource", "TestSource", "");
+            return (FictiveSimpleSource)factory.CreateProvider(logger, "FictiveSimpleSource", "TestSource", "");
         }
 
         [TestMethod]
         public void Signals()
         {
-            FictiveSource source = MakeFictiveSource();
+            FictiveSimpleSource source = MakeFictiveSource();
             Assert.AreEqual(0, source.Signals.Count);
             var sig1 = source.AddInitialSignal("Ob.Int", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=2000");
             Assert.AreEqual(1, source.Signals.Count);
@@ -34,7 +34,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual("1", sig1.Inf["NumObject"]);
             Assert.AreEqual("Int", sig1.Inf["Signal"]);
             Assert.AreEqual("2000", sig1.Inf["ValuesInterval"]);
-            Assert.AreEqual("FictiveSource", sig1.Source.Code);
+            Assert.AreEqual("FictiveSimpleSource", sig1.Source.Code);
             Assert.AreEqual("TestSource", sig1.Source.Name);
 
             Assert.IsTrue(source.Objects.ContainsKey(1));
@@ -70,7 +70,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(DataType.Boolean, sig3.DataType);
             Assert.IsNull(sig3.Inf);
             Assert.AreEqual("Bit", sig3.Calculate.Method.Name);
-            Assert.AreEqual("FictiveSource", sig3.Source.Code);
+            Assert.AreEqual("FictiveSimpleSource", sig3.Source.Code);
             Assert.AreEqual("TestSource", sig3.Source.Name);
 
             source.AddInitialSignal("Ob2.Int", "Ob2", DataType.Integer, "NumObject=2;Signal=Int;ValuesInterval=1000");
@@ -85,7 +85,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(DataType.Boolean, sig4.DataType);
             Assert.IsNull(sig4.Inf);
             Assert.AreEqual("BitOr", sig4.Calculate.Method.Name);
-            Assert.AreEqual("FictiveSource", sig3.Source.Code);
+            Assert.AreEqual("FictiveSimpleSource", sig3.Source.Code);
             Assert.AreEqual("TestSource", sig3.Source.Name);
 
             Assert.IsTrue(source.Objects.ContainsKey(2));
@@ -112,7 +112,7 @@ namespace ProvidersLibraryTest
         [TestMethod]
         public void InitialValues()
         {
-            FictiveSource source = MakeFictiveSource();
+            FictiveSimpleSource source = MakeFictiveSource();
             source.Prepare();
             var beg = new DateTime(2007, 11, 20, 10, 30, 0);
             var en = new DateTime(2007, 11, 20, 10, 40, 0);
@@ -161,7 +161,7 @@ namespace ProvidersLibraryTest
         [TestMethod]
         public void CalcValuesFull()
         {
-            FictiveSource source = MakeFictiveSource();
+            FictiveSimpleSource source = MakeFictiveSource();
             source.AddInitialSignal("Ob.Int", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=1000");
             source.AddInitialSignal("Ob.Real", "Ob", DataType.Real, "NumObject=1;Signal=Real;ValuesInterval=1000");
             Assert.AreEqual(2, source.Signals.Count);
@@ -312,7 +312,7 @@ namespace ProvidersLibraryTest
         [TestMethod]
         public void CalcValuesPartial()
         {
-            FictiveSource source = MakeFictiveSource();
+            FictiveSimpleSource source = MakeFictiveSource();
             source.AddInitialSignal("Ob.Int", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=1000");
             source.AddInitialSignal("Ob.Real", "Ob", DataType.Real, "NumObject=1;Signal=Real;ValuesInterval=1000");
             Assert.AreEqual(2, source.Signals.Count);

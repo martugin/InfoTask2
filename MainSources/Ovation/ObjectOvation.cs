@@ -14,12 +14,12 @@ namespace Provider
         }
         
         //Сигнал со словом состояния
-        internal UniformSignal StateSignal { get; set; }
+        internal InitialSignal StateSignal { get; set; }
         //Id в Historian
         internal int Id { get; private set; }
         
         //Добавить к объекту сигнал, если такого еще не было
-        protected override UniformSignal AddNewSignal(UniformSignal sig)
+        protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
             if (sig.Inf["Prop"] == "STAT")
                 return StateSignal = StateSignal ?? sig;

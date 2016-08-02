@@ -15,8 +15,8 @@ namespace Provider
         }
 
         //Сигналы: качество, флаги
-        internal UniformSignal QualitySignal { get; set; }
-        internal UniformSignal FlagsSignal { get; set; }
+        internal InitialSignal QualitySignal { get; set; }
+        internal InitialSignal FlagsSignal { get; set; }
         
         //Имя архива
         internal string Archive { get; private set; }
@@ -26,7 +26,7 @@ namespace Provider
         public int Id { get; private set; }
 
         //Добавление сигнала
-        protected override UniformSignal AddNewSignal(UniformSignal sig)
+        protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
             switch (sig.Inf.Get("Prop", "").ToLower())
             {

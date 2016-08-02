@@ -37,29 +37,59 @@ namespace ProvidersLibrary
 
         //Подготовка провайдера к работе
         public abstract void Prepare();
-
-        //Очистка ресурсов
-        public virtual void Dispose() { }
-
+        
         //Открытие подключения, возвращает true, если соединение установлено
-        public virtual bool Connect() { return true; }
+        protected virtual bool Connect() { return true; }
+        //Закрытие подключения
+        protected virtual void Disconnect() { }
+        //Соединение было установлено
+        private bool _isConnected;
 
-        //Проверка соединения
-        public bool Check()
+        //Подключение к провайдеру
+        internal protected bool ConnectProvider(bool anyway) //Соединяться даже если соединение ранее было установлено
         {
-            try { if (Connect()) return true;}
+            if (_isConnected)
+            {
+                if (!anyway) return true;
+                DisconnectProvider();
+                Thread.Sleep(300);
+            }
+
+            try { if (Connect()) return _isConnected = true; }
             catch (Exception ex)
             {
-                AddWarning("Нет соединения с провайдером. Ппытка повторного соединения", ex);
+                AddWarning("Нет соединения с провайдером. Попытка повторного соединения", ex);
             }
-            Thread.Sleep(500);
-            try { return Connect(); }
+            Thread.Sleep(300);
+            DisconnectProvider();
+            Thread.Sleep(300);
+            
+            try { if (Connect()) return _isConnected = true; }
             catch (Exception ex)
             {
                 AddError("Ошибка соединения с провайдером", ex);
-                return false;
             }
+            DisconnectProvider();
+            return false;
         }
+
+        //Отключение от провайдера
+        internal protected void DisconnectProvider()
+        {
+            try { Disconnect();}
+            catch {}
+            _isConnected = false;
+        }
+
+        //Очистка ресурсов
+        public virtual void Dispose()
+        {
+            DisconnectProvider();
+        }
+
+        //Текущий период расчета
+        public DateTime PeriodBegin { get { return ProviderConnect.PeriodBegin; } }
+        public DateTime PeriodEnd { get { return ProviderConnect.PeriodEnd; } }
 
         //Настройка
         #region

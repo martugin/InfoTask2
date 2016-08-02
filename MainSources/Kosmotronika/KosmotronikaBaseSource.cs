@@ -8,12 +8,36 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Базовый класс для источников космотроники
-    public abstract class KosmotronikaBaseSource : AdoSource
+    public abstract class KosmotronikaBaseSource : OleDbSource
     {
-        //Комплект провайдеров
-        public override string Complect { get { return "Kosmotronika"; } }
-        //Ссылка на соединение
-        internal KosmotronikaBaseSettings Settings { get { return (KosmotronikaBaseSettings)CurSettings; } }
+        //Проверка соединения
+        public override bool CheckConnection()
+        {
+            if (Connect() && GetTime() != null)
+            {
+                var ti = GetTime();
+                if (ti != null)
+                {
+                    CheckConnectionMessage = "Успешное соединение. Диапазон источника: " + ti.Begin + " - " + ti.End;
+                    return true;
+                }
+            }
+            AddError(CheckConnectionMessage = "Ошибка соединения с Ретро-сервером");
+            return false;
+        }
+
+        //Получение времени архива ПТК
+        protected override TimeInterval GetSourceTime()
+        {
+            using (var rec = new ReaderAdo(Connection, "Exec RT_ARCHDATE"))
+            {
+                var beg = rec.GetTime(0);
+                var en = rec.GetTime(1);
+                if (beg.ToString() != "0:00:00")
+                    return new TimeInterval(beg, en);
+                return TimeInterval.CreateDefault();
+            }
+        }
         
         //Словарь объектов. Один элемент словаря - один выход, для выхода список битов
         private readonly Dictionary<ObjectIndex, ObjectKosm> _outs = new Dictionary<ObjectIndex, ObjectKosm>();
@@ -28,7 +52,7 @@ namespace Provider
         }
 
         //Добавляет один сигнал в список
-        protected override SourceObject AddObject(UniformSignal sig)
+        protected override SourceObject AddObject(InitialSignal sig)
         {
             var ind = new ObjectIndex
             {
@@ -71,7 +95,7 @@ namespace Provider
         }
 
         //Запрос значений по одному блоку сигналов
-        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             var nums = new ushort[part.Count, IsAnalog ? 3 : 4];
             for (int i = 0; i < part.Count; i++)
@@ -87,14 +111,11 @@ namespace Provider
             var parBeginTime = new OleDbParameter("BeginTime", OleDbType.DBTimeStamp) { Value = beg };
             var parEndTime = new OleDbParameter("EndTime", OleDbType.DBTimeStamp) { Value = en };
             var rec = isCut
-                ? new ReaderAdo(Settings.Connection, IsAnalog ? "Exec ST_ANALOG ?, ?" : "Exec ST_OUT ?, ?", parBeginTime, parSysNums)
-                : new ReaderAdo(Settings.Connection, IsAnalog ? "Exec RT_ANALOGREAD ? , ? , ?" : "Exec RT_EXTREAD ? , ? , ?", parBeginTime, parEndTime, parSysNums);
+                ? new ReaderAdo(Connection, IsAnalog ? "Exec ST_ANALOG ?, ?" : "Exec ST_OUT ?, ?", parBeginTime, parSysNums)
+                : new ReaderAdo(Connection, IsAnalog ? "Exec RT_ANALOGREAD ? , ? , ?" : "Exec RT_EXTREAD ? , ? , ?", parBeginTime, parEndTime, parSysNums);
 
             if (isCut && !rec.HasRows)
-            {
                 AddWarning("Значения из источника не получены", null, part[0].Context + " и др.");
-                IsConnected = false;
-            }
             return rec;
         }
 
@@ -122,27 +143,33 @@ namespace Provider
         }
 
         //Чтение среза
-        protected override void ReadCut()
+        protected override ValuesCount ReadCut()
         {
+            var vc = new ValuesCount();
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                ReadValuesByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
+                vc += ReadValuesByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
+            if (vc.NeedBreak) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), 100))
-                ReadValuesByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по выходам");
+                vc += ReadValuesByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по выходам");
+            return vc;
         }
 
         //Чтение изменений
-        protected override void ReadChanges()
+        protected override ValuesCount ReadChanges()
         {
+            var vc = new ValuesCount();
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                ReadValuesByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по аналоговым сигналам");
+                vc += ReadValuesByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по аналоговым сигналам");
+            if (vc.NeedBreak) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), 100))
-                ReadValuesByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по выходам");
+                vc += ReadValuesByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по выходам");
+            return vc;
         }
     }
 }

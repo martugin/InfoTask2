@@ -11,10 +11,10 @@ namespace Logika
             : base(source) { }
 
         //Словарь сигналов объекта
-        private readonly Dictionary<string, UniformSignal> _signals = new Dictionary<string, UniformSignal>();
+        private readonly Dictionary<string, InitialSignal> _signals = new Dictionary<string, InitialSignal>();
 
         //Сигнал только добавляется в Signals
-        protected override UniformSignal AddNewSignal(UniformSignal sig)
+        protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
             var code = sig.Inf["SignalCode"];
             if (!_signals.ContainsKey(code))
@@ -25,7 +25,8 @@ namespace Logika
         //Чтение из одной строчки значений
         public override int ReadMoments(IRecordRead rec)
         {
-            return _signals.Sum(sig => AddMom(sig.Value, rec.GetTime("Время"), rec.GetDouble(sig.Key)));
+            var t = rec.GetTime("Время");
+            return _signals.Sum(sig => AddMom(sig.Value, t, rec.GetDouble(sig.Key)));
         }
     }
 }

@@ -5,15 +5,15 @@ namespace ProvidersLibrary
     //Сигнал приемника
     public class ReceiverSignal : ProviderSignal
     {
-        public ReceiverSignal(Receiver receiver, string code, string codeObject, DataType dataType, string signalInf)
+        public ReceiverSignal(ReceiverConnect connect, string code, string codeObject, DataType dataType, string signalInf)
             : base(code, codeObject, dataType, signalInf)
         {
-            Receiver = receiver;
+            ReceiverConnect = connect;
         }
 
         //Передаваемое значение
         public IMean Value { get; set; }
         //Соединение - приемник
-        protected Receiver Receiver { get; private set; }
+        protected ReceiverConnect ReceiverConnect { get; private set; }
     }
 }
