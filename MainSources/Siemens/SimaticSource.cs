@@ -53,14 +53,14 @@ namespace Provider
         {
             try
             {
-                if (Connect() && Connection.State == ConnectionState.Open)
+                if (Connect(true) && Connection.State == ConnectionState.Open)
                 {
-                    CheckConnectionMessage += "Успешное соединение с архивом";
+                    CheckConnectionMessage += "Успешное соединение с архивом WINCC";
                     return true;
                 }
-                CheckConnectionMessage += "Не удалось соединиться с архивом";
+                CheckConnectionMessage += "Не удалось соединиться с архивом WINCC";
             }
-            catch { CheckConnectionMessage += "Не удалось соединиться с архивом"; }
+            catch { CheckConnectionMessage += "Не удалось соединиться с архивом WINCC"; }
             return false;
         }
 

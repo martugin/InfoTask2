@@ -14,7 +14,7 @@ namespace Logika
         public override string Code { get { return "PrologSource"; } }
 
         //Проверка соединения с файлом
-        protected override bool Connect()
+        protected override bool ConnectProvider()
         {
             return DaoDb.Check(DbFile, new[] {"NODES", "ABONENTS"});
         }

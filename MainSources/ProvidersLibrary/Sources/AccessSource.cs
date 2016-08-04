@@ -16,7 +16,7 @@ namespace ProvidersLibrary
         public override string Hash { get { return "DbFile=" + DbFile; } }
 
         //Проверка соединения с файлом
-        protected override bool Connect()
+        protected override bool ConnectProvider()
         {
             using (var db = new DaoDb(DbFile))
                 db.ConnectDao();

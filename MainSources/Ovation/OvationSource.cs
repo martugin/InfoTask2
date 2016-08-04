@@ -38,7 +38,7 @@ namespace Provider
         //Проверка соединения в настройке
         public override bool CheckConnection()
         {
-            if (Connect())
+            if (Connect(true))
             {
                 CheckConnectionMessage = "Успешное соединение с Historian";
                 return true;

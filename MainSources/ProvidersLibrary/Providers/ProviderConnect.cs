@@ -6,8 +6,12 @@ namespace ProvidersLibrary
     //Соединение 
     public abstract class ProviderConnect : ExternalLogger
     {
-        protected ProviderConnect(Logger logger) 
-            : base(logger) { }
+        protected ProviderConnect(string name, string complect, Logger logger)
+            : base(logger)
+        {
+            Name = name;
+            Complect = complect;
+        }
         
         //Код соединения
         public string Name { get; private set; }
@@ -25,7 +29,14 @@ namespace ProvidersLibrary
         public ProviderBase MainProvider { get; private set; }
         public ProviderBase ReserveProvider { get; private set; }
         //Текущий провайдер
-        public ProviderBase CurProvider { get; protected set; }
+        public ProviderBase CurProvider { get; private set; }
+
+        //Присвоение основного и резервного провайдеров 
+        public void JionProviders(ProviderBase mainProvider, ProviderBase reserveProvaider = null)
+        {
+            CurProvider = MainProvider = mainProvider;
+            ReserveProvider = reserveProvaider;
+        }
 
         //Переключение текущего провайдера, возвращает true, если переключение произошла
         protected bool ChangeCurProvider()
@@ -33,11 +44,13 @@ namespace ProvidersLibrary
             if (CurProvider == MainProvider && ReserveProvider != null)
             {
                 CurProvider = ReserveProvider;
+                AddEvent("Текущий провайдер изменен на резервный");
                 return true;
             }
             if (CurProvider == ReserveProvider)
             {
                 CurProvider = MainProvider;
+                AddEvent("Текущий провайдер изменен на основной");
                 return true;
             }
             return false;

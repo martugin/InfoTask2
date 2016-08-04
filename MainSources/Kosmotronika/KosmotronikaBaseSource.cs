@@ -13,7 +13,7 @@ namespace Provider
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (Connect() && GetTime() != null)
+            if (Connect(true) && GetTime() != null)
             {
                 var ti = GetTime();
                 if (ti != null)

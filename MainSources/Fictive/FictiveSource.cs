@@ -18,7 +18,7 @@ namespace Fictive
 
         //Каждый второй раз соедиение не проходит
         private int _numConnect;
-        protected override bool Connect()
+        protected override bool ConnectProvider()
         {
             return _numConnect++ % 2 == 1;
         }
@@ -26,7 +26,8 @@ namespace Fictive
         //Диапазон источника
         protected override TimeInterval GetSourceTime()
         {
-            if (!Connect()) return TimeInterval.CreateDefault();
+            if (!Connect(false)) 
+                return TimeInterval.CreateDefault();
             using (var sys = new SysTabl(DbFile))
                 return new TimeInterval(sys.Value("BeginInterval").ToDateTime(), sys.Value("EndInterval").ToDateTime());
         }

@@ -11,7 +11,7 @@ namespace ProvidersLibrary
         protected OleDbConnection Connection { get; private set; }
 
         //Открытие соединения
-        protected override bool Connect()
+        protected override bool ConnectProvider()
         {
             AddEvent("Открытие соединения с провайдером", Hash);
             Connection = new OleDbConnection(ConnectionString);
@@ -20,7 +20,7 @@ namespace ProvidersLibrary
         }
         
         //Открытие соединения
-        protected override void Disconnect()
+        protected override void DisconnectProvider()
         {
             Connection.Close(); 
             Connection.Dispose();

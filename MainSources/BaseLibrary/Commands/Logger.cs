@@ -358,7 +358,7 @@ namespace BaseLibrary
         #region
         // Однопоточный вариант
         //Возвращает true, если операция прошла успешно (может не с первого раза)
-        public bool Danger(Func<bool> operation, //операция, которую нужно выполнить, 
+        public bool Danger(Action operation, //операция, которую нужно выполнить, 
                                     int repetitions, //сколько раз повторять, если не удалась (вместе с первым)
                                     int errorWaiting = 0, //сколько мс ждать при ошибке
                                     string errMess = "Не удалось выполнить опасную операцию", //сообшение об ошибке, если все повторения не удались
@@ -379,17 +379,33 @@ namespace BaseLibrary
             return b;
         }
 
-        //Запуск опасной операции, возвращает комманду
-        private bool RunDanger(Func<bool> operation, Func<bool> errorOperation)
+        //Запуск опасной операции
+        private bool RunDanger(Action operation, Func<bool> errorOperation)
         {
             using (Start(CommandFlags.Danger))
             {
+                if (errorOperation != null)
+                {
+                    try
+                    {
+                        if (!errorOperation())
+                        {
+                            AddError("Неудачное выполнение операции между повторами опасной операции");
+                            return false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AddError("Неудачное выполнение операции между повторами опасной операции", ex);
+                        return false;
+                    }
+                }
+                Procent = 20;
+
                 try
                 {
-                    bool b = errorOperation == null || errorOperation();
-                    Procent = 20;
-                    if (b) b &= operation();
-                    return b;
+                    operation();
+                    return true;
                 }
                 catch (Exception ex)
                 {

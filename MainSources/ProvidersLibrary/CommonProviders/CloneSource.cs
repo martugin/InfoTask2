@@ -25,7 +25,7 @@ namespace ProvidersLibrary
         }
 
         //Проверка соединения
-        protected override bool Connect()
+        protected override bool ConnectProvider()
         {
             return DaoDb.Check(CloneFile, "InfoTaskClone");
         }
@@ -33,7 +33,7 @@ namespace ProvidersLibrary
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (!Connect())
+            if (!Connect(true))
             {
                 AddError(CheckConnectionMessage = "Файл не найден или не является файлом клона");
                 return false;

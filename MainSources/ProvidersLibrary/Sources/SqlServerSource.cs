@@ -23,7 +23,7 @@ namespace ProvidersLibrary
         public SqlProps SqlProps { get; private set; }
 
         //Проверка соединения
-        protected override bool Connect()
+        protected override bool ConnectProvider()
         {
             try
             {
@@ -66,7 +66,7 @@ namespace ProvidersLibrary
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (Connect())
+            if (Connect(true))
             {
                 CheckConnectionMessage = "Успешное соединение";
                 return true;

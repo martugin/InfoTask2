@@ -8,10 +8,10 @@ namespace ProvidersLibrary
     //Соединение-источник
     public class SourceConnect : ProviderConnect
     {
-        //Тип провайдера
-        public SourceConnect(Logger logger) 
-            : base(logger) { }
+        public SourceConnect(string name, string complect, Logger logger) 
+            : base(name, complect, logger) { }
 
+        //Тип провайдера
         public override ProviderType Type { get { return ProviderType.Source;}}
 
         //Текущий провайдер источника
@@ -69,21 +69,28 @@ namespace ProvidersLibrary
         //Чтение значений, возвращает true, если прочитались все значения или частично
         public bool GetValues(DateTime periodBegin, DateTime periodEnd)
         {
-            using (Start())
+            try
             {
-                foreach (var sig in ProviderSignals.Values)
-                    sig.ClearMoments(periodBegin != PeriodEnd);
-                PeriodBegin = periodBegin;
-                PeriodEnd = periodEnd;
+                using (Start())
+                {
+                    foreach (var sig in ProviderSignals.Values)
+                        sig.ClearMoments(periodBegin != PeriodEnd);
+                    PeriodBegin = periodBegin;
+                    PeriodEnd = periodEnd;
 
-                using (Start(5, 80))
-                    if (GetValues()) return true;
+                    using (Start(5, 80))
+                        if (GetValues()) return true;
 
-                if (ChangeCurProvider())
-                    using (Start(80, 100))
-                        return GetValues();
-                return false;    
+                    if (ChangeCurProvider())
+                        using (Start(80, 100))
+                            return GetValues();
+                }
             }
+            catch (Exception ex)
+            {
+                AddError("Ошибка при чтении значений из источника", ex);
+            }
+            return false;
         }
 
         //Чтение значений из источника

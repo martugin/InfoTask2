@@ -69,7 +69,7 @@ namespace ProvidersLibrary
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (Connect())
+            if (ConnectProvider(true))
             {
                 CheckConnectionMessage = "Успешное соединение";
                 return true;
@@ -85,15 +85,6 @@ namespace ProvidersLibrary
             Server.Disconnect();
         }
 
-        //Массив корректно добавленых OPC-итемов
-        private OpcItem[] _itemsList;
-
-
-        //Ссылка на группу
-        private OPCGroup _group;
-        //Словарь OPC-итемов, ключи - коды тегов
-        private readonly Dictionary<string, OpcItem> _items = new Dictionary<string, OpcItem>();
-
         //Список доступных OPC-серверов (не работает, а работает на VisualBasic)
         public List<string> ServersList(string node = null)
         {
@@ -104,8 +95,38 @@ namespace ProvidersLibrary
             return list;
         }
 
+        //Словарь OPC-итемов, ключи - коды тегов
+        private readonly Dictionary<string, OpcItem> _items = new Dictionary<string, OpcItem>();
+        
+        //Массив корректно добавленых OPC-итемов
+        private OpcItem[] _itemsList;
+        //Ссылка на группу
+        private OPCGroup _group;
+
+        //Очистка списков итемов
+        protected internal override void ClearObjects()
+        {
+            _items.Clear();
+            _group = null;
+            _itemsList = null;
+        }
+
+        //Добавить итем содержащий заданный сигнал
+        protected internal override ReceiverObject AddObject(ReceiverSignal sig)
+        {
+            var tag = GetOpcItemTag(sig.Inf);
+            if (_items.ContainsKey(tag))
+                return _items[tag];
+            var item = new OpcItem(this, tag, _items.Count);
+            _items.Add(item.Tag, item);
+            return item;
+        }
+
+        //Получение Tag точки из информации по сигналу
+        protected abstract string GetOpcItemTag(DicS<string> inf);
+
         //Создается группа с именем name
-        public void AddGroup(string name)
+        private void AddGroup(string name)
         {
             if (Server.OPCGroups.Count > 0)
             {
@@ -117,36 +138,6 @@ namespace ProvidersLibrary
             _group.UpdateRate = 1000;
             _group.IsActive = true;
             _group.DeadBand = 0;
-        }
-
-        //Добавить сигнал приемника
-        public ReceiverSignal AddSignal(string signalInf, string code, string codeObject, DataType dataType)
-        {
-            if (ProviderSignals.ContainsKey(code)) return ProviderSignals[code];
-            var item = new OpcItem(this, code, codeObject, dataType, signalInf);
-            ProviderSignals.Add(code, item);
-            item.Tag = GetOpcItemTag(item.Inf);
-            item.ClientHandler = ProviderSignals.Count;
-            if (!_items.ContainsKey(item.Tag))
-                _items.Add(item.Tag, item);
-            return item;
-        }
-
-        //Получение Tag точки по сигналу
-        protected abstract string GetOpcItemTag(DicS<string> inf);
-
-        //Добавить сигнал приемника, задав только тэг (для тестовой записи в настройках), сразу же передается значение как строка
-        public ReceiverSignal AddSignalByTag(string tag, DataType dataType, string v)
-        {
-            if (ProviderSignals.ContainsKey(tag)) return ProviderSignals[tag];
-            var item = new OpcItem(this, tag, tag, dataType, "");
-            ProviderSignals.Add(tag, item);
-            item.Tag = tag;
-            item.ClientHandler = ProviderSignals.Count;
-            item.Value = MFactory.NewMean(dataType, v); 
-            if (!_items.ContainsKey(item.Tag))
-                _items.Add(item.Tag, item);
-            return item;
         }
 
         //Добавление итемов на сервер

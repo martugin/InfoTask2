@@ -56,12 +56,13 @@
     <Compile Include="Receivers\OpcServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Receivers\ReceiverConnect.cs" />
+    <Compile Include="Signals\ReceiverObject.cs" />
     <Compile Include="Sources\AccessSource.cs" />
     <Compile Include="Sources\AdoSource.cs" />
     <Compile Include="Sources\OleDbSource.cs" />
     <Compile Include="Sources\PartsSource.cs" />
     <Compile Include="Providers\ProviderConnect.cs" />
-    <Compile Include="Receivers\Receiver.cs" />
+    <Compile Include="Receivers\ReceiverBase.cs" />
     <Compile Include="Sources\SourceBase.cs" />
     <Compile Include="CommonProviders\CloneSource.cs" />
     <Compile Include="Providers\ProviderSetupForm.cs">

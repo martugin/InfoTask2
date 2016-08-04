@@ -37,21 +37,30 @@ namespace ProvidersLibrary
         private readonly DicS<ComplectConfig> _complectConfigs = new DicS<ComplectConfig>();
         public DicS<ComplectConfig> ComplectConfigs { get { return _complectConfigs; } }
 
+        //Создание соединения
+        public ProviderConnect CreateConnect(ProviderType type, //Тип провайдера
+                                                                 string name, //Имя соединения
+                                                                 string complect, //Комплест
+                                                                 Logger logger) //Логгер (поток)
+        {
+            switch (type)
+            {
+                case ProviderType.Source:
+                    return new SourceConnect(name, complect, logger);
+                case ProviderType.Receiver:
+                    return new ReceiverConnect(name, complect, logger);
+            }
+            return null;
+        }
+
         //Создание провайдера
-        public ProviderBase CreateProvider(Logger logger, //Логгер, например поток расчета
-                                                 string code, //Код провайдера
-                                                 string name, //Имя соединения
-                                                 string inf, string reserveInf = null) //Настройки основного и резервного подключения
+        public ProviderBase CreateProvider(string code, //Код провайдера
+                                                             string inf) //Настройки
         {
             var prc = ProviderConfigs[code];
             var pr = prc.Complect.Complect == "Clones" || prc.Complect.Complect == "Archives"
                          ? NewStandardProvider(prc)
                          : NewProvider(prc);
-
-            pr.Name = name;
-            pr.Logger = logger;
-            pr.AddMainConnect(inf);
-            if (reserveInf != null) pr.AddReserveConnect(reserveInf);
             return pr;
         }
 

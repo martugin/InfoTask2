@@ -8,12 +8,12 @@ namespace ProvidersLibrary
         public ReceiverSignal(ReceiverConnect connect, string code, string codeObject, DataType dataType, string signalInf)
             : base(code, codeObject, dataType, signalInf)
         {
-            ReceiverConnect = connect;
+            Connect = connect;
         }
 
         //Передаваемое значение
         public IMean Value { get; set; }
         //Соединение - приемник
-        protected ReceiverConnect ReceiverConnect { get; private set; }
+        protected ReceiverConnect Connect { get; private set; }
     }
 }

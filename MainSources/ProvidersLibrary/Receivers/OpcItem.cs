@@ -3,18 +3,20 @@
 namespace ProvidersLibrary
 {
     //Один параметр для записи в OPC
-    public class OpcItem : ReceiverSignal
+    public class OpcItem : ReceiverObject
     {
-        internal OpcItem(ReceiverConnect receiver, string code, string codeObject, DataType dataType, string signalInf)
-            : base(receiver, code, codeObject, dataType, signalInf)
-        {}
-
+        internal OpcItem(ReceiverBase receiver, string tag, int clientHandler)
+            : base(receiver)
+        {
+            Tag = tag;
+            ClientHandler = clientHandler;
+        }
+        
         //Стандартные свойства
-        public string Tag { get; set; }
-        public int ClientHandler { get; set; }
+        public string Tag { get; private set; }
+        public int ClientHandler { get; private set; }
         public int ServerHandler { get; internal set; }
 
-        //Значение
-        public IMean Mom { get { return Value; } }
+
     }
 }

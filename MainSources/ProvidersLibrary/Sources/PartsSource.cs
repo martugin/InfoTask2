@@ -25,7 +25,7 @@ namespace ProvidersLibrary
                     AddEvent("Пустой список объектов для считывания" + (isCut ? " среза" : ""), beg + " - " + en);
                     return valuesCount;
                 }
-                if (!ConnectProvider(false)) return valuesCount.Disconnect();
+                if (!Connect(false)) return valuesCount.Disconnect();
                 
                 AddEvent(msg ?? ("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов"), n + " объектов, " + beg + " - " + en);
                 var parts = MakeParts(objects, partSize, isCut);
@@ -48,7 +48,7 @@ namespace ProvidersLibrary
                             errCount++;
                             consErrCount++;
                             AddWarning("Значения блока объектов не были прочитаны", null, vc.ToString());
-                            if (errCount == 1 && !ConnectProvider(true))
+                            if (errCount == 1 && !Connect(true))
                                 return valuesCount.Disconnect();
                             if (consErrCount > 2)
                             {
@@ -138,7 +138,7 @@ namespace ProvidersLibrary
                     errCount++;
                     if (p.Count > 1)
                     {
-                        if (errCount == 1 && !ConnectProvider(true))
+                        if (errCount == 1 && !Connect(true))
                             return valuesCount.Disconnect();
                         int m = p.Count/2;
                         queue.Enqueue(p.GetRange(0, m));
