@@ -1,6 +1,4 @@
-﻿using CommonTypes;
-
-namespace ProvidersLibrary
+﻿namespace ProvidersLibrary
 {
     //Один параметр для записи в OPC
     public class OpcItem : ReceiverObject
@@ -16,7 +14,5 @@ namespace ProvidersLibrary
         public string Tag { get; private set; }
         public int ClientHandler { get; private set; }
         public int ServerHandler { get; internal set; }
-
-
     }
 }

@@ -24,7 +24,7 @@ namespace ProvidersLibrary
             Node = dic["Node"];
         }
         //Хэш для идентификации настройки провайдера
-        public override string Hash
+        protected override string Hash
         {
             get { return "OPCServer=" + ServerName + ";Node=" + Node; }
         }
@@ -40,7 +40,7 @@ namespace ProvidersLibrary
         public int State { get { return Server.ServerState; } }
 
         //Проверка соединения
-        protected override bool Connect()
+        protected override bool ConnectProvider()
         {
             try
             {
@@ -69,7 +69,7 @@ namespace ProvidersLibrary
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (ConnectProvider(true))
+            if (Reconnect())
             {
                 CheckConnectionMessage = "Успешное соединение";
                 return true;
@@ -79,7 +79,7 @@ namespace ProvidersLibrary
         }
 
         //Разрыв соединения
-        protected override void Disconnect()
+        protected override void DisconnectProvider()
         {
             Server.OPCGroups.RemoveAll();
             Server.Disconnect();
@@ -143,7 +143,7 @@ namespace ProvidersLibrary
         //Добавление итемов на сервер
         private bool TryPrepare()
         {
-            if (!ConnectProvider(false)) return false;
+            if (!Connect()) return false;
             try
             {
                 if (_group == null) AddGroup("Gr" + (Server.OPCGroups.Count + 1));
@@ -187,7 +187,7 @@ namespace ProvidersLibrary
             }
         }
 
-        public override void Prepare()
+        internal protected override void Prepare()
         {
             if (!Logger.IsRepeat) TryPrepare();
             else Danger(TryPrepare, 2, 1000, "Ошибка подготовки OPC-сервера");
@@ -220,7 +220,7 @@ namespace ProvidersLibrary
             }
             return true;
         }
-        public void WriteValues()
+        internal protected override void WriteValues()
         {
             if (!Logger.IsRepeat) Danger(TryWriteValues, 2, 500, "Ошибка записи значений в OPC-сервер");
             else Danger(() => Danger(TryWriteValues, 2, 500, "Ошибка записи значений в OPC-сервер"), 3, 10000, "Ошибка подготовки OPC-сервера", TryPrepare);

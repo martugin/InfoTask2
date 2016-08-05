@@ -24,9 +24,9 @@ namespace Fictive
         }
 
         //Диапазон источника
-        protected override TimeInterval GetSourceTime()
+        protected override TimeInterval GetTimeSource()
         {
-            if (!Connect(false)) 
+            if (!Reconnect()) 
                 return TimeInterval.CreateDefault();
             using (var sys = new SysTabl(DbFile))
                 return new TimeInterval(sys.Value("BeginInterval").ToDateTime(), sys.Value("EndInterval").ToDateTime());
@@ -34,9 +34,9 @@ namespace Fictive
         
         //Словари объектов, ключи - номера и коды
         private readonly DicI<ObjectFictive> _objectsId = new DicI<ObjectFictive>();
-        public DicI<ObjectFictive> ObjectsId { get { return _objectsId; } }
+        internal DicI<ObjectFictive> ObjectsId { get { return _objectsId; } }
         private readonly DicS<ObjectFictive> _objects = new DicS<ObjectFictive>();
-        public DicS<ObjectFictive> Objects { get { return _objects; } }
+        internal DicS<ObjectFictive> Objects { get { return _objects; } }
 
         //Добавление объекта
         protected override SourceObject AddObject(InitialSignal sig)
@@ -55,7 +55,7 @@ namespace Fictive
         }
 
         //Подготова источника
-        public override void Prepare()
+        protected override void Prepare()
         {
             _objectsId.Clear();
             using (var rec = new RecDao(DbFile, "Objects"))
@@ -85,12 +85,12 @@ namespace Fictive
         //Чтение среза
         protected override ValuesCount ReadCut()
         {
-            return ReadValuesByParts(_objectsId.Values, 2, PeriodBegin.AddMinutes(-5), PeriodBegin, true);
+            return ReadByParts(_objectsId.Values, 2, PeriodBegin.AddMinutes(-5), PeriodBegin, true);
         }
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadValuesByParts(_objectsId.Values, 2, PeriodBegin, PeriodEnd, false);
+            return ReadByParts(_objectsId.Values, 2, PeriodBegin, PeriodEnd, false);
         }
 
         //Запрос значений по одному блоку

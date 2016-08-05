@@ -19,7 +19,7 @@ namespace ProvidersLibrary
         public string Context { get; internal set; }
 
         //Основной сигнал объекта
-        public InitialSignal ValueSignal { get; set; }
+        internal protected InitialSignal ValueSignal { get; set; }
         //Список сигналов объекта
         private readonly HashSet<InitialSignal> _signals = new HashSet<InitialSignal>();
         protected HashSet<InitialSignal> Signals { get { return _signals; } }
@@ -38,10 +38,10 @@ namespace ProvidersLibrary
         }
         
         //Для объекта опредлено значение среза
-        public bool HasBegin { get; private set; }
+        internal bool HasBegin { get; private set; }
         
         //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
-        public int AddBegin()
+        internal int AddBegin()
         {
             HasBegin = true;
             int n = 0;
@@ -52,38 +52,38 @@ namespace ProvidersLibrary
         }
 
         //Добавка мгновенных значений разного типа в указанный сигнал
-        public int AddMom(InitialSignal sig, DateTime time, bool b, ErrMom err = null)
+        protected int AddMom(InitialSignal sig, DateTime time, bool b, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Boolean = b;
             return sig.AddMom(time, err);
         }
-        public int AddMom(InitialSignal sig, DateTime time, int i, ErrMom err = null)
+        protected int AddMom(InitialSignal sig, DateTime time, int i, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Integer = i;
             return sig.AddMom(time, err);
         }
-        public int AddMom(InitialSignal sig, DateTime time, double r, ErrMom err = null)
+        protected int AddMom(InitialSignal sig, DateTime time, double r, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Real = r;
             return sig.AddMom(time, err);
         }
-        public int AddMom(InitialSignal sig, DateTime time, DateTime d, ErrMom err = null)
+        protected int AddMom(InitialSignal sig, DateTime time, DateTime d, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Date = d;
             return sig.AddMom(time, err);
         }
-        public int AddMom(InitialSignal sig, DateTime time, string s, ErrMom err = null)
+        protected int AddMom(InitialSignal sig, DateTime time, string s, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.String = s;
             return sig.AddMom(time, err);
         }
         //Добавка мгновенных значений, значение берется из типа object
-        public int AddMom(InitialSignal sig, DateTime time, object ob, ErrMom err = null)
+        protected int AddMom(InitialSignal sig, DateTime time, object ob, ErrMom err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Object = ob;
@@ -91,13 +91,13 @@ namespace ProvidersLibrary
         }
 
         //Создание ошибки
-        public ErrMom MakeError(int number)
+        protected ErrMom MakeError(int number)
         {
             return Source.MakeError(number, this);
         }
 
         //Добавление мгновенных значений во все сигналы объекта, только если источник - наследник AdoSource
-        public virtual int ReadMoments(IRecordRead rec) //Рекордсет, из которого читаются значения
+        internal protected virtual int ReadMoments(IRecordRead rec) //Рекордсет, из которого читаются значения
         {
             return 0;
         }

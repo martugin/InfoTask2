@@ -14,13 +14,14 @@ namespace ProvidersLibrary
             string server = dic["SQLServer"], db = dic["Database"];
             SqlProps = new SqlProps(server, db, e, dic["Login"], dic["Password"]);
         }
-        public override string Hash
+
+        protected override string Hash
         {
             get { return "SQLServer=" + SqlProps.ServerName + ";Database=" + SqlProps.DatabaseName; }
         }
 
         //Настройки SQL Server
-        public SqlProps SqlProps { get; private set; }
+        protected SqlProps SqlProps { get; private set; }
 
         //Проверка соединения
         protected override bool ConnectProvider()
@@ -66,7 +67,7 @@ namespace ProvidersLibrary
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (Connect(true))
+            if (Reconnect())
             {
                 CheckConnectionMessage = "Успешное соединение";
                 return true;

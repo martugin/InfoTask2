@@ -16,68 +16,70 @@ namespace ProvidersLibrary
                                                            Func<List<SourceObject>, DateTime, DateTime, bool, ValuesCount> readPartFun, //Функция чтения значений по одному блоку 
                                                            string msg = null) //Сообщение для истории о запуске чтения данных
         {
-            var valuesCount = new ValuesCount();
-            try
+            using (Start())
             {
-                int n = ObjectsToReadCount(objects, isCut);
-                if (n == 0)
+                var valuesCount = new ValuesCount();
+                try
                 {
-                    AddEvent("Пустой список объектов для считывания" + (isCut ? " среза" : ""), beg + " - " + en);
-                    return valuesCount;
-                }
-                if (!Connect(false)) return valuesCount.Disconnect();
-                
-                AddEvent(msg ?? ("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов"), n + " объектов, " + beg + " - " + en);
-                var parts = MakeParts(objects, partSize, isCut);
-                var success = new bool[parts.Count];
-                int errCount = 0, consErrCount = 0;
-                double d = 70.0 / parts.Count;
-                for (int i = 0; i < parts.Count; i++)
-                    using (Start(Procent, Procent + d, CommandFlags.Danger))
+                    int n = ObjectsToReadCount(objects, isCut);
+                    if (n == 0)
                     {
-                        var vc = readPartFun(parts[i], beg, en, isCut);
-                        success[i] = vc.Status == ValuesCountStatus.Success || vc.Status == ValuesCountStatus.Undefined;
-                        valuesCount += vc;
-                        if (!vc.NeedBreak)
+                        AddEvent("Пустой список объектов для считывания" + (isCut ? " среза" : ""), beg + " - " + en);
+                        return valuesCount;
+                    }
+                    if (!Connect()) return valuesCount.MakeBad();
+
+                    AddEvent(msg ?? ("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов"), n + " объектов, " + beg + " - " + en);
+                    var parts = MakeParts(objects, partSize, isCut);
+                    var success = new bool[parts.Count];
+                    int errCount = 0, consErrCount = 0;
+                    double d = 70.0/parts.Count;
+                    for (int i = 0; i < parts.Count; i++)
+                        using (Start(Procent, Procent + d, CommandFlags.Danger))
                         {
-                            AddEvent("Значения блока объектов прочитаны", vc.ToString());
-                            consErrCount = 0;
-                        }
-                        else
-                        {
-                            errCount++;
-                            consErrCount++;
-                            AddWarning("Значения блока объектов не были прочитаны", null, vc.ToString());
-                            if (errCount == 1 && !Connect(true))
-                                return valuesCount.Disconnect();
-                            if (consErrCount > 2)
+                            var vc = readPartFun(parts[i], beg, en, isCut);
+                            success[i] = vc.Status == ValuesCountStatus.Success || vc.Status == ValuesCountStatus.Undefined;
+                            valuesCount += vc;
+                            if (!vc.IsBad)
                             {
-                                AddError("Значения с источника не были прочитаны", null, valuesCount.ToString());
-                                valuesCount.Status = ValuesCountStatus.Fail;
-                                return valuesCount;
+                                AddEvent("Значения блока объектов прочитаны", vc.ToString());
+                                consErrCount = 0;
+                            }
+                            else
+                            {
+                                errCount++;
+                                consErrCount++;
+                                AddWarning("Значения блока объектов не были прочитаны", null, vc.ToString());
+                                if (errCount == 1 && !Reconnect())
+                                    return valuesCount.MakeBad();
+                                if (consErrCount > 2)
+                                {
+                                    AddError("Значения с источника не были прочитаны", null, valuesCount.ToString());
+                                    valuesCount.Status = ValuesCountStatus.Fail;
+                                    return valuesCount;
+                                }
                             }
                         }
+                    if (errCount == 0)
+                    {
+                        AddEvent("Значения с источника прочитаны", valuesCount.ToString());
+                        return valuesCount;
                     }
 
-                if (errCount == 0)
-                {
-                    AddEvent("Значения с источника прочитаны", valuesCount.ToString());
-                    return valuesCount;
+                    AddEvent("Рекурсивное чтение значений по блокам объектов");
+                    d = 30.0/parts.Count;
+                    for (int i = 0; i < parts.Count; i++)
+                        using (Start(Procent, Procent + d, CommandFlags.Danger))
+                            if (!success[i])
+                                valuesCount += ReadPartRecursive(parts[i], beg, en, isCut, readPartFun);
                 }
-
-                AddEvent("Рекурсивное чтение значений по блокам объектов");
-                d = 30.0 / parts.Count;
-                for (int i = 0; i < parts.Count; i++)
-                    using (Start(Procent, Procent + d, CommandFlags.Danger))
-                        if (!success[i])
-                            valuesCount += ReadPartRecursive(parts[i], beg, en, isCut, readPartFun);
+                catch (Exception ex)
+                {
+                    AddError("Ошибка при получении данных", ex);
+                    return valuesCount.MakeBad();
+                }
+                return valuesCount;
             }
-            catch (Exception ex)
-            {
-                AddError("Ошибка при получении данных", ex);
-                return valuesCount.Disconnect();
-            }
-            return valuesCount;
         }
 
         //Количество объектов, для чтения значений
@@ -108,9 +110,9 @@ namespace ProvidersLibrary
 
         //Рекурсивное чтение значений по блоку
         private ValuesCount ReadPartRecursive(List<SourceObject> part, //Блок сигналов 
-                                              DateTime beg, DateTime en, //Период считывания
-                                              bool isCut, //Считывается срез 
-                                              Func<List<SourceObject>, DateTime, DateTime, bool, ValuesCount> readPartFun) //Функция чтения значений по одному блоку 
+                                                                   DateTime beg, DateTime en, //Период считывания
+                                                                   bool isCut, //Считывается срез 
+                                                                   Func<List<SourceObject>, DateTime, DateTime, bool, ValuesCount> readPartFun) //Функция чтения значений по одному блоку 
         {
             int n = 0;
             int errCount = 0;
@@ -124,13 +126,13 @@ namespace ProvidersLibrary
                 Procent = n < 10 ? 10*n : 90;
                 if (n == 8 && errCount == 7)
                 {
-                    AddError("Значения по блоку не прочитаны");
+                    AddWarning("Значения по блоку объектов не прочитаны");
                     return valuesCount;
                 }
                 AddEvent("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов", p.Count + " объектов");
                 var vc = readPartFun(p, beg, en, isCut);
                 valuesCount += vc;
-                if (!vc.NeedBreak)
+                if (!vc.IsBad)
                     AddEvent("Значения прочитаны", vc.ToString());
                 else
                 {
@@ -138,8 +140,8 @@ namespace ProvidersLibrary
                     errCount++;
                     if (p.Count > 1)
                     {
-                        if (errCount == 1 && !Connect(true))
-                            return valuesCount.Disconnect();
+                        if (errCount == 1 && !Reconnect())
+                            return valuesCount.MakeBad();
                         int m = p.Count/2;
                         queue.Enqueue(p.GetRange(0, m));
                         queue.Enqueue(p.GetRange(m, part.Count - m));

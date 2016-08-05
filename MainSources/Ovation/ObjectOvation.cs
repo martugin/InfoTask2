@@ -28,7 +28,7 @@ namespace Provider
 
         //Чтение значений по одному объекту из рекордсета источника и добавление их в список или клон
         //Возвращает количество сформированных значений
-        public override int ReadMoments(IRecordRead rec)
+        protected internal override int ReadMoments(IRecordRead rec)
         {
             _fValue = rec.GetDoubleNull("F_VALUE");
             _rawValue = rec.GetIntNull("RAW_VALUE");

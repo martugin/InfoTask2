@@ -40,14 +40,15 @@ namespace ProvidersLibrary
         //Запись значения в список или клон
         protected int PutMom(IMom mom)
         {
-            if (IdInClone != 0) return PutClone(mom);
+            if (IdInClone != 0) return PutClone(mom, false);
             MList.AddMom(mom);
             return 1;
         }
 
         //Запись значения в клон
         //Чтение одной строчки значений из рекордсета, и запись ее в клон
-        protected virtual int PutClone(IMom mom) //Рекордсет срезов клона
+        protected virtual int PutClone(IMom mom, //Рекордсет срезов клона
+                                                     bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {
             bool isReal = DataType.LessOrEquals(DataType.Real);
             var rec = isReal ? Connect.CloneRec : Connect.CloneStrRec;
@@ -56,9 +57,9 @@ namespace ProvidersLibrary
         }
         //Запись значения в рекордсет клона
         protected void PutCloneRec(IMom mom, //Значение
-                                              RecDao rec, //Рекордсет
-                                              bool isCutTable, //Запись в таблицу срезов
-                                              DateTime d) //Время среза
+                                                 RecDao rec, //Рекордсет
+                                                 bool isCutTable, //Запись в таблицу срезов
+                                                 DateTime d) //Время среза
         {
             rec.AddNew();
             rec.Put("SignalId", IdInClone);

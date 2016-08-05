@@ -14,28 +14,31 @@ namespace ProvidersLibrary
         public override ProviderType Type { get { return ProviderType.Receiver; } }
 
         //Текущий провайдер источника
-        public ReceiverBase CurReceiver { get { return (ReceiverBase)CurProvider; } }
+        public ReceiverBase Receiver { get { return (ReceiverBase)Provider; } }
 
         //Словарь сигналов приемников, ключи - коды
-        protected readonly DicS<ReceiverSignal> ProviderSignals = new DicS<ReceiverSignal>();
-        public IDicSForRead<ReceiverSignal> Signals { get { return ProviderSignals; } }
+        private readonly DicS<ReceiverSignal> _signals = new DicS<ReceiverSignal>();
+        public IDicSForRead<ReceiverSignal> Signals { get { return _signals; } }
 
         //Добавить сигнал
         public ReceiverSignal AddSignal(string fullCode, //Полный код сигнала
-                                                     string codeObject, //Код объекта
-                                                     DataType dataType, //Тип данных
-                                                     string signalInf) //Настройки сигнала
+                                                         string codeObject, //Код объекта
+                                                         DataType dataType, //Тип данных
+                                                         string signalInf) //Настройки сигнала
         {
-            if (ProviderSignals.ContainsKey(fullCode))
-                return ProviderSignals[fullCode];
-            return ProviderSignals.Add(fullCode, new ReceiverSignal(this, fullCode, codeObject, dataType, signalInf));
+            if (_signals.ContainsKey(fullCode))
+                return _signals[fullCode];
+            return _signals.Add(fullCode, new ReceiverSignal(this, fullCode, codeObject, dataType, signalInf));
         }
 
         //Очистка списка сигналов
         public void ClearSignals()
         {
-            ProviderSignals.Clear();
+            _signals.Clear();
         }
+
+        //Приемник был подготовлен
+        private bool _isPrepared;
 
         //Запись значений в приемник
          public bool WriteValues(DateTime periodBegin, DateTime periodEnd)
@@ -48,7 +51,8 @@ namespace ProvidersLibrary
                 using (Start(5, 80))
                     if (WriteValues()) return true;
 
-                if (ChangeCurProvider())
+                _isPrepared = false;
+                if (ChangeProvider())
                     using (Start(80, 100))
                         return WriteValues();
                 return false;    
@@ -60,12 +64,15 @@ namespace ProvidersLibrary
         {
             try
             {
-                if (!CurReceiver.Connect(false))
+                if (!Receiver.Connect())
                     return false;
-                if (!CurReceiver.IsPrepared)
-                    CurReceiver.Prepare();
+                if (!_isPrepared)
+                {
+                    Receiver.Prepare();
+                    _isPrepared = true;
+                }
                 using (Start(0, PeriodBegin < PeriodEnd ? 30 : 100))
-                    CurReceiver.WriteValues();
+                    Receiver.WriteValues();
                 AddEvent("Значения записаны в приемник");
                 return true;
             }

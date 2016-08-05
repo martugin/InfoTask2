@@ -23,8 +23,7 @@ namespace ProvidersLibrary
         //Полный код сигнала
         public string Code { get; private set; }
         //Код объекта
-        public string CodeObject { get; private set; }
-
+        internal string CodeObject { get; private set; }
 
         //Тип данных 
         public DataType DataType { get; protected set; }

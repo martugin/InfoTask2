@@ -16,7 +16,8 @@ namespace Provider
         {
             _retroServerName = dic["RetroServerName"];
         }
-        public override string Hash { get { return "RetroServer=" + _retroServerName; } }
+
+        protected override string Hash { get { return "RetroServer=" + _retroServerName; } }
 
         //Имя ретросервера
         private string _retroServerName;

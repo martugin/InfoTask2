@@ -22,7 +22,7 @@ namespace Provider
     //Для аналоговых - один ТМ, для выходов - один выход ТМ
     internal class ObjectKosm : SourceObject
     {
-        public ObjectKosm(KosmotronikaBaseSource source, ObjectIndex ind) : base(source)
+        internal ObjectKosm(KosmotronikaBaseSource source, ObjectIndex ind) : base(source)
         {
             Sn = ind.Sn; 
             NumType = ind.NumType;
@@ -56,7 +56,7 @@ namespace Provider
 
         //Чтение значений по одному объекту из рекордсета источника
         //Возвращает количество сформированных значений
-        public override int ReadMoments(IRecordRead rec)
+        protected internal override int ReadMoments(IRecordRead rec)
         {
             int nwrite = 0;
             DateTime time = rec.GetTime(3);

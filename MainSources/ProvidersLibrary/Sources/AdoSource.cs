@@ -9,7 +9,7 @@ namespace ProvidersLibrary
     public abstract class AdoSource : PartsSource
     {
         //Чтение значений по блокам объектов
-        protected ValuesCount ReadValuesByParts(IEnumerable<SourceObject> objects, //список объектов
+        protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, //список объектов
                                             int partSize, //Размер одного блока
                                             DateTime beg, DateTime en, //Период считывания
                                             bool isCut, //Считывается срез
@@ -23,10 +23,10 @@ namespace ProvidersLibrary
         }
 
         //Чтение значений по блокам объектов c использованием стандартных функций
-        protected ValuesCount ReadValuesByParts(IEnumerable<SourceObject> objects, int partSize,
+        protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, int partSize,
                                                                        DateTime beg, DateTime en, bool isCut, string msg = null)
         {
-            return ReadValuesByParts(objects, partSize, beg, en, isCut, QueryValues, DefineObject, msg);
+            return ReadByParts(objects, partSize, beg, en, isCut, QueryValues, DefineObject, msg);
         }
 
         //Чтение всех значений одним блоком
@@ -62,46 +62,42 @@ namespace ProvidersLibrary
         
         //Чтение значений по одному блоку списка объектов
         protected override ValuesCount ReadPart(IList<SourceObject> part,
-                                                       DateTime beg, DateTime en, //Период считывания
-                                                       bool isCut) //Считывается срез
+                                                                      DateTime beg, DateTime en, //Период считывания
+                                                                      bool isCut) //Считывается срез
         {
-            IRecordRead rec = null;
-            try
+            IRecordRead rec;
+            using (Start(0, 50))
             {
-                using (Start(0, 50))
+                try
                 {
-                    try
-                    {
-                        AddEvent("Чтение значений блока объектов", part.Count + " объектов");
-                        rec = _queryValuesFun(part, beg, en, isCut);
-                        if (rec == null) return new ValuesCount().Disconnect();
-                    }
-                    catch (Exception ex)
-                    {
-                        AddError("Ошибка при запросе данных из источника", ex);
-                        return new ValuesCount().Disconnect();
-                    }
+                    AddEvent("Чтение значений блока объектов", part.Count + " объектов");
+                    rec = _queryValuesFun(part, beg, en, isCut);
+                    if (rec == null) return new ValuesCount().MakeBad();
                 }
-                using (Start(50, 100))
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        using (rec)
-                        {
-                            AddEvent("Распределение данных по сигналам", part.Count + " объектов");
-                            var vc = ReadPartValues(rec);
-                            AddEvent("Значения блока объектов прочитаны", vc.ToString());
-                            return vc;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        AddError("Ошибка при формировании значений", ex);
-                        return new ValuesCount().Disconnect();
-                    }
+                    AddError("Ошибка при запросе данных из источника", ex);
+                    return new ValuesCount().MakeBad();
                 }
             }
-            finally { if (rec != null) rec.Dispose(); }
+            using (Start(50, 100))
+            {
+                try
+                {
+                    using (rec)
+                    {
+                        AddEvent("Распределение данных по сигналам", part.Count + " объектов");
+                        var vc = ReadPartValues(rec);
+                        AddEvent("Значения блока объектов прочитаны", vc.ToString());
+                        return vc;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AddError("Ошибка при формировании значений", ex);
+                    return new ValuesCount().MakeBad();
+                }
+            }
         }
 
         //Чтение значений из рекордсета по одному блоку

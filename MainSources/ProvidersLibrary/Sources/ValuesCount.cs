@@ -33,10 +33,10 @@
         public int WriteCount { get; set; }
 
         //Не нужно продолжать чтение данных
-        public bool NeedBreak { get { return Status == ValuesCountStatus.Disconnect || Status == ValuesCountStatus.Fail; } }
+        public bool IsBad { get { return Status == ValuesCountStatus.Disconnect || Status == ValuesCountStatus.Fail; } }
 
         //Приписывает значение статусу Disconnect
-        public ValuesCount Disconnect()
+        public ValuesCount MakeBad()
         {
             Status = ValuesCountStatus.Disconnect;
             return this;
@@ -65,7 +65,8 @@
         //Строка для записи в историю
         public override string ToString()
         {
-            return ReadCount + " значений прочитано, " + WriteCount + " значений сформировано";
+            string s = IsBad ? "Неудачное чтение, " : "";
+            return s + ReadCount + " значений прочитано, " + WriteCount + " значений сформировано";
         }
     }
 }

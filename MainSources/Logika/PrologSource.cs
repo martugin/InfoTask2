@@ -55,7 +55,7 @@ namespace Logika
             {
                 _tableName = tabl.Key;
                 vc += ReadWhole(tabl.Value.Values, beg, en, false);
-                if (vc.NeedBreak) return vc;
+                if (vc.IsBad) return vc;
             }
             return vc;
         }

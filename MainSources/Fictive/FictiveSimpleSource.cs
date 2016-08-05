@@ -14,18 +14,18 @@ namespace Fictive
         //Код
         public override string Code { get { return "FictiveSimpleSource"; } }
         //Свойства
-        public override string Hash { get { return "Fictive"; } }
+        protected override string Hash { get { return "Fictive"; } }
         protected override void ReadInf(DicS<string> dic) { }
 
         //Диапазон источника
-        protected override TimeInterval GetSourceTime()
+        protected override TimeInterval GetTimeSource()
         {
             return new TimeInterval(new DateTime(2000, 1, 1), new DateTime(2100, 1, 1));
         }
 
         //Словарь объектов, ключи - номера
         private readonly DicI<ObjectFictive> _objects = new DicI<ObjectFictive>();
-        public DicI<ObjectFictive> Objects { get { return _objects; } }
+        internal DicI<ObjectFictive> Objects { get { return _objects; } }
 
         //Добавить объект в провайдер
         protected override SourceObject AddObject(InitialSignal sig)
@@ -43,7 +43,7 @@ namespace Fictive
         }
 
         //Подготока источника
-        public override void Prepare()
+        protected override void Prepare()
         {
             foreach (var ob in _objects.Values)
                 ob.IsInitialized = true;

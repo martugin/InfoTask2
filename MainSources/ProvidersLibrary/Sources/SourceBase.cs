@@ -8,7 +8,7 @@ namespace ProvidersLibrary
     public abstract class SourceBase : ProviderBase
     {
         //Ссылка на соединение
-        public SourceConnect SourceConnect
+        internal SourceConnect SourceConnect
         {
             get { return (SourceConnect)ProviderConnect; }
         }
@@ -21,8 +21,8 @@ namespace ProvidersLibrary
             try
             {
                 AddEvent("Определение диапазона источника");
-                if (!ConnectProvider(false)) return TimeInterval.CreateDefault();
-                var ti = GetSourceTime();
+                if (!Connect()) return TimeInterval.CreateDefault();
+                var ti = GetTimeSource();
                 if (!ti.IsDefault)
                     AddEvent("Диапазон источника определен", ti.Begin + " - " + ti.End);
                 else AddError("Диапазон источника не определен");
@@ -35,21 +35,18 @@ namespace ProvidersLibrary
             }
         }
         //Получение времени источника 
-        protected virtual TimeInterval GetSourceTime()
+        protected virtual TimeInterval GetTimeSource()
         {
             return new TimeInterval(Different.MinDate, DateTime.Now);
         }
 
-        //Источник был подготовлен
-        internal bool IsPrepared { get; set; }
         //Подготовка провайдера
-        public override void Prepare()
+        internal protected override void Prepare()
         {
             try
             {
                 using (Start())
                 {
-                    IsPrepared = false;
                     ClearObjects();
                     foreach (var sig in SourceConnect.InitialSignals.Values)
                     {
@@ -58,10 +55,9 @@ namespace ProvidersLibrary
                         ob.AddSignal(sig);
                     }
                     Procent = 30;
-                    PrepareSource();
+                    Danger(PrepareSource, 2, 0, "Ошибка при подготовке источника", Reconnect);
                     if (ErrPool == null)
                         ErrPool = new ErrMomPool(MakeErrFactory());
-                    IsPrepared = true;    
                 }
             }
             catch (Exception ex)
@@ -75,7 +71,7 @@ namespace ProvidersLibrary
         //Добавить объект содержащий заданный сигнал
         internal protected abstract SourceObject AddObject(InitialSignal sig);
         //Подготовка источника
-        public virtual void PrepareSource() {}
+        protected virtual void PrepareSource() {}
         
         //Создание фабрики ошибок
         protected virtual IErrMomFactory MakeErrFactory()
@@ -88,7 +84,7 @@ namespace ProvidersLibrary
         internal ErrMomPool ErrPool { get; private set; }
 
         //Создание ошибки 
-        public ErrMom MakeError(int number, IContextable addr)
+        internal ErrMom MakeError(int number, IContextable addr)
         {
             return ErrPool.MakeError(number, addr);
         }

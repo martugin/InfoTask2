@@ -16,7 +16,7 @@ namespace ProvidersLibrary
         }
 
         //Вычисление функции, возвращает количество сформированных значений
-        public Action Calculate { get; private set; }
+        internal Action Calculate { get; private set; }
         //Сигнал, на основе которого вычисляется значение
         private readonly InitialSignal _initialSignal;
 
@@ -29,7 +29,7 @@ namespace ProvidersLibrary
         {
             var lexemes = formula.Split(';');
             var funName = lexemes[0];
-            DefineDtataType(funName);
+            DefineDataType(funName);
             MethodInfo met = typeof(CalcSignal).GetMethod(funName);
             if (met != null) Calculate = (Action)Delegate.CreateDelegate(typeof(Action), this, met);
             _pars = new IMean[lexemes[1].ToInt()];
@@ -38,7 +38,7 @@ namespace ProvidersLibrary
         }
 
         //Определение типа данных возвращаемых значений
-        private void DefineDtataType(string funName)
+        private void DefineDataType(string funName)
         {
             if (funName.StartsWith("Bit")) DataType = DataType.Boolean;
             else if (funName == "Average") DataType = DataType.Real;
@@ -48,7 +48,7 @@ namespace ProvidersLibrary
         }
 
         //Взятие бита, pars[0] - номер бита
-        public void Bit()
+        private void Bit()
         {
             int bit = _pars[0].Integer;
             var moms = _initialSignal.MomList;
@@ -57,7 +57,7 @@ namespace ProvidersLibrary
         }
 
         //Взятие битов и сложение по Or, pars - номера битов
-        public void BitOr()
+        private void BitOr()
         {
             var moms = _initialSignal.MomList;
             for (int i = 0; i < moms.Count; i++)
@@ -71,7 +71,7 @@ namespace ProvidersLibrary
         }
 
         //Взятие битов и сложение по And, pars - номера битов
-        public void BitAnd()
+        private void BitAnd()
         {
             var moms = _initialSignal.MomList;
             for (int i = 0; i < moms.Count; i++)
@@ -88,7 +88,7 @@ namespace ProvidersLibrary
         //pars[0] - длина сегмента в секундах, pars[1] - сдвиг итогового значения, по умолчанию 0
         
         //Среднее по равномерным сегментам, 
-        public void Average() { Agregate(AverageScalar); }
+        private void Average() { Agregate(AverageScalar); }
         private void AverageScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             DateTime time = (i >= mlist.Count - 1 || mlist.Time(i + 1) > t) ? t : mlist.Time(i + 1);
@@ -96,11 +96,11 @@ namespace ProvidersLibrary
         }
 
         //Первое по равномерным сегментам, pars[0] - длина сегмента в секундах
-        public void First() { Agregate(FirstScalar); }
+        private void First() { Agregate(FirstScalar); }
         private void FirstScalar(MomEdit res, MomList mlist, int i, DateTime t) { }
         
         //Последнее по равномерным сегментам, pars[0] - длина сегмента в секундах
-        public void Last() { Agregate( LastScalar); }
+        private void Last() { Agregate( LastScalar); }
         private void LastScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             res.CopyValueFrom(mlist, i);
@@ -108,7 +108,7 @@ namespace ProvidersLibrary
         }
 
         //Минимум по равномерным сегментам, pars[0] - длина сегмента в секундах
-        public void Min() { Agregate(MinScalar); }
+        private void Min() { Agregate(MinScalar); }
         private void MinScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             if (mlist.Mean(i).ValueLess(res))
@@ -119,7 +119,7 @@ namespace ProvidersLibrary
         }
 
         //Максимум по равномерным сегментам, pars[0] - длина сегмента в секундах
-        public void Max() { Agregate(MaxScalar); }
+        private void Max() { Agregate(MaxScalar); }
         private void MaxScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             if (res.ValueLess(mlist.Mean(i)))

@@ -4,14 +4,14 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Объект для клона, содержит один сигнал
-    public class CloneObject : SourceObject
+    internal class CloneObject : SourceObject
     {
-        public CloneObject(SourceBase source) : base(source) { }
+        internal CloneObject(SourceBase source) : base(source) { }
 
         //Id в клоне
         internal int CloneId { get; set; }
 
-        public override int ReadMoments(IRecordRead rec)
+        internal protected override int ReadMoments(IRecordRead rec)
         {
             var time = rec.GetTime("Time");
             var errNum = rec.GetIntNull("ErrNum");

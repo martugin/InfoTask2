@@ -4,15 +4,15 @@ using ProvidersLibrary;
 
 namespace Fictive
 {
-    public class ObjectFictive : SourceObject 
+    internal class ObjectFictive : SourceObject 
     {
         //Фиктивный объект
         //Сигналы задаются свойствами ValuesInterval - частота возвращаемых значений в секундах
-        public ObjectFictive(SourceBase source, int valuesInterval) : base(source)
+        internal ObjectFictive(SourceBase source, int valuesInterval) : base(source)
         {
             ValuesInterval = valuesInterval;
         }
-        public ObjectFictive(SourceBase source) 
+        internal ObjectFictive(SourceBase source) 
             : base(source) { }
 
         //Сигнал недостоверности
@@ -75,17 +75,17 @@ namespace Fictive
         }
 
         //Чтение одной строчки значений
-        public override int ReadMoments(IRecordRead rec)
+        protected internal override int ReadMoments(IRecordRead rec)
         {
             var time = rec.GetTime("Time");
             var state = rec.GetInt("StateSignal");
             return AddMom(ValueSignal, time, rec.GetDouble("ValueSignal")) +
-                   AddMom(StateSignal, time, state) +
-                   AddMom(BoolSignal, time, rec.GetBool("BoolSignal")) +
-                   AddMom(IntSignal, time, rec.GetInt("IntSignal")) +
-                   AddMom(RealSignal, time, rec.GetDouble("RealSignal"), Source.MakeError(state, this)) +
-                   AddMom(StringSignal, time, rec.GetString("StringSignal"), Source.MakeError(state, this)) +
-                   AddMom(TimeSignal, time, rec.GetTime("TimeSignal"));
+                      AddMom(StateSignal, time, state) +
+                      AddMom(BoolSignal, time, rec.GetBool("BoolSignal")) +
+                      AddMom(IntSignal, time, rec.GetInt("IntSignal")) +
+                      AddMom(RealSignal, time, rec.GetDouble("RealSignal"), MakeError(state)) +
+                      AddMom(StringSignal, time, rec.GetString("StringSignal"), MakeError(state)) +
+                      AddMom(TimeSignal, time, rec.GetTime("TimeSignal"));
         }
     }
 } 

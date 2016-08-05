@@ -24,7 +24,7 @@ namespace Provider
         
         //Чтение значений по одному объекту из рекордсета источника и добавление их в список или клон
         //Возвращает количество сформированных значений
-        public override int ReadMoments(IRecordRead rec)
+        protected internal override int ReadMoments(IRecordRead rec)
         {
             var time = rec.GetTime("TIME");
             return AddMom(IndicationSignal, time, rec.GetDouble("VALUE_INDICATION")) +

@@ -23,7 +23,7 @@ namespace Provider
         //Полное имя архивного тэга 
         internal string FullCode { get; private set; }
         //Id в таблице архива
-        public int Id { get; private set; }
+        internal int Id { get; private set; }
 
         //Добавление сигнала
         protected override InitialSignal AddNewSignal(InitialSignal sig)
@@ -41,7 +41,7 @@ namespace Provider
 
         //Чтение значений по одному объекту из рекордсета источника и добавление их в список или клон
         //Возвращает количество сформированных значений
-        public override int ReadMoments(IRecordRead rec)
+        protected internal override int ReadMoments(IRecordRead rec)
         {
             DateTime time = rec.GetTime("TimeStamp").ToLocalTime();
             var quality = rec.GetInt("Quality");

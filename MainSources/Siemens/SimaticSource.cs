@@ -24,7 +24,7 @@ namespace Provider
             _serverName = dic["SQLServer"];
         }
         //Хэш
-        public override string Hash { get { return "SQLServer=" + _serverName; } }
+        protected override string Hash { get { return "SQLServer=" + _serverName; } }
 
         //Строка соединения
         protected override string ConnectionString
@@ -53,7 +53,7 @@ namespace Provider
         {
             try
             {
-                if (Connect(true) && Connection.State == ConnectionState.Open)
+                if (Reconnect() && Connection.State == ConnectionState.Open)
                 {
                     CheckConnectionMessage += "Успешное соединение с архивом WINCC";
                     return true;
@@ -127,12 +127,12 @@ namespace Provider
         //Чтение среза
         protected override ValuesCount ReadCut()
         {
-            return ReadValuesByParts(_objectsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
+            return ReadByParts(_objectsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
         }
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadValuesByParts(_objectsId.Values, 500, PeriodBegin, PeriodEnd, false);
+            return ReadByParts(_objectsId.Values, 500, PeriodBegin, PeriodEnd, false);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Provider
         public override string Code { get { return "WonderwareSource"; } }
 
         //Получение диапазона архива по блокам истории
-        protected override TimeInterval GetSourceTime()
+        protected override TimeInterval GetTimeSource()
         {
             DateTime mind = Different.MaxDate, maxd = Different.MinDate;
             using (var rec = new ReaderAdo(SqlProps, "SELECT FromDate, ToDate FROM v_HistoryBlock ORDER BY FromDate, ToDate DESC"))
@@ -35,7 +35,6 @@ namespace Provider
 
         //Словарь объектов по TagName
         private readonly Dictionary<string, ObjectWonderware> _objects = new Dictionary<string, ObjectWonderware>();
-        internal Dictionary<string, ObjectWonderware> Objects { get { return _objects; } }
 
         //Добавить объект в провайдер
         protected override SourceObject AddObject(InitialSignal sig)
@@ -49,13 +48,13 @@ namespace Provider
         //Очистка списка сигналов
         protected override void ClearObjects()
         {
-            Objects.Clear();
+            _objects.Clear();
         }
 
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(SourceConnect.Name, ErrMomType.Source);
+            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
             factory.AddGoodDescr(192);
             factory.AddDescr(0, "Bad Quality of undetermined state");
             factory.AddDescr(1, "No data available, tag did not exist at the time");
@@ -103,15 +102,15 @@ namespace Provider
         protected override SourceObject DefineObject(IRecordRead rec)
         {
             string code = rec.GetString("TagName");
-            if (Objects.ContainsKey(code))
-                return Objects[code];
+            if (_objects.ContainsKey(code))
+                return _objects[code];
             return null;
         }
         
         //Чтение данных из Historian за период
         protected override ValuesCount ReadChanges()
         {
-            return ReadValuesByParts(Objects.Values, 500, PeriodBegin, PeriodEnd, false);
+            return ReadByParts(_objects.Values, 500, PeriodBegin, PeriodEnd, false);
         }
     }
 }

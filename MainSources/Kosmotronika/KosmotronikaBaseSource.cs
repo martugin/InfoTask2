@@ -13,7 +13,7 @@ namespace Provider
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (Connect(true) && GetTime() != null)
+            if (Reconnect())
             {
                 var ti = GetTime();
                 if (ti != null)
@@ -27,7 +27,7 @@ namespace Provider
         }
 
         //Получение времени архива ПТК
-        protected override TimeInterval GetSourceTime()
+        protected override TimeInterval GetTimeSource()
         {
             using (var rec = new ReaderAdo(Connection, "Exec RT_ARCHDATE"))
             {
@@ -148,12 +148,12 @@ namespace Provider
             var vc = new ValuesCount();
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                vc += ReadValuesByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
-            if (vc.NeedBreak) return vc;
+                vc += ReadByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
+            if (vc.IsBad) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), 100))
-                vc += ReadValuesByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по выходам");
+                vc += ReadByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по выходам");
             return vc;
         }
 
@@ -163,12 +163,12 @@ namespace Provider
             var vc = new ValuesCount();
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                vc += ReadValuesByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по аналоговым сигналам");
-            if (vc.NeedBreak) return vc;
+                vc += ReadByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по аналоговым сигналам");
+            if (vc.IsBad) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), 100))
-                vc += ReadValuesByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по выходам");
+                vc += ReadByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по выходам");
             return vc;
         }
     }

@@ -21,7 +21,7 @@ namespace ProvidersLibrary
         }
 
         //Загрузка настроек провайдера
-        public string Inf
+        internal protected string Inf
         {
             set
             {
@@ -33,58 +33,65 @@ namespace ProvidersLibrary
         //Загрузка свойств из словаря
         protected abstract void ReadInf(DicS<string> dic);
         //Хэш для идентификации настройки провайдера
-        public abstract string Hash { get; }
+        protected abstract string Hash { get; }
 
         //Подготовка провайдера к работе
-        public abstract void Prepare();
+        internal protected abstract void Prepare();
         
         //Открытие подключения, возвращает true, если соединение установлено
-        protected virtual bool Connect() { return true; }
+        protected virtual bool ConnectProvider() { return true; }
         //Закрытие подключения
-        protected virtual void Disconnect() { }
+        protected virtual void DisconnectProvider() { }
         //Соединение было установлено
         private bool _isConnected;
 
-        //Подключение к провайдеру
-        internal protected bool ConnectProvider(bool anyway) //Соединяться даже если соединение ранее было установлено
+        //Первичное подключение к провайдеру
+        internal protected bool Connect()
         {
-            if (_isConnected)
-            {
-                if (!anyway) return true;
-                DisconnectProvider();
-                Thread.Sleep(300);
-            }
-
-            try { if (Connect()) return _isConnected = true; }
+            if (_isConnected) return true;
+            try { if (ConnectProvider()) return _isConnected = true; }
             catch (Exception ex)
             {
                 AddWarning("Нет соединения с провайдером. Попытка повторного соединения", ex);
             }
+            
             Thread.Sleep(300);
-            DisconnectProvider();
+            Disconnect();
             Thread.Sleep(300);
             
-            try { if (Connect()) return _isConnected = true; }
+            try { if (ConnectProvider()) return _isConnected = true; }
             catch (Exception ex)
             {
                 AddError("Ошибка соединения с провайдером", ex);
             }
-            DisconnectProvider();
+            Disconnect();
             return false;
         }
 
         //Отключение от провайдера
-        internal protected void DisconnectProvider()
+        internal protected void Disconnect()
         {
-            try { Disconnect();}
+            try { DisconnectProvider();}
             catch {}
             _isConnected = false;
+        }
+
+        //Повторное подключение
+        internal protected bool Reconnect()
+        {
+            if (_isConnected)
+            {
+                Disconnect();
+                Thread.Sleep(300);
+                _isConnected = false;
+            }
+            return Connect();
         }
 
         //Очистка ресурсов
         public virtual void Dispose()
         {
-            DisconnectProvider();
+            Disconnect();
         }
 
         //Текущий период расчета

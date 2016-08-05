@@ -11,16 +11,13 @@ namespace ProvidersLibrary
             get { return (ReceiverConnect)ProviderConnect; }
         }
 
-        //Источник был подготовлен
-        internal bool IsPrepared { get; set; }
         //Подготовка провайдера
-        public override void Prepare()
+        internal protected override void Prepare()
         {
             try
             {
                 using (Start())
                 {
-                    IsPrepared = false;
                     ClearObjects();
                     foreach (var sig in ReceiverConnect.Signals.Values)
                     {
@@ -29,16 +26,7 @@ namespace ProvidersLibrary
                         ob.AddSignal(sig);
                     }
                     Procent = 30;
-                    Danger()
-                    
-                    try { PrepareReceiver();}
-                    catch (Exception ex)
-                    {
-                        AddError("Ошибка при подготовке источника. Повторный запуск", ex);
-                        PrepareReceiver();
-                    }
-                    
-                    IsPrepared = true;
+                    Danger(PrepareReceiver, 2, 0, "Ошибка при подготовке приемника", Reconnect);
                 }
             }
             catch (Exception ex)

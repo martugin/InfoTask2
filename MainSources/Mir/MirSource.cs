@@ -34,7 +34,7 @@ namespace Provider
         }
         
         //Подготовка провайдера, чтение значений IDCHANNEL
-        public override void Prepare()
+        protected override void Prepare()
         {
             _objectsId.Clear();
             using (var rec = new ReaderAdo(SqlProps, "SELECT OBJECTS.NAME_OBJECT, DEVICES.NAME_DEVICE, LIB_CHANNELS.NAME_TYPE, LIB_CHANNELS.UNIT, CHANNELS.IDCHANNEL, LIB_CHANNELS.TABLE_NAME " +
@@ -74,13 +74,13 @@ namespace Provider
         //Чтение среза
         protected override ValuesCount ReadCut()
         {
-            return ReadValuesByParts(_objects.Values, 5000, PeriodBegin.AddMinutes(-30), PeriodBegin, true);
+            return ReadByParts(_objects.Values, 5000, PeriodBegin.AddMinutes(-30), PeriodBegin, true);
         }
 
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadValuesByParts(_objects.Values, 5000, PeriodBegin, PeriodEnd, false);
+            return ReadByParts(_objects.Values, 5000, PeriodBegin, PeriodEnd, false);
         }
     }
 }

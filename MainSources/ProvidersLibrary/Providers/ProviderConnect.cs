@@ -26,30 +26,30 @@ namespace ProvidersLibrary
         }
 
         //Основной и резервный провайдеры
-        public ProviderBase MainProvider { get; private set; }
-        public ProviderBase ReserveProvider { get; private set; }
+        protected ProviderBase MainProvider { get; private set; }
+        protected ProviderBase ReserveProvider { get; private set; }
         //Текущий провайдер
-        public ProviderBase CurProvider { get; private set; }
+        public ProviderBase Provider { get; private set; }
 
         //Присвоение основного и резервного провайдеров 
         public void JionProviders(ProviderBase mainProvider, ProviderBase reserveProvaider = null)
         {
-            CurProvider = MainProvider = mainProvider;
+            Provider = MainProvider = mainProvider;
             ReserveProvider = reserveProvaider;
         }
 
         //Переключение текущего провайдера, возвращает true, если переключение произошла
-        protected bool ChangeCurProvider()
+        protected bool ChangeProvider()
         {
-            if (CurProvider == MainProvider && ReserveProvider != null)
+            if (Provider == MainProvider && ReserveProvider != null)
             {
-                CurProvider = ReserveProvider;
+                Provider = ReserveProvider;
                 AddEvent("Текущий провайдер изменен на резервный");
                 return true;
             }
-            if (CurProvider == ReserveProvider)
+            if (Provider == ReserveProvider)
             {
-                CurProvider = MainProvider;
+                Provider = MainProvider;
                 AddEvent("Текущий провайдер изменен на основной");
                 return true;
             }
@@ -71,12 +71,12 @@ namespace ProvidersLibrary
             //return ProviderInf;
         }
 
-        //Подготовка провайдера
+        //Подготовка соединения
         public void Prepare()
         {
             try
             {
-                CurProvider.Prepare();
+                Provider.Prepare();
             }
             catch (Exception ex)
             {

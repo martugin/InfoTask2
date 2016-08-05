@@ -59,13 +59,16 @@ namespace ProvidersLibrary
         {
             if (_endMom.Time != Different.MinDate)
                 _beginMom.CopyAllFrom(_endMom);
-            //todo добавлять значения в клон
+            BufMom.CopyValueFrom(_endMom);
+            BufMom.Time = Connect.PeriodEnd;
+            PutClone(BufMom, false);
             return 1;
         }
 
         //Запись значения в клон
         //Чтение одной строчки значений из рекордсета, и запись ее в клон
-        protected override int PutClone(IMom mom) //Рекордсет срезов клона
+        protected override int PutClone(IMom mom, //Рекордсет срезов клона
+                                                       bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {
             bool isReal = DataType.LessOrEquals(DataType.Real);
             var rec = isReal ? Connect.CloneRec : Connect.CloneStrRec;
@@ -76,11 +79,15 @@ namespace ProvidersLibrary
             var d = Connect.RemoveMinultes(PrevMom.Time).AddMinutes(10);
             while (d <= d1)
             {
-                PutCloneRec(PrevMom, recCut, true, d);
+                if (d != mom.Time)
+                {
+                    PutCloneRec(PrevMom, recCut, true, d);
+                    nwrite++;
+                }
                 d = d.AddMinutes(10);
-                nwrite++;
             }
-            PutCloneRec(mom, rec, false, mom.Time);
+            if (!onlyCut)
+                PutCloneRec(mom, rec, false, mom.Time);
             PrevMom.CopyAllFrom(BufMom);
             return nwrite + 1;
         }

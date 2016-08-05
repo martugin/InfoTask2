@@ -14,7 +14,7 @@ namespace ProvidersLibrary
         //Файл клона
         internal string CloneFile { get; private set; }
         //Кэш для идентификации соединения
-        public override string Hash { get { return "Db=" + CloneFile; } }
+        protected override string Hash { get { return "Db=" + CloneFile; } }
 
         //Чтение настроек провайдера
         protected override void ReadInf(DicS<string> dic)
@@ -33,7 +33,7 @@ namespace ProvidersLibrary
         //Проверка соединения
         public override bool CheckConnection()
         {
-            if (!Connect(true))
+            if (!Reconnect())
             {
                 AddError(CheckConnectionMessage = "Файл не найден или не является файлом клона");
                 return false;
@@ -59,7 +59,7 @@ namespace ProvidersLibrary
             throw new NotImplementedException();
         }
 
-        protected override TimeInterval GetSourceTime()
+        protected override TimeInterval GetTimeSource()
         {
             using (var sys = new SysTabl(CloneFile, false))
                 return new TimeInterval(sys.Value("BeginInterval").ToDateTime(), sys.Value("EndInterval").ToDateTime());
@@ -102,7 +102,7 @@ namespace ProvidersLibrary
         }
 
         //Отметка в клоне считывемых сигналов, получение Id сигналов
-        public override void Prepare()
+        internal protected override void Prepare()
         {
             using (var rec = new RecDao(CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
                 while (rec.Read())
@@ -147,15 +147,15 @@ namespace ProvidersLibrary
             AddEvent("Чтение среза действительных значений из таблицы изменений");
             _isStrTable = false;
             vc += ReadWhole(_objectsList, d, PeriodBegin, false);
-            if (vc.NeedBreak) return vc;
+            if (vc.IsBad) return vc;
             AddEvent("Чтение среза действительных значений из таблицы срезов");
             _isStrTable = false;
             vc += ReadWhole(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
-            if (vc.NeedBreak) return vc;
+            if (vc.IsBad) return vc;
             AddEvent("Чтение среза строковых значений из таблицы изменений");
             _isStrTable = true;
             vc += ReadWhole(_objectsList, d, PeriodBegin, false);
-            if (vc.NeedBreak) return vc;
+            if (vc.IsBad) return vc;
             AddEvent("Чтение среза строковых значений из таблицы срезов");
             _isStrTable = true;
             vc += ReadWhole(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
@@ -169,7 +169,7 @@ namespace ProvidersLibrary
             AddEvent("Чтение изменений действительных значений");
             _isStrTable = false;
             vc += ReadWhole(_objectsList, PeriodBegin, PeriodEnd, false);
-            if (vc.NeedBreak) return vc;
+            if (vc.IsBad) return vc;
             AddEvent("Чтение изменений строковых значений");
             _isStrTable = true;
             vc += ReadWhole(_objectsList, PeriodBegin, PeriodEnd, false);

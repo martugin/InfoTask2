@@ -16,7 +16,7 @@ namespace Provider
         //Код провайдера
         public override string Code { get { return "OvationSource"; } }
 
-        public override string Hash { get { return "OvationHistorian=" + _dataSource; } }
+        protected override string Hash { get { return "OvationHistorian=" + _dataSource; } }
         //Настройки провайдера
         protected override void ReadInf(DicS<string> dic)
         {
@@ -38,7 +38,7 @@ namespace Provider
         //Проверка соединения в настройке
         public override bool CheckConnection()
         {
-            if (Connect(true))
+            if (Reconnect())
             {
                 CheckConnectionMessage = "Успешное соединение с Historian";
                 return true;
@@ -68,7 +68,7 @@ namespace Provider
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(SourceConnect.Name, ErrMomType.Source);
+            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
             factory.AddGoodDescr(0);
             factory.AddDescr(1, "FAIR", ErrorQuality.Warning);
             factory.AddDescr(2, "POOR", ErrorQuality.Warning);
@@ -114,17 +114,17 @@ namespace Provider
         {
             var vc = new ValuesCount();
             using (Start(0, 50)) //Срез по 4 минутам
-                vc += ReadValuesByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
-            if (vc.NeedBreak) return vc;
+                vc += ReadByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
+            if (vc.IsBad) return vc;
             using (Start(50, 100)) //Срез по 61 минуте
-                vc += ReadValuesByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
+                vc += ReadByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
             return vc;
         }
 
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadValuesByParts(_objectsId.Values, 200, PeriodBegin, PeriodEnd, false);
+            return ReadByParts(_objectsId.Values, 200, PeriodBegin, PeriodEnd, false);
         }
     }
 }
