@@ -6,7 +6,7 @@ namespace ProvidersLibrary
     public abstract class ReceiverBase : ProviderBase
     {
         //Ссылка на соединение
-        public ReceiverConnect ReceiverConnect
+        internal ReceiverConnect ReceiverConnect
         {
             get { return (ReceiverConnect)ProviderConnect; }
         }
@@ -40,9 +40,9 @@ namespace ProvidersLibrary
         //Добавить объект содержащий заданный сигнал
         internal protected abstract ReceiverObject AddObject(ReceiverSignal sig);
         //Подготовка источника
-        public virtual void PrepareReceiver() { }
+        protected virtual void PrepareReceiver() { }
 
         //Запись значений в приемник
-        protected internal abstract void WriteValues();
+        internal protected abstract void WriteValues();
     }
 }

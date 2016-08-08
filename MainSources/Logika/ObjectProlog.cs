@@ -23,7 +23,7 @@ namespace Logika
         }
 
         //Чтение из одной строчки значений
-        protected internal override int ReadMoments(IRecordRead rec)
+        protected override int ReadMoments(IRecordRead rec)
         {
             var t = rec.GetTime("Время");
             return _signals.Sum(sig => AddMom(sig.Value, t, rec.GetDouble(sig.Key)));

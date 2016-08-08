@@ -10,38 +10,20 @@ namespace Provider
     {
         //Код
         public override string Code { get { return "KosmotronikaOPCReceiver"; } }
-        //Комплект
-        public override string Complect { get { return "Kosmotronika"; } }
 
-        //Создание подключения
-        protected override ProviderSettings CreateConnect()
+        //Загрузка дополнительных настроек провайдера из Inf
+        protected override void ReadAdditionalInf(DicS<string> dic)
         {
-            return new KosmotronikaOpcSettings();
+            ServerGroup = dic["ServerGroup"];
         }
-        //Ссылка на соединение
-        public KosmotronikaOpcSettings Settings { get { return (KosmotronikaOpcSettings)CurSettings; } }
+
+        //Серверная группа
+        internal string ServerGroup { get; private set; }
 
         //Получение Tag точки по сигналу
         protected override string GetOpcItemTag(DicS<string> inf)
         {
-            return Settings.ServerGroup + ".point." + inf["SysNum"];
-        }
-    }
-
-    //------------------------------------------------------------------------------------------------
-
-    //Соединение приемника 
-    public class KosmotronikaOpcSettings : OpcServerSettings
-    {
-        //Серверная группа
-        internal string ServerGroup { get; private set; }
-
-        //Загрузка дополнительных настроек провайдера из Inf
-        protected override void ReadInf(DicS<string> dic)
-        {
-            ServerName = dic["OPCServerName"];
-            Node = dic["Node"];
-            ServerGroup = dic["ServerGroup"];
+            return ServerGroup + ".point." + inf["SysNum"];
         }
     }
 }

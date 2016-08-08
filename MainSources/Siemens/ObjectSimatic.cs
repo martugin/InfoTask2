@@ -41,7 +41,7 @@ namespace Provider
 
         //Чтение значений по одному объекту из рекордсета источника и добавление их в список или клон
         //Возвращает количество сформированных значений
-        protected internal override int ReadMoments(IRecordRead rec)
+        protected override int ReadMoments(IRecordRead rec)
         {
             DateTime time = rec.GetTime("TimeStamp").ToLocalTime();
             var quality = rec.GetInt("Quality");

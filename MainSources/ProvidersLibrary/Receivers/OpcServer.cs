@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BaseLibrary;
-using CommonTypes;
 using OPCAutomation;
 
 namespace ProvidersLibrary
@@ -22,7 +22,11 @@ namespace ProvidersLibrary
         {
             ServerName = dic["OPCServerName"];
             Node = dic["Node"];
+            ReadAdditionalInf(dic);
         }
+        //Чтение дополнительных настроек
+        protected virtual void ReadAdditionalInf(DicS<string> dic) { }
+
         //Хэш для идентификации настройки провайдера
         protected override string Hash
         {
@@ -88,11 +92,8 @@ namespace ProvidersLibrary
         //Список доступных OPC-серверов (не работает, а работает на VisualBasic)
         public List<string> ServersList(string node = null)
         {
-            var list = new List<string>();
             Array arr = node == null ? Server.GetOPCServers() : Server.GetOPCServers(node);
-            foreach (string a in arr)
-                list.Add(a);
-            return list;
+            return arr.Cast<string>().ToList();
         }
 
         //Словарь OPC-итемов, ключи - коды тегов
@@ -141,89 +142,63 @@ namespace ProvidersLibrary
         }
 
         //Добавление итемов на сервер
-        private bool TryPrepare()
+        protected  override void PrepareReceiver()
         {
-            if (!Connect()) return false;
-            try
+            if (_group == null) AddGroup("Gr" + (Server.OPCGroups.Count + 1));
+            int n = _items.Count;
+            var list = new OpcItem[n + 1];
+            int i = 1;
+            foreach (var item in _items.Values)
+                list[i++] = item;
+            if (n == 0) _itemsList = null;
+            else
             {
-                if (_group == null) AddGroup("Gr" + (Server.OPCGroups.Count + 1));
-                int n = _items.Count;
-                var list = new OpcItem[n + 1];
-                int i = 1;
-                foreach (var item in _items.Values)
-                    list[i++] = item;
-                if (n == 0) _itemsList = null;
-                else
+                Array clientH = Array.CreateInstance(typeof(Int32), n + 1);
+                var itemArr = Array.CreateInstance(typeof(string), n + 1);
+                Array errorsArr = new object[n + 1];
+                Array serverH = new object[n + 1];
+                for (int j = 1; j <= n; j++)
                 {
-                    Array clientH = Array.CreateInstance(typeof(Int32), n + 1);
-                    var itemArr = Array.CreateInstance(typeof(string), n + 1);
-                    Array errorsArr = new object[n + 1];
-                    Array serverH = new object[n + 1];
-                    for (int j = 1; j <= n; j++)
-                    {
-                        var item = list[j];
-                        itemArr.SetValue(item.Tag, j);
-                        clientH.SetValue(j, j);
-                    }
-                    _group.OPCItems.AddItems(n, ref itemArr, ref clientH, out serverH, out errorsArr);
-                    int m = 1;
-                    for (int j = 1; j <= n; j++)
-                        if (((int)errorsArr.GetValue(j)) == 0) m++;
-                    _itemsList = new OpcItem[m];
-                    int k = 1;
-                    for (int j = 1; j <= n; j++)
-                        if (((int)errorsArr.GetValue(j)) == 0)
-                        {
-                            _itemsList[k] = list[j];
-                            _itemsList[k++].ServerHandler = (int)serverH.GetValue(j);
-                        }
+                    var item = list[j];
+                    itemArr.SetValue(item.Tag, j);
+                    clientH.SetValue(j, j);
                 }
-                return true;
+                _group.OPCItems.AddItems(n, ref itemArr, ref clientH, out serverH, out errorsArr);
+                int m = 1;
+                for (int j = 1; j <= n; j++)
+                    if (((int)errorsArr.GetValue(j)) == 0) m++;
+                _itemsList = new OpcItem[m];
+                int k = 1;
+                for (int j = 1; j <= n; j++)
+                    if (((int)errorsArr.GetValue(j)) == 0)
+                    {
+                        _itemsList[k] = list[j];
+                        _itemsList[k++].ServerHandler = (int)serverH.GetValue(j);
+                    }
             }
-            catch (Exception ex)
-            {
-                AddError("Ошибка подготовки серверной группы", ex);
-                return false;
-            }
-        }
-
-        internal protected override void Prepare()
-        {
-            if (!Logger.IsRepeat) TryPrepare();
-            else Danger(TryPrepare, 2, 1000, "Ошибка подготовки OPC-сервера");
         }
 
         //Запись значений
-        private bool TryWriteValues()
-        {
-            try
-            {
-                if (_items.Count > 0)
-                {
-                    int m = _itemsList == null ? 0 : _itemsList.Length;//Количество корректно добавленых точек + 1
-                    Array serverHandles = new int[m];
-                    Array valuesArr = new object[m];
-                    Array errorsArr = new object[m];
-                    for (int i = 1; i < m; i++)
-                    {
-                        var item = _itemsList[i];
-                        serverHandles.SetValue(item.ServerHandler, i);
-                        valuesArr.SetValue(item.Value.Object, i);
-                    }
-                    _group.SyncWrite(m - 1, ref serverHandles, ref valuesArr, out errorsArr);
-                }
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка записи значений в OPC-сервер", ex);
-                return false;
-            }
-            return true;
-        }
         internal protected override void WriteValues()
         {
-            if (!Logger.IsRepeat) Danger(TryWriteValues, 2, 500, "Ошибка записи значений в OPC-сервер");
-            else Danger(() => Danger(TryWriteValues, 2, 500, "Ошибка записи значений в OPC-сервер"), 3, 10000, "Ошибка подготовки OPC-сервера", TryPrepare);
+            Danger(TryWriteValues, 2, 500, "Ошибка записи значений в OPC-сервер");
+        }
+        private void TryWriteValues()
+        {
+            if (_items.Count > 0)
+            {
+                int m = _itemsList == null ? 0 : _itemsList.Length;//Количество корректно добавленых точек + 1
+                Array serverHandles = new int[m];
+                Array valuesArr = new object[m];
+                Array errorsArr = new object[m];
+                for (int i = 1; i < m; i++)
+                {
+                    var item = _itemsList[i];
+                    serverHandles.SetValue(item.ServerHandler, i);
+                    valuesArr.SetValue(item.ValueSignal.Value.Object, i);
+                }
+                _group.SyncWrite(m - 1, ref serverHandles, ref valuesArr, out errorsArr);
+            }
         }
     }
 }

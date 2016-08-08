@@ -17,6 +17,14 @@ namespace ProvidersLibrary
         //Текущий провайдер источника
         private SourceBase Source { get { return (SourceBase) Provider; } }
 
+         //Получение диапазона времени источника
+        //Возвращает Default интервал, если нет связи с источником
+        //Возвращает TimeInterval(Different.MinDate, DateTime.Now) если источник не позволяет определять диапазон
+        public TimeInterval GetTime()
+        {
+            return Source.GetTime();
+        }
+
         //Список сигналов, содержащих возвращаемые значения
         private readonly DicS<SourceSignal> _signals = new DicS<SourceSignal>();
         public IDicSForRead<SourceSignal> Signals { get { return _signals; } }

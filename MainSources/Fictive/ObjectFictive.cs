@@ -75,7 +75,7 @@ namespace Fictive
         }
 
         //Чтение одной строчки значений
-        protected internal override int ReadMoments(IRecordRead rec)
+        protected override int ReadMoments(IRecordRead rec)
         {
             var time = rec.GetTime("Time");
             var state = rec.GetInt("StateSignal");
