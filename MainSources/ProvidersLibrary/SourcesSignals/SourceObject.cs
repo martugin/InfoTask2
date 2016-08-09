@@ -44,11 +44,11 @@ namespace ProvidersLibrary
         internal int AddBegin()
         {
             HasBegin = true;
-            int n = 0;
+            int nwrite = 0;
             foreach (var sig in Signals)
                 if (sig is UniformSignal)
-                    n += ((UniformSignal)sig).MakeBegin();
-            return n;
+                    nwrite += ((UniformSignal)sig).MakeBegin();
+            return nwrite;
         }
 
         //Добавка мгновенных значений разного типа в указанный сигнал
@@ -96,7 +96,7 @@ namespace ProvidersLibrary
             return Source.MakeError(number, this);
         }
 
-        //Добавление мгновенных значений во все сигналы объекта, только если источник - наследник AdoSource
+        //Добавление мгновенных значений во все сигналы объекта, используется только если источник - наследник AdoSource
         internal protected virtual int ReadMoments(IRecordRead rec) //Рекордсет, из которого читаются значения
         {
             return 0;

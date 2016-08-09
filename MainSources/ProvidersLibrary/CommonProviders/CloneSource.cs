@@ -31,7 +31,7 @@ namespace ProvidersLibrary
         }
 
         //Проверка соединения
-        public override bool CheckConnection()
+        protected override bool CheckConnection()
         {
             if (!Reconnect())
             {
@@ -47,7 +47,7 @@ namespace ProvidersLibrary
             return true;
         }
 
-        public override string CheckSettings(DicS<string> infDic)
+        internal protected override string CheckSettings(DicS<string> infDic)
         {
             if (infDic["CloneDir"].IsEmpty())
                 return "Не указан каталог клона";
@@ -72,13 +72,13 @@ namespace ProvidersLibrary
         private readonly List<SourceObject> _objectsList = new List<SourceObject>();
 
         //Добавляет объект, содержащий один сигнал
-        internal protected override SourceObject AddObject(InitialSignal sig)
+        protected override SourceObject AddObject(InitialSignal sig)
         {
             return _objects.Add(sig.Code, new CloneObject(this));
         }
 
         //Очистка списка объектов
-        internal protected override void ClearObjects()
+        protected override void ClearObjects()
         {
             _objectsId.Clear();
             _objects.Clear();
@@ -95,14 +95,13 @@ namespace ProvidersLibrary
                     int quality = rec.GetInt("Quality");
                     int num = rec.GetInt("NumError");
                     string text = rec.GetString("TextError");
-                    if (quality == 0) factory.AddGoodDescr(num);
-                    else factory.AddDescr(num, text, quality == 1 ? ErrorQuality.Warning : ErrorQuality.Error);
+                    factory.AddDescr(num, text, quality);
                 }
             return factory;
         }
 
         //Отметка в клоне считывемых сигналов, получение Id сигналов
-        internal protected override void Prepare()
+        protected override void PrepareSource()
         {
             using (var rec = new RecDao(CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
                 while (rec.Read())
@@ -113,7 +112,6 @@ namespace ProvidersLibrary
                     {
                         rec.Put("Otm", true);
                         var ob = _objects[code];
-                        ob.CloneId = id;
                         _objectsId.Add(id, ob);
                         _objectsList.Add(ob);
                     }

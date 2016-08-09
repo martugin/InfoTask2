@@ -56,7 +56,7 @@
     <Compile Include="Receivers\OpcServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Receivers\ReceiverConnect.cs" />
-    <Compile Include="Signals\ReceiverObject.cs" />
+    <Compile Include="Receivers\ReceiverObject.cs" />
     <Compile Include="Sources\AccessSource.cs" />
     <Compile Include="Sources\AdoSource.cs" />
     <Compile Include="Sources\OleDbSource.cs" />
@@ -75,13 +75,13 @@
     <Compile Include="Sources\SourceConnect.cs" />
     <Compile Include="Sources\SqlServerSource.cs" />
     <Compile Include="Sources\ValuesCount.cs" />
-    <Compile Include="Signals\CalcSignal.cs" />
-    <Compile Include="Signals\InitialSignal.cs" />
-    <Compile Include="Signals\ProviderSignal.cs" />
-    <Compile Include="Signals\SourceObject.cs" />
-    <Compile Include="Signals\ReceiverSignal.cs" />
-    <Compile Include="Signals\UniformSignal.cs" />
-    <Compile Include="Signals\SourceSignal.cs" />
+    <Compile Include="SourcesSignals\CalcSignal.cs" />
+    <Compile Include="SourcesSignals\InitialSignal.cs" />
+    <Compile Include="Providers\ProviderSignal.cs" />
+    <Compile Include="SourcesSignals\SourceObject.cs" />
+    <Compile Include="Receivers\ReceiverSignal.cs" />
+    <Compile Include="SourcesSignals\UniformSignal.cs" />
+    <Compile Include="SourcesSignals\SourceSignal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">

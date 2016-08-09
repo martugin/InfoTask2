@@ -8,13 +8,13 @@ namespace Provider
     //Объект
     internal class ObjectWonderware : SourceObject
     {
-        public ObjectWonderware(WonderwareSource source, string tag) : base(source)
+        internal ObjectWonderware(WonderwareSource source, string tag) : base(source)
         {
             TagName = tag;
         }
 
         //Имя тэга 
-        public string TagName { get; private set; }
+        internal string TagName { get; private set; }
 
         //Чтение значений по одному объекту из рекордсета источника
         //Возвращает количество сформированных значений

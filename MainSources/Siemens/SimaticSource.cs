@@ -49,7 +49,7 @@ namespace Provider
         }
 
         //Проверка соединения
-        public override bool CheckConnection()
+        protected override bool CheckConnection()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace Provider
         }
 
         //Проверка настроек
-        public override string CheckSettings(DicS<string> inf)
+        protected override string CheckSettings(DicS<string> inf)
         {
             if (!inf.ContainsKey("SQLServer"))
                 return "Не указано имя архивного сервера";

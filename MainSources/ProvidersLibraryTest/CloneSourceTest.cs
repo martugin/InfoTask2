@@ -21,7 +21,7 @@ namespace ProvidersLibraryTest
             CopyFile("Clone.accdb");
             var factory = new ProvidersFactory();
             var connect = factory.CreateConnect(ProviderType.Source, "TestSource", "Clones", new Logger());
-            connect.JionProviders(factory.CreateProvider("CloneSource", "CloneDir=" + _dir));
+            connect.JoinProviders(factory.CreateProvider("CloneSource", "CloneDir=" + _dir));
             return (SourceConnect)connect;
         }
 
@@ -35,17 +35,15 @@ namespace ProvidersLibraryTest
             Assert.AreEqual("TestSource", connect.Name);
             Assert.AreEqual("CloneSource", connect.Provider.Code);
             Assert.AreEqual("Clones", connect.Complect);
-            Assert.AreEqual("Источник: TestSource, CloneSource", connect.Context);
+            Assert.AreEqual("Источник: TestSource", connect.Context);
             Assert.IsNotNull(connect.Logger);
             Assert.AreEqual(0, connect.CalcSignals.Count);
             Assert.AreEqual(0, connect.Signals.Count);
             
             Assert.AreEqual(_dir + "Clone.accdb", source.CloneFile);
-            Assert.AreEqual("Источник: TestSource, CloneSource", connect.Context);
+            Assert.AreEqual("Источник: TestSource", connect.Context);
             Assert.AreEqual(source, connect.Provider);
             Assert.IsTrue(source.Connect());
-            Assert.IsTrue(source.CheckConnection());
-            Assert.AreEqual("Успешное соединение", source.CheckConnectionMessage);
          
             Assert.AreEqual(new DateTime(2016, 7, 8), connect.GetTime().Begin);
             Assert.AreEqual(new DateTime(2016, 7, 8, 0, 30, 0), connect.GetTime().End);

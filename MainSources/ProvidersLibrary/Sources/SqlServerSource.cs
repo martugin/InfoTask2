@@ -54,7 +54,7 @@ namespace ProvidersLibrary
         }
 
         //Проверка настроек
-        public override string CheckSettings(DicS<string> inf)
+        internal protected override string CheckSettings(DicS<string> inf)
         {
             string err = "";
             if (inf["SQLServer"].IsEmpty()) err += "Не указано имя SQL-сервера" + Environment.NewLine;
@@ -65,7 +65,7 @@ namespace ProvidersLibrary
         }
 
         //Проверка соединения
-        public override bool CheckConnection()
+        protected override bool CheckConnection()
         {
             if (Reconnect())
             {

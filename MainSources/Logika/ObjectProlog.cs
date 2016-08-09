@@ -5,9 +5,9 @@ using ProvidersLibrary;
 
 namespace Logika
 {
-    public class ObjectProlog : SourceObject
+    internal class ObjectProlog : SourceObject
     {
-        public ObjectProlog(SourceBase source) 
+        internal ObjectProlog(SourceBase source) 
             : base(source) { }
 
         //Словарь сигналов объекта

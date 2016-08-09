@@ -47,6 +47,12 @@ namespace CommonTypes
         {
             _errDescrs.Add(number, new ErrDescr(number, text, quality, ErrMomType));
         }
+        public void AddDescr(int number, string text, int quality)
+        {
+            var q = quality == 2 ? ErrorQuality.Error : (quality == 1 ? ErrorQuality.Warning : ErrorQuality.Good);
+            _errDescrs.Add(number, new ErrDescr(number, text, q, ErrMomType));
+        }
+
         //Добавляет пустое описание с хорошим качеством
         public void AddGoodDescr(int number)
         {

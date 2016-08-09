@@ -7,13 +7,12 @@ namespace ProvidersLibrary
     public abstract class AccessSource : AdoSource
     {
         //Файл со значениями
-        public string DbFile { get; private set; }
+        protected string DbFile { get; private set; }
         //Чтение настроек
         protected override void ReadInf(DicS<string> dic)
         {
             DbFile = dic.Get("DbFile");
         }
-
         protected override string Hash { get { return "DbFile=" + DbFile; } }
 
         //Проверка соединения с файлом

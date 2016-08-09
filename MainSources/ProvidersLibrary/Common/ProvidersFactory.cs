@@ -61,6 +61,7 @@ namespace ProvidersLibrary
             var pr = prc.Complect.Complect == "Clones" || prc.Complect.Complect == "Archives"
                          ? NewStandardProvider(prc)
                          : NewProvider(prc);
+            pr.Inf = inf;
             return pr;
         }
 

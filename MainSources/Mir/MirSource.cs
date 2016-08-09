@@ -34,7 +34,7 @@ namespace Provider
         }
         
         //Подготовка провайдера, чтение значений IDCHANNEL
-        protected override void Prepare()
+        protected override void PrepareSource()
         {
             _objectsId.Clear();
             using (var rec = new ReaderAdo(SqlProps, "SELECT OBJECTS.NAME_OBJECT, DEVICES.NAME_DEVICE, LIB_CHANNELS.NAME_TYPE, LIB_CHANNELS.UNIT, CHANNELS.IDCHANNEL, LIB_CHANNELS.TABLE_NAME " +

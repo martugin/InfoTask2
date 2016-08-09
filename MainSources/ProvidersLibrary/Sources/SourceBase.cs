@@ -40,8 +40,8 @@ namespace ProvidersLibrary
             return new TimeInterval(Different.MinDate, DateTime.Now);
         }
 
-        //Подготовка провайдера
-        internal protected override void Prepare()
+        //Подготовка источника
+        internal void Prepare()
         {
             try
             {
@@ -67,9 +67,9 @@ namespace ProvidersLibrary
         }
 
         //Очистка списков объектов
-        internal protected abstract void ClearObjects();
+        protected abstract void ClearObjects();
         //Добавить объект содержащий заданный сигнал
-        internal protected abstract SourceObject AddObject(InitialSignal sig);
+        protected abstract SourceObject AddObject(InitialSignal sig);
         //Подготовка источника
         protected virtual void PrepareSource() {}
         

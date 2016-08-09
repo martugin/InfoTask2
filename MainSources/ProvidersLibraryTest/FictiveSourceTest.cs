@@ -12,11 +12,10 @@ namespace ProvidersLibraryTest
     {
         private SourceConnect MakeFictiveConnect()
         {
-            var logger = new Logger();
             var factory = new ProvidersFactory();
-            var connect = (SourceConnect)factory.CreateConnect(ProviderType.Source, "TestSource", "Fictive", logger);
+            var connect = (SourceConnect)factory.CreateConnect(ProviderType.Source, "TestSource", "Fictive", new Logger());
             var source = (FictiveSimpleSource)factory.CreateProvider("FictiveSimpleSource", "");
-            connect.JionProviders(source);
+            connect.JoinProviders(source);
             return connect;
         }
 
@@ -30,7 +29,6 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(1, connect.Signals.Count);
             Assert.AreEqual(1, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
-            Assert.AreEqual(1, source.Objects.Count);
             
             Assert.AreEqual(DataType.Integer, sig1.DataType);
             Assert.AreEqual(3, sig1.Inf.Count);
@@ -39,33 +37,32 @@ namespace ProvidersLibraryTest
             Assert.AreEqual("2000", sig1.Inf["ValuesInterval"]);
             Assert.AreEqual("TestSource", sig1.Connect.Name);
 
+            connect.Prepare();
+            Assert.AreEqual(1, source.Objects.Count);
             Assert.IsTrue(source.Objects.ContainsKey(1));
             ObjectFictive ob1 = source.Objects[1];
             Assert.AreEqual("Ob", ob1.Context);
             Assert.IsNotNull(ob1.IntSignal);
             Assert.IsNull(ob1.RealSignal);
             Assert.IsNull(ob1.ValueSignal);
-            Assert.IsFalse(ob1.IsInitialized);
+            Assert.IsTrue(ob1.IsInitialized);
             Assert.AreEqual(2000, ob1.ValuesInterval);
             
             var sig2 = connect.AddInitialSignal("Ob.Value", "Ob", DataType.Real, "NumObject=1;Signal=Value;ValuesInterval=2000", true);
             Assert.AreEqual(2, connect.Signals.Count);
             Assert.AreEqual(2, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
-            Assert.AreEqual(1, source.Objects.Count);
 
             Assert.AreEqual(DataType.Real, sig2.DataType);
             Assert.AreEqual(3, sig2.Inf.Count);
             Assert.AreEqual("1", sig2.Inf["NumObject"]);
             Assert.AreEqual("Value", sig2.Inf["Signal"]);
             Assert.AreEqual("2000", sig2.Inf["ValuesInterval"]);
-            Assert.IsNotNull(ob1.ValueSignal);
 
             var sig3 = connect.AddCalcSignal("Ob.Bit3", "Ob", "Ob.Int", "Bit;1;3");
             Assert.AreEqual(3, connect.Signals.Count);
             Assert.AreEqual(2, connect.InitialSignals.Count);
             Assert.AreEqual(1, connect.CalcSignals.Count);
-            Assert.AreEqual(1, source.Objects.Count);
 
             Assert.AreEqual(DataType.Boolean, sig3.DataType);
             Assert.IsNull(sig3.Inf);
@@ -73,37 +70,38 @@ namespace ProvidersLibraryTest
             Assert.AreEqual("TestSource", sig3.Connect.Name);
 
             connect.AddInitialSignal("Ob2.Int", "Ob2", DataType.Integer, "NumObject=2;Signal=Int;ValuesInterval=1000", true);
-
             var sig4 = connect.AddCalcSignal("Ob2.Bit4or5", "Ob2", "Ob2.Int", "BitOr;2;4;5");
             Assert.AreEqual(5, connect.Signals.Count);
             Assert.AreEqual(3, connect.InitialSignals.Count);
             Assert.AreEqual(2, connect.CalcSignals.Count);
-            Assert.AreEqual(2, source.Objects.Count);
 
             Assert.AreEqual(DataType.Boolean, sig4.DataType);
             Assert.IsNull(sig4.Inf);
             Assert.AreEqual("BitOr", sig4.Calculate.Method.Name);
-            Assert.AreEqual("FictiveSimpleSource", sig3.Code);
-            Assert.AreEqual("TestSource", sig3.Connect.Name);
+            Assert.AreEqual("Ob2.Bit4or5", sig4.Code);
+            Assert.AreEqual("TestSource", sig4.Connect.Name);
 
+            connect.Prepare();
+            Assert.AreEqual(2, source.Objects.Count);
             Assert.IsTrue(source.Objects.ContainsKey(2));
             ObjectFictive ob2 = source.Objects[2];
             Assert.AreEqual("Ob2", ob2.Context);
             Assert.IsNotNull(ob2.IntSignal);
             Assert.IsNull(ob2.ValueSignal);
-            Assert.IsFalse(ob2.IsInitialized);
+            Assert.IsTrue(ob2.IsInitialized);
             Assert.AreEqual(1000, ob2.ValuesInterval);
 
-            source.Prepare();
             Assert.AreEqual(new DateTime(2000, 1, 1), source.GetTime().Begin);
             Assert.AreEqual(new DateTime(2100, 1, 1), source.GetTime().End);
+            Assert.AreEqual(new DateTime(2000, 1, 1), connect.GetTime().Begin);
+            Assert.AreEqual(new DateTime(2100, 1, 1), connect.GetTime().End);
             Assert.IsTrue(ob1.IsInitialized);
             Assert.IsTrue(ob2.IsInitialized);
 
             connect.ClearSignals();
             Assert.AreEqual(0, connect.Signals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
-            Assert.AreEqual(0, source.Objects.Count);
+            Assert.AreEqual(0, connect.InitialSignals.Count);
         }
 
         [TestMethod]
@@ -122,7 +120,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(2, connect.Signals.Count);
             connect.Prepare();
             connect.GetValues(beg, en);
-            Assert.AreEqual(600, sigi.MomList.Count);
+            Assert.AreEqual(601, sigi.MomList.Count);
             Assert.AreEqual(beg, sigi.MomList.Time(0));
             Assert.AreEqual(0, sigi.MomList.Integer(0));
             Assert.AreEqual(0.0, sigi.MomList.Real(0));
@@ -140,7 +138,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual("599", sigi.MomList.String(599));
             Assert.IsNull(sigi.MomList.Error(599));
 
-            Assert.AreEqual(600, sigr.MomList.Count);
+            Assert.AreEqual(601, sigr.MomList.Count);
             Assert.AreEqual(beg, sigr.MomList.Time(0));
             Assert.AreEqual(0.0, sigr.MomList.Real(0));
             Assert.IsNull(sigr.MomList.Error(0));
@@ -166,8 +164,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(2, connect.Signals.Count);
             Assert.AreEqual(2, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
-            Assert.AreEqual(1, source.Objects.Count);
-
+            
             var sigBit = connect.AddCalcSignal("Ob.Bit2", "Ob", "Ob.Int", "Bit;1;2");
             var sigBitOr = connect.AddCalcSignal("Ob.Bit1Or2", "Ob", "Ob.Int", "BitOr;2;1;2");
             var sigBitAnd = connect.AddCalcSignal("Ob.Bit1And2", "Ob", "Ob.Int", "BitAnd;2;1;2");
@@ -178,6 +175,7 @@ namespace ProvidersLibraryTest
             var sigAverage = connect.AddCalcSignal("Ob.Average", "Ob", "Ob.Real", "Average;2;5;0.5");
 
             connect.Prepare();
+            Assert.AreEqual(1, source.Objects.Count);
             var beg = new DateTime(2007, 11, 20, 10, 30, 0);
             var en = new DateTime(2007, 11, 20, 10, 40, 0);
             connect.GetValues(beg, en);
@@ -318,7 +316,6 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(2, connect.Signals.Count);
             Assert.AreEqual(2, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
-            Assert.AreEqual(1, source.Objects.Count);
 
             var sigBit = connect.AddCalcSignal("Ob.Bit2", "Ob", "Ob.Int", "Bit;1;2");
             var sigBitOr = connect.AddCalcSignal("Ob.Bit1Or2", "Ob", "Ob.Int", "BitOr;2;1;2");
@@ -330,6 +327,7 @@ namespace ProvidersLibraryTest
             var sigAverage = connect.AddCalcSignal("Ob.Average", "Ob", "Ob.Real", "Average;2;2.5;0.5");
 
             connect.Prepare();
+            Assert.AreEqual(1, source.Objects.Count);
             var beg = new DateTime(2007, 11, 20, 10, 0, 0);
             var en = new DateTime(2007, 11, 20, 10, 1, 0);
             connect.GetValues(beg, en);

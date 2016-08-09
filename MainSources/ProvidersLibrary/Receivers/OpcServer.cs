@@ -13,9 +13,6 @@ namespace ProvidersLibrary
         {
             Server = new OPCServer();
         }
-        
-        //Допускается передача списка мгновенных значений за один раз
-        public bool AllowListValues { get { return false; } }
 
         //Настройки
         protected override void ReadInf(DicS<string> dic)
@@ -41,7 +38,7 @@ namespace ProvidersLibrary
         //OPC сервер
         internal OPCServer Server { get; private set; }
         //Состояние сервера
-        public int State { get { return Server.ServerState; } }
+        protected int State { get { return Server.ServerState; } }
 
         //Проверка соединения
         protected override bool ConnectProvider()
@@ -64,14 +61,21 @@ namespace ProvidersLibrary
             return true;
         }
 
+        //Разрыв соединения
+        protected override void DisconnectProvider()
+        {
+            Server.OPCGroups.RemoveAll();
+            Server.Disconnect();
+        }
+
         //Проверка настроек
-        public override string CheckSettings(DicS<string> inf)
+        internal protected override string CheckSettings(DicS<string> inf)
         {
             return !inf["OPCServerName"].IsEmpty() ? "" : "Не задано имя OPC-сервера";
         }
 
         //Проверка соединения
-        public override bool CheckConnection()
+        protected override bool CheckConnection()
         {
             if (Reconnect())
             {
@@ -80,13 +84,6 @@ namespace ProvidersLibrary
             }
             AddError(CheckConnectionMessage = "Ошибка соединения с OPC-сервером");
             return false;
-        }
-
-        //Разрыв соединения
-        protected override void DisconnectProvider()
-        {
-            Server.OPCGroups.RemoveAll();
-            Server.Disconnect();
         }
 
         //Список доступных OPC-серверов (не работает, а работает на VisualBasic)
@@ -105,7 +102,7 @@ namespace ProvidersLibrary
         private OPCGroup _group;
 
         //Очистка списков итемов
-        protected internal override void ClearObjects()
+        protected override void ClearObjects()
         {
             _items.Clear();
             _group = null;
@@ -113,7 +110,7 @@ namespace ProvidersLibrary
         }
 
         //Добавить итем содержащий заданный сигнал
-        protected internal override ReceiverObject AddObject(ReceiverSignal sig)
+        protected override ReceiverObject AddObject(ReceiverSignal sig)
         {
             var tag = GetOpcItemTag(sig.Inf);
             if (_items.ContainsKey(tag))
@@ -126,14 +123,11 @@ namespace ProvidersLibrary
         //Получение Tag точки из информации по сигналу
         protected abstract string GetOpcItemTag(DicS<string> inf);
 
-        //Создается группа с именем name
-        private void AddGroup(string name)
+        //Создается группа
+        private void AddGroup(string name) //имя группы
         {
             if (Server.OPCGroups.Count > 0)
-            {
                 Server.OPCGroups.RemoveAll();
-                _items.Clear();   
-            }
             _group = Server.OPCGroups.Add(name);
            // _group.IsSubscribed = true;
             _group.UpdateRate = 1000;
@@ -142,7 +136,7 @@ namespace ProvidersLibrary
         }
 
         //Добавление итемов на сервер
-        protected  override void PrepareReceiver()
+        protected override void PrepareReceiver()
         {
             if (_group == null) AddGroup("Gr" + (Server.OPCGroups.Count + 1));
             int n = _items.Count;

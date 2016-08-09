@@ -55,7 +55,7 @@ namespace Fictive
         }
 
         //Подготова источника
-        protected override void Prepare()
+        protected override void PrepareSource()
         {
             _objectsId.Clear();
             using (var rec = new RecDao(DbFile, "Objects"))

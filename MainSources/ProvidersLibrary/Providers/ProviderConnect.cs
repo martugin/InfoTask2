@@ -26,30 +26,40 @@ namespace ProvidersLibrary
         }
 
         //Основной и резервный провайдеры
-        protected ProviderBase MainProvider { get; private set; }
-        protected ProviderBase ReserveProvider { get; private set; }
+        private ProviderBase _mainProvider;
+        private ProviderBase _reserveProvider;
         //Текущий провайдер
         public ProviderBase Provider { get; private set; }
 
         //Присвоение основного и резервного провайдеров 
-        public void JionProviders(ProviderBase mainProvider, ProviderBase reserveProvaider = null)
+        public void JoinProviders(ProviderBase mainProvider, ProviderBase reserveProvaider = null)
         {
-            Provider = MainProvider = mainProvider;
-            ReserveProvider = reserveProvaider;
+            Provider = _mainProvider = mainProvider;
+            if (mainProvider != null)
+            {
+                mainProvider.ProviderConnect = this;
+                mainProvider.Logger = Logger;
+            }
+            _reserveProvider = reserveProvaider;
+            if (reserveProvaider != null)
+            {
+                reserveProvaider.ProviderConnect = this;
+                reserveProvaider.Logger = Logger;
+            }
         }
 
-        //Переключение текущего провайдера, возвращает true, если переключение произошла
+        //Переключение текущего провайдера, возвращает true, если переключение произошло
         protected bool ChangeProvider()
         {
-            if (Provider == MainProvider && ReserveProvider != null)
+            if (Provider == _mainProvider && _reserveProvider != null)
             {
-                Provider = ReserveProvider;
+                Provider = _reserveProvider;
                 AddEvent("Текущий провайдер изменен на резервный");
                 return true;
             }
-            if (Provider == ReserveProvider)
+            if (Provider == _reserveProvider && _mainProvider != null)
             {
-                Provider = MainProvider;
+                Provider = _mainProvider;
                 AddEvent("Текущий провайдер изменен на основной");
                 return true;
             }
@@ -76,7 +86,10 @@ namespace ProvidersLibrary
         {
             try
             {
-                Provider.Prepare();
+                if (Provider is SourceBase)
+                    ((SourceBase)Provider).Prepare();
+                if (Provider is ReceiverBase)
+                    ((ReceiverBase)Provider).Prepare();
             }
             catch (Exception ex)
             {

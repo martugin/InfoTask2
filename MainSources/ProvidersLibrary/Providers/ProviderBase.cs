@@ -21,7 +21,7 @@ namespace ProvidersLibrary
         }
 
         //Загрузка настроек провайдера
-        internal protected string Inf
+        internal string Inf
         {
             set
             {
@@ -35,9 +35,6 @@ namespace ProvidersLibrary
         //Хэш для идентификации настройки провайдера
         protected abstract string Hash { get; }
 
-        //Подготовка провайдера к работе
-        internal protected abstract void Prepare();
-        
         //Открытие подключения, возвращает true, если соединение установлено
         protected virtual bool ConnectProvider() { return true; }
         //Закрытие подключения
@@ -49,22 +46,37 @@ namespace ProvidersLibrary
         internal protected bool Connect()
         {
             if (_isConnected) return true;
-            try { if (ConnectProvider()) return _isConnected = true; }
-            catch (Exception ex)
+            using (Start())
             {
-                AddWarning("Нет соединения с провайдером. Попытка повторного соединения", ex);
+                try
+                {
+                    if (ConnectProvider())
+                        return _isConnected = true;
+                }
+                catch (Exception ex)
+                {
+                    AddWarning("Нет соединения с провайдером. Попытка повторного соединения", ex);
+                }
+
+                Procent = 30;
+                Thread.Sleep(300);
+                Disconnect();
+                Procent = 60;
+                Thread.Sleep(300);
+                Procent = 70;
+
+                try 
+                { 
+                    if (ConnectProvider())
+                        return _isConnected = true;     
+                }
+                catch (Exception ex)
+                {
+                    AddError("Ошибка соединения с провайдером", ex);
+                }
+                Procent = 90;
+                Disconnect();    
             }
-            
-            Thread.Sleep(300);
-            Disconnect();
-            Thread.Sleep(300);
-            
-            try { if (ConnectProvider()) return _isConnected = true; }
-            catch (Exception ex)
-            {
-                AddError("Ошибка соединения с провайдером", ex);
-            }
-            Disconnect();
             return false;
         }
 
@@ -79,13 +91,22 @@ namespace ProvidersLibrary
         //Повторное подключение
         internal protected bool Reconnect()
         {
-            if (_isConnected)
+            using (Start())
             {
-                Disconnect();
-                Thread.Sleep(300);
-                _isConnected = false;
+                if (_isConnected)
+                {
+                    Disconnect();
+                    Procent = 10;
+                    Thread.Sleep(300);
+                    _isConnected = false;
+                    Procent = 30;
+                }
+                if (!Connect()) return false;
+                Procent = 70;
+                if (!(this is SourceBase) || !((SourceBase) this).GetTime().IsDefault)
+                    return true;
             }
-            return Connect();
+            return false;
         }
 
         //Очистка ресурсов
@@ -95,17 +116,17 @@ namespace ProvidersLibrary
         }
 
         //Текущий период расчета
-        public DateTime PeriodBegin { get { return ProviderConnect.PeriodBegin; } }
-        public DateTime PeriodEnd { get { return ProviderConnect.PeriodEnd; } }
+        protected DateTime PeriodBegin { get { return ProviderConnect.PeriodBegin; } }
+        protected DateTime PeriodEnd { get { return ProviderConnect.PeriodEnd; } }
 
         //Настройка
         #region
         //Проверка соединения в форме настроек возвращает true, если соединение успешное
-        public virtual bool CheckConnection() { return true; }
+        protected virtual bool CheckConnection() { return true; }
         //Cтрока для вывода сообщения о последней проверке соединения
-        public string CheckConnectionMessage { get; protected set; }
+        internal protected string CheckConnectionMessage { get; protected set; }
         //Проверка корректности настроек, возвращает строку с ошибками, на входе словарь настроек
-        public virtual string CheckSettings(DicS<string> infDic) { return ""; }
+        internal protected virtual string CheckSettings(DicS<string> infDic) { return ""; }
 
         //Словарь комманд открытия дилогов, ключи - имена свойств, вторые ключи - названия пунктов меню
         private readonly DicS<Dictionary<string, IMenuCommand>> _menuCommands = new DicS<Dictionary<string, IMenuCommand>>();

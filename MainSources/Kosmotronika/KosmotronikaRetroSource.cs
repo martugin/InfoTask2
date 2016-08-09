@@ -29,7 +29,7 @@ namespace Provider
         }
 
         //Проверка настроек
-        public override string CheckSettings(DicS<string> inf)
+        protected override string CheckSettings(DicS<string> inf)
         {
             return !inf["RetroServerName"].IsEmpty() ? "" : "Не задано имя Ретро-сервера";
         }

@@ -36,7 +36,7 @@ namespace Provider
         }
 
         //Проверка соединения в настройке
-        public override bool CheckConnection()
+        protected override bool CheckConnection()
         {
             if (Reconnect())
             {

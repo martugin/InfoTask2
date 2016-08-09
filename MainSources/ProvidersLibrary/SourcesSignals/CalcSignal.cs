@@ -23,7 +23,7 @@ namespace ProvidersLibrary
         //Дополнительные параметры
         private IMean[] _pars;
 
-        //Разбор формулы заданной прямой польской записью
+        //Разбор формулы, заданной прямой польской записью
         //Формула имеет вид ИмяФункции;КоличествоПараметров;Параметр;Параметр;...
         private void ParseFormula(string formula)
         {
@@ -48,7 +48,7 @@ namespace ProvidersLibrary
         }
 
         //Взятие бита, pars[0] - номер бита
-        private void Bit()
+        public void Bit()
         {
             int bit = _pars[0].Integer;
             var moms = _initialSignal.MomList;
@@ -57,7 +57,7 @@ namespace ProvidersLibrary
         }
 
         //Взятие битов и сложение по Or, pars - номера битов
-        private void BitOr()
+        public void BitOr()
         {
             var moms = _initialSignal.MomList;
             for (int i = 0; i < moms.Count; i++)
@@ -71,7 +71,7 @@ namespace ProvidersLibrary
         }
 
         //Взятие битов и сложение по And, pars - номера битов
-        private void BitAnd()
+        public void BitAnd()
         {
             var moms = _initialSignal.MomList;
             for (int i = 0; i < moms.Count; i++)
@@ -88,7 +88,7 @@ namespace ProvidersLibrary
         //pars[0] - длина сегмента в секундах, pars[1] - сдвиг итогового значения, по умолчанию 0
         
         //Среднее по равномерным сегментам, 
-        private void Average() { Agregate(AverageScalar); }
+        public void Average() { Agregate(AverageScalar); }
         private void AverageScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             DateTime time = (i >= mlist.Count - 1 || mlist.Time(i + 1) > t) ? t : mlist.Time(i + 1);
@@ -96,11 +96,11 @@ namespace ProvidersLibrary
         }
 
         //Первое по равномерным сегментам, pars[0] - длина сегмента в секундах
-        private void First() { Agregate(FirstScalar); }
+        public void First() { Agregate(FirstScalar); }
         private void FirstScalar(MomEdit res, MomList mlist, int i, DateTime t) { }
         
         //Последнее по равномерным сегментам, pars[0] - длина сегмента в секундах
-        private void Last() { Agregate( LastScalar); }
+        public void Last() { Agregate( LastScalar); }
         private void LastScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             res.CopyValueFrom(mlist, i);
@@ -108,7 +108,7 @@ namespace ProvidersLibrary
         }
 
         //Минимум по равномерным сегментам, pars[0] - длина сегмента в секундах
-        private void Min() { Agregate(MinScalar); }
+        public void Min() { Agregate(MinScalar); }
         private void MinScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             if (mlist.Mean(i).ValueLess(res))
@@ -119,7 +119,7 @@ namespace ProvidersLibrary
         }
 
         //Максимум по равномерным сегментам, pars[0] - длина сегмента в секундах
-        private void Max() { Agregate(MaxScalar); }
+        public void Max() { Agregate(MaxScalar); }
         private void MaxScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             if (res.ValueLess(mlist.Mean(i)))

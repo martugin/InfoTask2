@@ -76,12 +76,12 @@ namespace ProvidersLibrary
         //Источник был подготовлен
         private bool _isPrepared;
 
-        //Чтение значений, возвращает true, если прочитались все значения или частично
-        public bool GetValues(DateTime periodBegin, DateTime periodEnd)
+        //Чтение значений из источника, возвращает true, если прочитались все значения или частично
+        public bool GetValues(DateTime periodBegin, DateTime periodEnd) 
         {
-            try
+            using (Start())
             {
-                using (Start())
+                try
                 {
                     foreach (var sig in _signals.Values)
                         sig.ClearMoments(periodBegin != PeriodEnd);
@@ -96,10 +96,10 @@ namespace ProvidersLibrary
                         using (Start(80, 100))
                             return GetValues();
                 }
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка при чтении значений из источника", ex);
+                catch (Exception ex)
+                {
+                    AddError("Ошибка при чтении значений из источника", ex);
+                }
             }
             return false;
         }
@@ -115,6 +115,8 @@ namespace ProvidersLibrary
                     Source.Prepare();
                     _isPrepared = true;
                 }
+
+                //Чтение среза
                 var vcount = new ValuesCount();
                 using (Start(0, PeriodBegin < PeriodEnd ? 30 : 100))
                 {
@@ -127,6 +129,7 @@ namespace ProvidersLibrary
                     if (vcount.IsBad) return false;
                 }
                 
+                //Чтение изменений
                 if (PeriodBegin < PeriodEnd)
                     using (Start(Procent, 90))
                     {
@@ -140,6 +143,7 @@ namespace ProvidersLibrary
                         if (vcount.IsBad) return false;
                     }
 
+                //Вычисление значений расчетных сигналов
                 if (CalcSignals.Count > 0)
                 {
                     int calc = 0;
@@ -158,6 +162,7 @@ namespace ProvidersLibrary
                 AddError("Ошибка при чтении значений из источника", ex);
                 return false;
             }
+            finally {AddErrorObjectsWarning();}
             return true;
         }
 
@@ -219,7 +224,7 @@ namespace ProvidersLibrary
                 }
         }
 
-        //Подготовка клона к записи 
+        //Запись в клон списка описаний ошибок
         private void WriteMomentErrors(DaoDb cloneDb)
         {
             using (var rec = new RecDao(cloneDb, "MomentErrors"))
@@ -227,14 +232,16 @@ namespace ProvidersLibrary
                     ed.ToRecordset(rec);
         }
 
-        //Создание клона архива
+        //Создание клона источника
         public void MakeClone(DateTime beginRead, //Начало периода клона
                                           DateTime endRead, //Конец периода клона
-                                          string cloneFile) //Файл значений клона
+                                          string cloneDir) //Каталог клона
         {
             try
             {
-                using (var db = new DaoDb(cloneFile))
+                string dir = cloneDir;
+                if (!dir.EndsWith(@"\")) dir += @"\";
+                using (var db = new DaoDb(dir + @"Clone.accdb"))
                 {
                     ReadCloneSignalsId(db);
                     using (CloneRec = new RecDao(db, "MomentValues"))

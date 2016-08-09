@@ -31,7 +31,7 @@ namespace Provider
         }
 
         //Проверка настроек
-        public override string CheckSettings(DicS<string> inf)
+        protected override string CheckSettings(DicS<string> inf)
         {
             return !inf["ArchiveDir"].IsEmpty() ? "" : "Не задан путь к каталогу архива";
         }

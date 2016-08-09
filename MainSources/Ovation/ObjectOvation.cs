@@ -30,30 +30,22 @@ namespace Provider
         //Возвращает количество сформированных значений
         protected override int ReadMoments(IRecordRead rec)
         {
-            _fValue = rec.GetDoubleNull("F_VALUE");
-            _rawValue = rec.GetIntNull("RAW_VALUE");
-            _sts = rec.GetIntNull("STS");
+            double? fValue = rec.GetDoubleNull("F_VALUE");
+            int? rawValue = rec.GetIntNull("RAW_VALUE");
+            int? sts = rec.GetIntNull("STS");
             var time = ReadTime(rec);
-            double mean = (_fValue ?? _rawValue) ?? 0;
+            double mean = (fValue ?? rawValue) ?? 0;
             int nwrite = 0;
-            if (_sts != null)
-                nwrite = AddMom(StateSignal, time, _sts);
-            return nwrite + AddMom(ValueSignal, time, mean, ReadError(rec));
+            if (sts != null)
+                nwrite = AddMom(StateSignal, time, sts);
+            return nwrite + AddMom(ValueSignal, time, mean, ReadError(fValue, rawValue, sts));
         }
-
-        //Значения полей рекордсета
-        private double? _fValue;
-        private int? _rawValue;
-        private int? _sts;
         
         //Формирование ошибки мгновенных значений по значению слова недостоверности
-        private ErrMom ReadError(IRecordRead rec)
+        private ErrMom ReadError(double? fValue, int? rawValue, int? sts)
         {
-            double? fMean = rec.GetDoubleNull("F_VALUE");
-            int? rMean = rec.GetIntNull("RAW_VALUE");
-            var sts = rec.GetIntNull("STS");
             //Недостоверность 8 и 9 бит, 00 - good, 01 - fair(имитация), 10 - poor(зашкал), 11 - bad
-            if (sts == null || (rMean == null && fMean == null))
+            if (sts == null || (rawValue == null && fValue == null))
                 return MakeError(4);//нет данных
             bool b8 = ((int)sts).GetBit(8), b9 = ((int)sts).GetBit(9);
             if (!b8 && !b9) return null;

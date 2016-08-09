@@ -12,7 +12,7 @@
         
         //Стандартные свойства
         public string Tag { get; private set; }
-        public int ClientHandler { get; private set; }
-        public int ServerHandler { get; internal set; }
+        internal int ClientHandler { get; private set; }
+        internal int ServerHandler { get; set; }
     }
 }

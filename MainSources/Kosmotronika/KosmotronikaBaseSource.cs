@@ -11,7 +11,7 @@ namespace Provider
     public abstract class KosmotronikaBaseSource : OleDbSource
     {
         //Проверка соединения
-        public override bool CheckConnection()
+        protected override bool CheckConnection()
         {
             if (Reconnect())
             {
@@ -39,21 +39,27 @@ namespace Provider
             }
         }
         
-        //Словарь объектов. Один элемент словаря - один выход, для выхода список битов
+        //Словарь объектов. Один элемент словаря - один выход
         private readonly Dictionary<ObjectIndex, ObjectKosm> _outs = new Dictionary<ObjectIndex, ObjectKosm>();
         //Словарь аналоговых объектов
         private readonly Dictionary<ObjectIndex, ObjectKosm> _analogs = new Dictionary<ObjectIndex, ObjectKosm>();
+        //Объект действий оператора
+        private ObjectKosmOperator _operatorObject;
 
         //Очистка списка сигналов
         protected override void ClearObjects()
         {
             _outs.Clear();
             _analogs.Clear();
+            _operatorObject = null;
         }
 
         //Добавляет один сигнал в список
         protected override SourceObject AddObject(InitialSignal sig)
         {
+            if (sig.Inf.Get("ObjectType") == "Operator")
+                return _operatorObject ?? (_operatorObject = new ObjectKosmOperator(this));
+            
             var ind = new ObjectIndex
             {
                 Sn = sig.Inf.GetInt("SysNum"),
@@ -122,12 +128,13 @@ namespace Provider
         //Определение текущего считываемого объекта
         protected override SourceObject DefineObject(IRecordRead rec)
         {
+            int dn = this is KosmotronikaRetroSource ? 1 : 0;
             var ind = new ObjectIndex
             {
                 Sn = rec.GetInt(0),
                 NumType = rec.GetInt(1),
                 Appartment = rec.GetInt(2),
-                Out = IsAnalog ? 1 : rec.GetInt(6)
+                Out = IsAnalog ? 1 : rec.GetInt(5+dn)
             };
             if (IsAnalog && _analogs.ContainsKey(ind))
                 return _analogs[ind];
@@ -136,10 +143,18 @@ namespace Provider
             return null;
         }
 
-        private double AnalogsProcent()
+        //Запрос значений действий оператора
+        protected IRecordRead QueryOperatorValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
-            if (_outs.Count + _analogs.Count == 0) return 0;
-            return _analogs.Count * 100.0 / (_outs.Count + _analogs.Count);
+            var parBeginTime = new OleDbParameter("BeginTime", OleDbType.DBTimeStamp) { Value = beg };
+            var parEndTime = new OleDbParameter("EndTime", OleDbType.DBTimeStamp) { Value = en };
+            return new ReaderAdo(Connection, "Exec RT_OPRREAD ?, ?, ?", parBeginTime, parEndTime);
+        }
+
+        //Определение объекта оператора
+        protected SourceObject DefineOperatorObject(IRecordRead rec)
+        {
+            return _operatorObject;
         }
 
         //Чтение среза
@@ -167,9 +182,27 @@ namespace Provider
             if (vc.IsBad) return vc;
 
             IsAnalog = false;
-            using (Start(AnalogsProcent(), 100))
+            using (Start(AnalogsProcent(), OutsProcent()))
                 vc += ReadByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по выходам");
+            if (vc.IsBad) return vc;
+
+            if (_operatorObject != null)
+                using (Start(OutsProcent(), 100))
+                    vc += ReadByParts(new[] { _operatorObject }, 1, PeriodBegin, PeriodEnd, false, QueryOperatorValues, DefineOperatorObject, "Действия оператора");
             return vc;
+        }
+
+        private double AnalogsProcent()
+        {
+            int op = _operatorObject == null ? 0 : 1;
+            if (_outs.Count + _analogs.Count + op == 0) return 0;
+            return _analogs.Count * 100.0 / (_outs.Count + _analogs.Count + op);
+        }
+        private double OutsProcent()
+        {
+            int op = _operatorObject == null ? 0 : 1;
+            if (_outs.Count + _analogs.Count + op == 0) return 0;
+            return (_analogs.Count + _outs.Count) * 100.0 / (_outs.Count + _analogs.Count + op);
         }
     }
 }

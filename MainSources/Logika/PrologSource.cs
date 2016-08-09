@@ -67,7 +67,7 @@ namespace Logika
         protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             return new RecDao(DbFile, "SELECT * FROM " + _tableName + "_ARCHIVE " +
-                                      "WHERE (Время >= " + beg.ToAccessString() + ") AND (Время <= " +en.ToAccessString() + ")"); 
+                                      "WHERE (Время >= " + beg.ToAccessString() + ") AND (Время <= " + en.ToAccessString() + ")"); 
         }
 
         //Определение текущего объекта

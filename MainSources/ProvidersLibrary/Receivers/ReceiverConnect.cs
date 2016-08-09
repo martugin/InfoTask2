@@ -14,7 +14,7 @@ namespace ProvidersLibrary
         public override ProviderType Type { get { return ProviderType.Receiver; } }
 
         //Текущий провайдер источника
-        public ReceiverBase Receiver { get { return (ReceiverBase)Provider; } }
+        private ReceiverBase Receiver { get { return (ReceiverBase)Provider; } }
 
         //Словарь сигналов приемников, ключи - коды
         private readonly DicS<ReceiverSignal> _signals = new DicS<ReceiverSignal>();
@@ -41,7 +41,7 @@ namespace ProvidersLibrary
         private bool _isPrepared;
 
         //Запись значений в приемник
-         public bool WriteValues(DateTime periodBegin, DateTime periodEnd)
+        public bool WriteValues(DateTime periodBegin, DateTime periodEnd)
         {
             using (Start())
             {

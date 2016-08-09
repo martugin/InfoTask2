@@ -6,13 +6,13 @@ namespace Provider
     //Один объект (дисктретная, аналоговая или упакованная точка)
     internal class ObjectMir : SourceObject
     {
-        public ObjectMir(SourceBase source) : base(source) { }
+        internal ObjectMir(SourceBase source) : base(source) { }
 
         //Cигналы Unit и Indcation
         internal InitialSignal UnitSignal { get; set; }
         internal InitialSignal IndicationSignal { get; set; }
         //Id для получения значений из IZM_TII
-        public int IdChannel { get; set; }
+        internal int IdChannel { get; set; }
 
         //Добавить к объекту сигнал, если такого еще не было
         protected override InitialSignal AddNewSignal(InitialSignal sig)

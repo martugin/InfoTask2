@@ -58,19 +58,20 @@ namespace Provider
         //Возвращает количество сформированных значений
         protected override int ReadMoments(IRecordRead rec)
         {
+            int dn = Source is KosmotronikaRetroSource ? 1 : 0;
             int nwrite = 0;
-            DateTime time = rec.GetTime(3);
+            DateTime time = rec.GetTime(2+dn);
             var isAnalog = ((KosmotronikaBaseSource)Source).IsAnalog;
-            int ndint = rec.GetInt(isAnalog ? 6 : 8);
+            int ndint = rec.GetInt(isAnalog ? 5+dn : 7+dn);
             var err = MakeError(ndint);
 
-            nwrite += AddMom(PokSignal, time, rec.GetInt(5), err);
+            nwrite += AddMom(PokSignal, time, rec.GetInt(4+dn), err);
             nwrite += AddMom(StateSignal, time, ndint);
             if (isAnalog)
-                nwrite += AddMom(ValueSignal, time, rec.GetDouble(8), err);
+                nwrite += AddMom(ValueSignal, time, rec.GetDouble(7+dn), err);
             else
             {
-                var strValue = rec.GetString(9);
+                var strValue = rec.GetString(8+dn);
                 if (strValue.IndexOf("0x", StringComparison.Ordinal) >= 0)
                     nwrite += AddMom(ValueSignal, time, Convert.ToUInt32(strValue, 16), err);
                 else nwrite += AddMom(ValueSignal, time, Convert.ToDouble(strValue), err);

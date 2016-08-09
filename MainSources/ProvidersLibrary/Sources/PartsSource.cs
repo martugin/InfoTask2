@@ -33,7 +33,7 @@ namespace ProvidersLibrary
                     var parts = MakeParts(objects, partSize, isCut);
                     var success = new bool[parts.Count];
                     int errCount = 0, consErrCount = 0;
-                    double d = 70.0/parts.Count;
+                    double d = 70.0 / parts.Count;
                     for (int i = 0; i < parts.Count; i++)
                         using (Start(Procent, Procent + d, CommandFlags.Danger))
                         {
@@ -50,7 +50,7 @@ namespace ProvidersLibrary
                                 errCount++;
                                 consErrCount++;
                                 AddWarning("Значения блока объектов не были прочитаны", null, vc.ToString());
-                                if (errCount == 1 && !Reconnect())
+                                if (consErrCount == 1 && !Reconnect())
                                     return valuesCount.MakeBad();
                                 if (consErrCount > 2)
                                 {
@@ -67,7 +67,7 @@ namespace ProvidersLibrary
                     }
 
                     AddEvent("Рекурсивное чтение значений по блокам объектов");
-                    d = 30.0/parts.Count;
+                    d = 30.0 / parts.Count;
                     for (int i = 0; i < parts.Count; i++)
                         using (Start(Procent, Procent + d, CommandFlags.Danger))
                             if (!success[i])

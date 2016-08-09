@@ -40,7 +40,7 @@ namespace ProvidersLibrary
             {
                 _queryValuesFun = QueryValues;
                 _defineObjectFun = DefineObject;
-                var list = part is IList<SourceObject> ? ((IList<SourceObject>)part) : part.ToList();
+                var list = part is IList<SourceObject> ? (IList<SourceObject>)part : part.ToList();
                 return ReadPart(list, beg, en, isCut);
             }
             catch (Exception ex)
@@ -50,7 +50,7 @@ namespace ProvidersLibrary
             }
         }
 
-        //Чтение всех значений одним блоком
+        //Чтение всех значений одним блоком c использованием стандартных функций
         protected ValuesCount ReadWhole(IEnumerable<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             return ReadWhole(part, beg, en, isCut, QueryValues, DefineObject);

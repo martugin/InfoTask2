@@ -10,7 +10,7 @@ namespace ProvidersLibrary
         public UniformSignal(SourceConnect connect, string code, string codeObject, DataType dataType, string signalInf)
             : base(connect, code, codeObject, dataType, signalInf)
         {
-            PrevMom = new MomEdit(dataType);
+            _prevMom = new MomEdit(dataType);
             _beginMom = new MomEdit(dataType);
             _endMom = new MomEdit(dataType);    
         }
@@ -20,7 +20,7 @@ namespace ProvidersLibrary
         //Значение среза для следующего периода
         private readonly MomEdit _endMom;
         //Предыдущее значение, добавленное в клон
-        internal MomEdit PrevMom { get; private set; }
+        private readonly MomEdit _prevMom;
 
         //Очистка списка значений
         internal override void ClearMoments(bool clearBegin)
@@ -61,8 +61,8 @@ namespace ProvidersLibrary
                 _beginMom.CopyAllFrom(_endMom);
             BufMom.CopyValueFrom(_endMom);
             BufMom.Time = Connect.PeriodEnd;
-            PutClone(BufMom, false);
-            return 1;
+            if (IdInClone == 0) return 0;
+            return PutClone(BufMom, false);
         }
 
         //Запись значения в клон
@@ -76,20 +76,23 @@ namespace ProvidersLibrary
             int nwrite = 0;
 
             var d1 = Connect.RemoveMinultes(mom.Time);
-            var d = Connect.RemoveMinultes(PrevMom.Time).AddMinutes(10);
+            var d = Connect.RemoveMinultes(_prevMom.Time).AddMinutes(10);
             while (d <= d1)
             {
                 if (d != mom.Time)
                 {
-                    PutCloneRec(PrevMom, recCut, true, d);
+                    PutCloneRec(_prevMom, recCut, true, d);
                     nwrite++;
                 }
                 d = d.AddMinutes(10);
             }
             if (!onlyCut)
+            {
                 PutCloneRec(mom, rec, false, mom.Time);
-            PrevMom.CopyAllFrom(BufMom);
-            return nwrite + 1;
+                nwrite++;
+            }
+            _prevMom.CopyAllFrom(BufMom);
+            return nwrite;
         }
     }
 }
