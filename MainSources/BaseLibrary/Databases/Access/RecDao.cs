@@ -21,15 +21,16 @@ namespace BaseLibrary
         public DaoDb DaoDb { get; private set; }
         //Словари полей рекордсета, ключи имена или номера полей
         private readonly Dictionary<string, Field> _fields = new Dictionary<string, Field>();
-        public Dictionary<string, Field> Fields { get { return _fields; } }
         private readonly Dictionary<int, Field> _fieldsNum = new Dictionary<int, Field>();
-        public Dictionary<int, Field> FieldsNum { get { return _fieldsNum; } }
 
         //Существует ли поле в рекордсете
         public bool ContainsField(string fname)
         {
-            return Fields.ContainsKey(fname);
+            return _fields.ContainsKey(fname);
         }
+        //Количество полей рекордсета
+        public int FieldsCount { get { return _fields.Count; } }
+
 
         //Открывает рекордсет, при закрытии база данных не будет закрыта
         public RecDao(DaoDb daodb, string stSql, object type = null, object options = null, object lockEdit = null)
@@ -57,8 +58,8 @@ namespace BaseLibrary
             else Recordset = db.OpenRecordset(stSql, type, options, lockEdit);
             for (int i = 0; i < Recordset.Fields.Count; i++)
             {
-                Fields.Add(Recordset.Fields[i].Name, Recordset.Fields[i]);
-                FieldsNum.Add(i, Recordset.Fields[i]);
+                _fields.Add(Recordset.Fields[i].Name, Recordset.Fields[i]);
+                _fieldsNum.Add(i, Recordset.Fields[i]);
             }
             if (Recordset.RecordCount != 0)
                 Recordset.MoveFirst();
@@ -110,36 +111,36 @@ namespace BaseLibrary
         //Переводит значение поля field таблицы rec в строку, DbNull переводит в nullValue
         public string GetString(string field, string nullValue = null)
         {
-            var v = Fields[field].Value;
+            var v = _fields[field].Value;
             return DBNull.Value.Equals(v) ? nullValue : (string)Convert.ToString(v);    
         }
         public string GetString(int num, string nullValue = null)
         {
-            var v = FieldsNum[num].Value;
+            var v = _fieldsNum[num].Value;
             return DBNull.Value.Equals(v) ? nullValue : (string)Convert.ToString(v);
         }
 
         //Переводит значение поля field таблицы rec в число, DbNull переводит в nullValue
         public double GetDouble(string field, double nullValue = 0)
         {
-            var v = Fields[field].Value;
+            var v = _fields[field].Value;
             return DBNull.Value.Equals(v) ? nullValue : (double)Convert.ToDouble(v);
         }
         public double GetDouble(int num, double nullValue = 0)
         {
-            var v = FieldsNum[num].Value;
+            var v = _fieldsNum[num].Value;
             return DBNull.Value.Equals(v) ? nullValue : (double)Convert.ToDouble(v);
         }
         //Переводит значение поля field таблицы rec в число, DbNull переводит в null
         public double? GetDoubleNull(string field)
         {
-            var v = Fields[field].Value;
+            var v = _fields[field].Value;
             if (DBNull.Value.Equals(v)) return null;
             return (double)Convert.ToDouble(v);
         }
         public double? GetDoubleNull(int num)
         {
-            var v = FieldsNum[num].Value;
+            var v = _fieldsNum[num].Value;
             if (DBNull.Value.Equals(v)) return null;
             return (double)Convert.ToDouble(v);
         }
@@ -147,24 +148,24 @@ namespace BaseLibrary
         //Переводит значение поля field таблицы rec в число, DbNull переводит в nullValue
         public int GetInt(string field, int nullValue = 0)
         {
-            var v = Fields[field].Value;
+            var v = _fields[field].Value;
             return DBNull.Value.Equals(v) ? nullValue : (int)Convert.ToInt32(v);
         }
         public int GetInt(int num, int nullValue = 0)
         {
-            var v = FieldsNum[num].Value;
+            var v = _fieldsNum[num].Value;
             return DBNull.Value.Equals(v) ? nullValue : (int)Convert.ToInt32(v);
         }
         //Переводит значение поля field таблицы rec в число, DbNull переводит в null
         public int? GetIntNull(string field)
         {
-            var v = Fields[field].Value;
+            var v = _fields[field].Value;
             if (DBNull.Value.Equals(v)) return null;
             return (int)Convert.ToInt32(v);
         }
         public int? GetIntNull(int num)
         {
-            var v = FieldsNum[num].Value;
+            var v = _fieldsNum[num].Value;
             if (DBNull.Value.Equals(v)) return null;
             return (int)Convert.ToInt32(v);
         }
@@ -172,24 +173,24 @@ namespace BaseLibrary
         //Переводит значение поля field таблицы rec в дату, DbNull переводит в Different.MinDate
         public DateTime GetTime(string field)
         {
-            var v = Fields[field].Value;
+            var v = _fields[field].Value;
             return DBNull.Value.Equals(v) ? Different.MinDate : (DateTime)Convert.ToDateTime(v);
         }
         public DateTime GetTime(int num)
         {
-            var v = FieldsNum[num].Value;
+            var v = _fieldsNum[num].Value;
             return DBNull.Value.Equals(v) ? Different.MinDate : (DateTime)Convert.ToDateTime(v);
         }
         //Переводит значение поля field таблицы rec в дату, DbNull переводит в null
         public DateTime? GetTimeNull(string field)
         {
-            var v = Fields[field].Value;
+            var v = _fields[field].Value;
             if (DBNull.Value.Equals(v)) return null;
             return (DateTime)Convert.ToDateTime(v);
         }
         public DateTime? GetTimeNull(int num)
         {
-            var v = FieldsNum[num].Value;
+            var v = _fieldsNum[num].Value;
             if (DBNull.Value.Equals(v)) return null;
             return (DateTime)Convert.ToDateTime(v);
         }
@@ -197,24 +198,24 @@ namespace BaseLibrary
         //Переводит значение поля field таблицы rec в bool, DbNull переводит в nullValue
         public bool GetBool(string field, bool nullValue = false)
         {
-            var v = Fields[field].Value;
+            var v = _fields[field].Value;
             return DBNull.Value.Equals(v) ? nullValue : (bool)Convert.ToBoolean(v);
         }
         public bool GetBool(int num, bool nullValue = false)
         {
-            var v = FieldsNum[num].Value;
+            var v = _fieldsNum[num].Value;
             return DBNull.Value.Equals(v) ? nullValue : (bool)Convert.ToBoolean(v);
         }
         //Переводит значение поля field таблицы rec в bool, DbNull переводит в null
         public bool? GetBoolNull(string field)
         {
-            var v = Fields[field].Value;
+            var v = _fields[field].Value;
             if (DBNull.Value.Equals(v)) return null;
             return (bool)Convert.ToBoolean(v);
         }
         public bool? GetBoolNull(int num)
         {
-            var v = FieldsNum[num].Value;
+            var v = _fieldsNum[num].Value;
             if (DBNull.Value.Equals(v)) return null;
             return (bool)Convert.ToBoolean(v);
         }
@@ -222,17 +223,17 @@ namespace BaseLibrary
         //Проверяет, равно ли значение заданного поля null
         public bool IsNull(string field)
         {
-            return DBNull.Value.Equals(Fields[field].Value);
+            return DBNull.Value.Equals(_fields[field].Value);
         }
         public bool IsNull(int num)
         {
-            return DBNull.Value.Equals(FieldsNum[num].Value);
+            return DBNull.Value.Equals(_fieldsNum[num].Value);
         }
 
         //Копирует строковое значение поля field таблицы rec в ячейку gridField, строки cells, датагрида WinForms
         public void GetToDataGrid(string field, DataGridViewCellCollection cells, string gridField = null)
         {
-            cells[gridField ?? field].Value = Fields[field].Value;
+            cells[gridField ?? field].Value = _fields[field].Value;
         }
         public void GetToDataGrid(string field, DataGridViewRow row, string gridField = null)
         {
@@ -265,7 +266,7 @@ namespace BaseLibrary
         public void Put(string field, string val, bool cut = false)
         {
             BeginEdit();
-            var f = Fields[field];
+            var f = _fields[field];
             if (val == null) f.Value = DBNull.Value;
             else
             {
@@ -276,7 +277,7 @@ namespace BaseLibrary
         public void Put(int num, string val, bool cut = false)
         {
             BeginEdit();
-            var f = FieldsNum[num];
+            var f = _fieldsNum[num];
             if (val == null) f.Value = DBNull.Value;
             else
             {
@@ -288,100 +289,100 @@ namespace BaseLibrary
         public void Put(string field, double val)
         {
             BeginEdit();    
-            Fields[field].Value = val;
+            _fields[field].Value = val;
         }
         public void Put(int num, double val)
         {
             BeginEdit();
-            FieldsNum[num].Value = val;
+            _fieldsNum[num].Value = val;
         }
         public void Put(string field, double? val)
         {
             BeginEdit();    
-            if (val == null) Fields[field].Value = DBNull.Value;
-            else Fields[field].Value = val;
+            if (val == null) _fields[field].Value = DBNull.Value;
+            else _fields[field].Value = val;
         }
         public void Put(int num, double? val)
         {
             BeginEdit();
-            if (val == null) FieldsNum[num].Value = DBNull.Value;
-            else FieldsNum[num].Value = val;
+            if (val == null) _fieldsNum[num].Value = DBNull.Value;
+            else _fieldsNum[num].Value = val;
         }
 
         public void Put(string field, int val)
         {
             BeginEdit();   
-            Fields[field].Value = val;
+            _fields[field].Value = val;
         }
         public void Put(int num, int val)
         {
             BeginEdit();
-            FieldsNum[num].Value = val;
+            _fieldsNum[num].Value = val;
         }
         public void Put(string field, int? val)
         {
             BeginEdit();
-            if (val == null) Fields[field].Value = DBNull.Value;
-            else Fields[field].Value = val;
+            if (val == null) _fields[field].Value = DBNull.Value;
+            else _fields[field].Value = val;
         }
         public void Put(int num, int? val)
         {
             BeginEdit();
-            if (val == null) FieldsNum[num].Value = DBNull.Value;
-            else FieldsNum[num].Value = val;
+            if (val == null) _fieldsNum[num].Value = DBNull.Value;
+            else _fieldsNum[num].Value = val;
         }
 
         public void Put(string field, DateTime val)
         {
             BeginEdit();  
-            Fields[field].Value = val;
+            _fields[field].Value = val;
         }
         public void Put(int num, DateTime val)
         {
             BeginEdit();
-            FieldsNum[num].Value = val;
+            _fieldsNum[num].Value = val;
         }
         public void Put(string field, DateTime? val)
         {
             BeginEdit();
-            if (val == null) Fields[field].Value = DBNull.Value;
-            else Fields[field].Value = val;
+            if (val == null) _fields[field].Value = DBNull.Value;
+            else _fields[field].Value = val;
         }
         public void Put(int num, DateTime? val)
         {
             BeginEdit();
-            if (val == null) FieldsNum[num].Value = DBNull.Value;
-            else FieldsNum[num].Value = val;
+            if (val == null) _fieldsNum[num].Value = DBNull.Value;
+            else _fieldsNum[num].Value = val;
         }
 
         public void Put(string field, bool val)
         {
             BeginEdit();
-            Fields[field].Value = val;
+            _fields[field].Value = val;
         }
         public void Put(int num, bool val)
         {
             BeginEdit();
-            FieldsNum[num].Value = val;
+            _fieldsNum[num].Value = val;
         }
         public void Put(string field, bool? val)
         {
             BeginEdit();
-            if (val == null) Fields[field].Value = DBNull.Value;
-            else Fields[field].Value = val;
+            if (val == null) _fields[field].Value = DBNull.Value;
+            else _fields[field].Value = val;
         }
         public void Put(int num, bool? val)
         {
             BeginEdit();
-            if (val == null) FieldsNum[num].Value = DBNull.Value;
-            else FieldsNum[num].Value = val;
+            if (val == null) _fieldsNum[num].Value = DBNull.Value;
+            else _fieldsNum[num].Value = val;
         }
 
         //Копирует строковое значение в поле field таблицы rec из ячейки gridField, строки cells, датагрида WinForms
         public void PutFromDataGrid(string field, DataGridViewCellCollection cells, string gridField = null)
         {
             BeginEdit();
-            Fields[field].Value = cells[gridField ?? field].Value;
+            _fields[field].Value = cells[gridField ?? field].Value;
         }
         public void PutFromDataGrid(string field, DataGridViewRow row, string gridField = null)
         {
@@ -436,7 +437,7 @@ namespace BaseLibrary
                 Recordset.MoveNext();
                 _isMove = true;
             }
-            return EOF;
+            return !EOF;
         }
 
         public bool MovePrevious()
@@ -447,7 +448,7 @@ namespace BaseLibrary
                 Recordset.MovePrevious();
                 _isMove = true;
             }
-            return BOF;
+            return !BOF;
         }
 
         public void AddNew()
@@ -492,14 +493,14 @@ namespace BaseLibrary
         public bool FindPrevious(string criteria)
         {
             Update();
-            Recordset.FindNext(criteria);
+            Recordset.FindPrevious(criteria);
             _isMove = true;
             return !Recordset.NoMatch;
         }
 
-        public bool NoMatch()
+        public bool NoMatch
         {
-            return Recordset.NoMatch;
+            get { return Recordset.NoMatch; }
         }
 
         public bool FindFirst(string field, string val)

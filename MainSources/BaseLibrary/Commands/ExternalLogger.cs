@@ -15,7 +15,7 @@ namespace BaseLibrary
         public Logger Logger { get; set; }
 
         //Контекст заданный по умолчанию
-        public abstract string CodeObject { get; }
+        public abstract string Context { get; }
 
         public double Procent
         {
@@ -38,11 +38,11 @@ namespace BaseLibrary
 
         public void AddError(string text, Exception ex = null, string pars = "", string context = "")
         {
-            Logger.AddError(text, ex, pars, context.IsEmpty() ? CodeObject : context);
+            Logger.AddError(text, ex, pars, context.IsEmpty() ? Context : context);
         }
         public void AddWarning(string text, Exception ex = null, string pars = "", string context = "")
         {
-            Logger.AddWarning(text, ex, pars, context.IsEmpty() ? CodeObject : context);
+            Logger.AddWarning(text, ex, pars, context.IsEmpty() ? Context : context);
         }
 
         public Command Command { get { return Logger.Command; } }
@@ -106,7 +106,7 @@ namespace BaseLibrary
             return Logger.Finish(results, isBreaked);
         }
         
-        public bool Danger(Func<bool> operation, int repetitions, int errorWaiting = 0, string errMess = "Не удалось выполнить опасную операцию", Func<bool> errorOperation = null)
+        public bool Danger(Action operation, int repetitions, int errorWaiting = 0, string errMess = "Не удалось выполнить опасную операцию", Func<bool> errorOperation = null)
         {
             return Logger.Danger(operation, repetitions, errorWaiting, errMess, errorOperation);
         }

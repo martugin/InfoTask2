@@ -18,10 +18,10 @@ namespace BaseLibrary
 
         //Ссылка на OleDbDataReader или SqlDataReader
         public IDataReader Reader { get; private set; }
-        //Ссылка на Command
-        public DbCommand Command { get; private set; }
         //Ссылка на базу данных
         public DaoDb DaoDb { get; private set; }
+        //Ссылка на Command
+        private DbCommand _command;
         //Свойства соединения с SQL
         private readonly SqlProps _props;
         private readonly SqlConnection _connection;
@@ -30,8 +30,8 @@ namespace BaseLibrary
         //True, если курсор передвигался
         private bool _isMove;
 
-        //db - база Access, stSql - запрос
-        public ReaderAdo(DaoDb db, string stSql)
+        public ReaderAdo(DaoDb db, //база Access
+                                    string stSql) //запрос
         {
             _useDb = true;
             DatabaseType = DatabaseType.Access;
@@ -39,8 +39,8 @@ namespace BaseLibrary
             OpenReader(stSql, db.Connection);
         }
 
-        //db - файл accdb, stSql - запрос
-        public ReaderAdo(string db, string stSql)
+        public ReaderAdo(string db, //файл accdb
+                                    string stSql) //запрос
         {
             _useDb = false;
             DatabaseType = DatabaseType.Access;
@@ -50,8 +50,10 @@ namespace BaseLibrary
             OpenReader(stSql, DaoDb.Connection);
         }
 
-        //Ридер для SQL Server, timeout - ограничение времени на команду, сек
-        public ReaderAdo(SqlProps props, string stSql, int timeout = 300)
+        //Ридер для SQL Server
+        public ReaderAdo(SqlProps props, //Настройки соединения с SQL
+                                   string stSql, //запрос
+                                   int timeout = 300) //ограничение времени на команду, сек
         {
             _useDb = false;
             _props = props;
@@ -61,8 +63,9 @@ namespace BaseLibrary
         }
 
         //Ридер для произвольного OleDbConnection, не SQL и не Access
-        //con - соединение, stSql - строка команды, pars - параметры
-        public ReaderAdo(OleDbConnection con, string stSql, params OleDbParameter[] pars)
+        public ReaderAdo(OleDbConnection con, //Открытое соединени с источником OleDb
+                                   string stSql, //строка команды
+                                   params OleDbParameter[] pars) //параметры команды
         {
             _useDb = true;
             DatabaseType = DatabaseType.OleDb;
@@ -81,14 +84,14 @@ namespace BaseLibrary
                     foreach (var par in pars)
                         cmdo.Parameters.Add(par);
                     var ro = cmdo.ExecuteReader();
-                    Command = cmdo;
+                    _command = cmdo;
                     Reader = ro;
                     EOF = ro == null || !ro.HasRows;
                     break;
                 case DatabaseType.SqlServer:
                     var cmds = new SqlCommand(stSql, (SqlConnection)con) {CommandTimeout = timeout};
                     var rs = cmds.ExecuteReader();
-                    Command = cmds;
+                    _command = cmds;
                     Reader = rs;
                     EOF = !rs.HasRows;
                     break;
@@ -130,7 +133,7 @@ namespace BaseLibrary
         //Закрытие рекордсета, полная очистка ресурсов
         public void Dispose()
         {
-            try { Command.Dispose(); } catch { }
+            try { _command.Dispose(); } catch { }
             try
             {
                 Reader.Close();

@@ -4,37 +4,30 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(Prov))]
+    //OPC-сервер Wonderware
+    [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "WonderwareOpcReceiver")]
     public class WonderwareOpcReceiver : OpcServer
     {
         //Код
         public override string Code { get { return "WonderwareOpcReceiver"; } }
-        //Серверный узел
-        private string _serverNode;
-        //Серверная группа
-        private string _serverGroup;
+
         //Загрузка дополнительных настроек провайдера из Inf
-        protected override void ReadInf(DicS<string> dic)
+        protected override void ReadAdditionalInf(DicS<string> dic)
         {
-            base.ReadInf(dic);
-            _serverNode = dic["ServerNode"];
-            _serverGroup = dic["ServerGroup"];
+            ServerNode = dic["ServerNode"];
+            ServerGroup = dic["ServerGroup"];
         }
+
+        //Серверный узел
+        internal string ServerNode { get; private set; }
+        //Серверная группа
+        internal string ServerGroup { get; private set; }
 
         //Получение Tag точки по сигналу
         protected override string GetOpcItemTag(DicS<string> inf)
         {
-            return _serverNode + "." + _serverGroup + "." + inf["TagName"];
+            return ServerNode + "." + ServerGroup + "." + inf["TagName"];
         }
-    }
-
-    //--------------------------------------------------------------------------------------------------------------------
-
-    [Export(typeof(ProvConn))]
-    [ExportMetadata("Complect", "WonderwareOpcConn")]
-    public class WonderwareOpcConn : ReceivConn
-    {
-        public override string Complect { get { return "Wonderware"; }}
     }
 }

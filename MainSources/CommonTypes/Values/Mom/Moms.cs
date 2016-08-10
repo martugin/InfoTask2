@@ -110,7 +110,7 @@ namespace CommonTypes
 
         public override DataType DataType { get { return DataType.Weighted; } }
         //Длина интервала
-        public double Weight { get; private set; }
+        public double Weight { get; internal set; }
 
         public override IMom Clone()
         {

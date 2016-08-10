@@ -4,13 +4,12 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(Prov))]
+    [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "KosmotronikaArchDbSource")]
     public class KosmotronikaArchDbSource : KosmotronikaBaseSource
     {
         //Код провайдера
         public override string Code { get { return "KosmotronikaArchDbSource"; } }
-        
         //Настройки провайдера
         protected override void ReadInf(DicS<string> dic)
         {
@@ -18,7 +17,7 @@ namespace Provider
             _location = dic.GetInt("Location");
         }
 
-        public override string Hash { get { return "ArchDbArchive=" + _dataSource; }}
+        protected override string Hash { get { return "ArchDbArchive=" + _dataSource; } }
 
         //Имя ретро-сервера или путь к архиву
         private string _dataSource;
@@ -32,7 +31,7 @@ namespace Provider
         }
 
         //Проверка настроек
-        public override string CheckSettings(DicS<string> inf)
+        protected override string CheckSettings(DicS<string> inf)
         {
             return !inf["ArchiveDir"].IsEmpty() ? "" : "Не задан путь к каталогу архива";
         }

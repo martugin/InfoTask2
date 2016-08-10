@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="ObjectSimatic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimaticArchive.cs" />
     <Compile Include="SimaticSource.cs" />
   </ItemGroup>
   <ItemGroup>

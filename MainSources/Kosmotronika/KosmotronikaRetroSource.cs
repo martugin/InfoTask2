@@ -4,19 +4,20 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(Prov))]
+    [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "KosmotronikaRetroSource")]
     public class KosmotronikaRetroSource : KosmotronikaBaseSource
     {
         //Код провайдера
         public override string Code { get { return "KosmotronikaRetroSource"; } }
-        
+
         //Настройки провайдера
         protected override void ReadInf(DicS<string> dic)
         {
             _retroServerName = dic["RetroServerName"];
         }
-        public override string Hash { get { return "RetroServer=" + _retroServerName; }}
+
+        protected override string Hash { get { return "RetroServer=" + _retroServerName; } }
 
         //Имя ретросервера
         private string _retroServerName;
@@ -28,7 +29,7 @@ namespace Provider
         }
 
         //Проверка настроек
-        public override string CheckSettings(DicS<string> inf)
+        protected override string CheckSettings(DicS<string> inf)
         {
             return !inf["RetroServerName"].IsEmpty() ? "" : "Не задано имя Ретро-сервера";
         }

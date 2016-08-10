@@ -2,116 +2,81 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data;
-using System.Data.OleDb;
 using System.Text;
-using System.Threading;
 using BaseLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(IProvider))]
+    [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "SimaticSource")]
-    public class SimaticSource : SourceBase
+    public class SimaticSource : OleDbSource
     {
         //Код провайдера
         public override string Code { get { return "SimaticSource"; } }
 
-        //Настройки провайдера
-        protected override void ReadDicS(DicS<string> dic)
+        //Имя сервера
+        private string _serverName;
+        //Чтение настроек
+        protected override void ReadInf(DicS<string> dic)
         {
-            _mainArchive = new SimaticArchive(this, dic["SQLServer"], false);
-            _reserveArchive = new SimaticArchive(this, dic["SQLServerReserve"], true);
-            Hash = _mainArchive.Hash + ";" + _reserveArchive.Hash;
+            _serverName = dic["SQLServer"];
         }
+        //Хэш
+        protected override string Hash { get { return "SQLServer=" + _serverName; } }
 
-        //Соединение с архивами
-        #region
-        //Путь к SimaticCommData
-        private readonly string _commDataFile = DifferentIT.GetInfoTaskDir() + @"Providers\Siemens\SimaticCommData.accdb";
-
-        //Основная и дублирующая базы данных
-        private SimaticArchive _mainArchive;
-        private SimaticArchive _reserveArchive;
-        
-        //Открытие соединения
-        protected override bool Connect()
+        //Строка соединения
+        protected override string ConnectionString
         {
-            using (var sys = new SysTabl(_commDataFile))
+            get
             {
-                _mainArchive.SuccessTime = sys.SubValue("SourceInfo", "MainArchiveSuccessTime").ToDateTime();
-                _reserveArchive.SuccessTime = sys.SubValue("SourceInfo", "ReserveArchiveSuccessTime").ToDateTime();
-            }
-            var archives = new SimaticArchive[2];
-            int b = _reserveArchive.SuccessTime > _mainArchive.SuccessTime ? 0 : 1;
-            archives[b] = _reserveArchive;
-            archives[1-b] = _mainArchive;
-            for (int iter = 1; iter <= 2; iter++)
-            {
-                if (IsConnected) Disconnect();
-                foreach (var ar in archives)
-                {
-                    AddEvent((iter == 1 ? "Соединение" : "Повторное соединение") + " с архивом", ar.IsReserve ? "Резервный" : "Основной");
-                    var con = ar.Connnect();
-                    if (con != null && con.State == ConnectionState.Open)
+                var list = SqlDb.SqlDatabasesList(_serverName);
+                var dbName = "";
+                foreach (var db in list)
+                    if (db.StartsWith("CC_") && db.EndsWith("R"))
+                        dbName = db;
+                if (dbName.IsEmpty()) return null;
+                SqlDb.Connect(_serverName, dbName).GetSchema();//Проверка
+                var dic = new Dictionary<string, string>
                     {
-                        _conn = con;
-                        SysTabl.PutSubValueS(_commDataFile, "SourceInfo", (ar.IsReserve ? "Reserve" : "Main") + "ArchiveSuccessTime", DateTime.Now.ToString());
-                        return IsConnected = true;
-                    }    
-                }
-                Thread.Sleep(30);
+                        {"Provider", "WinCCOLEDBProvider.1"},
+                        {"Catalog", dbName},
+                        {"Data Source", _serverName}
+                    };
+                return dic.ToPropertyString();
             }
-            AddError("Не удалось соединиться ни с основным, не с резервным сервером архива");
-            return IsConnected = false;
-        }
-
-        //Закрытие соединений
-        private void Disconnect()
-        {
-            if (_mainArchive!= null)
-                _mainArchive.Disconnect();
-            if (_reserveArchive != null)
-                _reserveArchive.Disconnect();
-            IsConnected = false;
         }
 
         //Проверка соединения
-        public override bool Check()
+        protected override bool CheckConnection()
         {
-            return Connect();
+            try
+            {
+                if (Reconnect() && Connection.State == ConnectionState.Open)
+                {
+                    CheckConnectionMessage += "Успешное соединение с архивом WINCC";
+                    return true;
+                }
+                CheckConnectionMessage += "Не удалось соединиться с архивом WINCC";
+            }
+            catch { CheckConnectionMessage += "Не удалось соединиться с архивом WINCC"; }
+            return false;
         }
 
         //Проверка настроек
-        public override string CheckSettings(Dictionary<string, string> inf, Dictionary<string, string> names)
+        protected override string CheckSettings(DicS<string> inf)
         {
-            string err = "";
-            if (!inf.ContainsKey("SQLServer") || inf["SQLServer"].IsEmpty()) 
-                err += "Не указан основной архивный сервер" + Environment.NewLine;
-            return err;
+            if (!inf.ContainsKey("SQLServer"))
+                return "Не указано имя архивного сервера";
+            return "";
         }
-
-        //Проверка соединения
-        public override bool CheckConnection()
-        {
-            CheckConnectionMessage = "";
-            bool bres = _mainArchive.CheckConnection();
-            CheckConnectionMessage += Environment.NewLine;
-            return bres | _reserveArchive.CheckConnection();
-        }
-
-        //Закрыть все соединения
-        public override void Dispose()
-        {
-            Disconnect();
-        }
-        #endregion
 
         //Словари сигналов, ключи полные коды и Id
         private readonly DicI<ObjectSimatic> _objectsId = new DicI<ObjectSimatic>();
 
-        //Добавить сигнал в провайдер
-        protected override SourceObject AddObject(SourceSignal sig)
+        //Добавить объект в провайдер
+        protected override SourceObject AddObject(InitialSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))
@@ -120,10 +85,9 @@ namespace Provider
         }
         
         //Очистка списка сигналов
-        public override void ClearSignals()
+        protected override void ClearObjects()
         {
             _objectsId.Clear();
-            ProviderSignals.Clear();
         }
 
         //Создание фабрики ошибок
@@ -134,13 +98,8 @@ namespace Provider
             return factory;
         }
 
-        //Чтение значений
-        #region
-        //Соединение, из которого считываются данные
-        private OleDbConnection _conn;
-
-        //Запрос значений по одному блоку сигналов
-        protected override bool QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en)
+        //Запрос значений из архива по списку сигналов и интервалу
+        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("TAG:R, ");
             if (part.Count == 1)
@@ -156,27 +115,25 @@ namespace Provider
             sb.Append(", ").Append(en.ToSimaticString());
             
             AddEvent("Запрос значений из архива", part.Count + " тегов");
-            Rec = new ReaderAdo(_conn, sb.ToString());
-            return true;
+            return new ReaderAdo(Connection, sb.ToString());
         }
 
         //Определение текущего считываемого объекта
-        protected override SourceObject DefineObject()
+        protected override SourceObject DefineObject(IRecordRead rec)
         {
-            return _objectsId[Rec.GetInt(0)];
+            return _objectsId[rec.GetInt(0)];
         }
         
         //Чтение среза
-        protected override void ReadCut()
+        protected override ValuesCount ReadCut()
         {
-            ReadValuesByParts(_objectsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
+            return ReadByParts(_objectsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
         }
         //Чтение изменений
-        protected override void ReadChanges()
+        protected override ValuesCount ReadChanges()
         {
-            ReadValuesByParts(_objectsId.Values, 500, PeriodBegin, PeriodEnd, false);
+            return ReadByParts(_objectsId.Values, 500);
         }
-        #endregion
     }
 }
 

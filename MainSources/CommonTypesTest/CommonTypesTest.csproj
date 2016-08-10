@@ -56,6 +56,10 @@
     <Compile Include="Values\MomTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BaseLibraryTest\BaseLibraryTest.csproj">
+      <Project>{D7B4D56D-F810-4AEB-ABE2-359327730790}</Project>
+      <Name>BaseLibraryTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
       <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
       <Name>BaseLibrary</Name>

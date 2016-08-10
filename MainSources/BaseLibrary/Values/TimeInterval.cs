@@ -30,6 +30,17 @@ namespace BaseLibrary
         {
             return End.Subtract(Begin).TotalSeconds;
         }
-    }
 
+        //Является интервалом по умолчанию
+        public bool IsDefault
+        {
+            get { return Begin == Different.MinDate && End == Different.MaxDate; }
+        }
+
+        //Возвращает временной интервал по умолчанию
+        public static TimeInterval CreateDefault()
+        {
+            return new TimeInterval(Different.MinDate, Different.MaxDate);
+        }
+    }
 }

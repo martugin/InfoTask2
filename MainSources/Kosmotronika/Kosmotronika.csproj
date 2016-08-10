@@ -45,10 +45,10 @@
     <Compile Include="ErrMomFactoryKosm.cs" />
     <Compile Include="KosmotronikaArchDbSource.cs" />
     <Compile Include="KosmotronikaBaseSource.cs" />
-    <Compile Include="KosmotronikaConn.cs" />
     <Compile Include="KosmotronikaOPCReceiver.cs" />
     <Compile Include="KosmotronikaRetroSource.cs" />
     <Compile Include="ObjectKosm.cs" />
+    <Compile Include="ObjectKosmOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

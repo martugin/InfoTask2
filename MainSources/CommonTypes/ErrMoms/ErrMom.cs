@@ -17,7 +17,7 @@ namespace CommonTypes
         public IContextable AddressLink { get; private set; }
 
         //Строка - адрес происхождения ошибки
-        public string Address { get { return AddressLink.CodeObject; } }
+        public string Address { get { return AddressLink.Context; } }
         //Сообщение об ошибке
         public string Text { get { return ErrDescr.Text; } }
         //Качество ошибки
