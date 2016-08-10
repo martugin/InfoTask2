@@ -74,13 +74,13 @@ namespace Provider
         //Чтение среза
         protected override ValuesCount ReadCut()
         {
-            return ReadByParts(_objects.Values, 5000, PeriodBegin.AddMinutes(-30), PeriodBegin, true);
+            return ReadWhole(_objects.Values, PeriodBegin.AddMinutes(-30), PeriodBegin, true);
         }
 
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadByParts(_objects.Values, 5000, PeriodBegin, PeriodEnd, false);
+            return ReadWhole(_objects.Values);
         }
     }
 }

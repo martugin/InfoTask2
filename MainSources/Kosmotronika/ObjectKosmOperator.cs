@@ -5,9 +5,9 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Объект для считывания действий оператора Космотроники
-    public class ObjectKosmOperator : SourceObject
+    internal class ObjectKosmOperator : SourceObject
     {
-        public ObjectKosmOperator(SourceBase source) : base(source) { }
+        internal ObjectKosmOperator(SourceBase source) : base(source) { }
 
         //Сигналы (поля таблицы действий оператора)
         //Номер рабочей станции

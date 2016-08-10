@@ -26,7 +26,7 @@ namespace Logika
         protected override int ReadMoments(IRecordRead rec)
         {
             var t = rec.GetTime("Время");
-            return _signals.Sum(sig => AddMom(sig.Value, t, rec.GetDouble(sig.Key)));
+            return _signals.Sum(sig => AddMomReal(sig.Value, t, rec, sig.Key));
         }
     }
 }

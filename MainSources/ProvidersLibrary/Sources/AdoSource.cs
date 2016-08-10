@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using BaseLibrary;
 
@@ -21,12 +22,22 @@ namespace ProvidersLibrary
             _defineObjectFun = defineObjectFun;
             return ReadByParts(objects, partSize, beg, en, isCut, ReadPart, msg);
         }
+        protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, int partSize,
+                                          Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun,
+                                          Func<IRecordRead, SourceObject> defineObjectFun, string msg = null)
+        {
+            return ReadByParts(objects, partSize, PeriodBegin, PeriodEnd, false, queryValuesFun, defineObjectFun, msg);
+        }
 
         //Чтение значений по блокам объектов c использованием стандартных функций
         protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, int partSize,
                                                                        DateTime beg, DateTime en, bool isCut, string msg = null)
         {
             return ReadByParts(objects, partSize, beg, en, isCut, QueryValues, DefineObject, msg);
+        }
+        protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, int partSize, string msg = null)
+        {
+            return ReadByParts(objects, partSize, PeriodBegin, PeriodEnd, false, msg);
         }
 
         //Чтение всех значений одним блоком
@@ -49,12 +60,37 @@ namespace ProvidersLibrary
                 return new ValuesCount();
             }
         }
+        protected ValuesCount ReadWhole(IEnumerable<SourceObject> part,
+                                                           Func<List<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun,
+                                                           Func<IRecordRead, SourceObject> defineObjectFun)
+        {
+            return ReadWhole(part, queryValuesFun, defineObjectFun);
+        }
 
         //Чтение всех значений одним блоком c использованием стандартных функций
         protected ValuesCount ReadWhole(IEnumerable<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             return ReadWhole(part, beg, en, isCut, QueryValues, DefineObject);
         }
+        protected ValuesCount ReadWhole(IEnumerable<SourceObject> part)
+        {
+            return ReadWhole(part, PeriodBegin, PeriodEnd, false);
+        }
+
+        //Чтение значений по одному явно указанному объекту
+        protected ValuesCount ReadOneObject(SourceObject ob, DateTime beg, DateTime en, bool isCut,
+                                          Func<List<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, //Функция - запрос рекордсета 
+                                          string msg = null) //Сообщение для истории о запуске чтения данных
+        {
+            if (ob == null) return new ValuesCount();
+            AddEvent(msg ?? "Чтение значений объекта " + ob.Context);
+            return ReadWhole(new[] {ob}, beg, en, isCut, queryValuesFun, rec => ob);
+        }
+        protected ValuesCount ReadOneObject(SourceObject ob, Func<List<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, string msg = null)
+        {
+            return ReadOneObject(ob, PeriodBegin, PeriodEnd, false, queryValuesFun, msg);
+        }
+        
 
         //Ссылки на используемые функции
         private Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> _queryValuesFun;

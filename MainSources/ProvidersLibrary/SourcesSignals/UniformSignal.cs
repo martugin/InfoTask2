@@ -47,10 +47,16 @@ namespace ProvidersLibrary
             return 0;
         }
 
+        //Для сигнала был задан срез
+        internal bool HasBegin
+        {
+            get { return _beginMom.Time == Different.MinDate; }
+        }
+
         //Добавляет значение среза на начало периода в список или клон, возвращает 1, если срез был получен, иначе 0
         internal int MakeBegin()
         {
-            if (_beginMom.Time == Different.MinDate) return 0;
+            if (HasBegin) return 0;
             return PutMom(_beginMom);    
         }
 

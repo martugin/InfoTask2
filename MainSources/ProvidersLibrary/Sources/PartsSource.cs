@@ -21,16 +21,16 @@ namespace ProvidersLibrary
                 var valuesCount = new ValuesCount();
                 try
                 {
-                    int n = ObjectsToReadCount(objects, isCut);
+                    int n;
+                    var parts = MakeParts(objects, partSize, isCut, out n);
                     if (n == 0)
                     {
                         AddEvent("Пустой список объектов для считывания" + (isCut ? " среза" : ""), beg + " - " + en);
                         return valuesCount;
                     }
                     if (!Connect()) return valuesCount.MakeBad();
-
                     AddEvent(msg ?? ("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов"), n + " объектов, " + beg + " - " + en);
-                    var parts = MakeParts(objects, partSize, isCut);
+                    
                     var success = new bool[parts.Count];
                     int errCount = 0, consErrCount = 0;
                     double d = 70.0 / parts.Count;
@@ -82,25 +82,20 @@ namespace ProvidersLibrary
             }
         }
 
-        //Количество объектов, для чтения значений
-        private int ObjectsToReadCount(IEnumerable<SourceObject> objects, bool isCut)
-        {
-            return !isCut
-                ? objects.Count()
-                : objects.Count(ob => ob.HasBegin);
-        }
-
         //Разбиение списка объектов на блоки
         private List<List<SourceObject>> MakeParts(IEnumerable<SourceObject> objects, //Список объектов
                                                                           int partSize, //Размер одного блока
-                                                                          bool isCut) //Выполняется считываение среза
+                                                                          bool isCut, //Выполняется считываение среза
+                                                                          out int n) //Общее количество считываемых объектов  
         {
+            n = 0;
             var parts = new List<List<SourceObject>>();
             int i = 0;
             List<SourceObject> part = null;
             foreach (var ob in objects)
                 if (!isCut || !ob.HasBegin)
                 {
+                    n++;
                     if (i++ % partSize == 0)
                         parts.Add(part = new List<SourceObject>());
                     part.Add(ob);

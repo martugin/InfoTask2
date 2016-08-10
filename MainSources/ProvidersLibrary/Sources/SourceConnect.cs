@@ -75,6 +75,10 @@ namespace ProvidersLibrary
 
         //Источник был подготовлен
         private bool _isPrepared;
+        
+        //Конец предыдущего периода расчета
+        internal DateTime PrevPeriodEnd { get; private set; }
+
 
         //Чтение значений из источника, возвращает true, если прочитались все значения или частично
         public bool GetValues(DateTime periodBegin, DateTime periodEnd) 
@@ -83,23 +87,27 @@ namespace ProvidersLibrary
             {
                 try
                 {
-                    foreach (var sig in _signals.Values)
-                        sig.ClearMoments(periodBegin != PeriodEnd);
                     PeriodBegin = periodBegin;
                     PeriodEnd = periodEnd;
-
+                    foreach (var sig in _signals.Values)
+                        sig.ClearMoments(PeriodBegin != PrevPeriodEnd);
                     using (Start(5, 80))
                         if (GetValues()) return true;
 
                     _isPrepared = false;
                     if (ChangeProvider())
                         using (Start(80, 100))
+                        {
+                            foreach (var sig in _signals.Values)
+                                sig.ClearMoments(true);
                             return GetValues();
+                        }
                 }
                 catch (Exception ex)
                 {
                     AddError("Ошибка при чтении значений из источника", ex);
                 }
+                finally { PrevPeriodEnd = periodEnd; }
             }
             return false;
         }

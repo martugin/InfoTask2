@@ -49,10 +49,21 @@ namespace Provider
 
         //Словарь объектов по Id в Historian
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
+        //Объекты сообщений
+        private ObjectOvationMsg _alarmObject;
+        private ObjectOvationMsg _soeObject;
+        private ObjectOvationMsg _textObject;
 
         //Добавить объект в провайдер
         protected override SourceObject AddObject(InitialSignal sig)
         {
+            if (sig.Inf.Get("ObjectType") == "ALARM")
+                return _alarmObject ?? (_alarmObject = new ObjectOvationMsg(this, "ALARM"));
+            if (sig.Inf.Get("ObjectType") == "SOE")
+                return _soeObject ?? (_soeObject = new ObjectOvationMsg(this, "SOE"));
+            if (sig.Inf.Get("ObjectType") == "TEXT")
+                return _textObject ?? (_textObject = new ObjectOvationMsg(this, "TEXT"));
+
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))
                 return _objectsId.Add(id, new ObjectOvation(this, id));
@@ -63,6 +74,9 @@ namespace Provider
         protected override void ClearObjects()
         {
             _objectsId.Clear();
+            _alarmObject = null;
+            _soeObject = null;
+            _textObject = null;
         }
 
         //Создание фабрики ошибок
@@ -88,12 +102,7 @@ namespace Provider
                 sb.Append("(ID=").Append(ob.Id).Append(")");
                 isFirst = false;
             }
-            sb.Append(") and ")
-              .Append(" (TIMESTAMP >= ")
-              .Append(beg.ToOvationString())
-              .Append(") and (TIMESTAMP <= ")
-              .Append(en.ToOvationString())
-              .Append(") order by TIMESTAMP, TIME_NSEC");
+            sb.Append(") and").Append(TimeCondition(beg, en));
             var rec = new ReaderAdo(Connection, sb.ToString());
             if (en.Subtract(beg).TotalMinutes > 59 && !rec.HasRows)
             {
@@ -102,11 +111,31 @@ namespace Provider
             }
             return rec;
         }
-
+        
         //Определение текущего считываемого объекта
         protected override SourceObject DefineObject(IRecordRead rec)
         {
             return _objectsId[rec.GetInt("Id")];
+        }
+
+        //Запросы значений по сигналам сообщений разного типа
+        protected IRecordRead QueryValuesAlarm(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        {
+            return new ReaderAdo(Connection, "select * from MSG_ALARM_HIST" + TimeCondition(beg, en));
+        }
+        protected IRecordRead QueryValuesSoe(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        {
+            return new ReaderAdo(Connection, "select * from MSG_SOE_HIST" + TimeCondition(beg, en));
+        }
+        protected IRecordRead QueryValuesText(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        {
+            return new ReaderAdo(Connection, "select * from MSG_TEXT_HIST" + TimeCondition(beg, en));
+        }
+
+        //Строка с условием по времнеи для запросов
+        private string TimeCondition(DateTime beg, DateTime en)
+        {
+            return " (TIMESTAMP >= " + beg.ToOvationString() + ") and (TIMESTAMP <= " + en.ToOvationString() + ") order by TIMESTAMP, TIME_NSEC";
         }
 
        //Чтение среза
@@ -124,7 +153,17 @@ namespace Provider
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadByParts(_objectsId.Values, 200, PeriodBegin, PeriodEnd, false);
+            var vc = new ValuesCount();
+            using (Start(0, 70))
+                vc += ReadByParts(_objectsId.Values, 200);
+
+            using (Start(70, 80))
+                vc += ReadOneObject(_alarmObject, QueryValuesAlarm, "Чтение сигнализационных сообщений");
+            using (Start(80, 90))
+                vc += ReadOneObject(_soeObject, QueryValuesSoe, "Чтение событий");
+            using (Start(90, 100))
+                vc += ReadOneObject(_textObject, QueryValuesText, "Чтение текстовых сообщений");
+            return vc;
         }
     }
 }

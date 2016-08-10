@@ -90,7 +90,7 @@ namespace Fictive
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadByParts(_objectsId.Values, 2, PeriodBegin, PeriodEnd, false);
+            return ReadByParts(_objectsId.Values, 2);
         }
 
         //Запрос значений по одному блоку

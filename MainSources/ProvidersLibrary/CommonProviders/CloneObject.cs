@@ -15,11 +15,11 @@ namespace ProvidersLibrary
             var errNum = rec.GetIntNull("ErrNum");
             var err = errNum == null ? null : MakeError((int)errNum);
             if (ValueSignal.DataType.LessOrEquals(DataType.Real))
-                return AddMom(ValueSignal, time, rec.GetDouble("RealValue"), err);
+                return AddMomReal(ValueSignal, time, rec, "RealValue", err);
             if (ValueSignal.DataType == DataType.String)
-                return AddMom(ValueSignal, time, rec.GetString("StrValue"), err);
+                return AddMomString(ValueSignal, time, rec, "StrValue", err);
             if (ValueSignal.DataType == DataType.Time)
-                return AddMom(ValueSignal, time, rec.GetTime("TimeValue"), err);
+                return AddMomTime(ValueSignal, time, rec, "TimeValue", err);
             return 0;
         }
     }

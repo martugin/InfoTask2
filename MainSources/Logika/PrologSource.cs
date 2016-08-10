@@ -45,21 +45,6 @@ namespace Logika
             _objectsId.Clear();
         }
 
-        //Чтение значений, срез считывается вместе с изменениями
-        protected override ValuesCount ReadChanges()
-        {
-            var vc = new ValuesCount();
-            DateTime beg = PeriodBegin.AddMinutes(-PeriodBegin.Minute).AddSeconds(-PeriodBegin.Second - 1);
-            DateTime en = PeriodEnd.AddSeconds(1);
-            foreach (var tabl in _objects.Dic)
-            {
-                _tableName = tabl.Key;
-                vc += ReadWhole(tabl.Value.Values, beg, en, false);
-                if (vc.IsBad) return vc;
-            }
-            return vc;
-        }
-
         //Имя текущей считываемой таблицы
         private string _tableName;
 
@@ -74,6 +59,21 @@ namespace Logika
         protected override SourceObject DefineObject(IRecordRead rec)
         {
             return _objectsId[rec.GetInt("PARENT_ID")];
+        }
+
+        //Чтение значений, срез считывается вместе с изменениями
+        protected override ValuesCount ReadChanges()
+        {
+            var vc = new ValuesCount();
+            DateTime beg = PeriodBegin.AddMinutes(-PeriodBegin.Minute).AddSeconds(-PeriodBegin.Second - 1);
+            DateTime en = PeriodEnd.AddSeconds(1);
+            foreach (var tabl in _objects.Dic)
+            {
+                _tableName = tabl.Key;
+                vc += ReadWhole(tabl.Value.Values, beg, en, false);
+                if (vc.IsBad) return vc;
+            }
+            return vc;
         }
     }
 }

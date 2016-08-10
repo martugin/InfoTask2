@@ -36,14 +36,23 @@ namespace ProvidersLibrary
         {
             return ValueSignal = ValueSignal ?? sig;
         }
-        
+
         //Для объекта опредлено значение среза
-        internal bool HasBegin { get; private set; }
+        internal bool HasBegin 
+        { 
+            get
+            {
+                bool res = true;
+                foreach (var sig in Signals)
+                    if (sig is UniformSignal)
+                        res &= ((UniformSignal) sig).HasBegin;
+                return res;
+            } 
+        }
         
         //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
         internal int AddBegin()
         {
-            HasBegin = true;
             int nwrite = 0;
             foreach (var sig in Signals)
                 if (sig is UniformSignal)
@@ -87,6 +96,38 @@ namespace ProvidersLibrary
         {
             if (sig == null) return 0;
             sig.BufMom.Object = ob;
+            return sig.AddMom(time, err);
+        }
+
+        //Добавка мгнорвенных значений разного типа с чтением из рекордсета
+        protected int AddMomBool(InitialSignal sig, DateTime time, IRecordRead rec, string field, ErrMom err = null)
+        {
+            if (sig == null) return 0;
+            sig.BufMom.Boolean = rec.GetBool(field);
+            return sig.AddMom(time, err);
+        }
+        protected int AddMomInt(InitialSignal sig, DateTime time, IRecordRead rec, string field, ErrMom err = null)
+        {
+            if (sig == null) return 0;
+            sig.BufMom.Integer = rec.GetInt(field);
+            return sig.AddMom(time, err);
+        }
+        protected int AddMomReal(InitialSignal sig, DateTime time, IRecordRead rec, string field, ErrMom err = null)
+        {
+            if (sig == null) return 0;
+            sig.BufMom.Real = rec.GetDouble(field);
+            return sig.AddMom(time, err);
+        }
+        protected int AddMomString(InitialSignal sig, DateTime time, IRecordRead rec, string field, ErrMom err = null)
+        {
+            if (sig == null) return 0;
+            sig.BufMom.String = rec.GetString(field);
+            return sig.AddMom(time, err);
+        }
+        protected int AddMomTime(InitialSignal sig, DateTime time, IRecordRead rec, string field, ErrMom err = null)
+        {
+            if (sig == null) return 0;
+            sig.BufMom.Date = rec.GetTime(field);
             return sig.AddMom(time, err);
         }
 

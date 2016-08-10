@@ -144,17 +144,11 @@ namespace Provider
         }
 
         //Запрос значений действий оператора
-        protected IRecordRead QueryOperatorValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryValuesOperator(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             var parBeginTime = new OleDbParameter("BeginTime", OleDbType.DBTimeStamp) { Value = beg };
             var parEndTime = new OleDbParameter("EndTime", OleDbType.DBTimeStamp) { Value = en };
             return new ReaderAdo(Connection, "Exec RT_OPRREAD ?, ?, ?", parBeginTime, parEndTime);
-        }
-
-        //Определение объекта оператора
-        protected SourceObject DefineOperatorObject(IRecordRead rec)
-        {
-            return _operatorObject;
         }
 
         //Чтение среза
@@ -178,17 +172,16 @@ namespace Provider
             var vc = new ValuesCount();
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                vc += ReadByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по аналоговым сигналам");
+                vc += ReadByParts(_analogs.Values, PartSize(), "Изменения значений по аналоговым сигналам");
             if (vc.IsBad) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), OutsProcent()))
-                vc += ReadByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, false, "Изменения значений по выходам");
+                vc += ReadByParts(_outs.Values, PartSize(), "Изменения значений по выходам");
             if (vc.IsBad) return vc;
 
-            if (_operatorObject != null)
-                using (Start(OutsProcent(), 100))
-                    vc += ReadByParts(new[] { _operatorObject }, 1, PeriodBegin, PeriodEnd, false, QueryOperatorValues, DefineOperatorObject, "Действия оператора");
+            using (Start(OutsProcent(), 100))
+                vc += ReadOneObject(_operatorObject, QueryValuesOperator);
             return vc;
         }
 

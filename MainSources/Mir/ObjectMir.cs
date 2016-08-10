@@ -27,8 +27,8 @@ namespace Provider
         protected override int ReadMoments(IRecordRead rec)
         {
             var time = rec.GetTime("TIME");
-            return AddMom(IndicationSignal, time, rec.GetDouble("VALUE_INDICATION")) +
-                      AddMom(UnitSignal, time, rec.GetDouble("VALUE_UNIT"));
+            return AddMomReal(IndicationSignal, time, rec, "VALUE_INDICATION") +
+                      AddMomReal(UnitSignal, time, rec, "VALUE_UNIT");
         }
     }
 }

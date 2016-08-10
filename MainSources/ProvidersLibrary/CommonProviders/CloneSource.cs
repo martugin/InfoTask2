@@ -166,11 +166,11 @@ namespace ProvidersLibrary
             var vc = new ValuesCount();
             AddEvent("Чтение изменений действительных значений");
             _isStrTable = false;
-            vc += ReadWhole(_objectsList, PeriodBegin, PeriodEnd, false);
+            vc += ReadWhole(_objectsList);
             if (vc.IsBad) return vc;
             AddEvent("Чтение изменений строковых значений");
             _isStrTable = true;
-            vc += ReadWhole(_objectsList, PeriodBegin, PeriodEnd, false);
+            vc += ReadWhole(_objectsList);
             return vc;
         }
     }

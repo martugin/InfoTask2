@@ -23,8 +23,8 @@ namespace Provider
             DateTime time = rec.GetTime("DateTime");
             var err = MakeError(rec.GetInt("QualityDetail"));
             if (ValueSignal.DataType.LessOrEquals(DataType.Real))
-                return AddMom(ValueSignal, time, rec.GetDouble("Value"), err);
-            return AddMom(ValueSignal, time, rec.GetString("vValue"), err);
+                return AddMomReal(ValueSignal, time, rec, "Value", err);
+            return AddMomString(ValueSignal, time, rec, "vValue", err);
         }
     }
 }

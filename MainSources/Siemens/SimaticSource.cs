@@ -132,7 +132,7 @@ namespace Provider
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadByParts(_objectsId.Values, 500, PeriodBegin, PeriodEnd, false);
+            return ReadByParts(_objectsId.Values, 500);
         }
     }
 }

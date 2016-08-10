@@ -110,7 +110,7 @@ namespace Provider
         //Чтение данных из Historian за период
         protected override ValuesCount ReadChanges()
         {
-            return ReadByParts(_objects.Values, 500, PeriodBegin, PeriodEnd, false);
+            return ReadByParts(_objects.Values, 500);
         }
     }
 }
