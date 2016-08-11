@@ -79,13 +79,13 @@ namespace Fictive
         {
             var time = rec.GetTime("Time");
             var state = rec.GetInt("StateSignal");
-            return AddMom(ValueSignal, time, rec.GetDouble("ValueSignal")) +
+            return AddMomReal(ValueSignal, time, rec, "ValueSignal") +
                       AddMom(StateSignal, time, state) +
-                      AddMom(BoolSignal, time, rec.GetBool("BoolSignal")) +
-                      AddMom(IntSignal, time, rec.GetInt("IntSignal")) +
-                      AddMom(RealSignal, time, rec.GetDouble("RealSignal"), MakeError(state)) +
-                      AddMom(StringSignal, time, rec.GetString("StringSignal"), MakeError(state)) +
-                      AddMom(TimeSignal, time, rec.GetTime("TimeSignal"));
+                      AddMomBool(BoolSignal, time, rec, "BoolSignal") +
+                      AddMomInt(IntSignal, time, rec, "IntSignal") +
+                      AddMomReal(RealSignal, time, rec, "RealSignal", MakeError(state)) +
+                      AddMomString(StringSignal, time, rec, "StringSignal", MakeError(state)) +
+                      AddMomTime(TimeSignal, time, rec, "TimeSignal");
         }
     }
 } 

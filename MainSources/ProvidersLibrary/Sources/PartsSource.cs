@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BaseLibrary;
 
 namespace ProvidersLibrary
@@ -80,6 +79,12 @@ namespace ProvidersLibrary
                 }
                 return valuesCount;
             }
+        }
+        //Чтение значений по блокам объектов без указания времени и признака среза
+        protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, int partSize,
+                                          Func<List<SourceObject>, DateTime, DateTime, bool, ValuesCount> readPartFun, string msg = null)
+        {
+            return ReadByParts(objects, partSize, PeriodBegin, PeriodEnd, false, readPartFun, msg);
         }
 
         //Разбиение списка объектов на блоки

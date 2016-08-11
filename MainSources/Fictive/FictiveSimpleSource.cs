@@ -14,9 +14,14 @@ namespace Fictive
         //Код
         public override string Code { get { return "FictiveSimpleSource"; } }
         //Свойства
-        protected override string Hash { get { return "Fictive"; } }
-        protected override void ReadInf(DicS<string> dic) { }
-
+        protected override void ReadInf(DicS<string> dic)
+        {
+            Label = dic["Label"];
+        }
+        protected override string Hash { get { return "Fictive: " + Label; } }
+        //Метка правйдера, чтобы различать экземпляры
+        internal string Label { get; private set; }
+        
         //Диапазон источника
         protected override TimeInterval GetTimeSource()
         {
@@ -69,10 +74,23 @@ namespace Fictive
         }
         protected override ValuesCount ReadChanges()
         {
+            if (_makeNextError)
+            {
+                _makeNextError = false;
+                return new ValuesCount(ValuesCountStatus.Disconnect);
+            }
+
             var vc = new ValuesCount();
             foreach (var ob in _objects.Values)
                 vc.WriteCount += ob.MakeUniformValues(PeriodBegin, PeriodEnd, false);
             return vc;
+        }
+
+        //В следующий запуск произойдет ошибка
+        private bool _makeNextError;
+        internal void MakeErrorOnTheNextReading()
+        {
+            _makeNextError = true;
         }
     }
 }

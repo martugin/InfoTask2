@@ -98,7 +98,6 @@ namespace ProvidersLibrary
                     Disconnect();
                     Procent = 10;
                     Thread.Sleep(300);
-                    _isConnected = false;
                     Procent = 30;
                 }
                 if (!Connect()) return false;

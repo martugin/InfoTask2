@@ -17,57 +17,86 @@ namespace Fictive
         public override string Code { get { return "FictiveSource"; } }
 
         //Каждый второй раз соедиение не проходит
-        private int _numConnect;
-        protected override bool ConnectProvider()
-        {
-            return _numConnect++ % 2 == 1;
-        }
+        //private int _numConnect;
+        //protected override bool ConnectProvider()
+        //{
+        //    return _numConnect++ % 2 == 1;
+        //}
 
         //Диапазон источника
         protected override TimeInterval GetTimeSource()
         {
-            if (!Reconnect()) 
-                return TimeInterval.CreateDefault();
+            if (!Connect()) return TimeInterval.CreateDefault();
             using (var sys = new SysTabl(DbFile))
                 return new TimeInterval(sys.Value("BeginInterval").ToDateTime(), sys.Value("EndInterval").ToDateTime());
         }
         
         //Словари объектов, ключи - номера и коды
-        private readonly DicI<ObjectFictive> _objectsId = new DicI<ObjectFictive>();
-        internal DicI<ObjectFictive> ObjectsId { get { return _objectsId; } }
-        private readonly DicS<ObjectFictive> _objects = new DicS<ObjectFictive>();
-        internal DicS<ObjectFictive> Objects { get { return _objects; } }
+        internal readonly DicI<ObjectFictive> ObjectsId = new DicI<ObjectFictive>();
+        internal readonly DicS<ObjectFictive> Objects = new DicS<ObjectFictive>();
+        //Словари объектов второй таблицы
+        internal readonly DicI<ObjectFictiveSmall> ObjectsId2 = new DicI<ObjectFictiveSmall>();
+        internal readonly DicS<ObjectFictiveSmall> Objects2 = new DicS<ObjectFictiveSmall>();
+        //Объект действий оператора
+        internal ObjectFictiveOperator OperatorObject;
 
         //Добавление объекта
         protected override SourceObject AddObject(InitialSignal sig)
         {
-            var code = sig.Inf.Get("CodeObject");
-            if (!Objects.ContainsKey(code))
-                return _objects.Add(code, new ObjectFictive(this));
-            return _objects[code];
+            var table = sig.Inf.Get("Table");
+            var code = sig.CodeObject;
+            if (table == "Values")
+            {
+                if (!Objects.ContainsKey(code))
+                    return Objects.Add(code, new ObjectFictive(this));
+                return Objects[code];    
+            }
+            if (table == "Values2")
+            {
+                if (!Objects2.ContainsKey(code))
+                    return Objects2.Add(code, new ObjectFictiveSmall(this));
+                return Objects2[code];
+            }
+            if (table == "Operator")
+            {
+                if (OperatorObject == null)
+                    OperatorObject = new ObjectFictiveOperator(this);
+                return OperatorObject;
+            }
+            return null;
         }
 
         //Очистка списка объектов
         protected override void ClearObjects()
         {
-            _objects.Clear();
-            _objectsId.Clear();
+            Objects.Clear();
+            ObjectsId.Clear();
+            Objects2.Clear();
+            ObjectsId2.Clear();
+            OperatorObject = null;
         }
 
         //Подготова источника
         protected override void PrepareSource()
         {
-            _objectsId.Clear();
+            ObjectsId.Clear();
+            ObjectsId2.Clear();
             using (var rec = new RecDao(DbFile, "Objects"))
                 while (rec.Read())
                 {
                     var code = rec.GetString("Code");
+                    var table = rec.GetString("TableName");
                     var id = rec.GetInt("ObjectId");
-                    if (_objects.ContainsKey(code))
+                    if (table == "Values" && Objects.ContainsKey(code))
                     {
-                        var ob = _objects[code];
+                        var ob = Objects[code];
                         ob.IsInitialized = true;
-                        _objectsId.Add(id, ob).Id = id;
+                        ObjectsId.Add(id, ob).Id = id;
+                    }
+                    if (table == "Values2" && Objects2.ContainsKey(code))
+                    {
+                        var ob = Objects2[code];
+                        ObjectsId2.Add(id, ob).Id = id;
                     }
                 }
         }
@@ -85,30 +114,56 @@ namespace Fictive
         //Чтение среза
         protected override ValuesCount ReadCut()
         {
-            return ReadByParts(_objectsId.Values, 2, PeriodBegin.AddMinutes(-5), PeriodBegin, true);
+            return ReadByParts(ObjectsId.Values, 2, PeriodBegin.AddMinutes(-5), PeriodBegin, true) +
+                      ReadByParts(ObjectsId2.Values, 2, PeriodBegin.AddDays(-1), PeriodBegin, true, QueryValues2, DefineObject2);
         }
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadByParts(_objectsId.Values, 2);
+            return ReadByParts(ObjectsId.Values, 2) +
+                      ReadByParts(Objects2.Values, 2) +
+                      ReadOneObject(OperatorObject, QueryOperator);
         }
 
-        //Запрос значений по одному блоку
+        //Запрос значений по одному блоку из таблицы Values
         protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
-            var sb = new StringBuilder("SELECT * FROM Values WHERE (ObjectId = " + ((ObjectFictive)part[0]).Id + ")");
-            for (int i = 1; i < part.Count; i++)
-            {
-                sb.Append(" Or ");
-                sb.Append("(ObjectId = " + ((ObjectFictive) part[0]).Id + ")");
-            }
-            return new RecDao(DbFile, sb.ToString());
+            return RunQuery("Values", part, beg, en);
         }
-
         //Определение текущего считываемого объекта
         protected override SourceObject DefineObject(IRecordRead rec)
         {
-            return _objectsId[rec.GetInt("ObjectId")];
+            return ObjectsId[rec.GetInt("ObjectId")];
+        }
+
+        //Запрос значений по одному блоку из таблицы Values2
+        protected IRecordRead QueryValues2(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        {
+            return RunQuery("Values2", part, beg, en);
+        }
+        protected SourceObject DefineObject2(IRecordRead rec)
+        {
+            return ObjectsId2[rec.GetInt("ObjectId")];
+        }
+
+        //Запрос
+        private IRecordRead RunQuery(string table, IList<SourceObject> part, DateTime beg, DateTime en)
+        {
+            var sb = new StringBuilder("SELECT * FROM " + table + " WHERE (ObjectId = " + ((ObjectFictive)part[0]).Id + ")");
+            for (int i = 1; i < part.Count; i++)
+            {
+                sb.Append(" Or ");
+                sb.Append("(ObjectId = " + ((ObjectFictive)part[i]).Id + ")");
+            }
+            sb.Append(") And (Time >= " + beg.ToAccessString() + ") And (Time <= " + en.ToAccessString() + ")");
+            sb.Append(" ORDER BY Time");
+            return new RecDao(DbFile, sb.ToString());
+        }
+
+        //Запрос действий оператора
+        protected IRecordRead QueryOperator(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        {
+            return new RecDao(DbFile, "SELECT * FROM Operator WHERE (Time >= " + beg.ToAccessString() + ") And (Time <= " + en.ToAccessString() + ")");
         }
     }
 }

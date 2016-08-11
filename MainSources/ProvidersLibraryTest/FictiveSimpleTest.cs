@@ -8,14 +8,17 @@ using ProvidersLibrary;
 namespace ProvidersLibraryTest
 {
     [TestClass]
-    public class FictiveSourceTest
+    public class FictiveSimpleTest
     {
-        private SourceConnect MakeFictiveConnect()
+        private SourceConnect MakeFictiveConnect(bool makeReserve = false)
         {
             var factory = new ProvidersFactory();
             var connect = (SourceConnect)factory.CreateConnect(ProviderType.Source, "TestSource", "Fictive", new Logger());
-            var source = (FictiveSimpleSource)factory.CreateProvider("FictiveSimpleSource", "");
-            connect.JoinProviders(source);
+            var source = (FictiveSimpleSource)factory.CreateProvider("FictiveSimpleSource", "Label=p1");
+            FictiveSimpleSource source2 = null;
+            if (makeReserve)
+                source2 = (FictiveSimpleSource)factory.CreateProvider("FictiveSimpleSource", "Label=p2");
+            connect.JoinProviders(source, source2);
             return connect;
         }
 
@@ -24,6 +27,7 @@ namespace ProvidersLibraryTest
         {
             SourceConnect connect = MakeFictiveConnect();
             var source = (FictiveSimpleSource)connect.Provider;
+            Assert.AreEqual("p1", source.Label);
             Assert.AreEqual(0, connect.Signals.Count);
             var sig1 = connect.AddInitialSignal("Ob.Int", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=2000", true);
             Assert.AreEqual(1, connect.Signals.Count);
@@ -429,6 +433,67 @@ namespace ProvidersLibraryTest
             Assert.IsTrue(Math.Abs(sigAverage.MomList.Real(11)-14.1) < 0.0001);
             Assert.AreEqual(beg.AddSeconds(58.75), sigAverage.MomList.Time(23));
             Assert.IsTrue(Math.Abs(sigAverage.MomList.Real(23) - 29.1) < 0.0001);
+        }
+
+        [TestMethod]
+        public void ChangeProvider()
+        {
+            SourceConnect connect = MakeFictiveConnect(true);
+            var source = (FictiveSimpleSource)connect.Provider;
+            Assert.AreEqual("p1", source.Label);
+            var beg = new DateTime(2007, 11, 20, 10, 30, 0);
+            var en = new DateTime(2007, 11, 20, 10, 40, 0);
+
+            var sigi = connect.AddInitialSignal("Ob.Int", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=1000", true);
+            var sigr = connect.AddInitialSignal("Ob.Real", "Ob", DataType.Real, "NumObject=1;Signal=Real;ValuesInterval=1000", true);
+            Assert.AreEqual(2, connect.Signals.Count);
+            Assert.AreEqual(2, connect.InitialSignals.Count);
+            Assert.AreEqual(0, connect.CalcSignals.Count);
+            source.MakeErrorOnTheNextReading();
+            connect.GetValues(beg, en);
+            var source2 = (FictiveSimpleSource)connect.Provider;
+            Assert.AreEqual("p2", source2.Label);
+            Assert.AreEqual(1, source2.Objects.Count);
+            Assert.IsTrue(source2.Objects.ContainsKey(1));
+            Assert.AreEqual("Ob", source2.Objects[1].Context);
+            Assert.AreEqual("p1", source.Label);
+            Assert.AreEqual(1, source.Objects.Count);
+            Assert.IsTrue(source.Objects.ContainsKey(1));
+            Assert.AreEqual("Ob", source2.Objects[1].Context);
+
+            Assert.AreEqual(601, sigi.MomList.Count);
+            Assert.AreEqual(beg, sigi.MomList.Time(0));
+            Assert.AreEqual(0, sigi.MomList.Integer(0));
+            Assert.AreEqual(0.0, sigi.MomList.Real(0));
+            Assert.IsNull(sigi.MomList.Error(0));
+            Assert.AreEqual(beg.AddSeconds(1), sigi.MomList.Time(1));
+            Assert.AreEqual(1, sigi.MomList.Integer(1));
+            Assert.AreEqual(true, sigi.MomList.Boolean(1));
+            Assert.IsNull(sigi.MomList.Error(1));
+            Assert.AreEqual(beg.AddSeconds(10), sigi.MomList.Time(10));
+            Assert.AreEqual(10, sigi.MomList.Integer(10));
+            Assert.AreEqual(10.0, sigi.MomList.Real(10));
+            Assert.IsNull(sigi.MomList.Error(10));
+            Assert.AreEqual(beg.AddSeconds(599), sigi.MomList.Time(599));
+            Assert.AreEqual(599, sigi.MomList.Integer(599));
+            Assert.AreEqual("599", sigi.MomList.String(599));
+            Assert.IsNull(sigi.MomList.Error(599));
+
+            Assert.AreEqual(601, sigr.MomList.Count);
+            Assert.AreEqual(beg, sigr.MomList.Time(0));
+            Assert.AreEqual(0.0, sigr.MomList.Real(0));
+            Assert.IsNull(sigr.MomList.Error(0));
+            Assert.AreEqual(beg.AddSeconds(1), sigr.MomList.Time(1));
+            Assert.AreEqual(0.5, sigr.MomList.Real(1));
+            Assert.IsNull(sigr.MomList.Error(1));
+            Assert.AreEqual(beg.AddSeconds(10), sigr.MomList.Time(10));
+            Assert.AreEqual(5.0, sigr.MomList.Real(10));
+            Assert.IsNull(sigr.MomList.Error(10));
+            Assert.AreEqual(beg.AddSeconds(599), sigr.MomList.Time(599));
+            Assert.AreEqual(299.5, sigr.MomList.Real(599));
+            Assert.AreEqual("299,5", sigr.MomList.String(599));
+            Assert.IsNull(sigr.MomList.Error(599));
+
         }
     }
 }
