@@ -79,9 +79,8 @@ namespace ProvidersLibrary
         //Конец предыдущего периода расчета
         internal DateTime PrevPeriodEnd { get; private set; }
 
-
         //Чтение значений из источника, возвращает true, если прочитались все значения или частично
-        public bool GetValues(DateTime periodBegin, DateTime periodEnd) 
+        public ValuesCount GetValues(DateTime periodBegin, DateTime periodEnd) 
         {
             using (Start())
             {
@@ -92,8 +91,10 @@ namespace ProvidersLibrary
                     foreach (var sig in _signals.Values)
                         sig.ClearMoments(PeriodBegin != PrevPeriodEnd);
                     using (Start(5, 80))
-                        if (GetValues()) return true;
-
+                    {
+                        var vc = GetValues();
+                        if (!vc.IsBad) return vc;
+                    }
                     _isPrepared = false;
                     if (ChangeProvider())
                         using (Start(80, 100))
@@ -109,15 +110,17 @@ namespace ProvidersLibrary
                 }
                 finally { PrevPeriodEnd = periodEnd; }
             }
-            return false;
+            return new ValuesCount(ValuesCountStatus.Disconnect);
         }
 
         //Чтение значений из источника
-        private bool GetValues()
+        private ValuesCount GetValues()
         {
+            var vcount = new ValuesCount();
             try
             {
-                if (!Source.Connect()) return false;
+                if (!Source.Connect()) 
+                    return new ValuesCount(ValuesCountStatus.Disconnect);
                 if (!_isPrepared)
                 {
                     Source.Prepare();
@@ -125,7 +128,6 @@ namespace ProvidersLibrary
                 }
 
                 //Чтение среза
-                var vcount = new ValuesCount();
                 using (Start(0, PeriodBegin < PeriodEnd ? 30 : 100))
                 {
                     vcount += Source.ReadCut();
@@ -134,7 +136,7 @@ namespace ProvidersLibrary
                         if (sig is UniformSignal)
                             vcount.WriteCount += ((UniformSignal)sig).MakeBegin();
                     AddEvent("Срез значений получен", vcount.ToString());
-                    if (vcount.IsBad) return false;
+                    if (vcount.IsBad) return vcount;
                 }
                 
                 //Чтение изменений
@@ -148,7 +150,7 @@ namespace ProvidersLibrary
                                 changes.WriteCount += ((UniformSignal)sig).MakeEnd();
                         AddEvent("Изменения значений получены", changes.ToString());
                         vcount += changes;
-                        if (vcount.IsBad) return false;
+                        if (vcount.IsBad) return vcount;
                     }
 
                 //Вычисление значений расчетных сигналов
@@ -168,10 +170,10 @@ namespace ProvidersLibrary
             catch (Exception ex)
             {
                 AddError("Ошибка при чтении значений из источника", ex);
-                return false;
+                return vcount.MakeBad();
             }
             finally {AddErrorObjectsWarning();}
-            return true;
+            return vcount;
         }
 
         //Создание клона

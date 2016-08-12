@@ -30,8 +30,8 @@ namespace Fictive
         protected override int ReadMoments(IRecordRead rec)
         {
             var time = rec.GetTime("Time");
-            return AddMomReal(TextSignal, time, rec, "CommandText") +
-                      AddMomReal(NumberSignal, time, rec, "CommandNumber");
+            return AddMomString(TextSignal, time, rec, "CommandText") +
+                      AddMomInt(NumberSignal, time, rec, "CommandNumber");
         } 
     }
 }
