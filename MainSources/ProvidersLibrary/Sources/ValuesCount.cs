@@ -1,13 +1,13 @@
 ﻿namespace ProvidersLibrary
 {
     //Состояние чтения значений из источника
-    public enum ValuesCountStatus
+    public enum VcStatus
     {
         Undefined, //Чтение не производилось
         Success, //Чтение прошло успешно
         Partial, //Часть объектов прочиталось успешно, часть нет
-        Fail, //Слишком много объектов подряд не прочиталось
-        Disconnect //Соединение не было установлено или разорвалось
+        NoSuccess, //Пока не удалось прочитать ничего
+        Fail //Соединение не было установлено или не прочиталось слишком много блоков подряд
     }
 
     //-------------------------------------------------------------------------------------------------------------
@@ -15,11 +15,11 @@
     //Результат чтения значений из источника
     public class ValuesCount
     {
-        public ValuesCount(ValuesCountStatus status = ValuesCountStatus.Undefined)
+        public ValuesCount(VcStatus status = VcStatus.Undefined)
         {
             Status = status;
         }
-        public ValuesCount(int readCount, int writeCount, ValuesCountStatus status)
+        public ValuesCount(int readCount, int writeCount, VcStatus status)
         {
             Status = status;
             ReadCount = readCount;
@@ -27,18 +27,18 @@
         }
         
         //Состояние чтения значений
-        public ValuesCountStatus Status { get; set; }
+        public VcStatus Status { get; set; }
         //Количество прочитанных и сформированных значений
         public int ReadCount { get; set; }
         public int WriteCount { get; set; }
 
         //Не нужно продолжать чтение данных
-        public bool IsBad { get { return Status == ValuesCountStatus.Disconnect || Status == ValuesCountStatus.Fail; } }
+        public bool IsFail { get { return Status == VcStatus.Fail || Status == VcStatus.NoSuccess; } }
 
-        //Приписывает значение статусу Disconnect
-        public ValuesCount MakeBad()
+        //Добавить к статусу значение
+        public ValuesCount AddStatus(VcStatus addStatus)
         {
-            Status = ValuesCountStatus.Disconnect;
+            Status = Add(Status, addStatus);
             return this;
         }
 
@@ -49,23 +49,23 @@
         }
 
         //Сложение статусов
-        private static ValuesCountStatus Add(ValuesCountStatus s1, ValuesCountStatus s2)
+        private static VcStatus Add(VcStatus s1, VcStatus s2)
         {
-            if (s1 == ValuesCountStatus.Success && s2 == ValuesCountStatus.Success)
-                return ValuesCountStatus.Success;
-            if (s1 == ValuesCountStatus.Undefined) return s2;
-            if (s2 == ValuesCountStatus.Undefined) return s1;
-            if (s1 == ValuesCountStatus.Disconnect || s2 == ValuesCountStatus.Disconnect)
-                return ValuesCountStatus.Disconnect;
-            if (s1 == ValuesCountStatus.Fail && s2 == ValuesCountStatus.Fail)
-                return ValuesCountStatus.Fail;
-            return ValuesCountStatus.Partial;
+            if (s1 == VcStatus.Success && s2 == VcStatus.Success)
+                return VcStatus.Success;
+            if (s1 == VcStatus.Undefined) return s2;
+            if (s2 == VcStatus.Undefined) return s1;
+            if (s1 == VcStatus.Fail || s2 == VcStatus.Fail)
+                return VcStatus.Fail;
+            if (s1 == VcStatus.NoSuccess && s2 == VcStatus.NoSuccess)
+                return VcStatus.NoSuccess;
+            return VcStatus.Partial;
         }
 
         //Строка для записи в историю
         public override string ToString()
         {
-            string s = IsBad ? "Неудачное чтение, " : "";
+            string s = IsFail ? "Неудачное чтение, " : "";
             return s + ReadCount + " значений прочитано, " + WriteCount + " значений сформировано";
         }
     }

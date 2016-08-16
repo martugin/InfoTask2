@@ -144,7 +144,7 @@ namespace Provider
             var vc = new ValuesCount();
             using (Start(0, 50)) //Срез по 4 минутам
                 vc += ReadByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
-            if (vc.IsBad) return vc;
+            if (vc.IsFail) return vc;
             using (Start(50, 100)) //Срез по 61 минуте
                 vc += ReadByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
             return vc;

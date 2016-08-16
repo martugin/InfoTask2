@@ -16,13 +16,6 @@ namespace Fictive
         //Код
         public override string Code { get { return "FictiveSource"; } }
 
-        //Каждый второй раз соедиение не проходит
-        //private int _numConnect;
-        //protected override bool ConnectProvider()
-        //{
-        //    return _numConnect++ % 2 == 1;
-        //}
-
         //Диапазон источника
         protected override TimeInterval GetTimeSource()
         {
@@ -44,11 +37,12 @@ namespace Fictive
         protected override SourceObject AddObject(InitialSignal sig)
         {
             var table = sig.Inf.Get("Table");
+            bool isErr = sig.Inf.Get("IsErrorObject") == "True";
             var code = sig.CodeObject;
             if (table == "MomValues")
             {
                 if (!Objects.ContainsKey(code))
-                    return Objects.Add(code, new ObjectFictive(this));
+                    return Objects.Add(code, new ObjectFictive(this, isErr));
                 return Objects[code];    
             }
             if (table == "MomValues2")
@@ -114,13 +108,16 @@ namespace Fictive
         //Запрос значений по одному блоку из таблицы Values
         protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
-            var sb = new StringBuilder("SELECT " + "MomValues.* FROM " + "MomValues" + " WHERE ((ObjectId = " + ((ObjectFictive)part[0]).Id + ")");
-            for (int i = 1; i < part.Count; i++)
+            var sb = new StringBuilder("SELECT " + "MomValues.* FROM " + "MomValues" + " WHERE (");
+            for (int i = 0; i < part.Count; i++)
             {
-                sb.Append(" Or ");
-                sb.Append("(ObjectId = " + ((ObjectFictive)part[i]).Id + ")");
+                var ob = (ObjectFictive)part[i];
+                if (ob.IsErrorObject) 
+                    throw new Exception("Ошибочный объект");
+                if (i > 0) sb.Append(" Or ");
+                sb.Append("(ObjectId = " + ob.Id + ")");
             }
-            sb.Append(") And (Time >= " + beg.ToAccessString() + ") And (Time <= " + en.ToAccessString() + ")");
+            sb.Append(") And (Time > " + beg.ToAccessString() + ") And (Time <= " + en.ToAccessString() + ")");
             sb.Append(" ORDER BY Time");
             return new RecDao(DbFile, sb.ToString());
         }
@@ -139,7 +136,7 @@ namespace Fictive
                 sb.Append(" Or ");
                 sb.Append("(ObjectId = " + ((ObjectFictiveSmall)part[i]).Id + ")");
             }
-            sb.Append(") And (Time >= " + beg.ToAccessString() + ") And (Time <= " + en.ToAccessString() + ")");
+            sb.Append(") And (Time > " + beg.ToAccessString() + ") And (Time <= " + en.ToAccessString() + ")");
             sb.Append(" ORDER BY Time");
             return new RecDao(DbFile, sb.ToString());
         }

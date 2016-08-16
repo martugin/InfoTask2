@@ -12,8 +12,10 @@ namespace Fictive
         {
             ValuesInterval = valuesInterval;
         }
-        internal ObjectFictive(SourceBase source) 
-            : base(source) { }
+        internal ObjectFictive(SourceBase source, bool isErorObject) : base(source)
+        {
+            IsErrorObject = isErorObject;
+        }
 
         //Сигнал недостоверности
         internal InitialSignal StateSignal { get; private set; }
@@ -26,9 +28,12 @@ namespace Fictive
 
         //Частота возвращаемых значений в секундах
         internal int ValuesInterval { get; private set; }
+        
+        //Любое чтение значений объекта вызывает ошибку
+        internal bool IsErrorObject { get; private set; }
         //Объект инициализирован
         internal bool IsInitialized { get; set; }
-
+        
         //Id в таблице объектов
         internal int Id { get; set; }
 

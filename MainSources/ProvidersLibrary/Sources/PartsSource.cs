@@ -27,7 +27,7 @@ namespace ProvidersLibrary
                         AddEvent("Пустой список объектов для считывания" + (isCut ? " среза" : ""), beg + " - " + en);
                         return valuesCount;
                     }
-                    if (!Connect()) return valuesCount.MakeBad();
+                    if (!Connect()) return valuesCount.AddStatus(VcStatus.Fail);
                     AddEvent(msg ?? ("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов"), n + " объектов, " + beg + " - " + en);
                     
                     var success = new bool[parts.Count];
@@ -36,10 +36,16 @@ namespace ProvidersLibrary
                     for (int i = 0; i < parts.Count; i++)
                         using (Start(Procent, Procent + d, CommandFlags.Danger))
                         {
-                            var vc = readPartFun(parts[i], beg, en, isCut);
-                            success[i] = vc.Status == ValuesCountStatus.Success || vc.Status == ValuesCountStatus.Undefined;
+                            var vc = new ValuesCount();
+                            try { vc += readPartFun(parts[i], beg, en, isCut); }
+                            catch (Exception ex)
+                            {
+                                vc.AddStatus(VcStatus.NoSuccess);
+                                AddWarning("Ошибка при чтении блока значений", ex);
+                            }
+                            success[i] = vc.Status == VcStatus.Success || vc.Status == VcStatus.Undefined;
                             valuesCount += vc;
-                            if (!vc.IsBad)
+                            if (vc.Status != VcStatus.Fail && vc.Status != VcStatus.NoSuccess)
                             {
                                 AddEvent("Значения блока объектов прочитаны", vc.ToString());
                                 consErrCount = 0;
@@ -50,12 +56,11 @@ namespace ProvidersLibrary
                                 consErrCount++;
                                 AddWarning("Значения блока объектов не были прочитаны", null, vc.ToString());
                                 if (consErrCount == 1 && !Reconnect())
-                                    return valuesCount.MakeBad();
+                                    return valuesCount.AddStatus(VcStatus.Fail);
                                 if (consErrCount > 2)
                                 {
                                     AddError("Значения с источника не были прочитаны", null, valuesCount.ToString());
-                                    valuesCount.Status = ValuesCountStatus.Fail;
-                                    return valuesCount;
+                                    return valuesCount.AddStatus(VcStatus.Fail);
                                 }
                             }
                         }
@@ -66,6 +71,7 @@ namespace ProvidersLibrary
                     }
 
                     AddEvent("Рекурсивное чтение значений по блокам объектов");
+                    valuesCount.Status = VcStatus.Undefined;
                     d = 30.0 / parts.Count;
                     for (int i = 0; i < parts.Count; i++)
                         using (Start(Procent, Procent + d, CommandFlags.Danger))
@@ -75,7 +81,7 @@ namespace ProvidersLibrary
                 catch (Exception ex)
                 {
                     AddError("Ошибка при получении данных", ex);
-                    return valuesCount.MakeBad();
+                    return valuesCount.AddStatus(VcStatus.Fail);
                 }
                 return valuesCount;
             }
@@ -130,9 +136,16 @@ namespace ProvidersLibrary
                     return valuesCount;
                 }
                 AddEvent("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов", p.Count + " объектов");
-                var vc = readPartFun(p, beg, en, isCut);
+                var vc = new ValuesCount();
+                try { vc = readPartFun(p, beg, en, isCut); }
+                catch (Exception ex)
+                {
+                    vc.AddStatus(VcStatus.NoSuccess);
+                    AddWarning("Ошибка при чтении блока значений", ex);
+                }
+                
                 valuesCount += vc;
-                if (!vc.IsBad)
+                if (!vc.IsFail)
                     AddEvent("Значения прочитаны", vc.ToString());
                 else
                 {
@@ -141,7 +154,7 @@ namespace ProvidersLibrary
                     if (p.Count > 1)
                     {
                         if (errCount == 1 && !Reconnect())
-                            return valuesCount.MakeBad();
+                            return valuesCount.AddStatus(VcStatus.Fail);
                         int m = p.Count/2;
                         queue.Enqueue(p.GetRange(0, m));
                         queue.Enqueue(p.GetRange(m, part.Count - m));

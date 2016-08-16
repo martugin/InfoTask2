@@ -77,7 +77,7 @@ namespace Fictive
             if (_makeNextError)
             {
                 _makeNextError = false;
-                return new ValuesCount(ValuesCountStatus.Disconnect);
+                return new ValuesCount(VcStatus.Fail);
             }
 
             var vc = new ValuesCount();

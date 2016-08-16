@@ -107,12 +107,12 @@ namespace ProvidersLibrary
                 {
                     AddEvent("Чтение значений блока объектов", part.Count + " объектов");
                     rec = _queryValuesFun(part, beg, en, isCut);
-                    if (rec == null) return new ValuesCount().MakeBad();
+                    if (rec == null) return new ValuesCount(VcStatus.NoSuccess);
                 }
                 catch (Exception ex)
                 {
                     AddError("Ошибка при запросе данных из источника", ex);
-                    return new ValuesCount().MakeBad();
+                    return new ValuesCount(VcStatus.NoSuccess);
                 }
             }
             using (Start(50, 100))
@@ -130,7 +130,7 @@ namespace ProvidersLibrary
                 catch (Exception ex)
                 {
                     AddError("Ошибка при формировании значений", ex);
-                    return new ValuesCount().MakeBad();
+                    return new ValuesCount(VcStatus.NoSuccess);
                 }
             }
         }
@@ -138,7 +138,7 @@ namespace ProvidersLibrary
         //Чтение значений из рекордсета по одному блоку
         private ValuesCount ReadPartValues(IRecordRead rec)
         {
-            var vc = new ValuesCount(ValuesCountStatus.Success);
+            var vc = new ValuesCount();
             while (rec.Read())
             {
                 vc.ReadCount++;
@@ -148,11 +148,12 @@ namespace ProvidersLibrary
                     ob = _defineObjectFun(rec);
                     if (ob != null)
                         vc.WriteCount += ob.ReadMoments(rec);
+                    vc.AddStatus(VcStatus.Success);
                 }
                 catch (Exception ex)
                 {
                     SourceConnect.AddErrorObject(ob == null ? "" : ob.Context, "Ошибка при чтении значений из рекордсета", ex);
-                    vc.Status = ValuesCountStatus.Partial;
+                    vc.AddStatus(VcStatus.NoSuccess);
                 }
             }
             return vc;

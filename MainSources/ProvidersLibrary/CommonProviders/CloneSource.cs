@@ -145,15 +145,15 @@ namespace ProvidersLibrary
             AddEvent("Чтение среза действительных значений из таблицы изменений");
             _isStrTable = false;
             vc += ReadWhole(_objectsList, d, PeriodBegin, false);
-            if (vc.IsBad) return vc;
+            if (vc.IsFail) return vc;
             AddEvent("Чтение среза действительных значений из таблицы срезов");
             _isStrTable = false;
             vc += ReadWhole(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
-            if (vc.IsBad) return vc;
+            if (vc.IsFail) return vc;
             AddEvent("Чтение среза строковых значений из таблицы изменений");
             _isStrTable = true;
             vc += ReadWhole(_objectsList, d, PeriodBegin, false);
-            if (vc.IsBad) return vc;
+            if (vc.IsFail) return vc;
             AddEvent("Чтение среза строковых значений из таблицы срезов");
             _isStrTable = true;
             vc += ReadWhole(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
@@ -167,7 +167,7 @@ namespace ProvidersLibrary
             AddEvent("Чтение изменений действительных значений");
             _isStrTable = false;
             vc += ReadWhole(_objectsList);
-            if (vc.IsBad) return vc;
+            if (vc.IsFail) return vc;
             AddEvent("Чтение изменений строковых значений");
             _isStrTable = true;
             vc += ReadWhole(_objectsList);

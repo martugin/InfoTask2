@@ -71,6 +71,7 @@ namespace ProvidersLibrary
             _signals.Clear();
             InitialSignals.Clear();
             CalcSignals.Clear();
+            _isPrepared = false;
         }
 
         //Источник был подготовлен
@@ -80,8 +81,9 @@ namespace ProvidersLibrary
         internal DateTime PrevPeriodEnd { get; private set; }
 
         //Чтение значений из источника, возвращает true, если прочитались все значения или частично
-        public ValuesCount GetValues(DateTime periodBegin, DateTime periodEnd) 
+        public ValuesCount GetValues(DateTime periodBegin, DateTime periodEnd)
         {
+            var valuesCount = new ValuesCount();
             using (Start())
             {
                 try
@@ -92,25 +94,25 @@ namespace ProvidersLibrary
                         sig.ClearMoments(PeriodBegin != PrevPeriodEnd);
                     using (Start(5, 80))
                     {
-                        var vc = GetValues();
-                        if (!vc.IsBad) return vc;
+                        valuesCount += GetValues();
+                        if (!valuesCount.IsFail) return valuesCount;
                     }
                     _isPrepared = false;
-                    if (ChangeProvider())
-                        using (Start(80, 100))
-                        {
-                            foreach (var sig in _signals.Values)
-                                sig.ClearMoments(true);
-                            return GetValues();
-                        }
+                    if (!ChangeProvider()) return valuesCount;
+                    using (Start(80, 100))
+                    {
+                        foreach (var sig in _signals.Values)
+                            sig.ClearMoments(true);
+                        return GetValues();
+                    }
                 }
                 catch (Exception ex)
                 {
                     AddError("Ошибка при чтении значений из источника", ex);
+                    return new ValuesCount(VcStatus.Fail);
                 }
                 finally { PrevPeriodEnd = periodEnd; }
             }
-            return new ValuesCount(ValuesCountStatus.Disconnect);
         }
 
         //Чтение значений из источника
@@ -120,7 +122,7 @@ namespace ProvidersLibrary
             try
             {
                 if (!Source.Connect()) 
-                    return new ValuesCount(ValuesCountStatus.Disconnect);
+                    return new ValuesCount(VcStatus.Fail);
                 if (!_isPrepared)
                 {
                     Source.Prepare();
@@ -136,7 +138,8 @@ namespace ProvidersLibrary
                         if (sig is UniformSignal)
                             vcount.WriteCount += ((UniformSignal)sig).MakeBegin();
                     AddEvent("Срез значений получен", vcount.ToString());
-                    if (vcount.IsBad) return vcount;
+                    if (vcount.Status == VcStatus.Fail) 
+                        return vcount;
                 }
                 
                 //Чтение изменений
@@ -150,7 +153,7 @@ namespace ProvidersLibrary
                                 changes.WriteCount += ((UniformSignal)sig).MakeEnd();
                         AddEvent("Изменения значений получены", changes.ToString());
                         vcount += changes;
-                        if (vcount.IsBad) return vcount;
+                        if (vcount.IsFail) return vcount;
                     }
 
                 //Вычисление значений расчетных сигналов
@@ -170,7 +173,7 @@ namespace ProvidersLibrary
             catch (Exception ex)
             {
                 AddError("Ошибка при чтении значений из источника", ex);
-                return vcount.MakeBad();
+                return vcount.AddStatus(VcStatus.Fail);
             }
             finally {AddErrorObjectsWarning();}
             return vcount;

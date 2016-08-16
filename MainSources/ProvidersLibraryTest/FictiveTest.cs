@@ -419,7 +419,7 @@ namespace ProvidersLibraryTest
             Assert.IsFalse(source.Objects2["ObX"].HasBegin);
             Assert.AreEqual(0, vc.ReadCount);
             Assert.AreEqual(0, vc.WriteCount);
-            Assert.AreEqual(ValuesCountStatus.Success, vc.Status);
+            Assert.AreEqual(VcStatus.Undefined, vc.Status);
 
             vc = connect.GetValues(RTime(-1), RTime(4));
             Assert.IsNotNull(sigR.MomList);
@@ -434,8 +434,8 @@ namespace ProvidersLibraryTest
             Assert.IsTrue(source.Objects2["ObX"].HasBegin);
             Assert.AreEqual(11, vc.ReadCount);
             Assert.AreEqual(17, vc.WriteCount);
-            Assert.AreEqual(ValuesCountStatus.Success, vc.Status);
-
+            Assert.AreEqual(VcStatus.Success, vc.Status);
+            
             Assert.AreEqual(RTime(0), sigR.MomList.Time(0));
             Assert.IsNull(sigR.MomList.Error(0));
             Assert.AreEqual(3, sigR.MomList.Real(0));
@@ -492,7 +492,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(1, sigN.MomList.Integer(0));
             Assert.AreEqual(RTime(1, 28), sigN.MomList.Time(1));
             Assert.AreEqual(2, sigN.MomList.Integer(1));
-
+            
             vc = connect.GetValues(RTime(4), RTime(7));
             Assert.AreEqual(5, sigR.MomList.Count);
             Assert.AreEqual(5, sigS.MomList.Count);
@@ -505,21 +505,262 @@ namespace ProvidersLibraryTest
             Assert.IsTrue(source.Objects2["ObX"].HasBegin);
             Assert.AreEqual(9, vc.ReadCount);
             Assert.AreEqual(18, vc.WriteCount);
-            Assert.AreEqual(ValuesCountStatus.Success, vc.Status);
+            Assert.AreEqual(VcStatus.Success, vc.Status);
 
-            vc = connect.GetValues(RTime(7), RTime(15));
-            Assert.AreEqual(8, sigR.MomList.Count);
-            Assert.AreEqual(8, sigS.MomList.Count);
-            Assert.AreEqual(8, sigI.MomList.Count);
+            Assert.AreEqual(RTime(3,30), sigI.MomList.Time(0));
+            Assert.AreEqual(4, sigI.MomList.Integer(0));
+            Assert.AreEqual(RTime(5), sigI.MomList.Time(1));
+            Assert.AreEqual(3, sigI.MomList.Integer(1));
+            Assert.AreEqual(RTime(6), sigI.MomList.Time(2));
+            Assert.AreEqual(1, sigI.MomList.Integer(2));
+            Assert.AreEqual(RTime(6, 30), sigI.MomList.Time(3));
+            Assert.AreEqual(1, sigI.MomList.Integer(3));
+            Assert.AreEqual(RTime(7), sigI.MomList.Time(4));
+            Assert.AreEqual(-1, sigI.MomList.Integer(4));
+
+            Assert.AreEqual(RTime(3, 30), sigR.MomList.Time(0));
+            Assert.AreEqual(-2, sigR.MomList.Real(0));
+            Assert.IsNotNull(sigR.MomList.Error(0));
+            Assert.AreEqual(ErrorQuality.Error, sigR.MomList.Error(0).Quality);
+            Assert.AreEqual(RTime(5), sigR.MomList.Time(1));
+            Assert.AreEqual(1.5, sigR.MomList.Real(1));
+            Assert.IsNotNull(sigR.MomList.Error(1));
+            Assert.AreEqual(ErrorQuality.Error, sigR.MomList.Error(1).Quality);
+            Assert.AreEqual(RTime(6), sigR.MomList.Time(2));
+            Assert.AreEqual(1.5, sigR.MomList.Real(2));
+            Assert.IsNotNull(sigR.MomList.Error(2));
+            Assert.AreEqual(ErrorQuality.Error, sigR.MomList.Error(2).Quality);
+            Assert.AreEqual(RTime(6, 30), sigR.MomList.Time(3));
+            Assert.AreEqual(1.5, sigR.MomList.Real(3));
+            Assert.IsNotNull(sigR.MomList.Error(3));
+            Assert.AreEqual(ErrorQuality.Warning, sigR.MomList.Error(3).Quality);
+            Assert.AreEqual(RTime(7), sigR.MomList.Time(4));
+            Assert.AreEqual(1.5, sigR.MomList.Real(4));
+            Assert.IsNotNull(sigR.MomList.Error(4));
+            Assert.AreEqual(ErrorQuality.Warning, sigR.MomList.Error(4).Quality);
+
+            Assert.AreEqual(RTime(3, 30), sigS.MomList.Time(0));
+            Assert.AreEqual("-2s", sigS.MomList.String(0));
+            Assert.IsNotNull(sigS.MomList.Error(0));
+            Assert.AreEqual(ErrorQuality.Error, sigS.MomList.Error(0).Quality);
+            Assert.AreEqual(RTime(5), sigS.MomList.Time(1));
+            Assert.AreEqual("1,5s", sigS.MomList.String(1));
+            Assert.IsNotNull(sigS.MomList.Error(1));
+            Assert.AreEqual(ErrorQuality.Error, sigS.MomList.Error(1).Quality);
+            Assert.AreEqual(RTime(6), sigS.MomList.Time(2));
+            Assert.AreEqual("1,5s", sigS.MomList.String(2));
+            Assert.IsNotNull(sigS.MomList.Error(2));
+            Assert.AreEqual(ErrorQuality.Error, sigS.MomList.Error(2).Quality);
+            Assert.AreEqual(RTime(6, 30), sigS.MomList.Time(3));
+            Assert.AreEqual("1,5s", sigS.MomList.String(3));
+            Assert.IsNotNull(sigS.MomList.Error(3));
+            Assert.AreEqual(ErrorQuality.Warning, sigS.MomList.Error(3).Quality);
+            Assert.AreEqual(RTime(7), sigS.MomList.Time(4));
+            Assert.AreEqual("1,5s", sigS.MomList.String(4));
+            Assert.IsNotNull(sigS.MomList.Error(4));
+            Assert.AreEqual(ErrorQuality.Warning, sigS.MomList.Error(4).Quality);
+
+            Assert.AreEqual(RTime(0), sigX.MomList.Time(0));
+            Assert.AreEqual(1, sigX.MomList.Real(0));
+            Assert.IsNull(sigX.MomList.Error(0));
+            Assert.AreEqual(RTime(6, 55), sigT.MomList.Time(0));
+            Assert.AreEqual("Вставило", sigT.MomList.String(0));
+            Assert.AreEqual(RTime(6, 55), sigN.MomList.Time(0));
+            Assert.AreEqual(3, sigN.MomList.Integer(0));
+
+            vc = connect.GetValues(RTime(7), RTime(12));
+            Assert.AreEqual(6, sigR.MomList.Count);
+            Assert.AreEqual(6, sigS.MomList.Count);
+            Assert.AreEqual(6, sigI.MomList.Count);
+            Assert.AreEqual(1, sigX.MomList.Count);
+            Assert.AreEqual(0, sigT.MomList.Count);
+            Assert.AreEqual(0, sigN.MomList.Count);
+            Assert.IsTrue(source.Objects["Ob1"].HasBegin);
+            Assert.IsTrue(source.Objects["Ob2"].HasBegin);
+            Assert.IsTrue(source.Objects2["ObX"].HasBegin);
+            Assert.AreEqual(10, vc.ReadCount);
+            Assert.AreEqual(19, vc.WriteCount);
+            Assert.AreEqual(VcStatus.Success, vc.Status);
+
+            Assert.AreEqual(RTime(7), sigI.MomList.Time(0));
+            Assert.AreEqual(-1, sigI.MomList.Integer(0));
+            Assert.AreEqual(RTime(7, 30), sigI.MomList.Time(1));
+            Assert.AreEqual(-1, sigI.MomList.Integer(1));
+            Assert.AreEqual(RTime(8), sigI.MomList.Time(2));
+            Assert.AreEqual(-1, sigI.MomList.Integer(2));
+            Assert.AreEqual(RTime(8, 30), sigI.MomList.Time(3));
+            Assert.AreEqual(-1, sigI.MomList.Integer(3));
+            Assert.AreEqual(RTime(10), sigI.MomList.Time(4));
+            Assert.AreEqual(-2, sigI.MomList.Integer(4));
+            Assert.AreEqual(RTime(11), sigI.MomList.Time(5));
+            Assert.AreEqual(1, sigI.MomList.Integer(5));
+
+            Assert.AreEqual(RTime(7), sigR.MomList.Time(0));
+            Assert.AreEqual(1.5, sigR.MomList.Real(0));
+            Assert.IsNotNull(sigR.MomList.Error(0));
+            Assert.AreEqual(ErrorQuality.Warning, sigR.MomList.Error(0).Quality);
+            Assert.AreEqual(RTime(7, 30), sigR.MomList.Time(1));
+            Assert.AreEqual(2.5, sigR.MomList.Real(1));
+            Assert.IsNull(sigR.MomList.Error(1));
+            Assert.AreEqual(RTime(8), sigR.MomList.Time(2));
+            Assert.AreEqual(2.5, sigR.MomList.Real(1));
+            Assert.IsNull(sigR.MomList.Error(2));
+            Assert.AreEqual(RTime(8, 30), sigR.MomList.Time(3));
+            Assert.AreEqual(0, sigR.MomList.Real(3));
+            Assert.IsNull(sigR.MomList.Error(3));
+            Assert.AreEqual(RTime(10), sigR.MomList.Time(4));
+            Assert.AreEqual(0, sigR.MomList.Real(4));
+            Assert.IsNull(sigR.MomList.Error(4));
+            Assert.AreEqual(RTime(11), sigR.MomList.Time(5));
+            Assert.AreEqual(-1.5, sigR.MomList.Real(5));
+            Assert.IsNull(sigR.MomList.Error(5));
+
+            Assert.AreEqual(RTime(7), sigS.MomList.Time(0));
+            Assert.AreEqual("1,5s", sigS.MomList.String(0));
+            Assert.IsNotNull(sigS.MomList.Error(0));
+            Assert.AreEqual(ErrorQuality.Warning, sigS.MomList.Error(0).Quality);
+            Assert.AreEqual(RTime(7, 30), sigS.MomList.Time(1));
+            Assert.AreEqual("2,5s", sigS.MomList.String(1));
+            Assert.IsNull(sigS.MomList.Error(1));
+            Assert.AreEqual(RTime(8), sigS.MomList.Time(2));
+            Assert.AreEqual("2,5s", sigS.MomList.String(1));
+            Assert.IsNull(sigS.MomList.Error(2));
+            Assert.AreEqual(RTime(8, 30), sigS.MomList.Time(3));
+            Assert.AreEqual("0s", sigS.MomList.String(3));
+            Assert.IsNull(sigS.MomList.Error(3));
+            Assert.AreEqual(RTime(10), sigS.MomList.Time(4));
+            Assert.AreEqual("0s", sigS.MomList.String(4));
+            Assert.IsNull(sigS.MomList.Error(4));
+            Assert.AreEqual(RTime(11), sigS.MomList.Time(5));
+            Assert.AreEqual("-1,5s", sigS.MomList.String(5));
+            Assert.IsNull(sigS.MomList.Error(5));
+
+            Assert.AreEqual(RTime(0), sigX.MomList.Time(0));
+            Assert.AreEqual(1, sigX.MomList.Real(0));
+            Assert.IsNull(sigX.MomList.Error(0));
+
+            vc = connect.GetValues(RTime(12), RTime(15, 30));
+            Assert.AreEqual(4, sigR.MomList.Count);
+            Assert.AreEqual(4, sigS.MomList.Count);
+            Assert.AreEqual(4, sigI.MomList.Count);
             Assert.AreEqual(2, sigX.MomList.Count);
             Assert.AreEqual(0, sigT.MomList.Count);
             Assert.AreEqual(0, sigN.MomList.Count);
             Assert.IsTrue(source.Objects["Ob1"].HasBegin);
             Assert.IsTrue(source.Objects["Ob2"].HasBegin);
             Assert.IsTrue(source.Objects2["ObX"].HasBegin);
-            Assert.AreEqual(17, vc.ReadCount);
-            Assert.AreEqual(26, vc.WriteCount);
-            Assert.AreEqual(ValuesCountStatus.Success, vc.Status);
+            Assert.AreEqual(7, vc.ReadCount);
+            Assert.AreEqual(14, vc.WriteCount);
+            Assert.AreEqual(VcStatus.Success, vc.Status);
+
+            Assert.AreEqual(RTime(11), sigI.MomList.Time(0));
+            Assert.AreEqual(1, sigI.MomList.Integer(0));
+            Assert.AreEqual(RTime(13), sigI.MomList.Time(1));
+            Assert.AreEqual(0, sigI.MomList.Integer(1));
+            Assert.AreEqual(RTime(14), sigI.MomList.Time(2));
+            Assert.AreEqual(0, sigI.MomList.Integer(2));
+            Assert.AreEqual(RTime(15, 30), sigI.MomList.Time(3));
+            Assert.AreEqual(0, sigI.MomList.Integer(3));
+
+            Assert.AreEqual(RTime(11), sigR.MomList.Time(0));
+            Assert.AreEqual(-1.5, sigR.MomList.Real(0));
+            Assert.IsNull(sigR.MomList.Error(0));
+            Assert.AreEqual(RTime(13), sigR.MomList.Time(1));
+            Assert.AreEqual(4, sigR.MomList.Real(1));
+            Assert.IsNotNull(sigR.MomList.Error(1));
+            Assert.AreEqual(ErrorQuality.Error, sigR.MomList.Error(1).Quality);
+            Assert.AreEqual(RTime(14), sigR.MomList.Time(2));
+            Assert.AreEqual(4, sigR.MomList.Real(2));
+            Assert.IsNull(sigR.MomList.Error(2));
+            Assert.AreEqual(RTime(15, 30), sigR.MomList.Time(3));
+            Assert.AreEqual(4.5, sigR.MomList.Real(3));
+            Assert.IsNull(sigR.MomList.Error(3));
+
+            Assert.AreEqual(RTime(11), sigS.MomList.Time(0));
+            Assert.AreEqual("-1,5s", sigS.MomList.String(0));
+            Assert.IsNull(sigS.MomList.Error(0));
+            Assert.AreEqual(RTime(13), sigS.MomList.Time(1));
+            Assert.AreEqual("4s", sigS.MomList.String(1));
+            Assert.IsNotNull(sigS.MomList.Error(1));
+            Assert.AreEqual(ErrorQuality.Error, sigS.MomList.Error(1).Quality);
+            Assert.AreEqual(RTime(14), sigS.MomList.Time(2));
+            Assert.AreEqual("4s", sigS.MomList.String(2));
+            Assert.IsNull(sigS.MomList.Error(2));
+            Assert.AreEqual(RTime(15, 30), sigS.MomList.Time(3));
+            Assert.AreEqual("4,5s", sigS.MomList.String(3));
+            Assert.IsNull(sigS.MomList.Error(3));
+
+            Assert.AreEqual(RTime(0), sigX.MomList.Time(0));
+            Assert.AreEqual(1, sigX.MomList.Real(0));
+            Assert.IsNull(sigX.MomList.Error(0));
+            Assert.AreEqual(RTime(15), sigX.MomList.Time(1));
+            Assert.AreEqual(2, sigX.MomList.Real(1));
+            Assert.IsNull(sigX.MomList.Error(1));
+        }
+
+        [TestMethod]
+        public void Recursive()
+        {
+            var connect = MakeFictiveConnect();
+            var sigR = (UniformSignal)connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real", true);
+            var sigI = (UniformSignal)connect.AddInitialSignal("Ob2.IntSignal", "Ob2", DataType.Integer, "Table=MomValues;NumObject=2;Signal=Int;IsErrorObject=True", true);
+            Assert.AreEqual(2, connect.Signals.Count);
+            Assert.AreEqual(2, connect.InitialSignals.Count);
+
+            var vc = connect.GetValues(RTime(0), RTime(2));
+            Assert.AreEqual(VcStatus.Partial, vc.Status);
+            Assert.AreEqual(3, vc.ReadCount);
+            Assert.AreEqual(3, vc.WriteCount);
+
+            Assert.AreEqual(3, sigR.MomList.Count);
+            Assert.AreEqual(0, sigI.MomList.Count);
+            Assert.AreEqual(RTime(0), sigR.MomList.Time(0));
+            Assert.AreEqual(3, sigR.MomList.Real(0));
+            Assert.AreEqual(RTime(1, 30), sigR.MomList.Time(1));
+            Assert.AreEqual(-2, sigR.MomList.Real(1));
+            Assert.AreEqual(RTime(2), sigR.MomList.Time(2));
+            Assert.AreEqual(-2, sigR.MomList.Real(2));
+
+            connect.ClearSignals();
+            Assert.AreEqual(0, connect.Signals.Count);
+            Assert.AreEqual(0, connect.InitialSignals.Count);
+            connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real;IsErrorObject=True", true);
+            connect.AddInitialSignal("Ob2.IntSignal", "Ob2", DataType.Integer, "Table=MomValues;NumObject=2;Signal=Int;IsErrorObject=True", true);
+            connect.AddInitialSignal("Ob3.RealSignal", "Ob3", DataType.Boolean, "Table=MomValues;NumObject=3;Signal=Bool;IsErrorObject=True", true);
+            connect.AddInitialSignal("Ob4.IntSignal", "Ob4", DataType.String, "Table=MomValues;NumObject=4;Signal=String;IsErrorObject=True", true);
+
+            vc = connect.GetValues(RTime(0), RTime(2));
+            Assert.AreEqual(VcStatus.NoSuccess, vc.Status);
+            Assert.AreEqual(0, vc.ReadCount);
+            Assert.AreEqual(0, vc.WriteCount);
+
+            connect.ClearSignals();
+            sigR = (UniformSignal)connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real", true);
+            sigI = (UniformSignal)connect.AddInitialSignal("Ob2.IntSignal", "Ob2", DataType.Integer, "Table=MomValues;NumObject=2;Signal=Int;IsErrorObject=True", true);
+            var sigB = (UniformSignal)connect.AddInitialSignal("Ob3.RealSignal", "Ob3", DataType.Boolean, "Table=MomValues;NumObject=3;Signal=Bool", true);
+            var sigS = (UniformSignal)connect.AddInitialSignal("Ob4.IntSignal", "Ob4", DataType.String, "Table=MomValues;NumObject=4;Signal=String;IsErrorObject=True", true);
+
+            vc = connect.GetValues(RTime(0), RTime(2));
+            Assert.AreEqual(VcStatus.Partial, vc.Status);
+            Assert.AreEqual(6, vc.ReadCount);
+            Assert.AreEqual(6, vc.WriteCount);
+
+            Assert.AreEqual(3, sigR.MomList.Count);
+            Assert.AreEqual(0, sigI.MomList.Count);
+            Assert.AreEqual(3, sigB.MomList.Count);
+            Assert.AreEqual(0, sigS.MomList.Count);
+            Assert.AreEqual(RTime(0), sigR.MomList.Time(0));
+            Assert.AreEqual(3, sigR.MomList.Real(0));
+            Assert.AreEqual(RTime(1, 30), sigR.MomList.Time(1));
+            Assert.AreEqual(-2, sigR.MomList.Real(1));
+            Assert.AreEqual(RTime(2), sigR.MomList.Time(2));
+            Assert.AreEqual(-2, sigR.MomList.Real(2));
+            Assert.AreEqual(RTime(0), sigB.MomList.Time(0));
+            Assert.AreEqual(false, sigB.MomList.Boolean(0));
+            Assert.AreEqual(RTime(1, 30), sigB.MomList.Time(1));
+            Assert.AreEqual(false, sigB.MomList.Boolean(1));
+            Assert.AreEqual(RTime(2), sigB.MomList.Time(2));
+            Assert.AreEqual(true, sigB.MomList.Boolean(2));
         }
     }
 }
