@@ -49,18 +49,22 @@ namespace ProvidersLibrary
                 PeriodEnd = periodEnd;
 
                 using (Start(5, 80))
-                    if (WriteValues()) return true;
+                    if (WriteValuesReceiver()) return true;
 
                 _isPrepared = false;
                 if (ChangeProvider())
                     using (Start(80, 100))
-                        return WriteValues();
+                        return WriteValuesReceiver();
                 return false;    
             }
         }
-
-        //Чтение значений из источника
         public bool WriteValues()
+        {
+            return WriteValues(Different.MinDate, Different.MaxDate);
+        }
+
+        //Запись значений в приемник
+        private bool WriteValuesReceiver()
         {
             try
             {

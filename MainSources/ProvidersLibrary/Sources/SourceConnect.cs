@@ -17,7 +17,7 @@ namespace ProvidersLibrary
         //Текущий провайдер источника
         private SourceBase Source { get { return (SourceBase) Provider; } }
 
-         //Получение диапазона времени источника
+        //Получение диапазона времени источника
         //Возвращает Default интервал, если нет связи с источником
         //Возвращает TimeInterval(Different.MinDate, DateTime.Now) если источник не позволяет определять диапазон
         public TimeInterval GetTime()
@@ -246,8 +246,8 @@ namespace ProvidersLibrary
         }
 
         //Создание клона источника
-        public void MakeClone(DateTime beginRead, //Начало периода клона
-                                          DateTime endRead, //Конец периода клона
+        public void MakeClone(DateTime periodBegin, //Начало периода клона
+                                          DateTime periodEnd, //Конец периода клона
                                           string cloneDir) //Каталог клона
         {
             try
@@ -262,7 +262,7 @@ namespace ProvidersLibrary
                     using (CloneStrRec = new RecDao(db, "MomentStrValues"))
                     using (CloneStrCutRec = new RecDao(db, "MomentStrValuesCut"))
                     using (CloneErrorsRec = new RecDao(db, "ErrorsObjects"))
-                        GetValues(beginRead, endRead);
+                        GetValues(periodBegin, periodEnd);
                     WriteMomentErrors(db);
                 }
             }

@@ -9,7 +9,7 @@ namespace CommonTypes
         public MomEdit(DataType dtype)
         {
             _mean = (Mean)MFactory.NewMean(dtype);
-            Time = Different.MinDate;
+            Time = BaseLibrary.Different.MinDate;
         }
         public MomEdit(DataType dtype, DateTime time) : this(dtype)
         {
@@ -108,7 +108,7 @@ namespace CommonTypes
         }
         //Копирует время, ошибку и значение из списка мгновенных значений по указанной позиции
         public MomEdit CopyAllFrom(IMomListReadOnly list, //список значений
-                                                        int i) //Позиция
+                                                    int i) //Позиция
         {
             var buf = list.Mean(i);
             _mean.CopyValueFrom(buf);

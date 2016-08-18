@@ -252,10 +252,7 @@ namespace BaseLibrary
                     ErrorsRec.Put("Context", CommandLog.Context);
                 }
                 if (CommandSubLog != null)
-                {
-                    ErrorsRec.Put("PeriodBegin", CommandSubLog.PeriodBegin);
-                    ErrorsRec.Put("PeriodEnd", CommandSubLog.PeriodEnd);
-                }
+                    ErrorsRec.Put("CommandParams", CommandSubLog.Params);
             });
         }
         #endregion
@@ -292,14 +289,14 @@ namespace BaseLibrary
         }
 
         //Запуск простой комманды для записи в SubHistory с процентами и без
-        public CommandSubLog StartSubLog(double start, double finish, string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string context = "")
+        public CommandSubLog StartSubLog(double start, double finish, string name, string pars, CommandFlags flags = CommandFlags.Simple, string context = "")
         {
-            Command = CommandSubLog = new CommandSubLog(this, Command, start, finish, name, periodBegin, periodEnd, mode, flags, context);
+            Command = CommandSubLog = new CommandSubLog(this, Command, start, finish, name, pars, flags, context);
             return CommandSubLog;
         }
-        public CommandSubLog StartSubLog(string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string context = "")
+        public CommandSubLog StartSubLog(string name, string pars, CommandFlags flags = CommandFlags.Simple, string context = "")
         {
-            Command = CommandSubLog = new CommandSubLog(this, Command, name, periodBegin, periodEnd, mode, flags, context);
+            Command = CommandSubLog = new CommandSubLog(this, Command, name, pars, flags, context);
             return CommandSubLog;
         }
 
@@ -338,13 +335,13 @@ namespace BaseLibrary
             return RunAction(StartLog(name, pars, flags, context), action, errMess);
         }
 
-        public bool StartSubLog(Action action, double start, double finish, string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
+        public bool StartSubLog(Action action, double start, double finish, string name, string pars, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
         {
-            return RunAction(StartSubLog(start, finish, name, periodBegin, periodEnd, mode, flags), action, errMess);
+            return RunAction(StartSubLog(start, finish, name, pars, flags), action, errMess);
         }
-        public bool StartSubLog(Action action, string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
+        public bool StartSubLog(Action action, string name, string pars, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
         {
-            return RunAction(StartSubLog(name, periodBegin, periodEnd, mode, flags), action, errMess);
+            return RunAction(StartSubLog(name, pars, flags), action, errMess);
         }
         
         //Завершает комманду, results - результаты для записи в лог или отображения, возвращает команду
@@ -415,7 +412,7 @@ namespace BaseLibrary
             }
         }
 
-        //Ожидение поле неудачного выполнения операции
+        //Ожидание после неудачного выполнения операции
         private void WaitAfterError(int errorWaiting)
         {
             if (errorWaiting < 3000) Thread.Sleep(errorWaiting);

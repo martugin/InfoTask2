@@ -23,7 +23,7 @@ namespace CommonTypes
         }
         public virtual DateTime Date
         {
-            get { return Different.MinDate; }
+            get { return BaseLibrary.Different.MinDate; }
             internal set { }
         }
         public virtual string String

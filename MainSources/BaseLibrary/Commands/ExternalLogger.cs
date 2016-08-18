@@ -65,13 +65,13 @@ namespace BaseLibrary
             return Logger.StartLog(name, pars, flags, context);
         }
 
-        public CommandSubLog StartSubLog(double start, double finish, string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string context = "")
+        public CommandSubLog StartSubLog(double start, double finish, string name, string pars, CommandFlags flags = CommandFlags.Simple, string context = "")
         {
-            return Logger.StartSubLog(start, finish, name, periodBegin, periodEnd, mode, flags, context);
+            return Logger.StartSubLog(start, finish, name, pars, flags, context);
         }
-        public CommandSubLog StartSubLog(string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string context = "")
+        public CommandSubLog StartSubLog(string name, string pars, CommandFlags flags = CommandFlags.Simple, string context = "")
         {
-            return Logger.StartSubLog(name, periodBegin, periodEnd, mode, flags, context);
+            return Logger.StartSubLog(name, pars, flags, context);
         }
 
         public bool Start(Action action, double start, double finish, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
@@ -92,13 +92,13 @@ namespace BaseLibrary
             return Logger.StartLog(action, name, pars, flags, context, errMess);
         }
 
-        public bool StartSubLog(Action action, double start, double finish, string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
+        public bool StartSubLog(Action action, double start, double finish, string name, string pars, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
         {
-            return Logger.StartSubLog(action, start, finish, name, periodBegin, periodEnd, mode, flags, errMess);
+            return Logger.StartSubLog(action, start, finish, name, pars, flags, errMess);
         }
-        public bool StartSubLog(Action action, string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
+        public bool StartSubLog(Action action, string name, string pars, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
         {
-            return Logger.StartSubLog(action, name, periodBegin, periodEnd, mode, flags, errMess);
+            return Logger.StartSubLog(action, name, pars, flags, errMess);
         }
 
         public Command Finish(string results = null, bool isBreaked = false)

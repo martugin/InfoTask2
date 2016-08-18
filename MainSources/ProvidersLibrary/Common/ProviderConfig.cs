@@ -9,7 +9,7 @@ namespace ProvidersLibrary
         public ComplectConfig(string complect, string dllFile)
         {
             Complect = complect;
-            DllFile = DifferentIT.InfoTaskDir() + dllFile;
+            DllFile = DifferentIt.InfoTaskDir() + dllFile;
             if (DllFile != null)
             {
                 var fileInfo = new FileInfo(DllFile);

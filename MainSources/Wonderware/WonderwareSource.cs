@@ -5,6 +5,7 @@ using System.Text;
 using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
+using Different = BaseLibrary.Different;
 
 namespace Provider
 {

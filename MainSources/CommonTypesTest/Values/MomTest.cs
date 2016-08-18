@@ -2,6 +2,7 @@
 using BaseLibrary;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Different = BaseLibrary.Different;
 
 namespace CommonTypesTest
 {
