@@ -8,33 +8,24 @@ namespace Provider
 {
     [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "MirSource")]
-    public class MirSource : AdoSource
+    public class MirSource : SqlServerSource
     {
         //Код провайдера
         public override string Code { get { return "MirSource"; } }
-        //Комплект
-        public override string Complect { get { return "Mir"; }}
-        //Создание подключения
-        protected override ProviderSettings CreateConnect()
-        {
-            return new SqlSourceSettings();
-        }
-        //Ссылка на соединение
-        public SqlSourceSettings Settings { get { return (SqlSourceSettings)CurSettings; } }
         
         //Словари объектов, ключи коды и IdChanell
         private readonly DicS<ObjectMir> _objects = new DicS<ObjectMir>();
         private readonly DicI<ObjectMir> _objectsId = new DicI<ObjectMir>();
         
-        //Очистка списка сигналов
+        //Очистка списка объектов
         protected override void ClearObjects()
         {
             _objects.Clear();
             _objectsId.Clear();
         }
-        
-        //Добавляет один сигнал в список
-        protected override SourceObject AddObject(SourceSignal sig)
+
+        //Добавить объект в провайдер
+        protected override SourceObject AddObject(InitialSignal sig)
         {
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
             if (!_objects.ContainsKey(ocode))
@@ -43,10 +34,10 @@ namespace Provider
         }
         
         //Подготовка провайдера, чтение значений IDCHANNEL
-        public override void Prepare()
+        protected override void PrepareSource()
         {
             _objectsId.Clear();
-            using (var rec = new ReaderAdo(Settings.SqlProps, "SELECT OBJECTS.NAME_OBJECT, DEVICES.NAME_DEVICE, LIB_CHANNELS.NAME_TYPE, LIB_CHANNELS.UNIT, CHANNELS.IDCHANNEL, LIB_CHANNELS.TABLE_NAME " +
+            using (var rec = new ReaderAdo(SqlProps, "SELECT OBJECTS.NAME_OBJECT, DEVICES.NAME_DEVICE, LIB_CHANNELS.NAME_TYPE, LIB_CHANNELS.UNIT, CHANNELS.IDCHANNEL, LIB_CHANNELS.TABLE_NAME " +
             "FROM CHANNELS INNER JOIN DEVICES ON CHANNELS.IDDEVICE = DEVICES.IDDEVICE INNER JOIN " +
             "LIB_CHANNELS ON dbo.CHANNELS.IDTYPE_CHANNEL = dbo.LIB_CHANNELS.IDTYPE_CHANNEL INNER JOIN " +
             "POINT_DEVICES ON dbo.DEVICES.IDDEVICE = dbo.POINT_DEVICES.IDDEVICE INNER JOIN " +
@@ -67,11 +58,11 @@ namespace Provider
         }
 
         //Запрос значений по одному блоку сигналов
-        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             string queryString = "SELECT IDCHANNEL, TIME, VALUE, VALUE_UNIT, VALUE_INDICATION FROM IZM_TII" +
                                      " WHERE (TIME >= " + beg.ToSqlString() + ") AND (TIME <=" + en.ToSqlString() + ") ORDER BY TIME";
-            return new ReaderAdo(Settings.SqlProps, queryString);
+            return new ReaderAdo(SqlProps, queryString);
         }
 
         //Определение текущего считываемого объекта
@@ -81,15 +72,15 @@ namespace Provider
         }
 
         //Чтение среза
-        protected override void ReadCut()
+        protected override ValuesCount ReadCut()
         {
-            ReadValuesByParts(_objects.Values, 5000, PeriodBegin.AddMinutes(-30), PeriodBegin, true);
+            return ReadWhole(_objects.Values, PeriodBegin.AddMinutes(-30), PeriodBegin, true);
         }
 
         //Чтение изменений
-        protected override void ReadChanges()
+        protected override ValuesCount ReadChanges()
         {
-            ReadValuesByParts(_objects.Values, 5000, PeriodBegin, PeriodEnd, false);
+            return ReadWhole(_objects.Values);
         }
     }
 }

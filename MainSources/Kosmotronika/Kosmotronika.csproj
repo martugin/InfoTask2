@@ -43,14 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ErrMomFactoryKosm.cs" />
-    <Compile Include="KosmotronikaArchDbSettings.cs" />
     <Compile Include="KosmotronikaArchDbSource.cs" />
-    <Compile Include="KosmotronikaBaseSettings.cs" />
     <Compile Include="KosmotronikaBaseSource.cs" />
     <Compile Include="KosmotronikaOPCReceiver.cs" />
-    <Compile Include="KosmotronikaRetroSettings.cs" />
     <Compile Include="KosmotronikaRetroSource.cs" />
     <Compile Include="ObjectKosm.cs" />
+    <Compile Include="ObjectKosmOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

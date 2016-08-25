@@ -9,7 +9,7 @@ namespace CommonTypes
         public MomEdit(DataType dtype)
         {
             _mean = (Mean)MFactory.NewMean(dtype);
-            Time = Different.MinDate;
+            Time = BaseLibrary.Different.MinDate;
         }
         public MomEdit(DataType dtype, DateTime time) : this(dtype)
         {
@@ -84,17 +84,37 @@ namespace CommonTypes
             _mean.ValueToRec(rec, field);
         }
 
-        //Копирует значение из другого мгновенного значения
-        public void CopyValueFrom(IMean mean)
+        //Копирует значение из другого мгновенного значения, возвращает себя
+        public MomEdit CopyValueFrom(IMean mean)
         {
             _mean.CopyValueFrom(mean);
+            return this;
         }
-        //Копирует время, ошибку и значение из другого IMom
-        public void CopyAllFrom(IMom mom)
+        //Копирует время, ошибку и значение из другого IMom, возвращает себя
+        public MomEdit CopyAllFrom(IMom mom)
         {
             _mean.CopyValueFrom(mom);
             Time = mom.Time;
             Error = mom.Error;
+            return this;
+        }
+        //Копирует значение из списка мгновенных значений по указанной позиции
+        public MomEdit CopyValueFrom(IMomListReadOnly list, //список значений
+                                                        int i) //Позиция
+        {
+            var buf = list.Mean(i);
+            _mean.CopyValueFrom(buf);
+            return this;
+        }
+        //Копирует время, ошибку и значение из списка мгновенных значений по указанной позиции
+        public MomEdit CopyAllFrom(IMomListReadOnly list, //список значений
+                                                    int i) //Позиция
+        {
+            var buf = list.Mean(i);
+            _mean.CopyValueFrom(buf);
+            Time = list.Time(i);
+            Error = list.Error(i);
+            return this;
         }
 
         public IMom Clone()

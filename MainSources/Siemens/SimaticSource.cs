@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Data;
 using System.Text;
 using BaseLibrary;
 using CommonTypes;
@@ -10,25 +11,72 @@ namespace Provider
 {
     [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "SimaticSource")]
-    public class SimaticSource : AdoSource
+    public class SimaticSource : OleDbSource
     {
         //Код провайдера
         public override string Code { get { return "SimaticSource"; } }
-        //Комплект
-        public override string Complect { get { return "Siemens"; } }
-        //Создание подключения
-        protected override ProviderSettings CreateConnect()
+
+        //Имя сервера
+        private string _serverName;
+        //Чтение настроек
+        protected override void ReadInf(DicS<string> dic)
         {
-            return new SimaticSettings();
+            _serverName = dic["SQLServer"];
         }
-        //Подключение
-        internal SimaticSettings Settings { get { return (SimaticSettings)CurSettings; } }
+        //Хэш
+        protected override string Hash { get { return "SQLServer=" + _serverName; } }
+
+        //Строка соединения
+        protected override string ConnectionString
+        {
+            get
+            {
+                var list = SqlDb.SqlDatabasesList(_serverName);
+                var dbName = "";
+                foreach (var db in list)
+                    if (db.StartsWith("CC_") && db.EndsWith("R"))
+                        dbName = db;
+                if (dbName.IsEmpty()) return null;
+                SqlDb.Connect(_serverName, dbName).GetSchema();//Проверка
+                var dic = new Dictionary<string, string>
+                    {
+                        {"Provider", "WinCCOLEDBProvider.1"},
+                        {"Catalog", dbName},
+                        {"Data Source", _serverName}
+                    };
+                return dic.ToPropertyString();
+            }
+        }
+
+        //Проверка соединения
+        protected override bool CheckConnection()
+        {
+            try
+            {
+                if (Reconnect() && Connection.State == ConnectionState.Open)
+                {
+                    CheckConnectionMessage += "Успешное соединение с архивом WINCC";
+                    return true;
+                }
+                CheckConnectionMessage += "Не удалось соединиться с архивом WINCC";
+            }
+            catch { CheckConnectionMessage += "Не удалось соединиться с архивом WINCC"; }
+            return false;
+        }
+
+        //Проверка настроек
+        protected override string CheckSettings(DicS<string> inf)
+        {
+            if (!inf.ContainsKey("SQLServer"))
+                return "Не указано имя архивного сервера";
+            return "";
+        }
 
         //Словари сигналов, ключи полные коды и Id
         private readonly DicI<ObjectSimatic> _objectsId = new DicI<ObjectSimatic>();
 
-        //Добавить сигнал в провайдер
-        protected override SourceObject AddObject(SourceSignal sig)
+        //Добавить объект в провайдер
+        protected override SourceObject AddObject(InitialSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))
@@ -51,7 +99,7 @@ namespace Provider
         }
 
         //Запрос значений из архива по списку сигналов и интервалу
-        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("TAG:R, ");
             if (part.Count == 1)
@@ -67,7 +115,7 @@ namespace Provider
             sb.Append(", ").Append(en.ToSimaticString());
             
             AddEvent("Запрос значений из архива", part.Count + " тегов");
-            return new ReaderAdo(Settings.Connection, sb.ToString());
+            return new ReaderAdo(Connection, sb.ToString());
         }
 
         //Определение текущего считываемого объекта
@@ -77,14 +125,14 @@ namespace Provider
         }
         
         //Чтение среза
-        protected override void ReadCut()
+        protected override ValuesCount ReadCut()
         {
-            ReadValuesByParts(_objectsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
+            return ReadByParts(_objectsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
         }
         //Чтение изменений
-        protected override void ReadChanges()
+        protected override ValuesCount ReadChanges()
         {
-            ReadValuesByParts(_objectsId.Values, 500, PeriodBegin, PeriodEnd, false);
+            return ReadByParts(_objectsId.Values, 500);
         }
     }
 }

@@ -8,8 +8,6 @@ namespace Provider
     [ExportMetadata("Code", "OvationOpcReceiver")]
     public class OvationOpcReceiver : OpcServer
     {
-        //Комплект
-        public override string Complect { get { return "Ovation"; }}
         //Код
         public override string Code { get { return "OvationOPCReceiver"; }}
 

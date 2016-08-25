@@ -1,26 +1,23 @@
-﻿using System.Collections.Generic;
-using BaseLibrary;
+﻿using BaseLibrary;
 
 namespace CommonTypes
 {
     //Общие функции для InfoTask и конвертеры 
-    public static class DifferentIT
+    public static class DifferentIt
     {
         //Чтение из реестра пути к каталогу InfoTask, в возвращаемом пути \ на конце
-        public static string GetInfoTaskDir()
+        public static string InfoTaskDir()
         {
-            var dir = Different.GetRegistry(@"software\InfoTask", "InfoTaskPath");
-            if (dir == "") dir = Different.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTaskPath");
+            var dir = Different.GetRegistry(@"software\InfoTask", "InfoTask2Path");
+            if (dir == "") dir = Different.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
             if (!dir.EndsWith(@"\")) dir += @"\";
             return dir;
         }
 
-        //Путь к каталогу разработки InfoTask
-        public static string GetInfoTaskDevelopDir()
+        //Возвращает путь к каталогу проекта в LocalData
+        public static string LocalDataProjectDir(string project) //Код проекта
         {
-            var itd = GetInfoTaskDir();
-            var n = itd.LastIndexOf(@"\", itd.Length - 2);
-            return itd.Substring(0, n + 1);
+            return InfoTaskDir() + @"LocalData\" + project + @"\";
         }
 
         //Возвращает тип ошибки как строку

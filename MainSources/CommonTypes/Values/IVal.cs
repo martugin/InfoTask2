@@ -23,8 +23,18 @@ namespace CommonTypes
     }
     
     //-----------------------------------------------------------------------------------------------
+    //Интерфейс для мгновенных значений и списков
+    public interface ISingleVal : ICalcVal
+    {
+        //Количество значений
+        int Count { get; }
+        //Само отделное значение или последнее значение списка
+        IMean LastMean { get; }
+    } 
+
+    //-----------------------------------------------------------------------------------------------
     //Интерфейс для Mean
-    public interface IMean : ICalcVal
+    public interface IMean : ISingleVal
     {
         //Значения разных типов
         bool Boolean { get; }
@@ -47,11 +57,6 @@ namespace CommonTypes
         //Копия значения с новым временем и ошибкой
         IMom Clone(DateTime time);
         IMom Clone(DateTime time, ErrMom err);
-        
-        //Количество значений
-        int Count { get; }
-        //Само оттделное значение или последнее значение списка
-        IMean LastMean { get; }
     }
 
     //-----------------------------------------------------------------------------------------------
@@ -66,27 +71,28 @@ namespace CommonTypes
 
     //-----------------------------------------------------------------------------------------------
     //Интерфейс для списков мгновенных значений только для чтения
-    public interface IMomListReadOnly : IMom
+    public interface IMomListReadOnly : ISingleVal
     {
-        //Текущий номер
-        int CurNum { get; set; }
-
         //Время i-ого значения
-        DateTime GetTime(int i);
+        DateTime Time(int i);
         //Ошибка i-ого значения
-        ErrMom GetError(int i);
+        ErrMom Error(int i);
 
         //Значения разных типов i-ого значения
-        bool GetBoolean(int i);
-        int GetInteger(int i);
-        double GetReal(int i);
-        DateTime GetDate(int i);
-        string GetString(int i);
-
+        bool Boolean(int i);
+        int Integer(int i);
+        double Real(int i);
+        DateTime Date(int i);
+        string String(int i);
+        //Запись значения в рекордсет rec, поле field
+        void ValueToRec(IRecordAdd rec, string field, int i);
+        
         //Копия значения по индексу, возможно с новым временем и ошибкой
         IMom Clone(int i);
         IMom Clone(int i, DateTime time);
         IMom Clone(int i, DateTime time, ErrMom err);
+        //Загрузить буферное значение из списка 
+        Mean Mean(int i);
     }
 
     //-----------------------------------------------------------------------------------------------
@@ -102,6 +108,7 @@ namespace CommonTypes
         void AddMom(DateTime time, double r, ErrMom err = null);
         void AddMom(DateTime time, DateTime d, ErrMom err = null);
         void AddMom(DateTime time, string s, ErrMom err = null);
+        void AddMom(DateTime time, object ob, ErrMom err = null);
 
         //Очистить список значений
         void Clear();

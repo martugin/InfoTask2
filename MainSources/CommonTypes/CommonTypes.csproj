@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\DifferentIT.cs" />
+    <Compile Include="Common\DifferentIt.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="ErrMoms\ErrDescr.cs" />
     <Compile Include="ErrMoms\ErrMom.cs" />

@@ -7,9 +7,8 @@ namespace BaseLibrary
     {
         //name - имя команды, pars - параметры, все для записи в лог
         internal CommandLog(Logger logger, Command parent, double start, double finish, string name, string pars, CommandFlags flags, string context)
-            : base(logger, parent, start, finish, name, flags, context)
+            : base(logger, parent, start, finish, name, pars, flags, context)
         {
-            _params = pars;
             LogEventTime = DateTime.Now;
             var hist = Logger.History;
             Logger.RunHistoryOperation(hist, () =>
@@ -19,7 +18,7 @@ namespace BaseLibrary
                         hist.Put("SubHistoryId", Logger.CommandSubLog.HistoryId);
                     hist.Put("Command", Name);
                     hist.Put("Context", Context, true);
-                    hist.Put("Params", _params);
+                    hist.Put("Params", Params);
                     hist.Put("Time", StartTime);
                     hist.Put("Status", Status);
                     Logger.LastHistoryId = HistoryId = hist.GetInt("HistoryId");
@@ -29,10 +28,7 @@ namespace BaseLibrary
         internal CommandLog(Logger logger, Command parent, string name, string pars, CommandFlags flags, string context)
             : this(logger, parent, parent == null ? 0 : parent.Procent, parent == null ? 100 : parent.Procent, name, pars, flags, context)
         { }
-
-        //Параметры комманды
-        private readonly string _params;
-
+        
         //Время логирования последнего события
         internal DateTime LogEventTime { private get; set; }
         //Разность времени между сейчас и временем предыдущего логирования
@@ -49,7 +45,7 @@ namespace BaseLibrary
                 {
                     hist.MoveLast();
                     hist.Put("Status", Status);
-                    hist.Put("Params", new[] { _params, results }.ToPropertyString());
+                    hist.Put("Params", new[] { Params, results }.ToPropertyString());
                     hist.Put("ProcessLength", FromStart);
                 });
             Logger.FinishLogCommand();

@@ -47,21 +47,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonProviders\CloneObject.cs" />
-    <Compile Include="CommonProviders\CloneSourceSettings.cs" />
     <Compile Include="Common\DifferentProviders.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Common\ProviderConfig.cs" />
     <Compile Include="Common\ProvidersFactory.cs" />
-    <Compile Include="OPC\DebugOpcServer.cs" />
-    <Compile Include="OPC\OpcItem.cs" />
-    <Compile Include="OPC\OpcServer.cs" />
-    <Compile Include="OPC\OpcServerSettings.cs" />
+    <Compile Include="Receivers\DebugOpcServer.cs" />
+    <Compile Include="Receivers\OpcItem.cs" />
+    <Compile Include="Receivers\OpcServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\Receiver.cs" />
-    <Compile Include="Providers\SourceBase.cs" />
-    <Compile Include="Providers\AdoSource.cs" />
+    <Compile Include="Receivers\ReceiverConnect.cs" />
+    <Compile Include="Receivers\ReceiverObject.cs" />
+    <Compile Include="Sources\AccessSource.cs" />
+    <Compile Include="Sources\AdoSource.cs" />
+    <Compile Include="Sources\OleDbSource.cs" />
+    <Compile Include="Sources\PartsSource.cs" />
+    <Compile Include="Providers\ProviderConnect.cs" />
+    <Compile Include="Receivers\ReceiverBase.cs" />
+    <Compile Include="Sources\SourceBase.cs" />
     <Compile Include="CommonProviders\CloneSource.cs" />
-    <Compile Include="ProvidersConnects\OleDbSourceSettings.cs" />
     <Compile Include="Providers\ProviderSetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,15 +72,16 @@
       <DependentUpon>ProviderSetupForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Providers\ProviderBase.cs" />
-    <Compile Include="ProvidersConnects\ProviderSettings.cs" />
-    <Compile Include="ProvidersConnects\SourceSettings.cs" />
-    <Compile Include="ProvidersConnects\SqlSourceSettings.cs" />
-    <Compile Include="Signals\CalcSignal.cs" />
-    <Compile Include="Signals\ProviderSignal.cs" />
-    <Compile Include="Signals\SourceObject.cs" />
-    <Compile Include="Signals\ReceiverSignal.cs" />
-    <Compile Include="Signals\SourceSignal.cs" />
-    <Compile Include="Signals\Signal.cs" />
+    <Compile Include="Sources\SourceConnect.cs" />
+    <Compile Include="Sources\SqlServerSource.cs" />
+    <Compile Include="Sources\ValuesCount.cs" />
+    <Compile Include="SourcesSignals\CalcSignal.cs" />
+    <Compile Include="SourcesSignals\InitialSignal.cs" />
+    <Compile Include="Providers\ProviderSignal.cs" />
+    <Compile Include="SourcesSignals\SourceObject.cs" />
+    <Compile Include="Receivers\ReceiverSignal.cs" />
+    <Compile Include="SourcesSignals\UniformSignal.cs" />
+    <Compile Include="SourcesSignals\SourceSignal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">

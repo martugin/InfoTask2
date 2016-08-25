@@ -22,7 +22,7 @@ namespace Provider
     //Для аналоговых - один ТМ, для выходов - один выход ТМ
     internal class ObjectKosm : SourceObject
     {
-        public ObjectKosm(KosmotronikaBaseSource source, ObjectIndex ind) : base(source)
+        internal ObjectKosm(KosmotronikaBaseSource source, ObjectIndex ind) : base(source)
         {
             Sn = ind.Sn; 
             NumType = ind.NumType;
@@ -31,7 +31,7 @@ namespace Provider
         }
 
         //Добавить к объекту сигнал, если такого еще не было
-        protected override SourceSignal AddNewSignal(SourceSignal sig)
+        protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
             if (sig.Inf["Prop"] == "ND")
                 return StateSignal = StateSignal ?? sig;
@@ -50,27 +50,28 @@ namespace Provider
         internal int Out { get; private set; }
 
         //Сигнал недостоверности
-        internal SourceSignal StateSignal { get; private set; }
+        internal InitialSignal StateSignal { get; private set; }
         //Сигнал ПОК
-        internal SourceSignal PokSignal { get; private set; }
+        internal InitialSignal PokSignal { get; private set; }
 
         //Чтение значений по одному объекту из рекордсета источника
         //Возвращает количество сформированных значений
-        public override int ReadMoments(IRecordRead rec)
+        protected override int ReadMoments(IRecordRead rec)
         {
+            int dn = Source is KosmotronikaRetroSource ? 1 : 0;
             int nwrite = 0;
-            DateTime time = rec.GetTime(3);
+            DateTime time = rec.GetTime(2+dn);
             var isAnalog = ((KosmotronikaBaseSource)Source).IsAnalog;
-            int ndint = rec.GetInt(isAnalog ? 6 : 8);
+            int ndint = rec.GetInt(isAnalog ? 5+dn : 7+dn);
             var err = MakeError(ndint);
 
-            nwrite += AddMom(PokSignal, time, rec.GetInt(5), err);
+            nwrite += AddMom(PokSignal, time, rec.GetInt(4+dn), err);
             nwrite += AddMom(StateSignal, time, ndint);
             if (isAnalog)
-                nwrite += AddMom(ValueSignal, time, rec.GetDouble(8), err);
+                nwrite += AddMom(ValueSignal, time, rec.GetDouble(7+dn), err);
             else
             {
-                var strValue = rec.GetString(9);
+                var strValue = rec.GetString(8+dn);
                 if (strValue.IndexOf("0x", StringComparison.Ordinal) >= 0)
                     nwrite += AddMom(ValueSignal, time, Convert.ToUInt32(strValue, 16), err);
                 else nwrite += AddMom(ValueSignal, time, Convert.ToDouble(strValue), err);

@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using Microsoft.Win32;
 using System.Globalization;
 
@@ -273,5 +274,22 @@ namespace BaseLibrary
             }
             catch { }
         }
+
+        //Работа с XML
+        #region
+        //Получение значения атрибута узла
+        public static string GetAttr(this XElement node, string attributeName, string defaultValue = null)
+        {
+            if (node == null || node.Attribute(attributeName) == null)
+                return defaultValue;
+            return node.Attribute(attributeName).Value;
+        }
+        //Получение имени узла
+        public static string GetName(this XElement node)
+        {
+            return node.Name.ToString();
+        }
+
+        #endregion
     }
 }

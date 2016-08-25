@@ -23,7 +23,7 @@ namespace BaseLibrary
             IsProgress = flags.HasFlag(CommandFlags.Progress);
             IsCollect = flags.HasFlag(CommandFlags.Collect); 
             IsDanger = flags.HasFlag(CommandFlags.Danger);
-            Context = !Context.IsEmpty() ? context : Parent.Context;
+            Context = !context.IsEmpty() ? context : (Parent != null ? Parent.Context : "");
             Procent = 0;
         }
 

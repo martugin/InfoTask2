@@ -11,26 +11,59 @@ namespace Provider
 {
     [Export(typeof(ProviderBase))]
     [ExportMetadata("Code", "OvationSource")]
-    public class OvationSource : AdoSource
+    public class OvationSource : OleDbSource
     {
         //Код провайдера
         public override string Code { get { return "OvationSource"; } }
-        //Комплект
-        public override string Complect { get { return "Ovation"; } }
-        //Создание подключения
-        protected override ProviderSettings CreateConnect()
+
+        protected override string Hash { get { return "OvationHistorian=" + _dataSource; } }
+        //Настройки провайдера
+        protected override void ReadInf(DicS<string> dic)
         {
-            return new OvationSettings();
+            _dataSource = dic["DataSource"];
         }
-        //Подключение
-        internal OvationSettings Settings { get { return (OvationSettings)CurSettings; } }
+        //Имя дропа
+        private string _dataSource;
+        
+        //Строка соединения с OleDb
+        protected override string ConnectionString
+        {
+            get
+            {
+                return "Provider=OvHOleDbProv.OvHOleDbProv.1;Persist Security Info=True;User ID='';" +
+                            "Data Source=" + _dataSource + ";Location='';Mode=ReadWrite;Extended Properties=''";
+            }
+        }
+
+        //Проверка соединения в настройке
+        protected override bool CheckConnection()
+        {
+            if (Reconnect())
+            {
+                CheckConnectionMessage = "Успешное соединение с Historian";
+                return true;
+            }
+            AddError(CheckConnectionMessage = "Ошибка соединения с Historian");
+            return false;
+        }
 
         //Словарь объектов по Id в Historian
         private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
+        //Объекты сообщений
+        private ObjectOvationMsg _alarmObject;
+        private ObjectOvationMsg _soeObject;
+        private ObjectOvationMsg _textObject;
 
-        //Добавить объект
-        protected override SourceObject AddObject(SourceSignal sig)
+        //Добавить объект в провайдер
+        protected override SourceObject AddObject(InitialSignal sig)
         {
+            if (sig.Inf.Get("ObjectType") == "ALARM")
+                return _alarmObject ?? (_alarmObject = new ObjectOvationMsg(this, "ALARM"));
+            if (sig.Inf.Get("ObjectType") == "SOE")
+                return _soeObject ?? (_soeObject = new ObjectOvationMsg(this, "SOE"));
+            if (sig.Inf.Get("ObjectType") == "TEXT")
+                return _textObject ?? (_textObject = new ObjectOvationMsg(this, "TEXT"));
+
             int id = sig.Inf.GetInt("Id");
             if (!_objectsId.ContainsKey(id))
                 return _objectsId.Add(id, new ObjectOvation(this, id));
@@ -41,12 +74,15 @@ namespace Provider
         protected override void ClearObjects()
         {
             _objectsId.Clear();
+            _alarmObject = null;
+            _soeObject = null;
+            _textObject = null;
         }
 
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(Name, ErrMomType.Source);
+            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
             factory.AddGoodDescr(0);
             factory.AddDescr(1, "FAIR", ErrorQuality.Warning);
             factory.AddDescr(2, "POOR", ErrorQuality.Warning);
@@ -56,7 +92,7 @@ namespace Provider
         }
 
         //Запрос значений из Historian по списку сигналов и интервалу
-        protected override IRecordRead QueryPartValues(List<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("select ID, TIMESTAMP, TIME_NSEC, F_VALUE, RAW_VALUE, STS from PT_HF_HIST " + "where (");
             bool isFirst = true;
@@ -66,48 +102,68 @@ namespace Provider
                 sb.Append("(ID=").Append(ob.Id).Append(")");
                 isFirst = false;
             }
-            sb.Append(") and ")
-              .Append(" (TIMESTAMP >= ")
-              .Append(beg.ToOvationString())
-              .Append(") and (TIMESTAMP <= ")
-              .Append(en.ToOvationString())
-              .Append(") order by TIMESTAMP, TIME_NSEC");
-            var rec = new ReaderAdo(Settings.Connection, sb.ToString());
+            sb.Append(") and").Append(TimeCondition(beg, en));
+            var rec = new ReaderAdo(Connection, sb.ToString());
             if (en.Subtract(beg).TotalMinutes > 59 && !rec.HasRows)
             {
                 AddWarning("Значения из источника не получены", null, beg + " - " + en +"; " + part.First().Context + " и др.");
-                IsConnected = false;
                 return null;
             }
             return rec;
         }
-
+        
         //Определение текущего считываемого объекта
         protected override SourceObject DefineObject(IRecordRead rec)
         {
             return _objectsId[rec.GetInt("Id")];
         }
 
-        //Задание нестандартных свойств получения данных
-        protected override void SetReadProperties()
+        //Запросы значений по сигналам сообщений разного типа
+        protected IRecordRead QueryValuesAlarm(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
-            MaxErrorCount = 5;
-            MaxErrorDepth = 5;
+            return new ReaderAdo(Connection, "select * from MSG_ALARM_HIST" + TimeCondition(beg, en));
+        }
+        protected IRecordRead QueryValuesSoe(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        {
+            return new ReaderAdo(Connection, "select * from MSG_SOE_HIST" + TimeCondition(beg, en));
+        }
+        protected IRecordRead QueryValuesText(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        {
+            return new ReaderAdo(Connection, "select * from MSG_TEXT_HIST" + TimeCondition(beg, en));
         }
 
-        //Чтение среза
-        protected override void ReadCut()
+        //Строка с условием по времнеи для запросов
+        private string TimeCondition(DateTime beg, DateTime en)
         {
+            return " (TIMESTAMP >= " + beg.ToOvationString() + ") and (TIMESTAMP <= " + en.ToOvationString() + ") order by TIMESTAMP, TIME_NSEC";
+        }
+
+       //Чтение среза
+        protected override ValuesCount ReadCut()
+        {
+            var vc = new ValuesCount();
             using (Start(0, 50)) //Срез по 4 минутам
-                ReadValuesByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
+                vc += ReadByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
+            if (vc.IsFail) return vc;
             using (Start(50, 100)) //Срез по 61 минуте
-                ReadValuesByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
+                vc += ReadByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
+            return vc;
         }
 
         //Чтение изменений
-        protected override void ReadChanges()
+        protected override ValuesCount ReadChanges()
         {
-            ReadValuesByParts(_objectsId.Values, 200, PeriodBegin, PeriodEnd, false);
+            var vc = new ValuesCount();
+            using (Start(0, 70))
+                vc += ReadByParts(_objectsId.Values, 200);
+
+            using (Start(70, 80))
+                vc += ReadOneObject(_alarmObject, QueryValuesAlarm, "Чтение сигнализационных сообщений");
+            using (Start(80, 90))
+                vc += ReadOneObject(_soeObject, QueryValuesSoe, "Чтение событий");
+            using (Start(90, 100))
+                vc += ReadOneObject(_textObject, QueryValuesText, "Чтение текстовых сообщений");
+            return vc;
         }
     }
 }

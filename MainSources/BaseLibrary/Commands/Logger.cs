@@ -20,8 +20,8 @@ namespace BaseLibrary
         //Процент текущей комманды
         public double Procent
         {
-            get { return Command.Procent; }
-            set { Command.Procent = value; }
+            get { return Command == null ? 0 : Command.Procent;}
+            set { if (Command != null) Command.Procent = value; }
         }
 
         //Работа с файлами истории
@@ -252,10 +252,7 @@ namespace BaseLibrary
                     ErrorsRec.Put("Context", CommandLog.Context);
                 }
                 if (CommandSubLog != null)
-                {
-                    ErrorsRec.Put("PeriodBegin", CommandSubLog.PeriodBegin);
-                    ErrorsRec.Put("PeriodEnd", CommandSubLog.PeriodEnd);
-                }
+                    ErrorsRec.Put("CommandParams", CommandSubLog.Params);
             });
         }
         #endregion
@@ -292,14 +289,14 @@ namespace BaseLibrary
         }
 
         //Запуск простой комманды для записи в SubHistory с процентами и без
-        public CommandSubLog StartSubLog(double start, double finish, string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string context = "")
+        public CommandSubLog StartSubLog(double start, double finish, string name, string pars, CommandFlags flags = CommandFlags.Simple, string context = "")
         {
-            Command = CommandSubLog = new CommandSubLog(this, Command, start, finish, name, periodBegin, periodEnd, mode, flags, context);
+            Command = CommandSubLog = new CommandSubLog(this, Command, start, finish, name, pars, flags, context);
             return CommandSubLog;
         }
-        public CommandSubLog StartSubLog(string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string context = "")
+        public CommandSubLog StartSubLog(string name, string pars, CommandFlags flags = CommandFlags.Simple, string context = "")
         {
-            Command = CommandSubLog = new CommandSubLog(this, Command, name, periodBegin, periodEnd, mode, flags, context);
+            Command = CommandSubLog = new CommandSubLog(this, Command, name, pars, flags, context);
             return CommandSubLog;
         }
 
@@ -338,13 +335,13 @@ namespace BaseLibrary
             return RunAction(StartLog(name, pars, flags, context), action, errMess);
         }
 
-        public bool StartSubLog(Action action, double start, double finish, string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
+        public bool StartSubLog(Action action, double start, double finish, string name, string pars, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
         {
-            return RunAction(StartSubLog(start, finish, name, periodBegin, periodEnd, mode, flags), action, errMess);
+            return RunAction(StartSubLog(start, finish, name, pars, flags), action, errMess);
         }
-        public bool StartSubLog(Action action, string name, DateTime periodBegin, DateTime periodEnd, string mode, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
+        public bool StartSubLog(Action action, string name, string pars, CommandFlags flags = CommandFlags.Simple, string errMess = "Ошибка")
         {
-            return RunAction(StartSubLog(name, periodBegin, periodEnd, mode, flags), action, errMess);
+            return RunAction(StartSubLog(name, pars, flags), action, errMess);
         }
         
         //Завершает комманду, results - результаты для записи в лог или отображения, возвращает команду
@@ -358,7 +355,7 @@ namespace BaseLibrary
         #region
         // Однопоточный вариант
         //Возвращает true, если операция прошла успешно (может не с первого раза)
-        public bool Danger(Func<bool> operation, //операция, которую нужно выполнить, 
+        public bool Danger(Action operation, //операция, которую нужно выполнить, 
                                     int repetitions, //сколько раз повторять, если не удалась (вместе с первым)
                                     int errorWaiting = 0, //сколько мс ждать при ошибке
                                     string errMess = "Не удалось выполнить опасную операцию", //сообшение об ошибке, если все повторения не удались
@@ -379,17 +376,33 @@ namespace BaseLibrary
             return b;
         }
 
-        //Запуск опасной операции, возвращает комманду
-        private bool RunDanger(Func<bool> operation, Func<bool> errorOperation)
+        //Запуск опасной операции
+        private bool RunDanger(Action operation, Func<bool> errorOperation)
         {
             using (Start(CommandFlags.Danger))
             {
+                if (errorOperation != null)
+                {
+                    try
+                    {
+                        if (!errorOperation())
+                        {
+                            AddError("Неудачное выполнение операции между повторами опасной операции");
+                            return false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AddError("Неудачное выполнение операции между повторами опасной операции", ex);
+                        return false;
+                    }
+                }
+                Procent = 20;
+
                 try
                 {
-                    bool b = errorOperation == null || errorOperation();
-                    Procent = 20;
-                    if (b) b &= operation();
-                    return b;
+                    operation();
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -399,7 +412,7 @@ namespace BaseLibrary
             }
         }
 
-        //Ожидение поле неудачного выполнения операции
+        //Ожидание после неудачного выполнения операции
         private void WaitAfterError(int errorWaiting)
         {
             if (errorWaiting < 3000) Thread.Sleep(errorWaiting);

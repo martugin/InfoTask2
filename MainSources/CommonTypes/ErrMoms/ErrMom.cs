@@ -24,7 +24,7 @@ namespace CommonTypes
         public ErrorQuality Quality { get { return ErrDescr.Quality; } }
         //Номер ошибки
         public int Number { get { return ErrDescr.Number; } }
-        //Номер ошибки
+        //Тип источника ошибки
         public ErrMomType ErrType { get { return ErrDescr.ErrType; } }
     }
 }

@@ -17,7 +17,7 @@ namespace CommonTypes
         }
 
         //Задать максимальный уровень
-        //И сразу загрузить список полей из таблицы в Fields
+        //И сразу загрузить список полей из таблицы в _fields
         public void AddLevel(int level)
         {
             var tname = TablName(level);
