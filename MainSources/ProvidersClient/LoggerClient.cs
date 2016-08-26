@@ -1,7 +1,7 @@
 ﻿using System;
 using BaseLibrary;
 
-namespace ProvidersClient
+namespace ComClients
 {
     //Оболочка логгера для вызова через COM
     public abstract class LoggerClient

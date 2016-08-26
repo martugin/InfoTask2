@@ -1,6 +1,6 @@
 ﻿using ProvidersLibrary;
 
-namespace ProvidersClient
+namespace ComClients
 {
     //Базовый класс для соединений с провайдерами через COM
     public abstract class ProvConnect : LoggerClient

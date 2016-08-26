@@ -3,7 +3,7 @@ using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
-namespace ProvidersClient
+namespace ComClients
 {
     //Сигнал приемника для внешнего использования через COM
     //Обертка над ReceiverSignal

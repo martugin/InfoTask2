@@ -3,7 +3,7 @@ using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
-namespace ProvidersClient
+namespace ComClients
 {
     //Соединение с источником для взаимодействия через COM
     public class SourConnect : ProvConnect

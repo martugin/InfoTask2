@@ -2,7 +2,7 @@
 using ProvidersLibrary;
 using CommonTypes;
 
-namespace ProvidersClient
+namespace ComClients
 {
     //Клиент работы с провайдерами, вызываемый из внешних приложений через COM
     public class ProvidersClient : LoggerClient

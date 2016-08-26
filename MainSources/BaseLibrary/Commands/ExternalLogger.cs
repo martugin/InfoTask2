@@ -15,7 +15,7 @@ namespace BaseLibrary
         public Logger Logger { get; set; }
 
         //Контекст заданный по умолчанию
-        public abstract string Context { get; }
+        public virtual string Context { get { return null; } }
 
         public double Procent
         {

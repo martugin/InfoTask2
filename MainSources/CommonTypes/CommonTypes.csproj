@@ -51,7 +51,9 @@
     <Compile Include="ErrMoms\ErrMom.cs" />
     <Compile Include="ErrMoms\ErrMomFactory.cs" />
     <Compile Include="ErrMoms\ErrMomPool.cs" />
-    <Compile Include="Tabls\TablField.cs" />
+    <Compile Include="Tabls\SubRows.cs" />
+    <Compile Include="Tabls\TablStructItem.cs" />
+    <Compile Include="Tabls\TablSruct.cs" />
     <Compile Include="Values\DataType.cs" />
     <Compile Include="Values\Mean\MeansErr.cs" />
     <Compile Include="Values\Mean\Mean.cs" />
@@ -66,10 +68,9 @@
     <Compile Include="Values\MomList\MomList.cs" />
     <Compile Include="Values\Val.cs" />
     <Compile Include="Values\Mean\Means.cs" />
-    <Compile Include="Tabls\Tabl.cs" />
     <Compile Include="Tabls\TablRow.cs" />
     <Compile Include="Tabls\TablsList.cs" />
-    <Compile Include="Tabls\TablValues.cs" />
+    <Compile Include="Tabls\Tabl.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">

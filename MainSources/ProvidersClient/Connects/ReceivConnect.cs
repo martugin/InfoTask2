@@ -2,7 +2,7 @@
 using CommonTypes;
 using ProvidersLibrary;
 
-namespace ProvidersClient
+namespace ComClients
 {
     //Соединение с приемником для взаимодействия через COM
     public class ReceivConnect : ProvConnect
