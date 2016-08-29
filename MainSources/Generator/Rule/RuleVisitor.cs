@@ -43,7 +43,7 @@ namespace Generator
             return tabl;
         }
 
-        public override Node VisitSubTablGenIdent(P.SubTablGenIdentContext context)
+        public override Node VisitSubTablGen(P.SubTablGenContext context)
         {
             NodeRSubTabl tabl = null;
             foreach (var s in context.subTabl())

@@ -6,8 +6,7 @@ tablGen : IDENT '.' OVERTABL EOF    #TablGenOver
 			 ;
 
 //GenRule подпараметров
-subTablGen : subTabl ('.' subTabl)* EOF   #SubTablGenIdent				  
-				  ; 
+subTablGen : subTabl ('.' subTabl)* EOF; 
 
 tabl : IDENT                           #TablIdent
        | IDENT '(' expr ')'          #TablCond
