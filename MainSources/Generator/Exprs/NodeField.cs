@@ -20,7 +20,7 @@ namespace Generator
         protected override string NodeType { get { return "Field"; } }
 
         //Вычисленное значение
-        public override Mean GetMean()
+        public override Mean Process()
         {
             throw new NotImplementedException();
         }

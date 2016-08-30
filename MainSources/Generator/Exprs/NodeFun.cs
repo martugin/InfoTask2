@@ -36,7 +36,7 @@ namespace Generator
         }
 
         //Вычисленное значение
-        public override Mean GetMean()
+        public override Mean Process()
         {
             throw new NotImplementedException();
         }

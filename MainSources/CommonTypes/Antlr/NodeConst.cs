@@ -1,36 +1,36 @@
 ﻿using System;
-using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 
 namespace CommonTypes
 {
     public class NodeConst : NodeExpr
     {
-        public NodeConst(IToken token, bool b) : base(token)
+        public NodeConst(ITerminalNode terminal, bool b) : base(terminal)
         {
             _mean = new MeanBool(b);
         }
 
-        public NodeConst(IToken token, int i) : base(token)
+        public NodeConst(ITerminalNode terminal, int i) : base(terminal)
         {
             _mean = new MeanInt(i);
         }
 
-        public NodeConst(IToken token, double r) : base(token)
+        public NodeConst(ITerminalNode terminal, double r) : base(terminal)
         {
             _mean = new MeanReal(r);
         }
 
-        public NodeConst(IToken token, DateTime t) : base(token)
+        public NodeConst(ITerminalNode terminal, DateTime t) : base(terminal)
         {
             _mean = new MeanTime(t);
         }
 
-        public NodeConst(IToken token, string s) : base(token)
+        public NodeConst(ITerminalNode terminal, string s) : base(terminal)
         {
             _mean = new MeanString(s);
         }
 
-        public NodeConst(IToken token, DataType dtype, string s) : base(token)
+        public NodeConst(ITerminalNode terminal, DataType dtype, string s) : base(terminal)
         {
             _mean = MFactory.NewMean(dtype, s);
         }
@@ -40,7 +40,7 @@ namespace CommonTypes
 
         //Значение константы
         private readonly Mean _mean;
-        public override Mean GetMean()
+        public override Mean Process()
         {
             return _mean;
         }

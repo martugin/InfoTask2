@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using Antlr4.Runtime;
 
 namespace CommonTypes
 {
     //Промежуточный узел, собирающий список узлов 
     public class NodeList : Node
     {
-        public NodeList(IEnumerable<Node> children) : base((IToken)null)
+        public NodeList(IEnumerable<Node> children) : base(null)
         {
             Children = children;
         }

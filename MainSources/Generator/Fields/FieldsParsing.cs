@@ -1,10 +1,10 @@
 ﻿using Antlr4.Runtime;
 using CommonTypes;
 using Generator.Fields;
-using Generator.Grammars;
 
 namespace Generator
 {
+    //Класс, запускающий разбор для Fields
     internal class FieldsParsing : RuleParsing
     {
         public FieldsParsing(string fieldName, string fieldValue)
@@ -23,7 +23,7 @@ namespace Generator
         protected override Node RunVisitor(Parser parser, ParsingKeeper keeper)
         {
             var p = (FieldsParsemes)parser;
-            var v = new FieldsVisitor(keeper);
+            var v = new FieldsVisitor((GeneratorKeeper)keeper);
             return v.Go(p.fieldGen());
         }
     }

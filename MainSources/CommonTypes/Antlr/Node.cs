@@ -13,11 +13,6 @@ namespace CommonTypes
                 Token = terminal.Symbol;
         }
 
-        protected Node(IToken token)
-        {
-            Token = token;
-        }
-
         //Ссылка на токен
         public IToken Token { get; private set; }
         //Тип узла, для записи в строку

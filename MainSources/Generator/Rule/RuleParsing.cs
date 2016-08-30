@@ -4,6 +4,7 @@ using Generator.Grammars;
 
 namespace Generator
 {
+    //Класс, запускающий разбор для GenRule
     internal class RuleParsing : Parsing
     {
         public RuleParsing(string fieldName, string fieldValue, bool isSubTabl = false)

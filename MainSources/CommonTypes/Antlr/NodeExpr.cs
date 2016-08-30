@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime.Tree;
 
 namespace CommonTypes
 {
@@ -9,16 +8,25 @@ namespace CommonTypes
         //Вычисляемое значение
         protected NodeExpr(ITerminalNode terminal)
             : base(terminal) { }
-
-        protected NodeExpr(IToken token)
-            : base(token) { }
-
+        
         //Возвращаемое значение
-        public abstract Mean GetMean();
+        public abstract Mean Process();
         //Значение как текст
         public string GetText()
         {
-            return GetMean().String;
+            return Process().String;
         }
+    }
+
+    //------------------------------------------------------------------------------------------------------
+    //Базовый класс для узлов без значения
+    public abstract class NodeVoid : Node
+    {
+        //Вычисляемое значение
+        protected NodeVoid(ITerminalNode terminal)
+            : base(terminal) { }
+
+        //Возвращаемое значение
+        public abstract void Process();
     }
 }

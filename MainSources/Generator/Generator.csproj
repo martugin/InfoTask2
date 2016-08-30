@@ -49,8 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exprs\NodeField.cs" />
+    <Compile Include="Exprs\NodeIf.cs" />
+    <Compile Include="Exprs\NodesVar.cs" />
+    <Compile Include="Exprs\NodeWhile.cs" />
+    <Compile Include="Fields\NodeOver.cs" />
     <Compile Include="Fields\FieldsParsing.cs" />
     <Compile Include="Fields\FieldsVisitor.cs" />
+    <Compile Include="Fields\NodeSub.cs" />
     <Compile Include="obj\Debug\FieldsLexemes.cs" />
     <Compile Include="obj\Debug\FieldsParsemes.cs" />
     <Compile Include="obj\Debug\FieldsParsemesBaseListener.cs" />
