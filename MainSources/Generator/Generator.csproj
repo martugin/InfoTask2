@@ -48,7 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\GeneratorKeeper.cs" />
+    <Compile Include="Exprs\INodeExpr.cs" />
     <Compile Include="Exprs\NodeField.cs" />
+    <Compile Include="Exprs\NodeGenConst.cs" />
     <Compile Include="Exprs\NodeIf.cs" />
     <Compile Include="Exprs\NodesVar.cs" />
     <Compile Include="Exprs\NodeWhile.cs" />
@@ -72,7 +75,8 @@
     <Compile Include="Rule\RuleVisitor.cs" />
     <Compile Include="Exprs\NodeFun.cs" />
     <Compile Include="Rule\RuleNodes.cs" />
-    <Compile Include="TablGenerator.cs" />
+    <Compile Include="Common\RowGen.cs" />
+    <Compile Include="Common\TablGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

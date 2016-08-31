@@ -11,13 +11,18 @@ namespace CommonTypes
             AddressLink = addr;
         }
 
+        public ErrMom(string text, ErrorQuality quality = ErrorQuality.Error, int num = 0, ErrMomType type = ErrMomType.Calc)
+        {
+            ErrDescr = new ErrDescr(num, text, quality, type);
+        }
+
         //Ссылка на описание ошибки
         public ErrDescr ErrDescr { get; private set; }
         //Ссылка на объект, породивший ошибку
         public IContextable AddressLink { get; private set; }
 
         //Строка - адрес происхождения ошибки
-        public string Address { get { return AddressLink.Context; } }
+        public string Address { get { return AddressLink == null ? "" : AddressLink.Context; } }
         //Сообщение об ошибке
         public string Text { get { return ErrDescr.Text; } }
         //Качество ошибки

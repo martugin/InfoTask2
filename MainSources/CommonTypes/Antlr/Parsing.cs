@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Antlr4.Runtime;
 
 namespace CommonTypes
@@ -7,7 +8,7 @@ namespace CommonTypes
     public abstract class Parsing
     {
         protected Parsing(string fieldName, //Имя разбираемого поля (для сообщений об ошибках)
-                                           string fieldValue) //Разбираемое выражение
+                                   string fieldValue) //Разбираемое выражение
         {
             FieldName = fieldName;
             var reader = new StringReader(fieldValue);
@@ -36,7 +37,7 @@ namespace CommonTypes
         //Строка с результатами парсинга для тестов
         public string ToTestString()
         {
-            return (ResultTree == null ? "" : ResultTree.ToTestString()) + "\r\n" + ErrMess;
+            return (ResultTree == null ? "" : ResultTree.ToTestString()) + Environment.NewLine + ErrMess;
         }
 
         //Создать лексер

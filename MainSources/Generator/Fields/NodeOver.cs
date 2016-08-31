@@ -4,9 +4,9 @@ using CommonTypes;
 namespace Generator
 {
     //Узел перехода к таблице - родителю, возвращает значение
-    internal class NodeOver : NodeExpr
+    internal class NodeOver : Node, INodeExpr
     {
-        public NodeOver(ITerminalNode terminal, NodeExpr expr, GeneratorKeeper keeper) : base(terminal) 
+        public NodeOver(ITerminalNode terminal, INodeExpr expr, GeneratorKeeper keeper) : base(terminal) 
         {
             _keeper = keeper;
             _expr = expr;
@@ -17,9 +17,9 @@ namespace Generator
         //Ссылка на Keeper
         private GeneratorKeeper _keeper;
         //Вычисляемое выражение
-        private NodeExpr _expr;
+        private INodeExpr _expr;
         
-        public override Mean Process()
+        public Mean Process(TablRow row)
         {
             throw new System.NotImplementedException();
         }
@@ -27,9 +27,9 @@ namespace Generator
 
     //------------------------------------------------------------------------------------------------------
     //Узел перехода к таблице - родителю, ничего не возвращает 
-    internal class NodeOverVoid : NodeVoid
+    internal class NodeOverVoid : Node, INodeVoid
     {
-        public NodeOverVoid(ITerminalNode terminal, NodeVoid prog, GeneratorKeeper keeper)
+        public NodeOverVoid(ITerminalNode terminal, INodeVoid prog, GeneratorKeeper keeper)
             : base(terminal)
         {
             _keeper = keeper;
@@ -41,9 +41,9 @@ namespace Generator
         //Ссылка на Keeper
         private GeneratorKeeper _keeper;
         //Вычисляемое выражение
-        private NodeVoid _prog;
+        private INodeVoid _prog;
 
-        public override void Process()
+        public void Process(TablRow row)
         {
             throw new System.NotImplementedException();
         }

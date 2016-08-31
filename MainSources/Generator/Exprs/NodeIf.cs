@@ -6,9 +6,9 @@ using CommonTypes;
 namespace Generator
 {
     //Условие, возвращающее значение
-    internal class NodeIf : NodeExpr
+    internal class NodeIf : Node, INodeExpr
     {
-        public NodeIf(ITerminalNode terminal, List<NodeExpr> conditions, List<NodeExpr> variants)
+        public NodeIf(ITerminalNode terminal, List<INodeExpr> conditions, List<INodeExpr> variants)
             : base(terminal)
         {
             _conditions = conditions;
@@ -18,25 +18,25 @@ namespace Generator
         protected override string NodeType { get { return "If"; } }
 
         //Список условий
-        private readonly List<NodeExpr> _conditions;
+        private readonly List<INodeExpr> _conditions;
         //Список вариантов значений
-        private readonly List<NodeExpr> _variants;
+        private readonly List<INodeExpr> _variants;
 
         //Вычисление значения
-        public override Mean Process()
+        public Mean Process(TablRow row)
         {
             for (int i = 0; i < _variants.Count - 1; i++)
-                if (_conditions[i].Process().Boolean)
-                    return _variants[i].Process();
-            return _variants.Last().Process();
+                if (_conditions[i].Process(row).Boolean)
+                    return _variants[i].Process(row);
+            return _variants.Last().Process(row);
         }
     }
 
     //-----------------------------------------------------------------------------------------------------
     //Условие, возвращающее значение
-    internal class NodeIfVoid : NodeVoid
+    internal class NodeIfVoid : Node, INodeVoid
     {
-        public NodeIfVoid(ITerminalNode terminal, List<NodeExpr> conditions, List<NodeVoid> variants)
+        public NodeIfVoid(ITerminalNode terminal, List<INodeExpr> conditions, List<INodeVoid> variants)
             : base(terminal)
         {
             _conditions = conditions;
@@ -46,16 +46,16 @@ namespace Generator
         protected override string NodeType { get { return "IfVoid"; } }
 
         //Список условий
-        private readonly List<NodeExpr> _conditions;
+        private readonly List<INodeExpr> _conditions;
         //Список вариантов значений
-        private readonly List<NodeVoid> _variants;
+        private readonly List<INodeVoid> _variants;
 
         //Вычисление значения
-        public override void Process()
+        public void Process(TablRow row)
         {
             for (int i = 0; i < _variants.Count; i++)
-                if (i == _conditions.Count || _conditions[i].Process().Boolean)
-                    _variants[i].Process();
+                if (i == _conditions.Count || _conditions[i].Process(row).Boolean)
+                    _variants[i].Process(row);
         }
     }
 }

@@ -313,4 +313,33 @@ namespace CommonTypes
             String = mean.String;
         }
     }
+
+    //-------------------------------------------------------------------------------------
+    public class MeanValue : Mean
+    {
+        public MeanValue() { }
+
+        //Тип данных
+        public override DataType DataType { get { return DataType.Value; } }
+
+        //Преобразование типа значения
+        public override bool Boolean { get { return false; } }
+        public override int Integer { get { return 0; } }
+        public override double Real { get { return 0.0; } }
+        public override string String { get { return "0"; } }
+        public override object Object { get { return 0; } }
+
+        public override void ValueToRec(IRecordAdd rec, string field) { }
+
+        public override IMom Clone(DateTime time)
+        {
+            if (Error != null) return Clone(time, Error);
+            return new MomValue();
+        }
+        public override IMom Clone(DateTime time, ErrMom err)
+        {
+            return new MomErrValue(time, Error.Add(err));
+        }
+        internal override void CopyValueFrom(IMean mean) { }
+    }
 }

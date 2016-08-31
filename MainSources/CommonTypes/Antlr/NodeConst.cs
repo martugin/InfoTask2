@@ -3,46 +3,47 @@ using Antlr4.Runtime.Tree;
 
 namespace CommonTypes
 {
-    public class NodeConst : NodeExpr
+    public class NodeConst : Node
     {
+        public NodeConst(Mean mean) : base(null)
+        {
+            Mean = mean;
+        }
+
         public NodeConst(ITerminalNode terminal, bool b) : base(terminal)
         {
-            _mean = new MeanBool(b);
+            Mean = new MeanBool(b);
         }
 
         public NodeConst(ITerminalNode terminal, int i) : base(terminal)
         {
-            _mean = new MeanInt(i);
+            Mean = new MeanInt(i);
         }
 
         public NodeConst(ITerminalNode terminal, double r) : base(terminal)
         {
-            _mean = new MeanReal(r);
+            Mean = new MeanReal(r);
         }
 
         public NodeConst(ITerminalNode terminal, DateTime t) : base(terminal)
         {
-            _mean = new MeanTime(t);
+            Mean = new MeanTime(t);
         }
 
         public NodeConst(ITerminalNode terminal, string s) : base(terminal)
         {
-            _mean = new MeanString(s);
+            Mean = new MeanString(s);
         }
 
         public NodeConst(ITerminalNode terminal, DataType dtype, string s) : base(terminal)
         {
-            _mean = MFactory.NewMean(dtype, s);
+            Mean = MFactory.NewMean(dtype, s);
         }
 
         //Тип узла
-        protected override string NodeType { get { return _mean.DataType.ToString(); } }
+        protected override string NodeType { get { return Mean.DataType.ToString(); } }
 
         //Значение константы
-        private readonly Mean _mean;
-        public override Mean Process()
-        {
-            return _mean;
-        }
+        public Mean Mean { get; private set; }
     }
 }

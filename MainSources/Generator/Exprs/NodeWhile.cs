@@ -4,9 +4,9 @@ using CommonTypes;
 namespace Generator
 {
     //Цикл, возвращающий значение
-    internal class NodeWhile : NodeExpr
+    internal class NodeWhile : Node, INodeExpr
     {
-        public NodeWhile(ITerminalNode terminal, NodeExpr condition, NodeExpr prog, NodeExpr elseProg)
+        public NodeWhile(ITerminalNode terminal, INodeExpr condition, INodeExpr prog, INodeExpr elseProg)
             : base(terminal)
         {
             _condition = condition;
@@ -17,42 +17,42 @@ namespace Generator
         protected override string NodeType { get { return "While"; } }
 
         //Условие, вычисляеое выражение и значение возвращаемое если цикл ни разу не выполнялся
-        private readonly NodeExpr _condition;
-        private readonly NodeExpr _prog;
-        private readonly NodeExpr _elseProg;
+        private readonly INodeExpr _condition;
+        private readonly INodeExpr _prog;
+        private readonly INodeExpr _elseProg;
 
         //Вычисление значения
-        public override Mean Process()
+        public Mean Process(TablRow row)
         {
             Mean mean = null;
-            while (_condition.Process().Boolean)
-                mean = _prog.Process();
-            return mean ?? _elseProg.Process();
+            while (_condition.Process(row).Boolean)
+                mean = _prog.Process(row);
+            return mean ?? _elseProg.Process(row);
         }
     }
 
     //----------------------------------------------------------------------------------------------------------
     //Цикл, возвращающий значение
-    internal class NodeWhileVoid : NodeVoid
+    internal class NodeWhileVoid : Node, INodeVoid
     {
-        public NodeWhileVoid(ITerminalNode terminal, NodeExpr condition, NodeVoid prog)
+        public NodeWhileVoid(ITerminalNode terminal, INodeExpr condition, INodeVoid prog)
             : base(terminal)
         {
             _condition = condition;
             _prog = prog;
         }
 
-        protected override string NodeType { get { return "While"; } }
+        protected override string NodeType { get { return "WhileVoid"; } }
 
         //Условие и выполняемая программа
-        private readonly NodeExpr _condition;
-        private readonly NodeVoid _prog;
+        private readonly INodeExpr _condition;
+        private readonly INodeVoid _prog;
 
         //Вычисление значения
-        public override void Process()
+        public void Process(TablRow row)
         {
-            while (_condition.Process().Boolean)
-                _prog.Process();
+            while (_condition.Process(row).Boolean)
+                _prog.Process(row);
         }
     }
 }

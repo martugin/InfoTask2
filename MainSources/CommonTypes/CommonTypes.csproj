@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="Antlr\ErrorListeners.cs" />
     <Compile Include="Antlr\Node.cs" />
-    <Compile Include="Antlr\NodeExpr.cs" />
     <Compile Include="Antlr\NodeList.cs" />
     <Compile Include="Antlr\Parsing.cs" />
     <Compile Include="Antlr\INode.cs" />

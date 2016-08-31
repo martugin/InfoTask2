@@ -6,6 +6,9 @@ namespace CommonTypes
     //Интерфейс для строк таблиц и данных старшей таблицы
     public abstract class SubRows
     {
+        //Список строк подчиненных таблиц
+        private List<TablRow> _subList;
+        public List<TablRow> SubList { get { return _subList ?? (_subList = new List<TablRow>()); } }
         //Словари строк подчиненных таблиц по полям Num и Code
         private DicI<TablRow> _subNums;
         public DicI<TablRow> SubNums { get { return _subNums ?? (_subNums = new DicI<TablRow>()); } }
@@ -21,6 +24,7 @@ namespace CommonTypes
         public void AddRow(TablRow row)
         {
             row.Parent = this;
+            SubList.Add(row);
             SubNums.Add(row.Num, row);
             if (!row.Code.IsEmpty())
                 SubCodes.Add(row.Code, row);

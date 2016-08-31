@@ -23,6 +23,14 @@ namespace Generator
             if (tree == null) return null;
             return Visit(tree);
         }
+        public NodeExpr GoExpr(IParseTree tree)
+        {
+            return (NodeExpr)Go(tree);
+        }
+        public NodeList GoList(IParseTree tree)
+        {
+            return (NodeList)Go(tree);
+        }
 
         //Обход разных типов узлов
 
@@ -62,19 +70,19 @@ namespace Generator
 
         public override Node VisitTablCond(P.TablCondContext context)
         {
-            return new NodeRTabl(context.IDENT(), (NodeExpr)Go(context.expr()));
+            return new NodeRTabl(context.IDENT(), GoExpr(context.expr()));
         }
 
         public override Node VisitTablParenLost(P.TablParenLostContext context)
         {
             _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeRTabl(context.IDENT(), (NodeExpr)Go(context.expr()));
+            return new NodeRTabl(context.IDENT(), GoExpr(context.expr()));
         }
 
         public override Node VisitTablParenExtra(P.TablParenExtraContext context)
         {
             _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN());
-            return new NodeRTabl(context.IDENT(), (NodeExpr)Go(context.expr()));
+            return new NodeRTabl(context.IDENT(), GoExpr(context.expr()));
         }
 
         public override Node VisitSubTablIdent(P.SubTablIdentContext context)
@@ -84,19 +92,19 @@ namespace Generator
 
         public override Node VisitSubTablCond(P.SubTablCondContext context)
         {
-            return new NodeRTabl(context.SUBTABL(), (NodeExpr)Go(context.expr()));
+            return new NodeRTabl(context.SUBTABL(), GoExpr(context.expr()));
         }
 
         public override Node VisitSubTablParenLost(P.SubTablParenLostContext context)
         {
             _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeRTabl(context.SUBTABL(), (NodeExpr)Go(context.expr()));
+            return new NodeRTabl(context.SUBTABL(), GoExpr(context.expr()));
         }
 
         public override Node VisitSubTablParenExtra(P.SubTablParenExtraContext context)
         {
             _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN());
-            return new NodeRTabl(context.SUBTABL(), (NodeExpr)Go(context.expr()));
+            return new NodeRTabl(context.SUBTABL(), GoExpr(context.expr()));
         }
 
         //Выражения
@@ -118,31 +126,31 @@ namespace Generator
 
         public override Node VisitExprFun(P.ExprFunContext context)
         {
-            return new NodeFun(context.IDENT(), (NodeList)Go(context.pars()));
+            return new NodeFun(context.IDENT(), GoList(context.pars()));
         }
 
         public override Node VisitExprUnary(P.ExprUnaryContext context)
         {
             var fun = (ITerminalNode)context.children[0];
-            return new NodeFun(fun, (NodeExpr)Go(context.expr()));
+            return new NodeFun(fun, GoExpr(context.expr()));
         }
 
         public override Node VisitExprOper(P.ExprOperContext context)
         {
             var fun = (ITerminalNode)context.children[1];
-            return new NodeFun(fun, (NodeExpr)Go(context.expr(0)), (NodeExpr)Go(context.expr(1)));
+            return new NodeFun(fun, GoExpr(context.expr(0)), GoExpr(context.expr(1)));
         }
 
         public override Node VisitExprFunParenLost(P.ExprFunParenLostContext context)
         {
             _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeFun(context.IDENT(), (NodeList)Go(context.pars()));
+            return new NodeFun(context.IDENT(), GoList(context.pars()));
         }
 
         public override Node VisitExprFunParenExtra(P.ExprFunParenExtraContext context)
         {
             _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN());
-            return new NodeFun(context.IDENT(), (NodeList)Go(context.pars()));
+            return new NodeFun(context.IDENT(), GoList(context.pars()));
         }
 
         public override Node VisitParamsList(P.ParamsListContext context)

@@ -4,9 +4,9 @@ using CommonTypes;
 namespace Generator
 {
     //Узел прохода по подтаблице, возвращает значение
-    internal class NodeSub : NodeExpr
+    internal class NodeSub : Node, INodeExpr
     {
-        public NodeSub(ITerminalNode terminal, NodeExpr condition, NodeExpr expr, NodeExpr separator, GeneratorKeeper keeper)
+        public NodeSub(ITerminalNode terminal, INodeExpr condition, INodeExpr expr, INodeExpr separator, GeneratorKeeper keeper)
             : base(terminal)
         {
             _keeper = keeper;
@@ -20,13 +20,13 @@ namespace Generator
         //Ссылка на Keeper
         private GeneratorKeeper _keeper;
         //Условие фильтрации или имя типа
-        private NodeExpr _condition;
+        private INodeExpr _condition;
         //Выражение, вычисяемое для каждой строки подтаблицы
-        private NodeExpr _expr;
+        private INodeExpr _expr;
         //Разделитель
-        private NodeExpr _separator;
+        private INodeExpr _separator;
         
-        public override Mean Process()
+        public Mean Process(TablRow row)
         {
             throw new System.NotImplementedException();
         }
@@ -34,9 +34,9 @@ namespace Generator
 
     //------------------------------------------------------------------------------------------------------------------------
     //Узел прохода по подтаблице, ничего не возвращает
-    internal class NodeSubVoid : NodeVoid
+    internal class NodeSubVoid : Node, INodeVoid
     {
-        public NodeSubVoid(ITerminalNode terminal, NodeExpr condition, NodeVoid prog, GeneratorKeeper keeper)
+        public NodeSubVoid(ITerminalNode terminal, INodeExpr condition, INodeVoid prog, GeneratorKeeper keeper)
             : base(terminal)
         {
             _keeper = keeper;
@@ -49,11 +49,11 @@ namespace Generator
         //Ссылка на Keeper
         private GeneratorKeeper _keeper;
         //Условие фильтрации или имя типа
-        private NodeExpr _condition;
+        private INodeExpr _condition;
         //Выражение, вычисяемое для каждой строки подтаблицы
-        private NodeVoid _prog;
+        private INodeVoid _prog;
         
-        public override void Process()
+        public void Process(TablRow row)
         {
             throw new System.NotImplementedException();
         }
