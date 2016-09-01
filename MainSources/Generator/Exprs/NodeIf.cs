@@ -6,10 +6,10 @@ using CommonTypes;
 namespace Generator
 {
     //Условие, возвращающее значение
-    internal class NodeIf : Node, INodeExpr
+    internal class NodeIf : NodeKeeper, INodeExpr
     {
-        public NodeIf(ITerminalNode terminal, List<INodeExpr> conditions, List<INodeExpr> variants)
-            : base(terminal)
+        public NodeIf(ParsingKeeper keeper, ITerminalNode terminal, List<INodeExpr> conditions, List<INodeExpr> variants)
+            : base(keeper, terminal)
         {
             _conditions = conditions;
             _variants = variants;
@@ -22,8 +22,19 @@ namespace Generator
         //Список вариантов значений
         private readonly List<INodeExpr> _variants;
 
+        //Получение типа данных
+        public DataType Check(TablStructItem row)
+        {
+            if (_conditions.Any(c => c.Check(row) != DataType.Boolean))
+                AddError("Нодопустимый тип данных условия");
+            var dt = DataType.Value;
+            foreach (var expr in _variants)
+                dt = dt.Add(expr.Check(row));
+            return dt;
+        }
+
         //Вычисление значения
-        public Mean Process(TablRow row)
+        public Mean Process(SubRows row)
         {
             for (int i = 0; i < _variants.Count - 1; i++)
                 if (_conditions[i].Process(row).Boolean)
@@ -34,10 +45,10 @@ namespace Generator
 
     //-----------------------------------------------------------------------------------------------------
     //Условие, возвращающее значение
-    internal class NodeIfVoid : Node, INodeVoid
+    internal class NodeIfVoid : NodeKeeper, INodeVoid
     {
-        public NodeIfVoid(ITerminalNode terminal, List<INodeExpr> conditions, List<INodeVoid> variants)
-            : base(terminal)
+        public NodeIfVoid(ParsingKeeper keeper, ITerminalNode terminal, List<INodeExpr> conditions, List<INodeVoid> variants)
+            : base(keeper, terminal)
         {
             _conditions = conditions;
             _variants = variants;
@@ -50,8 +61,15 @@ namespace Generator
         //Список вариантов значений
         private readonly List<INodeVoid> _variants;
 
+        //Проверка корректности выражений генерации
+        public void Check(TablStructItem row)
+        {
+            if (_conditions.Any(c => c.Check(row) != DataType.Boolean))
+                AddError("Нодопустимый тип данных условия");
+        }
+
         //Вычисление значения
-        public void Process(TablRow row)
+        public void Process(SubRows row)
         {
             for (int i = 0; i < _variants.Count; i++)
                 if (i == _conditions.Count || _conditions[i].Process(row).Boolean)

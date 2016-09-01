@@ -23,9 +23,9 @@ namespace Generator
             if (tree == null) return null;
             return Visit(tree);
         }
-        public NodeExpr GoExpr(IParseTree tree)
+        public INodeExpr GoExpr(IParseTree tree)
         {
-            return (NodeExpr)Go(tree);
+            return (INodeExpr)Go(tree);
         }
         public NodeList GoList(IParseTree tree)
         {
@@ -36,16 +36,16 @@ namespace Generator
 
         public override Node VisitTablGenOver(P.TablGenOverContext context)
         {
-            return new NodeROverTabl(context.IDENT(), context.OVERTABL());
+            return new NodeROverTabl(_keeper, context.IDENT());
         }
 
         public override Node VisitTablGenSimple(P.TablGenSimpleContext context)
         {
-            var tabl = (NodeIter)Go(context.tabl());
+            var tabl = (NodeRSubTabl)Go(context.tabl());
             foreach (var s in context.subTabl())
             {
                 var sub = (NodeRSubTabl)Go(s);
-                sub.Parent = tabl;
+                tabl.Child = sub;
                 tabl = sub;
             }
             return tabl;
@@ -57,7 +57,7 @@ namespace Generator
             foreach (var s in context.subTabl())
             {
                 var sub = (NodeRSubTabl)Go(s);
-                sub.Parent = tabl;
+                if (tabl != null) tabl.Child = sub;
                 tabl = sub;
             }
             return tabl;
@@ -65,46 +65,46 @@ namespace Generator
 
         public override Node VisitTablIdent(P.TablIdentContext context)
         {
-            return new NodeRTabl(context.IDENT());
+            return new NodeRTabl(_keeper, context.IDENT());
         }
 
         public override Node VisitTablCond(P.TablCondContext context)
         {
-            return new NodeRTabl(context.IDENT(), GoExpr(context.expr()));
+            return new NodeRTabl(_keeper, context.IDENT(), GoExpr(context.expr()));
         }
 
         public override Node VisitTablParenLost(P.TablParenLostContext context)
         {
             _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeRTabl(context.IDENT(), GoExpr(context.expr()));
+            return new NodeRTabl(_keeper, context.IDENT(), GoExpr(context.expr()));
         }
 
         public override Node VisitTablParenExtra(P.TablParenExtraContext context)
         {
             _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN());
-            return new NodeRTabl(context.IDENT(), GoExpr(context.expr()));
+            return new NodeRTabl(_keeper, context.IDENT(), GoExpr(context.expr()));
         }
 
         public override Node VisitSubTablIdent(P.SubTablIdentContext context)
         {
-            return new NodeRTabl(context.SUBTABL());
+            return new NodeRTabl(_keeper, context.SUBTABL());
         }
 
         public override Node VisitSubTablCond(P.SubTablCondContext context)
         {
-            return new NodeRTabl(context.SUBTABL(), GoExpr(context.expr()));
+            return new NodeRTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
         }
 
         public override Node VisitSubTablParenLost(P.SubTablParenLostContext context)
         {
             _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeRTabl(context.SUBTABL(), GoExpr(context.expr()));
+            return new NodeRTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
         }
 
         public override Node VisitSubTablParenExtra(P.SubTablParenExtraContext context)
         {
             _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN());
-            return new NodeRTabl(context.SUBTABL(), GoExpr(context.expr()));
+            return new NodeRTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
         }
 
         //Выражения
@@ -121,36 +121,36 @@ namespace Generator
 
         public override Node VisitExprIdent(P.ExprIdentContext context)
         {
-            return new NodeField(context.IDENT());
+            return new NodeField(_keeper, context.IDENT());
         }
 
         public override Node VisitExprFun(P.ExprFunContext context)
         {
-            return new NodeFun(context.IDENT(), GoList(context.pars()));
+            return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
         }
 
         public override Node VisitExprUnary(P.ExprUnaryContext context)
         {
             var fun = (ITerminalNode)context.children[0];
-            return new NodeFun(fun, GoExpr(context.expr()));
+            return new NodeFun(_keeper, fun, GoExpr(context.expr()));
         }
 
         public override Node VisitExprOper(P.ExprOperContext context)
         {
             var fun = (ITerminalNode)context.children[1];
-            return new NodeFun(fun, GoExpr(context.expr(0)), GoExpr(context.expr(1)));
+            return new NodeFun(_keeper, fun, GoExpr(context.expr(0)), GoExpr(context.expr(1)));
         }
 
         public override Node VisitExprFunParenLost(P.ExprFunParenLostContext context)
         {
             _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeFun(context.IDENT(), GoList(context.pars()));
+            return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
         }
 
         public override Node VisitExprFunParenExtra(P.ExprFunParenExtraContext context)
         {
             _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN());
-            return new NodeFun(context.IDENT(), GoList(context.pars()));
+            return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
         }
 
         public override Node VisitParamsList(P.ParamsListContext context)

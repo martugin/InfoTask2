@@ -13,6 +13,8 @@ namespace Generator
 
         //Имя переменной
         public string Name { get; private set; }
+        //Тип данных
+        public DataType DataType { get; set; }
         //Значение переменной
         public Mean Mean { get; set; }
     }
@@ -31,8 +33,14 @@ namespace Generator
         //Переменная
         private readonly Var _var;
 
+        //Получение типа данных
+        public DataType Check(TablStructItem row)
+        {
+            return _var.DataType;
+        }
+
         //Получение значения
-        public Mean Process(TablRow row)
+        public Mean Process(SubRows row)
         {
             return _var.Mean;
         }
@@ -40,9 +48,10 @@ namespace Generator
 
     //----------------------------------------------------------------------------------------------------
     //Узел присвоения переменной
-     internal class NodeVarSet : Node, INodeVoid
+     internal class NodeVarSet : NodeKeeper, INodeVoid
      {
-         public NodeVarSet(ITerminalNode terminal, Var v, INodeExpr nodeMean)  : base(terminal)
+         public NodeVarSet(ParsingKeeper keeper, ITerminalNode terminal, Var v, INodeExpr nodeMean)  
+             : base(keeper, terminal)
          {
              _var = v;
              _nodeMean = nodeMean;
@@ -55,8 +64,14 @@ namespace Generator
          //Присваиваемое значение
          private readonly INodeExpr _nodeMean;
 
+         //Проверка корректности выражений генерации
+         public void Check(TablStructItem row)
+         {
+             _var.DataType.Add(_nodeMean.Check(row));
+         }
+
          //Обработка при генерации
-         public void Process(TablRow row)
+         public void Process(SubRows row)
          {
              _var.Mean = _nodeMean.Process(row);
          }

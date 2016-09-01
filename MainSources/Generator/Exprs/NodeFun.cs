@@ -7,20 +7,18 @@ using CommonTypes;
 namespace Generator
 {
     //Вычисление значения функции или операции
-    internal class NodeFun : Node, INodeExpr
+    internal class NodeFun : NodeKeeper, INodeExpr
     {
-        public NodeFun(ITerminalNode terminal, //Имя функции
-                                GeneratorKeeper keeper, //Накопление ошибок
+        public NodeFun(ParsingKeeper keeper, ITerminalNode terminal, //Имя функции
                                 params INodeExpr[] args) //Аргументы
-            : base(terminal)
+            : base(keeper, terminal)
         {
-            _keeper = keeper;
             _args = args;
         }
 
-        public NodeFun(ITerminalNode terminal, //Имя функции
+        public NodeFun(ParsingKeeper keeper, ITerminalNode terminal, //Имя функции
                                 NodeList argsList) //Узел с аргументами
-            : base(terminal)
+            : base(keeper, terminal)
         {
             _args = argsList.Children.Cast<INodeExpr>().ToArray();
         }
@@ -46,9 +44,15 @@ namespace Generator
         {
             return ToTestWithChildren(_args);
         }
-        
+
+        //Получение типа данных
+        public DataType Check(TablStructItem row)
+        {
+            throw new NotImplementedException();
+        }
+
         //Вычисленное значение
-        public Mean Process(TablRow row)
+        public Mean Process(SubRows row)
         {
             if (_fun == orbb) return ProcessOr(_args[0], _args[1], row);
             if (_fun == andbb) return ProcessAnd(_args[0], _args[1], row);
@@ -147,7 +151,7 @@ namespace Generator
         }
 
         public Mean andbb(params Mean[] pars) { return null;}
-        private Mean ProcessAnd(INodeExpr p0, INodeExpr p1, TablRow row)
+        private Mean ProcessAnd(INodeExpr p0, INodeExpr p1, SubRows row)
         {
             if (!p0.Process(row).Boolean)
                 return new MeanBool(false);
@@ -155,7 +159,7 @@ namespace Generator
         }
 
         public Mean orbb(params Mean[] pars) { return null; }
-        private Mean ProcessOr(INodeExpr p0, INodeExpr p1, TablRow row)
+        private Mean ProcessOr(INodeExpr p0, INodeExpr p1, SubRows row)
         {
             if (p0.Process(row).Boolean)
                 return new MeanBool(true);

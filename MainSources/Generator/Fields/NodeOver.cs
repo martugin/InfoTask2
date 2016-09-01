@@ -4,48 +4,61 @@ using CommonTypes;
 namespace Generator
 {
     //Узел перехода к таблице - родителю, возвращает значение
-    internal class NodeOver : Node, INodeExpr
+    internal class NodeOver : NodeKeeper, INodeExpr
     {
-        public NodeOver(ITerminalNode terminal, INodeExpr expr, GeneratorKeeper keeper) : base(terminal) 
+        public NodeOver(ParsingKeeper keeper, ITerminalNode terminal, INodeExpr expr) 
+            : base(keeper, terminal) 
         {
-            _keeper = keeper;
             _expr = expr;
         }
 
         protected override string NodeType { get { return "Over"; } }
 
-        //Ссылка на Keeper
-        private GeneratorKeeper _keeper;
         //Вычисляемое выражение
-        private INodeExpr _expr;
-        
-        public Mean Process(TablRow row)
+        private readonly INodeExpr _expr;
+
+        //Получение типа данных
+        public DataType Check(TablStructItem row)
         {
-            throw new System.NotImplementedException();
+            if (row.Parent == null)
+                AddError("Недопустимы переход к надтаблице");
+            return _expr.Check(row.Parent);
+        }
+
+        //Вычисление значения
+        public Mean Process(SubRows row)
+        {
+            return _expr.Process(row.Parent);
         }
     }
 
     //------------------------------------------------------------------------------------------------------
     //Узел перехода к таблице - родителю, ничего не возвращает 
-    internal class NodeOverVoid : Node, INodeVoid
+    internal class NodeOverVoid : NodeKeeper, INodeVoid
     {
-        public NodeOverVoid(ITerminalNode terminal, INodeVoid prog, GeneratorKeeper keeper)
-            : base(terminal)
+        public NodeOverVoid(ParsingKeeper keeper, ITerminalNode terminal, INodeVoid prog)
+            : base(keeper, terminal)
         {
-            _keeper = keeper;
             _prog = prog;
         }
 
         protected override string NodeType { get { return "OverVoid"; } }
 
-        //Ссылка на Keeper
-        private GeneratorKeeper _keeper;
         //Вычисляемое выражение
         private INodeVoid _prog;
 
-        public void Process(TablRow row)
+        //Проверка корректности выражений генерации
+        public void Check(TablStructItem row)
         {
-            throw new System.NotImplementedException();
+            if (row.Parent == null)
+                AddError("Недопустимый переход к надтаблице");
+            _prog.Check(row.Parent);
+        }
+
+        //Вычисление значения
+        public void Process(SubRows row)
+        {
+            _prog.Process(row.Parent);
         }
     }
 }

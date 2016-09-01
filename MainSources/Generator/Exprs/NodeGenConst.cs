@@ -16,9 +16,15 @@ namespace Generator
         public NodeGenConst(ITerminalNode terminal, DataType dtype, string s) : base(terminal, dtype, s) { }
 
         //Вычисление значения
-        public Mean Process(TablRow row)
+        public Mean Process(SubRows row)
         {
             return Mean;
+        }
+
+        //Получение типа данных
+        public DataType Check(TablStructItem row)
+        {
+            return DataType;
         }
     }
 }

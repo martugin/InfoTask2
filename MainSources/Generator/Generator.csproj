@@ -71,6 +71,7 @@
     <Compile Include="obj\Debug\RuleListener.cs" />
     <Compile Include="obj\Debug\RuleParser.cs" />
     <Compile Include="obj\Debug\RuleVisitor.cs" />
+    <Compile Include="Rule\RowsConditionChecker.cs" />
     <Compile Include="Rule\RuleParsing.cs" />
     <Compile Include="Rule\RuleVisitor.cs" />
     <Compile Include="Exprs\NodeFun.cs" />

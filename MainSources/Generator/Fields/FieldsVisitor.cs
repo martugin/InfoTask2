@@ -22,13 +22,13 @@ namespace Generator
             if (tree == null) return null;
             return Visit(tree);
         }
-        public NodeExpr GoExpr(IParseTree tree)
+        public INodeExpr GoExpr(IParseTree tree)
         {
-            return (NodeExpr)Go(tree);
+            return (INodeExpr)Go(tree);
         }
-        public NodeVoid GoVoid(IParseTree tree)
+        public INodeVoid GoVoid(IParseTree tree)
         {
-            return (NodeVoid)Go(tree);
+            return (INodeVoid)Go(tree);
         }
         public NodeList GoList(IParseTree tree)
         {
@@ -73,33 +73,33 @@ namespace Generator
         {
             var name = context.IDENT().Symbol.Text;
             var v = _keeper.Vars.Add(name, new Var(name));
-            return new NodeVarSet(context.IDENT(), v, GoExpr(context.expr()));
+            return new NodeVarSet(_keeper, context.IDENT(), v, GoExpr(context.expr()));
         }
 
         public override Node VisitVoidExprIf(P.VoidExprIfContext context)
         {
-            return new NodeIfVoid(context.IF(), 
+            return new NodeIfVoid(_keeper, context.IF(), 
                                                context.expr().Select(GoExpr).ToList(),
                                                context.voidProg().Select(GoVoid).ToList());
         }
 
         public override Node VisitVoidExprWhile(P.VoidExprWhileContext context)
         {
-            return new NodeWhileVoid(context.WHILE(),
+            return new NodeWhileVoid(_keeper, context.WHILE(),
                                                     GoExpr(context.expr()),
                                                     GoVoid(context.voidProg()));
         }
 
         public override Node VisitVoidExprOver(P.VoidExprOverContext context)
         {
-            return new NodeOverVoid(context.OVERTABL(), GoVoid(context.voidProg()), _keeper);
+            return new NodeOverVoid(_keeper, context.OVERTABL(), GoVoid(context.voidProg()));
         }
 
         public override Node VisitVoidExprSub(P.VoidExprSubContext context)
         {
-            return new NodeSubVoid(context.SUBTABL(),  
+            return new NodeSubVoid(_keeper, context.SUBTABL(),  
                                                   context.expr() == null ? null : GoExpr(context.expr()),
-                                                  GoVoid(context.voidProg()), _keeper);
+                                                  GoVoid(context.voidProg()));
         }
 
         //Выражения со значением
@@ -116,15 +116,14 @@ namespace Generator
 
         public override Node VisitExprIf(P.ExprIfContext context)
         {
-            return new NodeIf(context.IF(),
+            return new NodeIf(_keeper, context.IF(),
                                          context.expr().Select(GoExpr).ToList(),
                                          context.valueProg().Select(GoExpr).ToList());
-
         }
 
         public override Node VisitExprWhile(P.ExprWhileContext context)
         {
-            return new NodeWhile(context.WHILE(), 
+            return new NodeWhile(_keeper, context.WHILE(), 
                                               GoExpr(context.expr(0)), 
                                               GoExpr(context.valueProg()), 
                                               GoExpr(context.expr(1)));
@@ -132,49 +131,48 @@ namespace Generator
 
         public override Node VisitExprOver(P.ExprOverContext context)
         {
-            return new NodeOver(context.OVERTABL(), GoExpr(context.valueProg()), _keeper);
+            return new NodeOver(_keeper, context.OVERTABL(), GoExpr(context.valueProg()));
         }
 
         public override Node VisitExprSub(P.ExprSubContext context)
         {
-            return new NodeSub(context.SUBTABL(),
+            return new NodeSub(_keeper, context.SUBTABL(),
                                            context.expr() == null ? null : GoExpr(context.expr()),
                                            GoExpr(context.valueProg(0)), 
-                                           context.valueProg().Count() == 1 ? null : GoExpr(context.valueProg(1)),
-                                           _keeper);
+                                           context.valueProg().Count() == 1 ? null : GoExpr(context.valueProg(1)));
         }
 
         public override Node VisitExprIdent(P.ExprIdentContext context)
         {
-            return new NodeField(context.IDENT());
+            return new NodeField(_keeper, context.IDENT());
         }
 
         public override Node VisitExprFun(P.ExprFunContext context)
         {
-            return new NodeFun(context.IDENT(), GoList(context.pars()));
+            return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
         }
 
         public override Node VisitExprUnary(P.ExprUnaryContext context)
         {
-            return new NodeFun(context.UNARY(), GoExpr(context.expr()));
+            return new NodeFun(_keeper, context.UNARY(), GoExpr(context.expr()));
         }
 
         public override Node VisitExprOper(P.ExprOperContext context)
         {
             var fun = (ITerminalNode)context.children[1];
-            return new NodeFun(fun, context.expr().Select(GoExpr).ToArray());
+            return new NodeFun(_keeper, fun, context.expr().Select(GoExpr).ToArray());
         }
 
         public override Node VisitExprFunParenLost(P.ExprFunParenLostContext context)
         {
             _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeFun(context.IDENT(), GoList(context.pars()));
+            return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
         }
 
         public override Node VisitExprFunParenExtra(P.ExprFunParenExtraContext context)
         {
             _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN(1));
-            return new NodeFun(context.IDENT(), GoList(context.pars()));
+            return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
         }
 
         public override Node VisitParamsList(P.ParamsListContext context)

@@ -4,10 +4,10 @@ using CommonTypes;
 namespace Generator
 {
     //Значение поля таблицы
-    internal class NodeField : Node, INodeExpr
+    internal class NodeField : NodeKeeper, INodeExpr
     {
-        public NodeField(ITerminalNode terminal)
-            : base(terminal)
+        public NodeField(ParsingKeeper keeper, ITerminalNode terminal)
+            : base(keeper, terminal)
         {
             if (terminal != null)
                 _field = terminal.Symbol.Text;
@@ -19,9 +19,17 @@ namespace Generator
         private readonly string _field;
         
         //Вычисление значения
-        public Mean Process(TablRow row)
+        public Mean Process(SubRows row)
         {
-            return row[_field];
+            return ((TablRow)row)[_field];
+        }
+
+        //Получение типа данных
+        public DataType Check(TablStructItem row)
+        {
+            if (!row.Fields.ContainsKey(_field))
+                AddError("Поле " + _field + " не найдено в исходной таблице");
+            return row.Fields[_field];
         }
     }
 }

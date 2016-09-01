@@ -9,12 +9,12 @@ namespace CommonTypes
         {
             Mean = mean;
         }
-
+        
         public NodeConst(ITerminalNode terminal, bool b) : base(terminal)
         {
             Mean = new MeanBool(b);
         }
-
+        
         public NodeConst(ITerminalNode terminal, int i) : base(terminal)
         {
             Mean = new MeanInt(i);
@@ -45,5 +45,7 @@ namespace CommonTypes
 
         //Значение константы
         public Mean Mean { get; private set; }
+        //Тип данных
+        public DataType DataType { get { return Mean.DataType; } }
     }
 }

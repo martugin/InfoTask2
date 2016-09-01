@@ -4,10 +4,10 @@ using CommonTypes;
 namespace Generator
 {
     //Цикл, возвращающий значение
-    internal class NodeWhile : Node, INodeExpr
+    internal class NodeWhile : NodeKeeper, INodeExpr
     {
-        public NodeWhile(ITerminalNode terminal, INodeExpr condition, INodeExpr prog, INodeExpr elseProg)
-            : base(terminal)
+        public NodeWhile(ParsingKeeper keeper, ITerminalNode terminal, INodeExpr condition, INodeExpr prog, INodeExpr elseProg)
+            : base(keeper, terminal)
         {
             _condition = condition;
             _prog = prog;
@@ -21,8 +21,16 @@ namespace Generator
         private readonly INodeExpr _prog;
         private readonly INodeExpr _elseProg;
 
+        //Получение типа данных
+        public DataType Check(TablStructItem row)
+        {
+            if (_condition.Check(row) != DataType.Boolean)
+                AddError("Нодопустимый тип данных условия");
+            return _prog.Check(row).Add(_elseProg.Check(row));
+        }
+
         //Вычисление значения
-        public Mean Process(TablRow row)
+        public Mean Process(SubRows row)
         {
             Mean mean = null;
             while (_condition.Process(row).Boolean)
@@ -33,10 +41,10 @@ namespace Generator
 
     //----------------------------------------------------------------------------------------------------------
     //Цикл, возвращающий значение
-    internal class NodeWhileVoid : Node, INodeVoid
+    internal class NodeWhileVoid : NodeKeeper, INodeVoid
     {
-        public NodeWhileVoid(ITerminalNode terminal, INodeExpr condition, INodeVoid prog)
-            : base(terminal)
+        public NodeWhileVoid(ParsingKeeper keeper, ITerminalNode terminal, INodeExpr condition, INodeVoid prog)
+            : base(keeper, terminal)
         {
             _condition = condition;
             _prog = prog;
@@ -48,8 +56,15 @@ namespace Generator
         private readonly INodeExpr _condition;
         private readonly INodeVoid _prog;
 
+        //Проверка корректности выражений генерации
+        public void Check(TablStructItem row)
+        {
+            if (_condition.Check(row) != DataType.Boolean)
+                AddError("Нодопустимый тип данных условия");
+        }
+
         //Вычисление значения
-        public void Process(TablRow row)
+        public void Process(SubRows row)
         {
             while (_condition.Process(row).Boolean)
                 _prog.Process(row);

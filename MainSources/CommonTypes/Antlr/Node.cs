@@ -12,7 +12,7 @@ namespace CommonTypes
             if (terminal != null)
                 Token = terminal.Symbol;
         }
-
+        
         //Ссылка на токен
         public IToken Token { get; private set; }
         //Тип узла, для записи в строку

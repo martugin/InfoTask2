@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime.Tree;
 using CommonTypes;
-using System.Linq;
 
 namespace Generator
 {
@@ -10,86 +9,65 @@ namespace Generator
     //Узел - вызывающий итерацию по строкам таблицы, базовый для Tabl, OverTabl
     internal interface INodeTabl
     {
+        //Проверка выражения, возвращает уровень таблицы, ряды которого перебираются
+        TablStructItem Check(TablsList dataTabls);
         //Сгененирировать таблицу по исходным данным
         IEnumerable<SubRows> GetInitialRows(TablsList dataTabls);
-    }
-    
-    //-----------------------------------------------------------------------------------------------------------------
-
-    //Узел - проход по таблице
-    internal class NodeRTabl : Node, INodeTabl
-    {
-        public NodeRTabl(ITerminalNode terminal, INodeExpr condition = null, NodeRSubTabl child = null) 
-            : base(terminal)
-        {
-            if (terminal != null)
-                _tablName = terminal.Symbol.Text;
-            _condition = condition;
-        }
-
-        //Имя таблицы
-        private readonly string _tablName;
-        //Условие фильтрации или имя типа
-        private readonly INodeExpr _condition;
-
-        //Тип узла
-        protected override string NodeType { get { return "Tabl"; } }
-
-        public override string ToTestString()
-        {
-            return _condition == null ? ToTestWithChildren(_condition) : ToTestWithChildren();
-        }
-
-        //Выбрать ряды для геренации
-        public IEnumerable<SubRows> GetInitialRows(TablsList dataTabls)
-        {
-            var tabl = dataTabls.Tabls[_tablName];
-            if (_condition == null) return tabl.Rows[0].Values;
-            if (_condition is NodeConst && tabl.SubTypes.ContainsKey(((NodeConst)_condition).Mean.String))
-                return tabl.SubTypes[((NodeConst)_condition).Mean.String];
-            return tabl.Rows[0].Values.Where(row =>_condition.Process(row).Boolean);
-        }
     }
 
     //----------------------------------------------------------------------------------------------------
     //Узел - родительский ряд для таблицы
-    internal class NodeROverTabl : Node, INodeTabl
+    internal class NodeROverTabl : NodeKeeper, INodeTabl
     {
-        public NodeROverTabl(ITerminalNode tabl, ITerminalNode over)
-            : base(over)
+        public NodeROverTabl(ParsingKeeper keeper, ITerminalNode tabl)
+            : base(keeper, tabl)
         {
             if (tabl != null)
                 _tablName = tabl.Symbol.Text;
         }
 
         //Имя таблицы
-        private string _tablName;
+        private readonly string _tablName;
 
         //Тип узла
         protected override string NodeType { get { return "OverTabl"; } }
 
+        //Проверка выражения
+        public TablStructItem Check(TablsList dataTabls)
+        {
+            if (!dataTabls.Tabls.ContainsKey(_tablName))
+            {
+                AddError("Не найдена таблица");
+                return null;
+            }
+            return dataTabls.Structs[_tablName].Tabls[-1];
+        }
+
         //Выбрать ряды для геренации
         public IEnumerable<SubRows> GetInitialRows(TablsList dataTabls)
         {
-            return new[] {dataTabls.Tabls[_tablName].Parent};
+            return new[] { dataTabls.Tabls[_tablName].Parent };
         }
     }
 
     //----------------------------------------------------------------------------------------------------
     //Узел - перебор рядов подтаблицы
-    internal class NodeRSubTabl : Node 
+    internal class NodeRSubTabl : NodeKeeper
     {
-        public NodeRSubTabl(ITerminalNode sub, INodeExpr condition = null)
-            : base(sub)
+        public NodeRSubTabl(ParsingKeeper keeper, ITerminalNode terminal, INodeExpr condition = null)
+            : base(keeper, terminal)
         {
             Condition = condition;
+            _rowsChecker = new RowsConditionChecker(Keeper);
         }
-        
+
         //Условие фильтрации или имя типа
         protected INodeExpr Condition { get; private set; }
         //Выбор рядов из дочерней подтаблицы
-        protected NodeRSubTabl Child { get; private set; } 
-
+        internal protected NodeRSubTabl Child { get; set; }
+        //Фильтрация списка рядов подтаблицы
+        private readonly RowsConditionChecker _rowsChecker;
+        
         //Тип узла
         protected override string NodeType { get { return "SubTabl"; } }
 
@@ -98,13 +76,49 @@ namespace Generator
             return ToTestWithChildren(Condition, Child);
         }
 
+        //Проверка выражения
+        public TablStructItem Check(TablStructItem row) //таблица уровня родителя
+        {
+            _rowsChecker.Check(Condition, row);
+            if (Child != null) return Child.Check(row.Child);
+            return row;
+        }
+
         //Выбрать ряды для геренации
         public IEnumerable<SubRows> GetInitialRows(SubRows parent)
         {
-            if (Condition == null) return parent.SubList;
-            if (Condition is NodeConst && parent.SubTypes.ContainsKey(((NodeConst)Condition).Mean.String))
-                return parent.SubTypes[((NodeConst)Condition).Mean.String];
-            return parent.SubList.Where(row => Condition.Process(row).Boolean);
+            return _rowsChecker.GetInitialRows(Condition, parent);
+        }
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
+    //Узел - проход по таблице
+    internal class NodeRTabl : NodeRSubTabl, INodeTabl
+    {
+        public NodeRTabl(ParsingKeeper keeper, ITerminalNode terminal, INodeExpr condition = null)
+            : base(keeper, terminal, condition)
+        {
+            if (terminal != null)
+                _tablName = terminal.Symbol.Text;
+        }
+
+        //Имя таблицы
+        private readonly string _tablName;
+
+        //Тип узла
+        protected override string NodeType { get { return "Tabl"; } }
+
+        //Проверка выражения
+        public TablStructItem Check(TablsList dataTabls)
+        {
+            var row = dataTabls.Structs[_tablName].Tabls[0];
+            return Check(row);
+        }
+
+        //Выбрать ряды для геренации
+        public IEnumerable<SubRows> GetInitialRows(TablsList dataTabls)
+        {
+            return GetInitialRows(dataTabls.Tabls[_tablName].Parent);
         }
     }
 }
