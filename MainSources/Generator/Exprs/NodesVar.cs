@@ -3,29 +3,16 @@ using CommonTypes;
 
 namespace Generator
 {
-    //Внутренняя переменная, содержащая промежуточный результат генерации
-    internal class Var
-    {
-        public Var(string name)
-        {
-            Name = name;
-        }
-
-        //Имя переменной
-        public string Name { get; private set; }
-        //Тип данных
-        public DataType DataType { get; set; }
-        //Значение переменной
-        public Mean Mean { get; set; }
-    }
-
-    //----------------------------------------------------------------------------------------------------
     //Узел использования переменной
-    internal class NodeVar : Node, INodeExpr
+    internal class NodeVar : NodeKeeper, INodeExpr
     {
-        public NodeVar(ITerminalNode terminal, Var v) : base(terminal)
+        public NodeVar(GenKeeper keeper, ITerminalNode terminal) 
+            : base(keeper, terminal)
         {
-            _var = v;
+            var name = terminal.Symbol.Text;
+            if (!keeper.Vars.ContainsKey(name))
+                AddError("Использование неприсвоеной переменной");
+            else _var = keeper.Vars[name];
         }
 
         protected override string NodeType { get { return "Var"; } }
@@ -34,13 +21,14 @@ namespace Generator
         private readonly Var _var;
 
         //Получение типа данных
-        public DataType Check(TablStructItem row)
+        public DataType Check(TablStruct tabl)
         {
+            if (_var == null) return DataType.Error;
             return _var.DataType;
         }
 
         //Получение значения
-        public Mean Process(SubRows row)
+        public Mean Generate(SubRows row)
         {
             return _var.Mean;
         }
@@ -50,10 +38,11 @@ namespace Generator
     //Узел присвоения переменной
      internal class NodeVarSet : NodeKeeper, INodeVoid
      {
-         public NodeVarSet(ParsingKeeper keeper, ITerminalNode terminal, Var v, INodeExpr nodeMean)  
+         public NodeVarSet(GenKeeper keeper, ITerminalNode terminal, INodeExpr nodeMean)  
              : base(keeper, terminal)
          {
-             _var = v;
+             var name = terminal.Symbol.Text;
+             _var = keeper.Vars.Add(name, new Var(name));
              _nodeMean = nodeMean;
          }
 
@@ -65,15 +54,15 @@ namespace Generator
          private readonly INodeExpr _nodeMean;
 
          //Проверка корректности выражений генерации
-         public void Check(TablStructItem row)
+         public void Check(TablStruct tabl)
          {
-             _var.DataType.Add(_nodeMean.Check(row));
+             _var.DataType.Add(_nodeMean.Check(tabl));
          }
 
          //Обработка при генерации
-         public void Process(SubRows row)
+         public void Generate(SubRows row)
          {
-             _var.Mean = _nodeMean.Process(row);
+             _var.Mean = _nodeMean.Generate(row);
          }
      }
 }

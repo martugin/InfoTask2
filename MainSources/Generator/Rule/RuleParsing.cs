@@ -7,8 +7,8 @@ namespace Generator
     //Класс, запускающий разбор для GenRule
     internal class RuleParsing : Parsing
     {
-        public RuleParsing(string fieldName, string fieldValue, bool isSubTabl = false)
-            : base(fieldName, fieldValue)
+        public RuleParsing(GenKeeper keeper, string fieldName, string fieldValue, bool isSubTabl = false)
+            : base(keeper, fieldName, fieldValue)
         {
             _isSubTabl = isSubTabl;
         }

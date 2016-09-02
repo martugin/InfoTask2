@@ -23,23 +23,26 @@ namespace Generator
         private readonly List<INodeExpr> _variants;
 
         //Получение типа данных
-        public DataType Check(TablStructItem row)
+        public DataType Check(TablStruct tabl)
         {
-            if (_conditions.Any(c => c.Check(row) != DataType.Boolean))
-                AddError("Нодопустимый тип данных условия");
+            if (_conditions.Any(c => c.Check(tabl) != DataType.Boolean))
+            {
+                AddError("Недопустимый тип данных условия");
+                return DataType.Error;
+            }
             var dt = DataType.Value;
             foreach (var expr in _variants)
-                dt = dt.Add(expr.Check(row));
+                dt = dt.Add(expr.Check(tabl));
             return dt;
         }
 
         //Вычисление значения
-        public Mean Process(SubRows row)
+        public Mean Generate(SubRows row)
         {
             for (int i = 0; i < _variants.Count - 1; i++)
-                if (_conditions[i].Process(row).Boolean)
-                    return _variants[i].Process(row);
-            return _variants.Last().Process(row);
+                if (_conditions[i].Generate(row).Boolean)
+                    return _variants[i].Generate(row);
+            return _variants.Last().Generate(row);
         }
     }
 
@@ -62,18 +65,18 @@ namespace Generator
         private readonly List<INodeVoid> _variants;
 
         //Проверка корректности выражений генерации
-        public void Check(TablStructItem row)
+        public void Check(TablStruct tabl)
         {
-            if (_conditions.Any(c => c.Check(row) != DataType.Boolean))
-                AddError("Нодопустимый тип данных условия");
+            if (_conditions.Any(c => c.Check(tabl) != DataType.Boolean))
+                AddError("Недопустимый тип данных условия");
         }
 
         //Вычисление значения
-        public void Process(SubRows row)
+        public void Generate(SubRows row)
         {
             for (int i = 0; i < _variants.Count; i++)
-                if (i == _conditions.Count || _conditions[i].Process(row).Boolean)
-                    _variants[i].Process(row);
+                if (i == _conditions.Count || _conditions[i].Generate(row).Boolean)
+                    _variants[i].Generate(row);
         }
     }
 }

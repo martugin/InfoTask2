@@ -56,7 +56,6 @@
     <Compile Include="Antlr\NodeList.cs" />
     <Compile Include="Antlr\Parsing.cs" />
     <Compile Include="Antlr\INode.cs" />
-    <Compile Include="Antlr\KeeperBase.cs" />
     <Compile Include="Antlr\NodeConst.cs" />
     <Compile Include="Antlr\ParsingError.cs" />
     <Compile Include="Antlr\ParsingKeeper.cs" />
@@ -67,8 +66,8 @@
     <Compile Include="ErrMoms\ErrMomFactory.cs" />
     <Compile Include="ErrMoms\ErrMomPool.cs" />
     <Compile Include="Tabls\SubRows.cs" />
-    <Compile Include="Tabls\TablStructItem.cs" />
-    <Compile Include="Tabls\TablSruct.cs" />
+    <Compile Include="Tabls\TablStruct.cs" />
+    <Compile Include="Tabls\TablGroup.cs" />
     <Compile Include="Values\DataType.cs" />
     <Compile Include="Values\Mean\MeansErr.cs" />
     <Compile Include="Values\Mean\Mean.cs" />

@@ -18,17 +18,20 @@ namespace Generator
         private readonly INodeExpr _expr;
 
         //Получение типа данных
-        public DataType Check(TablStructItem row)
+        public DataType Check(TablStruct tabl)
         {
-            if (row.Parent == null)
-                AddError("Недопустимы переход к надтаблице");
-            return _expr.Check(row.Parent);
+            if (tabl.Parent == null)
+            {
+                AddError("Недопустимый переход к надтаблице");
+                return DataType.Error;
+            }
+            return _expr.Check(tabl.Parent);
         }
 
         //Вычисление значения
-        public Mean Process(SubRows row)
+        public Mean Generate(SubRows row)
         {
-            return _expr.Process(row.Parent);
+            return _expr.Generate(row.Parent);
         }
     }
 
@@ -45,20 +48,20 @@ namespace Generator
         protected override string NodeType { get { return "OverVoid"; } }
 
         //Вычисляемое выражение
-        private INodeVoid _prog;
+        private readonly INodeVoid _prog;
 
         //Проверка корректности выражений генерации
-        public void Check(TablStructItem row)
+        public void Check(TablStruct tabl)
         {
-            if (row.Parent == null)
+            if (tabl.Parent == null)
                 AddError("Недопустимый переход к надтаблице");
-            _prog.Check(row.Parent);
+            else _prog.Check(tabl.Parent);
         }
 
         //Вычисление значения
-        public void Process(SubRows row)
+        public void Generate(SubRows row)
         {
-            _prog.Process(row.Parent);
+            _prog.Generate(row.Parent);
         }
     }
 }

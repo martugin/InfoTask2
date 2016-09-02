@@ -3,10 +3,10 @@
     //Интерфейс для узлов, у которых может быть вычислено значение
     internal interface INodeExpr : INode
     {
-        //Проверка корректности выражений генерации
-        DataType Check(TablStructItem row);
+        //Проверка корректности выражений генерации, определение типа данных выражения
+        DataType Check(TablStruct tabl);
         //Вычисление значения по ряду исходной таблицы
-        Mean Process(SubRows row);
+        Mean Generate(SubRows row);
     }
 
     //------------------------------------------------------------------------------------------------------
@@ -14,8 +14,8 @@
     internal interface INodeVoid : INode
     {
         //Проверка корректности выражений генерации
-        void Check(TablStructItem row);
+        void Check(TablStruct tabl);
         //Выполнение действий по ряду исходной таблицы
-        void Process(SubRows row);
+        void Generate(SubRows row);
     }
 }

@@ -3,16 +3,18 @@
 namespace CommonTypes
 {
     //Прослушиватель ошибок лексера
-    public class LexerErrorListener : KeeperBase, IAntlrErrorListener<int>
+    public class LexerErrorListener : IAntlrErrorListener<int>
     {
-        public LexerErrorListener(string fieldName, string fieldValue)
-            : base(fieldName)
+        public LexerErrorListener(ParsingKeeper keeper, string fieldValue)
         {
-            FieldValue = fieldValue;
+            _fieldValue = fieldValue;
+            _keeper = keeper;
         }
 
         //Разбираемая строка
-        protected string FieldValue { get; private set; }
+        private readonly string _fieldValue;
+        //Накопитель ошибок
+        private readonly ParsingKeeper _keeper;
 
         public void SyntaxError(IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
@@ -21,22 +23,26 @@ namespace CommonTypes
             if (lexer.Token != null)
             {
                 var t = lexer.Token;
-                AddError(mess, t.Text + FieldValue[lexer.CharIndex], t.Line, t.Column, t);
+                _keeper.AddError(mess, t.Text + _fieldValue[lexer.CharIndex], t.Line, t.Column, t);
             }
-            else AddError(mess, lexer.Text + FieldValue[lexer.CharIndex], line, charPositionInLine);
+            else _keeper.AddError(mess, lexer.Text + _fieldValue[lexer.CharIndex], line, charPositionInLine);
         }
     }
 
     //-------------------------------------------------------------------------------------------------
     //Прослушиватель ошибок парсера
-    public class ParserErrorListener : KeeperBase, IAntlrErrorListener<IToken>
+    public class ParserErrorListener : IAntlrErrorListener<IToken>
     {
-        public ParserErrorListener(string fieldName)
-            : base(fieldName) { }
+        public ParserErrorListener(ParsingKeeper keeper)
+        {
+            _keeper = keeper;
+        }
+
+        //Накопитель ошибок
+        private readonly ParsingKeeper _keeper;
 
         public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
-            //var p = (Parser) recognizer;
             string mess = "Ошибка разбора выражения";
             IToken token = offendingSymbol;
             if (offendingSymbol != null)
@@ -48,8 +54,8 @@ namespace CommonTypes
                 }
                 else mess = "Недопустимое использование лексемы";
             }
-            if (token != null) AddError(mess, token);
-            else AddError(mess, null, line, charPositionInLine);
+            if (token != null) _keeper.AddError(mess, token);
+            else _keeper.AddError(mess, null, line, charPositionInLine);
         }
     }
 }

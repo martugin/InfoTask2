@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Antlr4.Runtime;
 
 namespace CommonTypes
@@ -7,37 +6,32 @@ namespace CommonTypes
     //Базовый класс для всех разборщиков ANTLR
     public abstract class Parsing
     {
-        protected Parsing(string fieldName, //Имя разбираемого поля (для сообщений об ошибках)
+        protected Parsing(ParsingKeeper keeper, //Накопитель ошибок
+                                   string fieldName, //Имя разбираемого поля (для сообщений об ошибках)
                                    string fieldValue) //Разбираемое выражение
         {
-            FieldName = fieldName;
+            keeper.SetFieldName(fieldName);
             var reader = new StringReader(fieldValue);
             var input = new AntlrInputStream(reader.ReadToEnd());
             var lexer = GetLexer(input);
-            var errorLexerListener = new LexerErrorListener(fieldName, fieldValue);
+            var errorLexerListener = new LexerErrorListener(keeper, fieldValue);
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(errorLexerListener);
             var tokens = new CommonTokenStream(lexer);
             var parser = GetParser(tokens);
-            var errorParserListener = new ParserErrorListener(fieldName);
+            var errorParserListener = new ParserErrorListener(keeper);
             parser.RemoveErrorListeners();
             parser.AddErrorListener(errorParserListener);
-            var keeper = new ParsingKeeper(fieldName);
             ResultTree = RunVisitor(parser, keeper);
-            ErrMess = errorLexerListener.ErrMess + errorParserListener.ErrMess + keeper.ErrMess;
         }
-
-        //Имя разбираемого поля
-        protected string FieldName { get; private set; }
 
         //Возвращаемое дерево и строка с ошибками разбора
         public Node ResultTree { get; private set; }
-        public string ErrMess { get; private set; }
 
         //Строка с результатами парсинга для тестов
         public string ToTestString()
         {
-            return (ResultTree == null ? "" : ResultTree.ToTestString()) + Environment.NewLine + ErrMess;
+            return (ResultTree == null ? "" : ResultTree.ToTestString());
         }
 
         //Создать лексер

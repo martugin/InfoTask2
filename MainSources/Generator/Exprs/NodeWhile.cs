@@ -22,20 +22,23 @@ namespace Generator
         private readonly INodeExpr _elseProg;
 
         //Получение типа данных
-        public DataType Check(TablStructItem row)
+        public DataType Check(TablStruct tabl)
         {
-            if (_condition.Check(row) != DataType.Boolean)
-                AddError("Нодопустимый тип данных условия");
-            return _prog.Check(row).Add(_elseProg.Check(row));
+            if (_condition.Check(tabl) != DataType.Boolean)
+            {
+                AddError("Недопустимый тип данных условия");
+                return DataType.Error;
+            }
+            return _prog.Check(tabl).Add(_elseProg.Check(tabl));
         }
 
         //Вычисление значения
-        public Mean Process(SubRows row)
+        public Mean Generate(SubRows row)
         {
             Mean mean = null;
-            while (_condition.Process(row).Boolean)
-                mean = _prog.Process(row);
-            return mean ?? _elseProg.Process(row);
+            while (_condition.Generate(row).Boolean)
+                mean = _prog.Generate(row);
+            return mean ?? _elseProg.Generate(row);
         }
     }
 
@@ -57,17 +60,17 @@ namespace Generator
         private readonly INodeVoid _prog;
 
         //Проверка корректности выражений генерации
-        public void Check(TablStructItem row)
+        public void Check(TablStruct tabl)
         {
-            if (_condition.Check(row) != DataType.Boolean)
-                AddError("Нодопустимый тип данных условия");
+            if (_condition.Check(tabl) != DataType.Boolean)
+                AddError("Недопустимый тип данных условия");
         }
 
         //Вычисление значения
-        public void Process(SubRows row)
+        public void Generate(SubRows row)
         {
-            while (_condition.Process(row).Boolean)
-                _prog.Process(row);
+            while (_condition.Generate(row).Boolean)
+                _prog.Generate(row);
         }
     }
 }

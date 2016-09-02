@@ -7,17 +7,17 @@ namespace CommonTypes
     public class TablsList
     {
         //Словарь структур таблиц
-        private readonly DicS<TablSruct> _structs = new DicS<TablSruct>();
-        public DicS<TablSruct> Structs { get { return _structs; } }
+        private readonly DicS<TablGroup> _structs = new DicS<TablGroup>();
+        public DicS<TablGroup> Structs { get { return _structs; } }
         //Словарь значений таблиц
         private readonly DicS<Tabl> _tabls = new DicS<Tabl>();
         public DicS<Tabl> Tabls { get { return _tabls; } }
 
         //Добавляет структуру одной группы таблиц
-        public TablSruct AddStruct(DaoDb db, //База данных
+        public TablGroup AddStruct(DaoDb db, //База данных
                                         string table0, string table1 = null, string table2 = null, string table3 = null) //Имена таблиц разной вложенности
         {
-            var s = new TablSruct(db.File, table0);
+            var s = new TablGroup(db.File, table0);
             Structs.Add(table0, s);
             s.AddTabl(db, table0, 0);
             if (!table1.IsEmpty()) s.AddTabl(db, table1, 1);
@@ -36,7 +36,7 @@ namespace CommonTypes
                     int level = t.Name.Substring(t.Name.Length - 1).ToInt();
                     string code = t.Name.Substring(4, t.Name.Length - 9);
                     if (!Structs.ContainsKey(code))
-                        Structs.Add(code, new TablSruct(db.File, code));
+                        Structs.Add(code, new TablGroup(db.File, code));
                     Structs[code].AddTabl(db, t.Name, level);
                 }
         }

@@ -3,9 +3,9 @@
 namespace CommonTypes
 {
     //Структура одной пользовательской таблицы
-    public class TablStructItem
+    public class TablStruct
     {
-        public TablStructItem(string name, int level)
+        public TablStruct(string name, int level)
         {
             TableName = name;
             Level = level;
@@ -16,8 +16,8 @@ namespace CommonTypes
         //Уровень таблицы в группе
         public int Level { get; private set; }
         //Слудующий и предыдущий уровни таблицы
-        public TablStructItem Child { get; internal set; }
-        public TablStructItem Parent { get; internal set; }
+        public TablStruct Child { get; internal set; }
+        public TablStruct Parent { get; internal set; }
 
         //Словарь полей, ключи - коды, значения - типы данных
         private readonly DicS<DataType> _fields = new DicS<DataType>();

@@ -25,12 +25,10 @@ namespace Generator
 
         protected override string NodeType { get { return "Fun"; } }
 
-        //Накопление ошибок
-        private readonly GeneratorKeeper _keeper;
         //Добавить ошибку и вернуть пустое значение
         private Mean Error(string text)
         {
-            _keeper.AddError(text, Token);
+            AddError(text);
             return new MeanValue();
         }
 
@@ -46,17 +44,17 @@ namespace Generator
         }
 
         //Получение типа данных
-        public DataType Check(TablStructItem row)
+        public DataType Check(TablStruct tabl)
         {
             throw new NotImplementedException();
         }
 
         //Вычисленное значение
-        public Mean Process(SubRows row)
+        public Mean Generate(SubRows row)
         {
             if (_fun == orbb) return ProcessOr(_args[0], _args[1], row);
             if (_fun == andbb) return ProcessAnd(_args[0], _args[1], row);
-            return _fun(_args.Select(x => x.Process(row)).ToArray());
+            return _fun(_args.Select(x => x.Generate(row)).ToArray());
         }
 
         //Функции
@@ -153,17 +151,17 @@ namespace Generator
         public Mean andbb(params Mean[] pars) { return null;}
         private Mean ProcessAnd(INodeExpr p0, INodeExpr p1, SubRows row)
         {
-            if (!p0.Process(row).Boolean)
+            if (!p0.Generate(row).Boolean)
                 return new MeanBool(false);
-            return new MeanBool(p0.Process(row).Boolean && p1.Process(row).Boolean);
+            return new MeanBool(p0.Generate(row).Boolean && p1.Generate(row).Boolean);
         }
 
         public Mean orbb(params Mean[] pars) { return null; }
         private Mean ProcessOr(INodeExpr p0, INodeExpr p1, SubRows row)
         {
-            if (p0.Process(row).Boolean)
+            if (p0.Generate(row).Boolean)
                 return new MeanBool(true);
-            return new MeanBool(p0.Process(row).Boolean || p1.Process(row).Boolean);
+            return new MeanBool(p0.Generate(row).Boolean || p1.Generate(row).Boolean);
         }
         
         public Mean notb(params Mean[] pars)

@@ -19,17 +19,20 @@ namespace Generator
         private readonly string _field;
         
         //Вычисление значения
-        public Mean Process(SubRows row)
+        public Mean Generate(SubRows row)
         {
             return ((TablRow)row)[_field];
         }
 
         //Получение типа данных
-        public DataType Check(TablStructItem row)
+        public DataType Check(TablStruct tabl)
         {
-            if (!row.Fields.ContainsKey(_field))
-                AddError("Поле " + _field + " не найдено в исходной таблице");
-            return row.Fields[_field];
+            if (!tabl.Fields.ContainsKey(_field))
+            {
+                AddError("Поле не найдено в исходной таблице");
+                return DataType.Error;
+            }
+            return tabl.Fields[_field];
         }
     }
 }

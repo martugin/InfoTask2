@@ -7,12 +7,12 @@ namespace Generator
     //Узлы разбора правила генерации
 
     //Узел - вызывающий итерацию по строкам таблицы, базовый для Tabl, OverTabl
-    internal interface INodeTabl
+    internal interface INodeTabl : INode
     {
         //Проверка выражения, возвращает уровень таблицы, ряды которого перебираются
-        TablStructItem Check(TablsList dataTabls);
+        TablStruct Check(TablsList dataTabls);
         //Сгененирировать таблицу по исходным данным
-        IEnumerable<SubRows> GetInitialRows(TablsList dataTabls);
+        IEnumerable<SubRows> SelectRows(TablsList dataTabls);
     }
 
     //----------------------------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ namespace Generator
         protected override string NodeType { get { return "OverTabl"; } }
 
         //Проверка выражения
-        public TablStructItem Check(TablsList dataTabls)
+        public TablStruct Check(TablsList dataTabls)
         {
             if (!dataTabls.Tabls.ContainsKey(_tablName))
             {
@@ -43,8 +43,8 @@ namespace Generator
             return dataTabls.Structs[_tablName].Tabls[-1];
         }
 
-        //Выбрать ряды для геренации
-        public IEnumerable<SubRows> GetInitialRows(TablsList dataTabls)
+        //Выбрать ряды для генерации
+        public IEnumerable<SubRows> SelectRows(TablsList dataTabls)
         {
             return new[] { dataTabls.Tabls[_tablName].Parent };
         }
@@ -58,7 +58,7 @@ namespace Generator
             : base(keeper, terminal)
         {
             Condition = condition;
-            _rowsChecker = new RowsConditionChecker(Keeper);
+            _rowsChecker = new RowsSelector(Keeper);
         }
 
         //Условие фильтрации или имя типа
@@ -66,7 +66,7 @@ namespace Generator
         //Выбор рядов из дочерней подтаблицы
         internal protected NodeRSubTabl Child { get; set; }
         //Фильтрация списка рядов подтаблицы
-        private readonly RowsConditionChecker _rowsChecker;
+        private readonly RowsSelector _rowsChecker;
         
         //Тип узла
         protected override string NodeType { get { return "SubTabl"; } }
@@ -77,17 +77,17 @@ namespace Generator
         }
 
         //Проверка выражения
-        public TablStructItem Check(TablStructItem row) //таблица уровня родителя
+        public TablStruct Check(TablStruct tabl) //таблица уровня родителя
         {
-            _rowsChecker.Check(Condition, row);
-            if (Child != null) return Child.Check(row.Child);
-            return row;
+            _rowsChecker.Check(Condition, tabl);
+            if (Child != null) return Child.Check(tabl.Child);
+            return tabl;
         }
 
-        //Выбрать ряды для геренации
-        public IEnumerable<SubRows> GetInitialRows(SubRows parent)
+        //Выбрать ряды для генерации
+        public IEnumerable<SubRows> SelectRows(SubRows parent)
         {
-            return _rowsChecker.GetInitialRows(Condition, parent);
+            return _rowsChecker.SelectRows(Condition, parent);
         }
     }
 
@@ -109,16 +109,20 @@ namespace Generator
         protected override string NodeType { get { return "Tabl"; } }
 
         //Проверка выражения
-        public TablStructItem Check(TablsList dataTabls)
+        public TablStruct Check(TablsList dataTabls)
         {
-            var row = dataTabls.Structs[_tablName].Tabls[0];
-            return Check(row);
+            if (!dataTabls.Tabls.ContainsKey(_tablName))
+            {
+                AddError("Не найдена таблица");
+                return null;
+            }
+            return Check(dataTabls.Structs[_tablName].Tabls[0]);
         }
 
-        //Выбрать ряды для геренации
-        public IEnumerable<SubRows> GetInitialRows(TablsList dataTabls)
+        //Выбрать ряды для генерации
+        public IEnumerable<SubRows> SelectRows(TablsList dataTabls)
         {
-            return GetInitialRows(dataTabls.Tabls[_tablName].Parent);
+            return SelectRows(dataTabls.Tabls[_tablName].Parent);
         }
     }
 }

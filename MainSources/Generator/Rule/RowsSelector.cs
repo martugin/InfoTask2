@@ -5,9 +5,9 @@ using CommonTypes;
 namespace Generator
 {
     //Фильтрация списка рядов подтаблицы
-    internal class RowsConditionChecker
+    internal class RowsSelector
     {
-        public RowsConditionChecker(ParsingKeeper keeper)
+        public RowsSelector(ParsingKeeper keeper)
         {
             _keeper = keeper;
         }
@@ -15,19 +15,19 @@ namespace Generator
         private readonly ParsingKeeper _keeper;
 
         //Проверка выражения
-        public void Check(INodeExpr condition, TablStructItem row)
+        public void Check(INodeExpr condition, TablStruct tabl)
         {
-            if (!(condition is NodeConst) && condition.Check(row) != DataType.Boolean)
+            if (!(condition is NodeConst) && condition.Check(tabl) != DataType.Boolean)
                 _keeper.AddError("Недопустимый тип данных условия", condition.Token);
         }
 
         //Выбрать ряды для геренации
-        public IEnumerable<SubRows> GetInitialRows(INodeExpr condition, SubRows parent)
+        public IEnumerable<SubRows> SelectRows(INodeExpr condition, SubRows parent)
         {
             if (condition == null) return parent.SubList;
             if (condition is NodeConst && parent.SubTypes.ContainsKey(((NodeConst)condition).Mean.String))
                 return parent.SubTypes[((NodeConst)condition).Mean.String];
-            return parent.SubList.Where(row => condition.Process(row).Boolean);
+            return parent.SubList.Where(row => condition.Generate(row).Boolean);
         }
     }
 }

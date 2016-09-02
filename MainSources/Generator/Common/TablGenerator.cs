@@ -8,38 +8,33 @@ namespace Generator
     public class TablGenerator : ExternalLogger
     {
         public TablGenerator(Logger logger, //Логгер
-                                         TablsList tabls, //Таблицы с данными для генерации
+                                         TablsList dataTabls, //Таблицы с данными для генерации
                                          string file, //Файл шаблона генерации
                                          string tabl, //Главная таблица шаблона генерации, можно запрос
                                          string tablIdField, //Имя поля Id главной таблицы
                                          string tablRuleField, //Имя поля правила генерации главной таблицы
                                          string tablErrField, //Имя поля для записи ошибок генерации в главной таблице
                                          string subTabl = null, //Подчиненная таблицы шаблона генерации, можно запрос
-                                         string subTablParentIdField = null, //Имя поля Id из главной таблицы в подчиненной таблице
-                                         string subTablRuleField = null, //Имя поля правила генерации подчиненной таблицы
-                                         string subTablErrField = null) //Имя поля для записи ошибок генерации в подчиненной таблице
+                                         string subParentIdField = null, //Имя поля Id из главной таблицы в подчиненной таблице
+                                         string subRuleField = null, //Имя поля правила генерации подчиненной таблицы
+                                         string subErrField = null) //Имя поля для записи ошибок генерации в подчиненной таблице
         {
             Logger = logger;
-            DataTabls = tabls;
+            DataTabls = dataTabls;
             try
             {
-                AddEvent("Загрузка таблицы генерации", file + ", " + tabl);
-                using (var rec = new RecDao(file, tabl))
-                    while (rec.Read())
+                bool hasSub = subTabl != null;
+                AddEvent("Загрузка таблиц шаблона генерации", file + ", " + tabl);
+                using (var rec = new RecDao(file, "SELECT * FROM " + tabl + " ORDER BY " + tablIdField))
+                    using (var subRec = !hasSub ? null : new RecDao(rec.DaoDb, "SELECT * FROM " + subTabl + " ORDER BY " + subParentIdField))
                     {
-                        var row = new RowGen(rec, tablIdField, tablRuleField, tablErrField);
-                        _rowsGen.Add(row.Id, row);
-                    }
-                if (subTabl != null)
-                {
-                    AddEvent("Загрузка подтаблицы генерации", file + ", " + subTabl);
-                    using (var rec = new RecDao(file, subTabl))
+                        if (hasSub) subRec.MoveFirst();
                         while (rec.Read())
                         {
-                            var row = new SubRowGen(rec, subTablParentIdField, subTablRuleField, subTablErrField);
-                            _rowsGen[row.Id].SubRows.Add(row);
-                        }    
-                }
+                            var row = new RowGen(dataTabls, rec, tablIdField, tablRuleField, tablErrField, subRec, subParentIdField, subRuleField, subErrField);
+                            _rowsGen.Add(row.Id, row);
+                        }
+                    }
             }
             catch (Exception ex)
             {
@@ -61,13 +56,14 @@ namespace Generator
             {
                 AddEvent("Открытие рекордсетов для генерации");
                 using (var rec = new RecDao(makedFile, makedTabl))
-                    using (var subRec = new RecDao(rec.DaoDb, makedSubTabl))
+                    using (var subRec = makedSubTabl == null ? null : new RecDao(rec.DaoDb, makedSubTabl))
                         foreach (var row in _rowsGen.Values)
-                        {
-                            if (!row.RuleString.IsEmpty())
-                                AddEvent("Генерация данных по шаблону", row.RuleString);
-                            row.Generate(DataTabls, rec, subRec);
-                        }
+                            if (row.Keeper.Errors.Count == 0)
+                            {
+                                if (!row.RuleString.IsEmpty() )
+                                    AddEvent("Генерация данных по шаблону", row.RuleString);
+                                row.Generate(DataTabls, rec, subRec);
+                            }
             }
             catch (Exception ex)
             {

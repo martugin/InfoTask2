@@ -8,13 +8,13 @@ namespace Generator
 {
     internal class FieldsVisitor : FieldsParsemesBaseVisitor<Node> 
     {
-        public FieldsVisitor(GeneratorKeeper keeper)
+        public FieldsVisitor(GenKeeper keeper)
         {
             _keeper = keeper;
         }
 
         //Формирование строки ошибки
-        private readonly GeneratorKeeper _keeper;
+        private readonly GenKeeper _keeper;
 
         //Обход дерева разбора, возвращаются разные типы вершин
         public Node Go(IParseTree tree)
@@ -37,7 +37,7 @@ namespace Generator
 
         public override Node VisitFieldGen(P.FieldGenContext context)
         {
-            return new NodeList(context.element().Select(Go));
+            return new NodeText(context.element().Select(GoExpr));
         }
 
         public override Node VisitElementText(P.ElementTextContext context)
@@ -57,23 +57,21 @@ namespace Generator
 
         public override Node VisitVoidProg(P.VoidProgContext context)
         {
-            return new NodeList(context.voidExpr().Select(Go));
+            return new NodeVoidProg(context.voidExpr().Select(GoVoid).ToArray()); 
         }
         
         public override Node VisitValueProg(P.ValueProgContext context)
         {
-            var list = context.voidExpr().Select(Go).ToList();
-            list.Add(Go(context.expr()));
-            return new NodeList(list);
+            return new NodeValueProg(
+                                new NodeVoidProg(context.voidExpr().Select(GoVoid).ToArray()), 
+                                GoExpr(context.expr()));
         }
 
         //Выражения без значения
 
         public override Node VisitVoidExprVar(P.VoidExprVarContext context)
         {
-            var name = context.IDENT().Symbol.Text;
-            var v = _keeper.Vars.Add(name, new Var(name));
-            return new NodeVarSet(_keeper, context.IDENT(), v, GoExpr(context.expr()));
+            return new NodeVarSet(_keeper, context.IDENT(), GoExpr(context.expr()));
         }
 
         public override Node VisitVoidExprIf(P.VoidExprIfContext context)
@@ -144,6 +142,8 @@ namespace Generator
 
         public override Node VisitExprIdent(P.ExprIdentContext context)
         {
+            if (_keeper.Vars.ContainsKey(context.IDENT().Symbol.Text))
+                return new NodeVar(_keeper, context.IDENT());
             return new NodeField(_keeper, context.IDENT());
         }
 

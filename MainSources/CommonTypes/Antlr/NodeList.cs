@@ -5,7 +5,7 @@ namespace CommonTypes
     //Промежуточный узел, собирающий список узлов 
     public class NodeList : Node
     {
-        public NodeList(IEnumerable<Node> children) : base(null)
+        public NodeList(IEnumerable<INode> children) : base(null)
         {
             Children = children;
         }
@@ -13,6 +13,6 @@ namespace CommonTypes
         protected override string NodeType { get { return "NodeList"; } }
 
         // Список узлов 
-        public IEnumerable<Node> Children { get; private set; }
+        public IEnumerable<INode> Children { get; private set; }
     }
 }

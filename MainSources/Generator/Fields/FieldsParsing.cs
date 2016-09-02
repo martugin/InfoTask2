@@ -5,10 +5,10 @@ using Generator.Fields;
 namespace Generator
 {
     //Класс, запускающий разбор для Fields
-    internal class FieldsParsing : RuleParsing
+    internal class FieldsParsing : Parsing
     {
-        public FieldsParsing(string fieldName, string fieldValue)
-            : base(fieldName, fieldValue) { }
+        public FieldsParsing(GenKeeper keeper, string fieldName, string fieldValue)
+            : base(keeper, fieldName, fieldValue) { }
 
         protected override Lexer GetLexer(ICharStream input)
         {
@@ -23,7 +23,7 @@ namespace Generator
         protected override Node RunVisitor(Parser parser, ParsingKeeper keeper)
         {
             var p = (FieldsParsemes)parser;
-            var v = new FieldsVisitor((GeneratorKeeper)keeper);
+            var v = new FieldsVisitor((GenKeeper)keeper);
             return v.Go(p.fieldGen());
         }
     }
