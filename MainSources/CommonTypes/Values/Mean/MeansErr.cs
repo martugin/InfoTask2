@@ -66,4 +66,17 @@ namespace CommonTypes
         }
         internal MeanErrString() { }
     }
+
+    //---------------------------------------------------------------------------------------------------
+
+    public class MeanErrValue : MeanValue
+    {
+        public override ErrMom Error { get; internal set; }
+
+        public MeanErrValue(ErrMom err = null)
+        {
+            Error = err;
+        }
+        internal MeanErrValue() { }
+    }
 }

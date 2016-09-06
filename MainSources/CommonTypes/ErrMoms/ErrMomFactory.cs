@@ -45,12 +45,16 @@ namespace CommonTypes
         //Добавляет описание ошибки с числовым ключом
         public void AddDescr(int number, string text, ErrorQuality quality = ErrorQuality.Error)
         {
-            _errDescrs.Add(number, new ErrDescr(number, text, quality, ErrMomType));
+            if (!_errDescrs.ContainsKey(number))
+                _errDescrs.Add(number, new ErrDescr(number, text, quality, ErrMomType));
         }
         public void AddDescr(int number, string text, int quality)
         {
-            var q = quality == 2 ? ErrorQuality.Error : (quality == 1 ? ErrorQuality.Warning : ErrorQuality.Good);
-            _errDescrs.Add(number, new ErrDescr(number, text, q, ErrMomType));
+            if (!_errDescrs.ContainsKey(number))
+            {
+                var q = quality == 2 ? ErrorQuality.Error : (quality == 1 ? ErrorQuality.Warning : ErrorQuality.Good);
+                _errDescrs.Add(number, new ErrDescr(number, text, q, ErrMomType));    
+            }
         }
 
         //Добавляет пустое описание с хорошим качеством

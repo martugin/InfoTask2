@@ -57,7 +57,7 @@ namespace Fictive
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(Code, ErrMomType.Source);
+            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
             factory.AddGoodDescr(0);
             factory.AddDescr(1, "Предупреждение", ErrorQuality.Warning);
             factory.AddDescr(2, "Ошибка");

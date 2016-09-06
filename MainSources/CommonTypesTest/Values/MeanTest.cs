@@ -40,7 +40,7 @@ namespace CommonTypesTest
             Assert.AreEqual(DataType.Boolean, cv.DataType);
             Assert.IsNull(cv.TotalError);
 
-            var m1 = m.Clone(Different.MinDate);
+            var m1 = m.CloneMom(Different.MinDate);
             Assert.AreEqual(Different.MinDate, m1.Time);
             Assert.IsNull(m1.Error);
             Assert.IsNull(m1.TotalError);
@@ -120,7 +120,7 @@ namespace CommonTypesTest
             Assert.AreEqual(DataType.Integer, cv.DataType);
             Assert.IsNull(cv.TotalError);
 
-            var m1 = m.Clone(Different.MinDate);
+            var m1 = m.CloneMom(Different.MinDate);
             Assert.AreEqual(Different.MinDate, m1.Time);
             Assert.IsNull(m1.Error);
             Assert.IsNull(m1.TotalError);
@@ -201,7 +201,7 @@ namespace CommonTypesTest
             Assert.AreEqual(DataType.Real, cv.DataType);
             Assert.IsNull(cv.TotalError);
 
-            var m1 = m.Clone(Different.MinDate, err);
+            var m1 = m.CloneMom(Different.MinDate, err);
             Assert.AreEqual(Different.MinDate, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);
@@ -279,7 +279,7 @@ namespace CommonTypesTest
             Assert.AreEqual(DataType.String, cv.DataType);
             Assert.IsNull(cv.TotalError);
 
-            var m1 = m.Clone(Different.MaxDate, err);
+            var m1 = m.CloneMom(Different.MaxDate, err);
             Assert.AreEqual(Different.MaxDate, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);
@@ -363,7 +363,7 @@ namespace CommonTypesTest
             Assert.IsNull(cv.TotalError);
 
             var d = new DateTime(2000, 2, 2, 15, 30, 0);
-            var m1 = m.Clone(d, err);
+            var m1 = m.CloneMom(d, err);
             Assert.AreEqual(d, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);

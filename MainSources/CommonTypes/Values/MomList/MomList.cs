@@ -164,18 +164,35 @@ namespace CommonTypes
             Mean(i).ValueToRec(rec, field);
         }
 
+        public IMean CloneMean(int i)
+        {
+            return Mean(i).CloneMean(Error(i));
+        }
+
+        public IMean CloneMean(int i, ErrMom err)
+        {
+            return Mean(i).CloneMean(Error(i).Add(err));
+        }
+
         //Клонирование текущего значения
-        public IMom Clone(int i)
+        public IMom CloneMom(int i)
         {
-            return Mean(i).Clone(Time(i), Error(i));
+            return Mean(i).CloneMom(Time(i), Error(i));
         }
-        public IMom Clone(int i, DateTime time)
+
+        public IMom CloneMom(int i, ErrMom err)
         {
-            return Mean(i).Clone(time, Error(i));
+            return Mean(i).CloneMom(Time(i), Error(i).Add(err));
         }
-        public IMom Clone(int i, DateTime time, ErrMom err)
+
+        public IMom CloneMom(int i, DateTime time)
         {
-            return Mean(i).Clone(time, err);
+            return Mean(i).CloneMom(time, Error(i));
+        }
+
+        public IMom CloneMom(int i, DateTime time, ErrMom err)
+        {
+            return Mean(i).CloneMom(time, Error(i).Add(err));
         }
         
         //Последнее значение
@@ -184,7 +201,7 @@ namespace CommonTypes
             get
             {
                 if (Count == 0) return null;
-                return Clone(_times.Count - 1);
+                return CloneMom(_times.Count - 1);
             }
         }
 

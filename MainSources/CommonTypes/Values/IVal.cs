@@ -54,9 +54,11 @@ namespace CommonTypes
 
         //Запись значения в рекордсет
         void ValueToRec(IRecordAdd rec, string field);
-        //Копия значения с новым временем и ошибкой
-        IMom Clone(DateTime time);
-        IMom Clone(DateTime time, ErrMom err);
+        //Копия значения, возможно с новым временем и ошибкой
+        IMean CloneMean();
+        IMean CloneMean(ErrMom err);
+        IMom CloneMom(DateTime time);
+        IMom CloneMom(DateTime time, ErrMom err);
     }
 
     //-----------------------------------------------------------------------------------------------
@@ -65,8 +67,9 @@ namespace CommonTypes
     {
         //Время
         DateTime Time { get; }
-        //Клонирование значения
-        IMom Clone();
+        //Клонирование значения, возможно с добавлением ошибки
+        IMom CloneMom();
+        IMom CloneMom(ErrMom err);
     }
 
     //-----------------------------------------------------------------------------------------------
@@ -88,9 +91,12 @@ namespace CommonTypes
         void ValueToRec(IRecordAdd rec, string field, int i);
         
         //Копия значения по индексу, возможно с новым временем и ошибкой
-        IMom Clone(int i);
-        IMom Clone(int i, DateTime time);
-        IMom Clone(int i, DateTime time, ErrMom err);
+        IMean CloneMean(int i);
+        IMean CloneMean(int i, ErrMom err);
+        IMom CloneMom(int i);
+        IMom CloneMom(int i, ErrMom err);
+        IMom CloneMom(int i, DateTime time);
+        IMom CloneMom(int i, DateTime time, ErrMom err);
         //Загрузить буферное значение из списка 
         Mean Mean(int i);
     }
@@ -102,7 +108,7 @@ namespace CommonTypes
         //Добавление мгновенного значения
         void AddMom(IMom mom);
         void AddMom(DateTime time, IMean mean);
-        //Дгобавление с указанием времени и значения
+        //Добавление с указанием времени и значения
         void AddMom(DateTime time, bool b, ErrMom err = null);
         void AddMom(DateTime time, int i, ErrMom err = null);
         void AddMom(DateTime time, double r, ErrMom err = null);

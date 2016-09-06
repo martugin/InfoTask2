@@ -9,7 +9,7 @@ namespace CommonTypes
         public MomEdit(DataType dtype)
         {
             _mean = (Mean)MFactory.NewMean(dtype);
-            Time = BaseLibrary.Different.MinDate;
+            Time = Different.MinDate;
         }
         public MomEdit(DataType dtype, DateTime time) : this(dtype)
         {
@@ -30,6 +30,12 @@ namespace CommonTypes
         public DateTime Time { get; set; }
         //Ошибка
         public ErrMom Error { get; set; }
+        //Добавить ошибку в значение, возвращает себя
+        public MomEdit AddError(ErrMom err)
+        {
+            Error = Error.Add(err);
+            return this;
+        }
 
         //Значения разных типов 
         public bool Boolean
@@ -117,17 +123,37 @@ namespace CommonTypes
             return this;
         }
 
-        public IMom Clone()
+        //Принимает значение по умолчанию
+        public MomEdit MakeDefaultValue()
         {
-            return _mean.Clone(Time, Error);
+            _mean.MakeDefaultValue();
+            return this;
         }
-        public IMom Clone(DateTime time)
+
+        //Создание нового значения на основе этого
+        public IMean CloneMean()
         {
-            return _mean.Clone(time, Error);
+            return _mean.CloneMean();
         }
-        public IMom Clone(DateTime time, ErrMom err)
+        public IMean CloneMean(ErrMom err)
         {
-            return _mean.Clone(time, err);
+            return _mean.CloneMean(err);
+        }
+        public IMom CloneMom()
+        {
+            return _mean.CloneMom(Time, Error);
+        }
+        public IMom CloneMom(ErrMom err)
+        {
+            return _mean.CloneMom(Time, err);
+        }
+        public IMom CloneMom(DateTime time)
+        {
+            return _mean.CloneMom(time, Error);
+        }
+        public IMom CloneMom(DateTime time, ErrMom err)
+        {
+            return _mean.CloneMom(time, err);
         }
 
         //Типы данных и значения

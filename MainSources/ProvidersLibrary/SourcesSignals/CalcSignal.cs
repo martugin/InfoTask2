@@ -145,14 +145,14 @@ namespace ProvidersLibrary
                 while (i < moms.Count && moms.Time(i) < t)
                 {
                     if (moms.Time(i) >= Connect.PeriodBegin && moms.Time(i) <= Connect.PeriodEnd)
-                        mlist.AddMom(moms.Clone(i));
+                        mlist.AddMom(moms.CloneMom(i));
                     i++;
                 }
                 AddUniformMom(moms, mlist, i, t);
                 t = t.AddSeconds(seglen);
             }
             if (i < moms.Count && moms.Time(i) == Connect.PeriodEnd)
-                mlist.AddMom(moms.Clone(i));
+                mlist.AddMom(moms.CloneMom(i));
 
             t = Connect.PeriodBegin;
             i = 0;
@@ -173,7 +173,7 @@ namespace ProvidersLibrary
         private void AddUniformMom(IMomListReadOnly fromList, MomList toList, int i, DateTime t)
         {
             if (i < fromList.Count && fromList.Time(i) == t) return;
-            toList.AddMom(fromList.Clone(i == 0 ? 0 : i - 1, t));
+            toList.AddMom(fromList.CloneMom(i == 0 ? 0 : i - 1, t));
         }
     }
 }

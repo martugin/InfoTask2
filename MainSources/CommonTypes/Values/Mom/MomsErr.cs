@@ -14,7 +14,7 @@ namespace CommonTypes
         }
         internal MomErrBool() {}
 
-        public override IMom Clone()
+        public override IMom CloneMom()
         {
             return new MomErrBool(Time, Boolean, Error);
         }
@@ -32,7 +32,7 @@ namespace CommonTypes
         }
         internal MomErrInt() { }
 
-        public override IMom Clone()
+        public override IMom CloneMom()
         {
             return new MomErrInt(Time, Integer, Error);
         }
@@ -50,7 +50,7 @@ namespace CommonTypes
         }
         internal MomErrReal() { }
 
-        public override IMom Clone()
+        public override IMom CloneMom()
         {
             return new MomErrReal(Time, Real, Error);
         }
@@ -69,7 +69,7 @@ namespace CommonTypes
         }
         internal MomErrString() { }
 
-        public override IMom Clone()
+        public override IMom CloneMom()
         {
             return new MomErrString(Time, String, Error);
         }
@@ -88,7 +88,7 @@ namespace CommonTypes
         }
         internal MomErrTime() { }
 
-        public override IMom Clone()
+        public override IMom CloneMom()
         {
             return new MomErrTime(Time, Time, Error);
         }
@@ -106,7 +106,7 @@ namespace CommonTypes
         }
         internal MomErrWeighted() { }
 
-        public override IMom Clone()
+        public override IMom CloneMom()
         {
             return new MomErrWeighted(Time, Real, Weight, Error);
         }
@@ -124,7 +124,7 @@ namespace CommonTypes
         }
         internal MomErrValue() { }
 
-        public override IMom Clone()
+        public override IMom CloneMom()
         {
             return new MomErrValue(Time, Error);
         }

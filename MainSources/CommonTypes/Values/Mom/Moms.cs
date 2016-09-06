@@ -16,9 +16,14 @@ namespace CommonTypes
         }
         internal MomBool(){}
 
-        public virtual IMom Clone()
+        public virtual IMom CloneMom()
         {
             return new MomBool(Time, Boolean);
+        }
+
+        public IMom CloneMom(ErrMom err)
+        {
+            return new MomErrBool(Time, Boolean, Error.Add(err));
         }
     }
 
@@ -35,9 +40,14 @@ namespace CommonTypes
         }
         internal MomInt() {}
 
-        public virtual IMom Clone()
+        public virtual IMom CloneMom()
         {
             return new MomInt(Time, Integer);
+        }
+
+        public IMom CloneMom(ErrMom err)
+        {
+            return new MomErrInt(Time, Integer, Error.Add(err));
         }
     }
 
@@ -54,9 +64,14 @@ namespace CommonTypes
         }
         internal MomReal() {}
 
-        public virtual IMom Clone()
+        public virtual IMom CloneMom()
         {
             return new MomReal(Time, Real);
+        }
+
+        public IMom CloneMom(ErrMom err)
+        {
+            return new MomErrReal(Time, Real, Error.Add(err));
         }
     }
 
@@ -73,9 +88,14 @@ namespace CommonTypes
         }
         internal MomString() {}
 
-        public virtual IMom Clone()
+        public virtual IMom CloneMom()
         {
             return new MomString(Time, String);
+        }
+
+        public IMom CloneMom(ErrMom err)
+        {
+            return new MomErrString(Time, String, Error.Add(err));
         }
     }
 
@@ -92,9 +112,14 @@ namespace CommonTypes
         }
         internal MomTime() {}
 
-        public virtual IMom Clone()
+        public virtual IMom CloneMom()
         {
             return new MomTime(Time, Date);
+        }
+
+        public IMom CloneMom(ErrMom err)
+        {
+            return new MomErrTime(Time, Date, Error.Add(err));
         }
     }
 
@@ -112,18 +137,18 @@ namespace CommonTypes
         //Длина интервала
         public double Weight { get; internal set; }
 
-        public override IMom Clone()
+        public override IMom CloneMom()
         {
             return new MomWeighted(Time, Real, Weight);
         }
 
-        public override IMom Clone(DateTime time)
+        public override IMom CloneMom(DateTime time)
         {
-            if (Error != null) return Clone(time, Error);
+            if (Error != null) return CloneMom(time, Error);
             return new MomWeighted(time, Real, Weight);
         }
 
-        public override IMom Clone(DateTime time, ErrMom err)
+        public override IMom CloneMom(DateTime time, ErrMom err)
         {
             return new MomErrWeighted(time, Real, Weight, Error.Add(err));
         }
@@ -131,7 +156,7 @@ namespace CommonTypes
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MomValue : Mean, IMom
+    public class MomValue : MeanValue, IMom
     {
         public DateTime Time { get; internal set; }
         public override DataType DataType { get { return DataType.Value; } }
@@ -143,21 +168,13 @@ namespace CommonTypes
         internal MomValue() { }
 
         public override void ValueToRec(IRecordAdd rec, string field) { }
-
-        public virtual IMom Clone()
+        public virtual IMom CloneMom()
         {
             return new MomValue(Time);
         }
-
-        public override IMom Clone(DateTime time)
+        public IMom CloneMom(ErrMom err)
         {
-            if (Error != null) return Clone(time, Error);
-            return new MomValue(time);
-        }
-
-        public override IMom Clone(DateTime time, ErrMom err)
-        {
-            return new MomErrValue(time, Error.Add(err));
+            return new MomErrValue(Time, Error.Add(err));
         }
     }
 }

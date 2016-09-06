@@ -28,9 +28,11 @@ namespace CommonTypes
         public DateTime Date(int i) { return _momList.Date(i); }
         public string String(int i) { return _momList.String(i); }
         public void ValueToRec(IRecordAdd rec, string field, int i) { _momList.ValueToRec(rec, field, i); }
-        
-        public IMom Clone(int i) { return _momList.Clone(i); }
-        public IMom Clone(int i, DateTime time) { return _momList.Clone(i, time); }
-        public IMom Clone(int i, DateTime time, ErrMom err) { return _momList.Clone(i, time, err); }
+        public IMean CloneMean(int i) { return _momList.CloneMean(i); }
+        public IMean CloneMean(int i, ErrMom err) { return _momList.CloneMean(i, err); }
+        public IMom CloneMom(int i) { return _momList.CloneMom(i); }
+        public IMom CloneMom(int i, ErrMom err) { return _momList.CloneMom(i, err);}
+        public IMom CloneMom(int i, DateTime time) { return _momList.CloneMom(i, time); }
+        public IMom CloneMom(int i, DateTime time, ErrMom err) { return _momList.CloneMom(i, time, err); }
     }
 }

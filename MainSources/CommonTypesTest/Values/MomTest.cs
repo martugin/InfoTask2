@@ -45,7 +45,7 @@ namespace CommonTypesTest
             Assert.AreEqual(true, m.LastMean.Boolean);
 
             var d1 = new DateTime(2016, 06, 16, 11, 26, 00);
-            var m1 = m.Clone(d1, err);
+            var m1 = m.CloneMom(d1, err);
             Assert.AreEqual(d1, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);
@@ -148,7 +148,7 @@ namespace CommonTypesTest
             Assert.AreEqual(24, m.LastMean.Integer);
 
             var d1 = new DateTime(2016, 06, 16, 11, 26, 00);
-            var m1 = m.Clone(d1, err);
+            var m1 = m.CloneMom(d1, err);
             Assert.AreEqual(d1, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);
@@ -273,7 +273,7 @@ namespace CommonTypesTest
             Assert.AreEqual(2.1, m.LastMean.Real);
 
             var d1 = new DateTime(2016, 06, 16, 11, 26, 00);
-            var m1 = m.Clone(d1);
+            var m1 = m.CloneMom(d1);
             Assert.AreEqual(d1, m1.Time);
             Assert.IsNull(m1.Error);
             Assert.IsNull(m1.TotalError);
@@ -392,7 +392,7 @@ namespace CommonTypesTest
             Assert.AreEqual("sss", m.LastMean.String);
 
             var d1 = new DateTime(2016, 06, 16, 11, 26, 00);
-            var m1 = m.Clone(d1, err);
+            var m1 = m.CloneMom(d1, err);
             Assert.AreEqual(d1, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);
@@ -517,7 +517,7 @@ namespace CommonTypesTest
             Assert.AreEqual(0.5, ((MomWeighted)m.LastMean).Weight);
 
             var d1 = new DateTime(2016, 06, 16, 11, 26, 00);
-            var m1 = (MomWeighted)m.Clone(d1, err);
+            var m1 = (MomWeighted)m.CloneMom(d1, err);
             Assert.AreEqual(0.5, m1.Weight);
             Assert.AreEqual(d1, m1.Time);
             Assert.IsNotNull(m1.Error);

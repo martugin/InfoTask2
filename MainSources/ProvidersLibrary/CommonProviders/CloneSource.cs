@@ -88,7 +88,7 @@ namespace ProvidersLibrary
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(SourceConnect.Name, ErrMomType.Source);
+            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
             using (var rec = new RecDao(CloneFile, "MomentErrors"))
                 while (rec.Read())
                 {

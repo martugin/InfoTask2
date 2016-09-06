@@ -65,6 +65,9 @@
     <Compile Include="ErrMoms\ErrMom.cs" />
     <Compile Include="ErrMoms\ErrMomFactory.cs" />
     <Compile Include="ErrMoms\ErrMomPool.cs" />
+    <Compile Include="Functions\FunctionsScalar.cs" />
+    <Compile Include="Functions\FunCalc.cs" />
+    <Compile Include="Functions\Functions.cs" />
     <Compile Include="Tabls\SubRows.cs" />
     <Compile Include="Tabls\TablStruct.cs" />
     <Compile Include="Tabls\TablGroup.cs" />

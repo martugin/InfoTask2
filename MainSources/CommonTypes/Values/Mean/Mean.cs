@@ -23,7 +23,7 @@ namespace CommonTypes
         }
         public virtual DateTime Date
         {
-            get { return BaseLibrary.Different.MinDate; }
+            get { return Different.MinDate; }
             internal set { }
         }
         public virtual string String
@@ -83,8 +83,10 @@ namespace CommonTypes
         }
 
         public abstract void ValueToRec(IRecordAdd rec, string field);
-        public abstract IMom Clone(DateTime time);
-        public abstract IMom Clone(DateTime time, ErrMom err);
+        public abstract IMean CloneMean();
+        public abstract IMean CloneMean(ErrMom err);
+        public abstract IMom CloneMom(DateTime time);
+        public abstract IMom CloneMom(DateTime time, ErrMom err);
 
         public virtual ErrMom Error
         {
@@ -101,6 +103,9 @@ namespace CommonTypes
         public virtual IMean LastMean { get { return this; } }
 
         //Скопировать значение из другого значения
-        internal virtual void CopyValueFrom(IMean mean) { }
+        internal abstract void CopyValueFrom(IMean mean);
+        //Присвоить значение по умолчанию
+        internal abstract void MakeDefaultValue();
+
     }
 }

@@ -8,11 +8,11 @@ namespace CommonTypes
     {
         public ErrMomPool(IErrMomFactory factory)
         {
-            _factory = factory;
+            Factory = factory;
         }
 
         //Фабрика описаний ошибок
-        private readonly IErrMomFactory _factory;
+        public IErrMomFactory Factory { get; private set; }
 
         //Двухуровневый словарь ошибок, первый ключ - номер ошибки, второй ключ - адрес ошибки
         private readonly DicI<Dictionary<IContextable, ErrMom>> _errs = new DicI<Dictionary<IContextable, ErrMom>>();
@@ -22,7 +22,7 @@ namespace CommonTypes
         //Создает ErrMom или берет уже существующий
         public ErrMom MakeError(int number, IContextable addr)
         {
-            var errd = _factory.GetDescr(number);
+            var errd = Factory.GetDescr(number);
             if (errd == null) return null;
             var dic = _errs[number] ?? 
                           _errs.Add(number, new Dictionary<IContextable, ErrMom>());

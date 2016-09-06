@@ -51,6 +51,7 @@
     <Compile Include="Common\GenKeeper.cs" />
     <Compile Include="Common\RowGenBase.cs" />
     <Compile Include="Common\SubRowGen.cs" />
+    <Compile Include="Exprs\GenFunctions.cs" />
     <Compile Include="Exprs\INodeExpr.cs" />
     <Compile Include="Exprs\NodeField.cs" />
     <Compile Include="Exprs\NodeGenConst.cs" />
