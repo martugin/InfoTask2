@@ -6,9 +6,10 @@ using Microsoft.Office.Interop.Access.Dao;
 namespace Generator
 {
     //Базовый класс для ряда таблицы и ряда подтаблицы шаблона генерации
-    internal class  RowGenBase
+    internal class RowGenBase
     {
-        public RowGenBase(RecDao rec, //Рекордсет таблицы шаблона генерации
+        public RowGenBase(TablGenerator generator, //Ссылка на генератор
+                          RecDao rec, //Рекордсет таблицы шаблона генерации
                           string idField, //Имя поля Id таблицы или ParentId подтаблицы
                           string ruleField, //Имя поля с условием генерации
                           string errField, //Имя поля ошибок генерации
@@ -16,7 +17,7 @@ namespace Generator
         {
             IdField = idField;
             ErrField = errField;
-            Keeper = new GenKeeper();
+            Keeper = new GenKeeper(generator);
 
             RuleString = rec.GetString(ruleField);
             if (!RuleString.IsEmpty())

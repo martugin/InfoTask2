@@ -13,7 +13,7 @@ namespace Generator
         {
             _keeper = keeper;
         }
-
+        
         //Формирование строки ошибки
         private readonly ParsingKeeper _keeper;
 

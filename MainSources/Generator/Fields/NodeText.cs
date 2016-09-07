@@ -20,7 +20,7 @@ namespace Generator
         }
 
         //Генерация значения
-        public Mean Generate(SubRows row)
+        public IMean Generate(SubRows row)
         {
             if (Children.Count() == 1)
                 return ((INodeExpr) Children.First()).Generate(row);

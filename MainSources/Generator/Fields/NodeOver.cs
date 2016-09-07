@@ -29,7 +29,7 @@ namespace Generator
         }
 
         //Вычисление значения
-        public Mean Generate(SubRows row)
+        public IMean Generate(SubRows row)
         {
             return _expr.Generate(row.Parent);
         }

@@ -28,7 +28,7 @@ namespace Generator
         }
 
         //Получение значения
-        public Mean Generate(SubRows row)
+        public IMean Generate(SubRows row)
         {
             return _var.Mean;
         }

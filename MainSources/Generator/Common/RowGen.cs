@@ -8,10 +8,11 @@ namespace Generator
     //Ряд таблицы с разобранными выражениями для генерации
     internal class RowGen : RowGenBase
     {
-        public RowGen(TablsList dataTabls, //Исходные таблицы для генерации
+        public RowGen(TablGenerator generator, //Ссылка на генератор
+                              TablsList dataTabls, //Исходные таблицы для генерации
                               RecDao rec, string idField, string ruleField, string errField, //Рекортсет и поля таблицы
                               RecDao subRec, string subIdField, string subRuleField, string subErrField) //Рекордсет и и поля подтаблицы
-            : base(rec, idField, ruleField, errField, false)
+            : base(generator, rec, idField, ruleField, errField, false)
         {
             Id = rec.GetInt(idField);
             var tabl = ((INodeTabl)Rule).Check(dataTabls);
@@ -23,7 +24,7 @@ namespace Generator
                 bool subErr = false;
                 while (subRec.GetInt(subIdField) == Id)
                 {
-                    var row = new SubRowGen(tabl, subRec, subIdField, subRuleField, subErrField);
+                    var row = new SubRowGen(generator, tabl, subRec, subIdField, subRuleField, subErrField);
                     if (row.Keeper.Errors.Count != 0 && !subErr)
                     {
                         Keeper.AddError("Ошибки в рядах подтаблицы", (IToken)null);

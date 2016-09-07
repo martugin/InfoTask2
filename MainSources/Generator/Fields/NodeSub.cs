@@ -43,7 +43,7 @@ namespace Generator
         }
 
         //Вычисление значения по ряду исходной таблицы
-        public Mean Generate(SubRows row)
+        public IMean Generate(SubRows row)
         {
             _rowsSelector.SelectRows(_condition, row);
             string s = "";

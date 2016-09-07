@@ -65,9 +65,14 @@
     <Compile Include="ErrMoms\ErrMom.cs" />
     <Compile Include="ErrMoms\ErrMomFactory.cs" />
     <Compile Include="ErrMoms\ErrMomPool.cs" />
-    <Compile Include="Functions\FunctionsScalar.cs" />
-    <Compile Include="Functions\FunCalc.cs" />
-    <Compile Include="Functions\Functions.cs" />
+    <Compile Include="FunsCalc\FunScalarBase.cs" />
+    <Compile Include="FunsCompile\FunCompile.cs" />
+    <Compile Include="FunsCalc\FunsRealisationScalar.cs" />
+    <Compile Include="FunsCalc\FunCalcBase.cs" />
+    <Compile Include="FunsCalc\FunctionsBase.cs" />
+    <Compile Include="FunsCompile\FunOverload.cs" />
+    <Compile Include="FunsCompile\FunParam.cs" />
+    <Compile Include="FunsCompile\FunsChecker.cs" />
     <Compile Include="Tabls\SubRows.cs" />
     <Compile Include="Tabls\TablStruct.cs" />
     <Compile Include="Tabls\TablGroup.cs" />

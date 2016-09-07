@@ -6,9 +6,10 @@ namespace Generator
     //Ряд подтаблицы с разобранными выражениями для генерации
     internal class SubRowGen : RowGenBase
     {
-        public SubRowGen(TablStruct tabl, //Таблица - шаблон генерации
+        public SubRowGen(TablGenerator generator, //Ссылка на генератор
+                         TablStruct tabl, //Таблица - шаблон генерации
                          RecDao rec, string idField, string ruleField, string errField) 
-            : base(rec, idField, ruleField, errField, true)
+            : base(generator, rec, idField, ruleField, errField, true)
         {
             ParentId = rec.GetInt(idField);
             var subTabl = ((NodeRSubTabl)Rule).Check(tabl);

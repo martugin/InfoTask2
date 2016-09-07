@@ -37,7 +37,7 @@ namespace Generator
         }
 
         //Вычисление значения
-        public Mean Generate(SubRows row)
+        public IMean Generate(SubRows row)
         {
             for (int i = 0; i < _variants.Count - 1; i++)
                 if (_conditions[i].Generate(row).Boolean)

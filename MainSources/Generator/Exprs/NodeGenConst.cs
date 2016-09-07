@@ -16,7 +16,7 @@ namespace Generator
         public NodeGenConst(ITerminalNode terminal, DataType dtype, string s) : base(terminal, dtype, s) { }
 
         //Вычисление значения
-        public Mean Generate(SubRows row)
+        public IMean Generate(SubRows row)
         {
             return Mean;
         }

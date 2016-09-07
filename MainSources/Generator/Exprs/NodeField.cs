@@ -19,7 +19,7 @@ namespace Generator
         private readonly string _field;
         
         //Вычисление значения
-        public Mean Generate(SubRows row)
+        public IMean Generate(SubRows row)
         {
             return ((TablRow)row)[_field];
         }

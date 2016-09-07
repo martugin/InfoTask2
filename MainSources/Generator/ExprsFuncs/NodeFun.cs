@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Antlr4.Runtime.Tree;
-using BaseLibrary;
 using CommonTypes;
 
 namespace Generator
@@ -30,6 +28,10 @@ namespace Generator
 
         //Аргументы
         private readonly INodeExpr[] _args;
+        //Функция для расчета
+        private ScalarGenFunction _fun;
+        //Тип данных результата
+        private DataType _resultType;
 
         public override string ToTestString()
         {
@@ -39,13 +41,16 @@ namespace Generator
         //Получение типа данных
         public DataType Check(TablStruct tabl)
         {
-            throw new NotImplementedException();
+            var generator = ((GenKeeper) Keeper).Generator;
+            var t = generator.FunsChecker.DefineFun(Token.Text, _args.Select(a => a.Check(tabl)).ToArray());
+            _fun = (ScalarGenFunction)generator.Functions.Funs[t.Item1];
+            return _resultType = t.Item2;
         }
 
         //Вычисленное значение
-        public Mean Generate(SubRows row)
+        public IMean Generate(SubRows row)
         {
-            throw new NotImplementedException();
+            return _fun.Calculate(_args.Select(a => a.Generate(row)).ToArray(), _resultType);
         }
     }
 }

@@ -20,6 +20,10 @@ namespace Generator
                                          string subErrField = null) //Имя поля для записи ошибок генерации в подчиненной таблице
         {
             Logger = logger;
+            AddEvent("Загрузка списка функций");
+            FunsChecker = new FunsChecker(FunsCheckType.Gen);
+            Functions = new FunctionsGen();
+
             DataTabls = dataTabls;
             try
             {
@@ -31,7 +35,7 @@ namespace Generator
                         if (hasSub) subRec.MoveFirst();
                         while (rec.Read())
                         {
-                            var row = new RowGen(dataTabls, rec, tablIdField, tablRuleField, tablErrField, subRec, subParentIdField, subRuleField, subErrField);
+                            var row = new RowGen(this, dataTabls, rec, tablIdField, tablRuleField, tablErrField, subRec, subParentIdField, subRuleField, subErrField);
                             _rowsGen.Add(row.Id, row);
                         }
                     }
@@ -41,6 +45,10 @@ namespace Generator
                 AddError("Ошибка при загрузке шаблона генерации", ex, file);
             }
         }
+
+        //Список функций
+        internal FunsChecker FunsChecker { get; private set; }
+        internal FunctionsGen Functions { get; private set; }
 
         //Список таблиц с данными для генерации
         internal TablsList DataTabls { get; private set; }
