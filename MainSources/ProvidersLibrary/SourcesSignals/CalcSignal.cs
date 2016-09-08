@@ -44,7 +44,7 @@ namespace ProvidersLibrary
             else if (funName == "Average") DataType = DataType.Real;
             else DataType = _initialSignal.DataType;
             MList = MFactory.NewList(DataType);
-            MomList = new MomListReadOnly(MList);
+            MomList = new MomListRead(MList);
         }
 
         //Взятие бита, pars[0] - номер бита
@@ -53,7 +53,7 @@ namespace ProvidersLibrary
             int bit = _pars[0].Integer;
             var moms = _initialSignal.MomList;
             for (int i = 0; i < moms.Count; i++)
-                MList.AddMom(moms.Time(i), moms.Integer(i).GetBit(bit), moms.Error(i));
+                MList.AddMom(moms.TimeI(i), moms.IntegerI(i).GetBit(bit), moms.ErrorI(i));
         }
 
         //Взятие битов и сложение по Or, pars - номера битов
@@ -62,11 +62,11 @@ namespace ProvidersLibrary
             var moms = _initialSignal.MomList;
             for (int i = 0; i < moms.Count; i++)
             {
-                var v = moms.Integer(i);
+                var v = moms.IntegerI(i);
                 bool res = false;
                 foreach (var par in _pars)
                     res |= v.GetBit(par.Integer);
-                MList.AddMom(moms.Time(i), res, moms.Error(i));
+                MList.AddMom(moms.TimeI(i), res, moms.ErrorI(i));
             }
         }
 
@@ -76,11 +76,11 @@ namespace ProvidersLibrary
             var moms = _initialSignal.MomList;
             for (int i = 0; i < moms.Count; i++)
             {
-                var v = moms.Integer(i);
+                var v = moms.IntegerI(i);
                 bool res = true;
                 foreach (var par in _pars)
                     res &= v.GetBit(par.Integer);
-                MList.AddMom(moms.Time(i), res, moms.Error(i));
+                MList.AddMom(moms.TimeI(i), res, moms.ErrorI(i));
             }
         }
 
@@ -91,8 +91,8 @@ namespace ProvidersLibrary
         public void Average() { Agregate(AverageScalar); }
         private void AverageScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
-            DateTime time = (i >= mlist.Count - 1 || mlist.Time(i + 1) > t) ? t : mlist.Time(i + 1);
-            res.Real += mlist.Real(i) * (time.Subtract(mlist.Time(i)).TotalSeconds) /_pars[0].Real;
+            DateTime time = (i >= mlist.Count - 1 || mlist.TimeI(i + 1) > t) ? t : mlist.TimeI(i + 1);
+            res.Real += mlist.RealI(i) * (time.Subtract(mlist.TimeI(i)).TotalSeconds) /_pars[0].Real;
         }
 
         //Первое по равномерным сегментам, pars[0] - длина сегмента в секундах
@@ -104,7 +104,7 @@ namespace ProvidersLibrary
         private void LastScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
             res.CopyValueFrom(mlist, i);
-            res.Error = mlist.Error(i);
+            res.Error = mlist.ErrorI(i);
         }
 
         //Минимум по равномерным сегментам, pars[0] - длина сегмента в секундах
@@ -114,7 +114,7 @@ namespace ProvidersLibrary
             if (mlist.Mean(i).ValueLess(res))
             {
                 res.CopyValueFrom(mlist, i);
-                res.Error = mlist.Error(i);
+                res.Error = mlist.ErrorI(i);
             }
         }
 
@@ -125,7 +125,7 @@ namespace ProvidersLibrary
             if (res.ValueLess(mlist.Mean(i)))
             {
                 res.CopyValueFrom(mlist, i);
-                res.Error = mlist.Error(i);
+                res.Error = mlist.ErrorI(i);
             }
         }
 
@@ -142,17 +142,17 @@ namespace ProvidersLibrary
             int i = 0;
             while (t < Connect.PeriodEnd.AddMilliseconds(1))
             {
-                while (i < moms.Count && moms.Time(i) < t)
+                while (i < moms.Count && moms.TimeI(i) < t)
                 {
-                    if (moms.Time(i) >= Connect.PeriodBegin && moms.Time(i) <= Connect.PeriodEnd)
-                        mlist.AddMom(moms.CloneMom(i));
+                    if (moms.TimeI(i) >= Connect.PeriodBegin && moms.TimeI(i) <= Connect.PeriodEnd)
+                        mlist.AddMom(moms.CloneMomI(i));
                     i++;
                 }
                 AddUniformMom(moms, mlist, i, t);
                 t = t.AddSeconds(seglen);
             }
-            if (i < moms.Count && moms.Time(i) == Connect.PeriodEnd)
-                mlist.AddMom(moms.CloneMom(i));
+            if (i < moms.Count && moms.TimeI(i) == Connect.PeriodEnd)
+                mlist.AddMom(moms.CloneMomI(i));
 
             t = Connect.PeriodBegin;
             i = 0;
@@ -163,17 +163,17 @@ namespace ProvidersLibrary
                     me.Real = 0;
                 else me.CopyValueFrom(mlist, i);
                 t = t.AddSeconds(seglen);
-                while (i < mlist.Count && mlist.Time(i) <= t)
+                while (i < mlist.Count && mlist.TimeI(i) <= t)
                     fun(me, mlist, i++, t);
-                if (i > 0 && mlist.Time(i-1) == t) i--;
+                if (i > 0 && mlist.TimeI(i-1) == t) i--;
                 MList.AddMom(me);
             }
         }
 
-        private void AddUniformMom(IMomListReadOnly fromList, MomList toList, int i, DateTime t)
+        private void AddUniformMom(IMomListRead fromList, MomList toList, int i, DateTime t)
         {
-            if (i < fromList.Count && fromList.Time(i) == t) return;
-            toList.AddMom(fromList.CloneMom(i == 0 ? 0 : i - 1, t));
+            if (i < fromList.Count && fromList.TimeI(i) == t) return;
+            toList.AddMom(fromList.CloneMomI(i == 0 ? 0 : i - 1, t));
         }
     }
 }

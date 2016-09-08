@@ -29,51 +29,51 @@ namespace ComClients
         //Время i-ого значения
         public DateTime Time(int i)
         {
-            return _signal.MomList.Time(i);
+            return _signal.MomList.TimeI(i);
         }
 
         //Качество ошибки i-ого значения
         public int ErrQuality(int i)
         {
-            if (_signal.MomList.Error(i) == null)
+            if (_signal.MomList.ErrorI(i) == null)
                 return 0;
-            return (int)_signal.MomList.Error(i).Quality;
+            return (int)_signal.MomList.ErrorI(i).Quality;
         }
         //Номер ошибки i-ого значения
         public int ErrNumber(int i)
         {
-            if (_signal.MomList.Error(i) == null)
+            if (_signal.MomList.ErrorI(i) == null)
                 return 0;
-            return _signal.MomList.Error(i).Number;
+            return _signal.MomList.ErrorI(i).Number;
         }
         //Текст ошибки i-ого значения
         public string ErrText(int i)
         {
-            if (_signal.MomList.Error(i) == null)
+            if (_signal.MomList.ErrorI(i) == null)
                 return null;
-            return _signal.MomList.Error(i).Text;
+            return _signal.MomList.ErrorI(i).Text;
         }
 
         //Значения разного типа
         public bool Boolean(int i)
         {
-            return _signal.MomList.Boolean(i);
+            return _signal.MomList.BooleanI(i);
         }
         public int Integer(int i)
         {
-            return _signal.MomList.Integer(i);
+            return _signal.MomList.IntegerI(i);
         }
         public double Real(int i)
         {
-            return _signal.MomList.Real(i);
+            return _signal.MomList.RealI(i);
         }
         public DateTime Date(int i)
         {
-            return _signal.MomList.Date(i);
+            return _signal.MomList.DateI(i);
         }
         public string String(int i)
         {
-            return _signal.MomList.String(i);
+            return _signal.MomList.StringI(i);
         }
     }
 }

@@ -4,7 +4,7 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Мгновенные значения с возможностью изменения, декоратор над Mean
-    public class MomEdit: Val, IMom
+    public class MomEdit: CalcVal, IMom
     {
         public MomEdit(DataType dtype)
         {
@@ -105,21 +105,21 @@ namespace CommonTypes
             return this;
         }
         //Копирует значение из списка мгновенных значений по указанной позиции
-        public MomEdit CopyValueFrom(IMomListReadOnly list, //список значений
+        public MomEdit CopyValueFrom(IMomListRead list, //список значений
                                                         int i) //Позиция
         {
-            var buf = list.Mean(i);
+            var buf = list.MeanI(i);
             _mean.CopyValueFrom(buf);
             return this;
         }
         //Копирует время, ошибку и значение из списка мгновенных значений по указанной позиции
-        public MomEdit CopyAllFrom(IMomListReadOnly list, //список значений
+        public MomEdit CopyAllFrom(IMomListRead list, //список значений
                                                     int i) //Позиция
         {
-            var buf = list.Mean(i);
+            var buf = list.MeanI(i);
             _mean.CopyValueFrom(buf);
-            Time = list.Time(i);
-            Error = list.Error(i);
+            Time = list.TimeI(i);
+            Error = list.ErrorI(i);
             return this;
         }
 
@@ -159,8 +159,25 @@ namespace CommonTypes
         //Типы данных и значения
         public override DataType DataType { get { return _mean.DataType; } }
         public override ICalcVal CalcValue { get { return this; } }
-        public ErrMom TotalError { get { return Error; } }
+        public override ErrMom TotalError { get { return Error; } }
         public int Count { get { return 1; } }
         public IMean LastMean { get { return this; } }
+
+        //Методы из MomList
+        public ErrMom ErrorI(int i) {return Error; }
+        public bool BooleanI(int i) { return Boolean; }
+        public int IntegerI(int i) { return Integer; }
+        public double RealI(int i) { return Real; }
+        public DateTime DateI(int i) { return Date; }
+        public string StringI(int i) { return String;  }
+        public void ValueToRecI(IRecordAdd rec, string field, int i) { ValueToRec(rec, field); }
+        public IMean CloneMeanI(int i) { return CloneMean(); }
+        public IMean CloneMeanI(int i, ErrMom err) { return CloneMean(err); }
+        public IMom CloneMomI(int i, DateTime time) { return CloneMom(time); }
+        public IMom CloneMomI(int i, DateTime time, ErrMom err) { return CloneMom(time, err); }
+        public IMean MeanI(int i) { return this; }
+        public DateTime TimeI(int i) { return Time; }
+        public IMom CloneMomI(int i) { return CloneMom(); }
+        public IMom CloneMomI(int i, ErrMom err) { return CloneMom(err); }
     }
 }

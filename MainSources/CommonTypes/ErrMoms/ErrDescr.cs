@@ -14,7 +14,7 @@ namespace CommonTypes
     //Описание ошибки
     public class ErrDescr
     {
-        public ErrDescr(int number, string text, ErrorQuality quality, ErrMomType type)
+        public ErrDescr(int number, string text, ErrQuality quality, ErrMomType type)
         {
             Text = text;
             Quality = quality;
@@ -24,14 +24,14 @@ namespace CommonTypes
 
         //Из рекордсета клона и т.п.
         public ErrDescr(IRecordRead rec, ErrMomType type) 
-            : this(rec.GetInt("NumError"), rec.GetString("TextError"), (ErrorQuality)rec.GetInt("Quality"), type) { }
+            : this(rec.GetInt("NumError"), rec.GetString("TextError"), (ErrQuality)rec.GetInt("Quality"), type) { }
 
         //Сообщение об ошибке
         public string Text { get; private set; }
         //Номер ошибки
         public int Number { get; private set; }
         //Качество ошибки
-        public ErrorQuality Quality { get; private set; }
+        public ErrQuality Quality { get; private set; }
         //Тип источника ошибки
         public ErrMomType ErrType { get; private set; }
 

@@ -100,7 +100,7 @@ namespace Fictive
         {
             var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
             factory.AddGoodDescr(0);
-            factory.AddDescr(1, "Предупреждение", ErrorQuality.Warning);
+            factory.AddDescr(1, "Предупреждение", ErrQuality.Warning);
             factory.AddDescr(2, "Ошибка");
             return factory;
         }

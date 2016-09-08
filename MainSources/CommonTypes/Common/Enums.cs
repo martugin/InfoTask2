@@ -22,7 +22,7 @@
 
     //------------------------------------------------------------------------------
     //Тип ошибки
-    public enum ErrorQuality
+    public enum ErrQuality
     {
         Good = 0,
         Warning = 1,

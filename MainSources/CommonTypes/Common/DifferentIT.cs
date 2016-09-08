@@ -21,13 +21,13 @@ namespace CommonTypes
         }
 
         //Возвращает тип ошибки как строку
-        public static string ToRussian(this ErrorQuality quality)
+        public static string ToRussian(this ErrQuality quality)
         {
             switch (quality)
             {
-                case ErrorQuality.Error:
+                case ErrQuality.Error:
                     return "Ошибка";
-                case ErrorQuality.Warning:
+                case ErrQuality.Warning:
                     return "Предупреждение";
             }
             return "";

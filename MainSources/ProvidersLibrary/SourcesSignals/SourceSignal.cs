@@ -10,7 +10,7 @@ namespace ProvidersLibrary
         {
             Connect = connect;
             MList = MFactory.NewList(dataType);
-            MomList = new MomListReadOnly(MList);
+            MomList = new MomListRead(MList);
         }
         protected SourceSignal(SourceConnect connect, string code, string codeObject) 
             : base(code, codeObject)
@@ -23,7 +23,7 @@ namespace ProvidersLibrary
 
         //Возвращаемый список значений
         protected MomList MList { get; set; }
-        public IMomListReadOnly MomList { get; protected set; }
+        public IMomListRead MomList { get; protected set; }
 
         //Очистка списка значений
         internal virtual void ClearMoments(bool clearBegin)

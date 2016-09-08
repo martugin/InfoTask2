@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using BaseLibrary;
 
@@ -42,7 +44,7 @@ namespace CommonTypes
 
         public void Minus_dd(IMom[] par)
         {
-            ScalarRes.Real = par[0].Date.Subtract(par[1].Date).TotalSeconds;
+            ScalarRes.Real = par[0].Date.Minus(par[1].Date);
         }
 
         public void Minus_dr(IMom[] par)
@@ -233,27 +235,20 @@ namespace CommonTypes
 
         public void Like_ss(IMom[] par)
         {
-            string m1 = par[1].String.Replace("*", @"[\S|\s]*").Replace("?", @"[\S|\s]");
+            string m1 = "^" + par[1].String.Replace("*", @"[\S|\s]*").Replace("?", @"[\S|\s]") + "$";
             string m0 = par[0].String;
-            bool mean = false;
-            var r = new Regex(m1);
-            if (r.IsMatch(m0))
-            {
-                Match m = r.Match(m0);
-                if (m0.Length == m.Value.Length) mean = true;
-            }
-            ScalarRes.Boolean = mean;
+            ScalarRes.Boolean = new Regex(m1).IsMatch(m0);
         }
         #endregion
 
         //2 - Логические
         #region
-        public IMean TrueFun_()
+        public IVal TrueFun_()
         {
             return new MeanBool(true);
         }
 
-        public IMean FalseFun_()
+        public IVal FalseFun_()
         {
             return new MeanBool(false);
         }
@@ -280,7 +275,7 @@ namespace CommonTypes
 
         public void BitOr_ii(IMom[] par)
         {
-            var b = true;
+            var b = false;
             for (int i = 1; i < par.Length; i++)
                 b |= GetBit(par, i); 
             ScalarRes.Boolean = b;
@@ -299,9 +294,9 @@ namespace CommonTypes
 
         //3 - Математические
         #region
-        public void Random_(IMom[] par)
+        public IVal Random_()
         {
-            ScalarRes.Real = new Random().NextDouble();
+            return new MeanReal(new Random().NextDouble());
         }
 
         public void Random_ii(IMom[] par)
@@ -445,7 +440,7 @@ namespace CommonTypes
             else ScalarRes.Real = Math.Log((1 + d) / (1 - d)) / 2;
         }
 
-        public void Axp_r(IMom[] par)
+        public void Exp_r(IMom[] par)
         {
             ScalarRes.Real = Math.Exp(par[0].Real);
         }
@@ -468,7 +463,10 @@ namespace CommonTypes
         {
             double m0 = par[0].Real, m1 = par[1].Real;
             if (m0 == 1)
+            {
                 ScalarRes.Error = par[0].Error;
+                ScalarRes.Real = 1;
+            }
             else
             {
                 if (m0 <= 0 || m1 <= 0)
@@ -508,6 +506,77 @@ namespace CommonTypes
         {
             return new MeanInt(2);
         }
+
+        public void MakeError_u(IMom[] par)
+        {
+            ScalarRes.CopyValueFrom(par[0]);
+            if (par.Length != 4 || par[3].Boolean)
+                ScalarRes.Error = null;
+            ScalarRes.AddError(new ErrMom(par[2].String, par[1].Integer));
+            PutErr(par[2].String, par[1].Integer);
+        }
+
+        public void RemoveError_u(IMom[] par)
+        {
+            ScalarRes.CopyValueFrom(par[0]);
+        }
+
+        private double Certain(IEnumerable<IMean> par, IMean pn, double dn, double dp)
+        {
+            //Аппаратная недостоверность и сравнение с нормативным
+            var dpar = (from p in par where (p.Error == null || p.Error.Quality != ErrQuality.Error) && Math.Abs(p.Real - pn.Real) <= dn select p.Real).ToList();
+            if (dpar.Count == 0) return pn.Real;
+            //Сравнение друг с другом
+            while (dpar.Count > 2)
+            {
+                double m = dpar.Average();
+                int k = 0;
+                for (int i = 1; i < dpar.Count; i++)
+                    if (Math.Abs(m - dpar[i]) > Math.Abs(m - dpar[k]))
+                        k = i;
+                if (Math.Abs(m - dpar[k]) > dp)
+                    dpar.RemoveAt(k);
+                else break;
+            }
+            if (dpar.Count == 2 && Math.Abs(dpar[1] - dpar[0]) > 2 * dp) return pn.Real;
+            return dpar.Average();
+        }
+
+        public void CertainNP_rrrr(IMom[] par)
+        {
+            var parv = new IMean[par.Length - 3];
+            for (int i = 0; i < parv.Length; i++)
+                parv[i] = par[i + 3];
+            ScalarRes.Error = par[0].Error.Add(par[1].Error).Add(par[2].Error);
+            ScalarRes.Real = Certain(parv, par[0], par[1].Real, par[2].Real);
+        }
+
+        public void CertainN_rrr(IMom[] par)
+        {
+            var parv = new IMean[par.Length - 2];
+            for (int i = 0; i < parv.Length; i++)
+                parv[i] = par[i + 2];
+            ScalarRes.Error = par[0].Error.Add(par[1].Error);
+            ScalarRes.Real = Certain(parv, par[0], par[1].Real, double.MaxValue);
+        }
+
+        public void CertainP_rrr(IMom[] par)
+        {
+            var parv = new IMean[par.Length - 2];
+            for (int i = 0; i < parv.Length; i++)
+                parv[i] = par[i + 2];
+            ScalarRes.Error = par[0].Error.Add(par[1].Error);
+            ScalarRes.Real = Certain(parv, par[0], double.MaxValue, par[1].Real);
+        }
+
+        public void Certain_rr(IMom[] par)
+        {
+            var parv = new IMean[par.Length - 1];
+            for (int i = 0; i < parv.Length; i++)
+                parv[i] = par[i + 1];
+            ScalarRes.Error = par[0].Error;
+            ScalarRes.Real = Certain(parv, par[0], double.MaxValue, double.MaxValue);
+        }
         #endregion
 
         //8 - Типы данных
@@ -538,19 +607,23 @@ namespace CommonTypes
         {
             ScalarRes.Real = par[0].DataType.LessOrEquals(DataType.Real) 
                                             ? par[0].Real 
-                                            : (par[0].String ?? "0").ToDouble();
+                                            : (par[0].String ?? "0").ToDouble(double.NaN);
         }
 
         public void Date_u(IMom[] par)
         {
-            DateTime d;
-            if (DateTime.TryParse(par[0].String, out d)) ScalarRes.Date = d;
-            else PutErr();
+            ScalarRes.Date = par[0].String.ToDateTime();
+            if (ScalarRes.Date == Different.MinDate)
+                PutErr();
         }
 
         public void String_u(IMom[] par)
         {
             ScalarRes.String = par[0].String;
+        }
+
+        public void Value_u(IMom[] par)
+        {
         }
 
         public void IsInt_u(IMom[] par)
@@ -561,15 +634,12 @@ namespace CommonTypes
 
         public void IsReal_u(IMom[] par)
         {
-            double d;
-            ScalarRes.Boolean = double.TryParse(par[0].String, out d)
-                                   || double.TryParse(par[0].String, NumberStyles.Any, new NumberFormatInfo { NumberDecimalSeparator = "." }, out d);
+            ScalarRes.Boolean = !double.IsNaN(par[0].String.ToDouble(double.NaN));
         }
 
         public void IsTime_u(IMom[] par)
         {
-            DateTime d;
-            ScalarRes.Boolean = DateTime.TryParse(par[0].String, out d);
+            ScalarRes.Boolean = par[0].String.ToDateTime() != Different.MinDate;
         }
         #endregion
 
@@ -715,11 +785,16 @@ namespace CommonTypes
             int p6 = par.Length > 1 ? par[6].Integer : 0;
             ScalarRes.Date = new DateTime(par[0].Integer, p1, p2, p3, p4, p5, p6);
         }
+
+        public IVal Now_()
+        {
+            return new MeanTime(DateTime.Now);
+        }
         #endregion
 
         //10 - Строковые 
         #region
-        public IVal MewLine_()
+        public IVal NewLine_()
         {
             return new MeanString(Environment.NewLine);
         }
@@ -732,7 +807,7 @@ namespace CommonTypes
             else ScalarRes.String = m0.Substring(m1);
         }
 
-        public void StrMids_ii(IMom[] par)
+        public void StrMid_sii(IMom[] par)
         {
             int m1 = par[1].Integer - 1, m2 = par[2].Integer;
             string m0 = par[0].String;
@@ -754,6 +829,11 @@ namespace CommonTypes
             string m0 = par[0].String;
             if (m1 < 0 || m1 > m0.Length) PutErr();
             else ScalarRes.String = m0.Substring(m0.Length - m1, m1);
+        }
+
+        public void StrLen_s(IMom[] par)
+        {
+            ScalarRes.Integer = par[0].String.Length;
         }
 
         public void StrInsert_ssi(IMom[] par)
@@ -790,22 +870,9 @@ namespace CommonTypes
             ScalarRes.String = m0.Replace(m1, m2);
         }
 
-        public void StrReplaceReg_sss(IMom[] par)
-        {
-            string m0 = par[0].String;
-            var r1 = new Regex(par[1].String);
-            string m2 = par[2].String;
-            ScalarRes.String = r1.Replace(m0, m2);
-        }
-
-        public void StrLen_s(IMom[] par)
-        {
-            ScalarRes.Integer = par[0].String.Length;
-        }
-
         public void StrFind_ssi(IMom[] par)
         {
-            int m2 = par[2].Integer - 1;
+            int m2 = par.Length == 2 ? 0 : par[2].Integer - 1;
             string m0 = par[0].String;
             string m1 = par[1].String;
             if (m2 < 0 || m2 >= m1.Length) PutErr();
@@ -814,7 +881,7 @@ namespace CommonTypes
 
         public void StrFindLast_ssi(IMom[] par)
         {
-            int m2 = par[2].Integer - 1;
+            int m2 = par.Length == 2 ? -1 : par[2].Integer - 1;
             string m0 = par[0].String;
             string m1 = par[1].String;
             if (m2 < -1 || m2 >= m1.Length) PutErr();
@@ -844,6 +911,28 @@ namespace CommonTypes
         public void StrUCase_s(IMom[] par)
         {
             ScalarRes.String = par[0].String.ToUpper();
+        }
+
+        public void StrRegReplace_sss(IMom[] par)
+        {
+            string m0 = par[0].String;
+            var r1 = new Regex(par[1].String);
+            string m2 = par[2].String;
+            ScalarRes.String = r1.Replace(m0, m2);
+        }
+
+        public void StrRegFind_ss(IMom[] par)
+        {
+            string m0 = par[0].String;
+            var r1 = new Regex(par[1].String);
+            ScalarRes.Integer = r1.Match(m0).Index;
+        }
+
+        public void StrRegMatch_ss(IMom[] par)
+        {
+            string m0 = par[0].String;
+            var r1 = new Regex("^" + par[1].String + "$");
+            ScalarRes.Boolean = r1.Match(m0).Success;
         }
         #endregion
     }

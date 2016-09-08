@@ -15,7 +15,7 @@ namespace CommonTypes
         }
 
         //Делегат скалярных функций
-        private delegate void ScalarDelegate(IMean[] par);
+        public delegate void ScalarDelegate(IMean[] par);
 
         //Ссылка на реализацию функции
         private readonly ScalarDelegate _fun;

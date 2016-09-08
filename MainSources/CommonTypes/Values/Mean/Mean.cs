@@ -107,5 +107,18 @@ namespace CommonTypes
         //Присвоить значение по умолчанию
         internal abstract void MakeDefaultValue();
 
+        //Методы из MomList
+        public bool BooleanI(int i) { return Boolean; }
+        public int IntegerI(int i) { return Integer; }
+        public double RealI(int i) { return Real; }
+        public DateTime DateI(int i) { return Date; }
+        public string StringI(int i) { return String; }
+        public ErrMom ErrorI(int i) { return Error; }
+        public void ValueToRecI(IRecordAdd rec, string field, int i) { ValueToRec(rec, field);}
+        public IMean CloneMeanI(int i) { return CloneMean();}
+        public IMean CloneMeanI(int i, ErrMom err) { return CloneMean(err); }
+        public IMom CloneMomI(int i, DateTime time) { return CloneMom(time); }
+        public IMom CloneMomI(int i, DateTime time, ErrMom err) { return CloneMom(time, err);}
+        public IMean MeanI(int i) { return this; }
     }
 }

@@ -22,10 +22,10 @@ namespace Provider
         public string UndefinedErrorText { get { return "Неопределенная ошибка"; } }
 
         //Качество недостоверности
-        private ErrorQuality NdQuality(int nd)
+        private ErrQuality NdQuality(int nd)
         {
-            if (nd == 0) return ErrorQuality.Good;
-            return nd.GetBit(5) || nd.GetBit(15) ? ErrorQuality.Error : ErrorQuality.Warning;
+            if (nd == 0) return ErrQuality.Good;
+            return nd.GetBit(5) || nd.GetBit(15) ? ErrQuality.Error : ErrQuality.Warning;
         }
 
         //Расшифровка недостоверности

@@ -84,8 +84,8 @@ namespace Provider
         {
             var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
             factory.AddGoodDescr(0);
-            factory.AddDescr(1, "FAIR", ErrorQuality.Warning);
-            factory.AddDescr(2, "POOR", ErrorQuality.Warning);
+            factory.AddDescr(1, "FAIR", ErrQuality.Warning);
+            factory.AddDescr(2, "POOR", ErrQuality.Warning);
             factory.AddDescr(3, "BAD");
             factory.AddDescr(4, "Нет данных");
             return factory;

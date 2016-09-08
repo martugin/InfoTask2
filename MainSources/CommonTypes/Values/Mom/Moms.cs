@@ -25,6 +25,10 @@ namespace CommonTypes
         {
             return new MomErrBool(Time, Boolean, Error.Add(err));
         }
+
+        public DateTime TimeI(int i) { return Time;}
+        public IMom CloneMomI(int i) { return CloneMom();}
+        public IMom CloneMomI(int i, ErrMom err) { return CloneMom(err);}
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -49,6 +53,10 @@ namespace CommonTypes
         {
             return new MomErrInt(Time, Integer, Error.Add(err));
         }
+
+        public DateTime TimeI(int i) { return Time; }
+        public IMom CloneMomI(int i) { return CloneMom(); }
+        public IMom CloneMomI(int i, ErrMom err) { return CloneMom(err); }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -73,6 +81,10 @@ namespace CommonTypes
         {
             return new MomErrReal(Time, Real, Error.Add(err));
         }
+
+        public DateTime TimeI(int i) { return Time; }
+        public IMom CloneMomI(int i) { return CloneMom(); }
+        public IMom CloneMomI(int i, ErrMom err) { return CloneMom(err); }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -97,6 +109,10 @@ namespace CommonTypes
         {
             return new MomErrString(Time, String, Error.Add(err));
         }
+
+        public DateTime TimeI(int i) { return Time; }
+        public IMom CloneMomI(int i) { return CloneMom(); }
+        public IMom CloneMomI(int i, ErrMom err) { return CloneMom(err); }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -121,6 +137,10 @@ namespace CommonTypes
         {
             return new MomErrTime(Time, Date, Error.Add(err));
         }
+
+        public DateTime TimeI(int i) { return Time; }
+        public IMom CloneMomI(int i) { return CloneMom(); }
+        public IMom CloneMomI(int i, ErrMom err) { return CloneMom(err); }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -176,5 +196,9 @@ namespace CommonTypes
         {
             return new MomErrValue(Time, Error.Add(err));
         }
+
+        public DateTime TimeI(int i) { return Time; }
+        public IMom CloneMomI(int i) { return CloneMom(); }
+        public IMom CloneMomI(int i, ErrMom err) { return CloneMom(err); }
     }
 }

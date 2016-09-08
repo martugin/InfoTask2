@@ -23,8 +23,9 @@ namespace CommonTypes
         {
             _means.Add(BufMean.Boolean);
         }
+        
         //Загрузить буферное значение из списка 
-        public override Mean Mean(int i)
+        public override IMean MeanI(int i)
         {
             BufMean.Boolean = _means[i];
             return BufMean;
@@ -59,7 +60,7 @@ namespace CommonTypes
             _means.Add(BufMean.Integer);
         }
         //Загрузить буферное значение из списка 
-        public override Mean Mean(int i)
+        public override IMean MeanI(int i)
         {
             BufMean.Integer = _means[i];
             return BufMean;
@@ -94,7 +95,7 @@ namespace CommonTypes
             _means.Add(BufMean.Real);
         }
         //Загрузить буферное значение из списка 
-        public override Mean Mean(int i)
+        public override IMean MeanI(int i)
         {
             BufMean.Real = _means[i];
             return BufMean;
@@ -129,7 +130,7 @@ namespace CommonTypes
             _means.Add(BufMean.String);
         }
         //Загрузить буферное значение из списка 
-        public override Mean Mean(int i)
+        public override IMean MeanI(int i)
         {
             BufMean.String = _means[i];
             return BufMean;
@@ -164,7 +165,7 @@ namespace CommonTypes
             _means.Add(BufMean.Date);
         }
         //Загрузить буферное значение из списка 
-        public override Mean Mean(int i)
+        public override IMean MeanI(int i)
         {
             BufMean.Date = _means[i];
             return BufMean;
@@ -201,9 +202,9 @@ namespace CommonTypes
             _weights.Add(((MomWeighted)BufMean).Weight);
         }
         //Загрузить буферное значение из списка 
-        public override Mean Mean(int i)
+        public override IMean MeanI(int i)
         {
-            base.Mean(i);
+            base.MeanI(i);
             ((MomWeighted) BufMean).Weight = _weights[i];
             return BufMean;
         }

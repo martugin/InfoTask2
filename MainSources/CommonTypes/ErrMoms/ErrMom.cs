@@ -11,9 +11,9 @@ namespace CommonTypes
             AddressLink = addr;
         }
 
-        public ErrMom(string text, ErrorQuality quality = ErrorQuality.Error, int num = 0, ErrMomType type = ErrMomType.Calc)
+        public ErrMom(string text, int quality = 2, int num = 0, ErrMomType type = ErrMomType.Calc)
         {
-            ErrDescr = new ErrDescr(num, text, quality, type);
+            ErrDescr = new ErrDescr(num, text, (ErrQuality)quality, type);
         }
 
         //Ссылка на описание ошибки
@@ -26,7 +26,7 @@ namespace CommonTypes
         //Сообщение об ошибке
         public string Text { get { return ErrDescr.Text; } }
         //Качество ошибки
-        public ErrorQuality Quality { get { return ErrDescr.Quality; } }
+        public ErrQuality Quality { get { return ErrDescr.Quality; } }
         //Номер ошибки
         public int Number { get { return ErrDescr.Number; } }
         //Тип источника ошибки

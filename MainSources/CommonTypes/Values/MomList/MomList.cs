@@ -13,12 +13,12 @@ namespace CommonTypes
         //Список времен
         private readonly List<DateTime> _times = new List<DateTime>();
         //Время i-ого значения
-        public DateTime Time(int i) { return _times[i]; }
+        public DateTime TimeI(int i) { return _times[i]; }
 
         //Список ошибок
         private List<ErrMom> _errors;
         //Ошибка i-ого значения
-        public ErrMom Error(int i)
+        public ErrMom ErrorI(int i)
         {
             if (_errors == null) return null;
             return _errors[i];
@@ -34,7 +34,7 @@ namespace CommonTypes
         protected abstract void AddBufMomEnd();
 
         //Получить значение из списка по индексу
-        public abstract Mean Mean(int i);
+        public abstract IMean MeanI(int i);
 
         //Добавить ошибку в i-ю позицию списка
         private void AddError(ErrMom err, int i)
@@ -134,74 +134,74 @@ namespace CommonTypes
         protected abstract void ClearMeans();
 
         //Получение значений по индексу
-        public bool Boolean(int i)
+        public bool BooleanI(int i)
         {
-            return Mean(i).Boolean;
+            return MeanI(i).Boolean;
         }
-        public int Integer(int i)
+        public int IntegerI(int i)
         {
-            return Mean(i).Integer;
-        }
-
-        public double Real(int i)
-        {
-            return Mean(i).Real;
+            return MeanI(i).Integer;
         }
 
-        public DateTime Date(int i)
+        public double RealI(int i)
         {
-            return Mean(i).Date;
+            return MeanI(i).Real;
         }
 
-        public string String(int i)
+        public DateTime DateI(int i)
         {
-            return Mean(i).String;
+            return MeanI(i).Date;
+        }
+
+        public string StringI(int i)
+        {
+            return MeanI(i).String;
         }
 
         //Запись значения в рекордсет rec, поле field
-        public void ValueToRec(IRecordAdd rec, string field, int i)
+        public void ValueToRecI(IRecordAdd rec, string field, int i)
         {
-            Mean(i).ValueToRec(rec, field);
+            MeanI(i).ValueToRec(rec, field);
         }
 
-        public IMean CloneMean(int i)
+        public IMean CloneMeanI(int i)
         {
-            return Mean(i).CloneMean(Error(i));
+            return MeanI(i).CloneMean(ErrorI(i));
         }
 
-        public IMean CloneMean(int i, ErrMom err)
+        public IMean CloneMeanI(int i, ErrMom err)
         {
-            return Mean(i).CloneMean(Error(i).Add(err));
+            return MeanI(i).CloneMean(ErrorI(i).Add(err));
         }
 
         //Клонирование текущего значения
-        public IMom CloneMom(int i)
+        public IMom CloneMomI(int i)
         {
-            return Mean(i).CloneMom(Time(i), Error(i));
+            return MeanI(i).CloneMom(TimeI(i), ErrorI(i));
         }
 
-        public IMom CloneMom(int i, ErrMom err)
+        public IMom CloneMomI(int i, ErrMom err)
         {
-            return Mean(i).CloneMom(Time(i), Error(i).Add(err));
+            return MeanI(i).CloneMom(TimeI(i), ErrorI(i).Add(err));
         }
 
-        public IMom CloneMom(int i, DateTime time)
+        public IMom CloneMomI(int i, DateTime time)
         {
-            return Mean(i).CloneMom(time, Error(i));
+            return MeanI(i).CloneMom(time, ErrorI(i));
         }
 
-        public IMom CloneMom(int i, DateTime time, ErrMom err)
+        public IMom CloneMomI(int i, DateTime time, ErrMom err)
         {
-            return Mean(i).CloneMom(time, Error(i).Add(err));
+            return MeanI(i).CloneMom(time, ErrorI(i).Add(err));
         }
-        
+
         //Последнее значение
         public IMean LastMean
         {
             get
             {
                 if (Count == 0) return null;
-                return CloneMom(_times.Count - 1);
+                return CloneMomI(_times.Count - 1);
             }
         }
 
