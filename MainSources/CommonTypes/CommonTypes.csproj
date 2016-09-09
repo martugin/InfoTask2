@@ -79,7 +79,7 @@
     <Compile Include="Values\DataType.cs" />
     <Compile Include="Values\Mean\MeansErr.cs" />
     <Compile Include="Values\Mean\Mean.cs" />
-    <Compile Include="Values\MomList\MomListReadOnly.cs" />
+    <Compile Include="Values\MomList\MomListRead.cs" />
     <Compile Include="Values\Mom\MomsErr.cs" />
     <Compile Include="Values\MFactory.cs" />
     <Compile Include="Values\Mom\Moms.cs" />

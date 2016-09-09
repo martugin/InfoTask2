@@ -12,10 +12,8 @@ namespace Generator
         internal IMean Calculate(IMean[] par, DataType resultType)
         {
             Functions.CurFun = this;
-            if (ScalarRes.DataType != resultType)
-                ScalarRes = new MomEdit(resultType);
-            Functions.ScalarRes = ScalarRes;
-            CalcScalar(par);
+            Functions.SetScalarDataType(resultType);
+            Functions.CalcScalarFun(par, () => Fun(par));
             return Functions.ScalarRes.CloneMean();
         }
     }

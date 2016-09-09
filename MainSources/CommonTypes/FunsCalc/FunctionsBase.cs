@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BaseLibrary;
 
 namespace CommonTypes
@@ -14,7 +15,7 @@ namespace CommonTypes
 
             using (var rec = new ReaderAdo(DifferentIt.InfoTaskDir() + @"General\General.accdb",
                                            "SELECT FunctionsOverloads.*, Functions.Name, Functions.Synonym FROM Functions INNER JOIN FunctionsOverloads ON Functions.Id = FunctionsOverloads.FunctionId " +
-                                           "WHERE " + FunsWhereCondition + "ORDER BY FunctionsOverloads.FunctionId, FunctionsOverloads.RunNumber"))
+                                           "WHERE " + FunsWhereCondition + " ORDER BY FunctionsOverloads.FunctionId, FunctionsOverloads.RunNumber"))
                 while (rec.Read())
                 {
                     string name = rec.GetString("Name");
@@ -54,8 +55,6 @@ namespace CommonTypes
 
         //Текущая вычисляемая функция
         public FunCalcBase CurFun { private get; set; }
-        //Текущий результат скалярной функции
-        public MomEdit ScalarRes { get; set; }
         
         //Добавить особую ошибку в заданный MomEdit
         public void PutErr(MomEdit mom, 
@@ -102,6 +101,42 @@ namespace CommonTypes
                 err = err ?? p.Error;
             }
             return err;
+        }
+
+        //Текущий результат скалярной функции
+        public MomEdit ScalarRes { get; private set; }
+        //Значения разного типа для результата
+        private readonly Dictionary<DataType, MomEdit> _scalarResTypes = new Dictionary<DataType, MomEdit>()
+            {
+                {DataType.Boolean, new MomEdit(DataType.Boolean)},
+                {DataType.Integer, new MomEdit(DataType.Integer)},
+                {DataType.Real, new MomEdit(DataType.Real)},
+                {DataType.Time, new MomEdit(DataType.Time)},
+                {DataType.String, new MomEdit(DataType.String)},
+                {DataType.Value, new MomEdit(DataType.Value)},
+            };
+        //Установить тип данных скалярного значения
+        public void SetScalarDataType(DataType dtype)
+        {
+            ScalarRes = _scalarResTypes[dtype];
+            ScalarRes.MakeDefaultValue();
+        }
+
+        //Обрамление промежуточного вычисления скалярного значения
+        public void CalcScalarFun(IMean[] par, //Параметры расчета
+                                               Action action) //Действие, выполняющее расчет
+        {
+            try
+            {
+                ScalarRes.MakeDefaultValue();
+                ScalarRes.Error = null;
+                foreach (var mean in par)
+                    ScalarRes.AddError(mean.Error);
+                action();
+                if (double.IsNaN(ScalarRes.Real))
+                    PutErr();
+            }
+            catch { PutErr(); }
         }
     }
 }

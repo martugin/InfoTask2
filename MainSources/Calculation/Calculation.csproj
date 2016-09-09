@@ -49,6 +49,7 @@
     <Compile Include="FunsRealisation\FunctionsWsp.cs" />
     <Compile Include="Funs\Oka.cs" />
     <Compile Include="Funs\ScalarFunction.cs" />
+    <Compile Include="Funs\ScalarPar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Values\Segment.cs" />
   </ItemGroup>

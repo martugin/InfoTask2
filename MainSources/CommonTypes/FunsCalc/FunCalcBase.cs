@@ -1,4 +1,6 @@
-﻿namespace CommonTypes
+﻿using System.Reflection;
+
+namespace CommonTypes
 {
     //Одна перегрузка функции, базовый класс для функций разных типов
     public abstract class FunCalcBase
@@ -10,7 +12,13 @@
             Code = code;
             Functions = funs;
             ErrorNumber = errNum;
+            MethodInfo met = typeof(FunctionsBase).GetMethod(code);
+            if (met != null) 
+                CreateDelegateInstance(funs, met);
         }
+
+        //Создание экземпляра делегата функции
+        protected abstract void CreateDelegateInstance(FunctionsBase funs, MethodInfo met);
 
         //Ссылка на FunctionsBase
         protected FunctionsBase Functions { get; private set; }
