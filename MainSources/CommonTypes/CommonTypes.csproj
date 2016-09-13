@@ -65,10 +65,10 @@
     <Compile Include="ErrMoms\ErrMom.cs" />
     <Compile Include="ErrMoms\ErrMomFactory.cs" />
     <Compile Include="ErrMoms\ErrMomPool.cs" />
-    <Compile Include="FunsCalc\FunScalarBase.cs" />
+    <Compile Include="FunsCalc\ScalarBaseFun.cs" />
     <Compile Include="FunsCompile\FunCompile.cs" />
-    <Compile Include="FunsCalc\FunsRealisationScalar.cs" />
-    <Compile Include="FunsCalc\FunCalcBase.cs" />
+    <Compile Include="FunsCalc\FunctionsRealisationScalar.cs" />
+    <Compile Include="FunsCalc\CalcBaseFun.cs" />
     <Compile Include="FunsCalc\FunctionsBase.cs" />
     <Compile Include="FunsCompile\FunOverload.cs" />
     <Compile Include="FunsCompile\FunParam.cs" />
@@ -79,7 +79,6 @@
     <Compile Include="Values\DataType.cs" />
     <Compile Include="Values\Mean\MeansErr.cs" />
     <Compile Include="Values\Mean\Mean.cs" />
-    <Compile Include="Values\MomList\MomListRead.cs" />
     <Compile Include="Values\Mom\MomsErr.cs" />
     <Compile Include="Values\MFactory.cs" />
     <Compile Include="Values\Mom\Moms.cs" />

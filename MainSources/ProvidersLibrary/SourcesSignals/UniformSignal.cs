@@ -74,7 +74,7 @@ namespace ProvidersLibrary
 
         //Запись значения в клон
         //Чтение одной строчки значений из рекордсета, и запись ее в клон
-        protected override int PutClone(IMom mom, //Рекордсет срезов клона
+        protected override int PutClone(IMean mom, //Рекордсет срезов клона
                                                        bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {
             bool isReal = DataType.LessOrEquals(DataType.Real);

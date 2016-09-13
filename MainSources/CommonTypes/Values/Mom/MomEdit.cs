@@ -4,7 +4,7 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Мгновенные значения с возможностью изменения, декоратор над Mean
-    public class MomEdit: CalcVal, IMom
+    public class MomEdit: CalcVal, IMean
     {
         public MomEdit(DataType dtype)
         {
@@ -69,6 +69,16 @@ namespace CommonTypes
             set { _mean.Object = value; }
         }
 
+        public int CurNum { get; set; }
+        public DateTime NextTime
+        {
+            get
+            {
+                if (CurNum <= -1) return Time;
+                return Different.MaxDate;
+            }
+        }
+
         public bool ValueEquals(IMean mean)
         {
             return _mean.ValueEquals(mean);
@@ -96,8 +106,8 @@ namespace CommonTypes
             _mean.CopyValueFrom(mean);
             return this;
         }
-        //Копирует время, ошибку и значение из другого IMom, возвращает себя
-        public MomEdit CopyAllFrom(IMom mom)
+        //Копирует время, ошибку и значение из другого IMean, возвращает себя
+        public MomEdit CopyAllFrom(IMean mom)
         {
             _mean.CopyValueFrom(mom);
             Time = mom.Time;
@@ -105,19 +115,19 @@ namespace CommonTypes
             return this;
         }
         //Копирует значение из списка мгновенных значений по указанной позиции
-        public MomEdit CopyValueFrom(IMomListRead list, //список значений
+        public MomEdit CopyValueFrom(IMean list, //список значений
                                                         int i) //Позиция
         {
-            var buf = list.MeanI(i);
-            _mean.CopyValueFrom(buf);
+            list.CurNum = i;
+            _mean.CopyValueFrom(list);
             return this;
         }
         //Копирует время, ошибку и значение из списка мгновенных значений по указанной позиции
-        public MomEdit CopyAllFrom(IMomListRead list, //список значений
+        public MomEdit CopyAllFrom(IMean list, //список значений
                                                     int i) //Позиция
         {
-            var buf = list.MeanI(i);
-            _mean.CopyValueFrom(buf);
+            list.CurNum = i;
+            _mean.CopyValueFrom(list);
             Time = list.TimeI(i);
             Error = list.ErrorI(i);
             return this;
@@ -139,19 +149,19 @@ namespace CommonTypes
         {
             return _mean.CloneMean(err);
         }
-        public IMom CloneMom()
+        public IMean CloneMom()
         {
             return _mean.CloneMom(Time, Error);
         }
-        public IMom CloneMom(ErrMom err)
+        public IMean CloneMom(ErrMom err)
         {
             return _mean.CloneMom(Time, err);
         }
-        public IMom CloneMom(DateTime time)
+        public IMean CloneMom(DateTime time)
         {
             return _mean.CloneMom(time, Error);
         }
-        public IMom CloneMom(DateTime time, ErrMom err)
+        public IMean CloneMom(DateTime time, ErrMom err)
         {
             return _mean.CloneMom(time, err);
         }
@@ -170,14 +180,15 @@ namespace CommonTypes
         public double RealI(int i) { return Real; }
         public DateTime DateI(int i) { return Date; }
         public string StringI(int i) { return String;  }
+        public object ObjectI(int i) { return Object; }
         public void ValueToRecI(IRecordAdd rec, string field, int i) { ValueToRec(rec, field); }
         public IMean CloneMeanI(int i) { return CloneMean(); }
         public IMean CloneMeanI(int i, ErrMom err) { return CloneMean(err); }
-        public IMom CloneMomI(int i, DateTime time) { return CloneMom(time); }
-        public IMom CloneMomI(int i, DateTime time, ErrMom err) { return CloneMom(time, err); }
+        public IMean CloneMomI(int i) { return CloneMom(); }
+        public IMean CloneMomI(int i, ErrMom err) { return CloneMom(err); }
+        public IMean CloneMomI(int i, DateTime time) { return CloneMom(time); }
+        public IMean CloneMomI(int i, DateTime time, ErrMom err) { return CloneMom(time, err); }
         public IMean MeanI(int i) { return this; }
         public DateTime TimeI(int i) { return Time; }
-        public IMom CloneMomI(int i) { return CloneMom(); }
-        public IMom CloneMomI(int i, ErrMom err) { return CloneMom(err); }
     }
 }

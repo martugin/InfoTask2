@@ -38,13 +38,13 @@ namespace CommonTypes
         protected abstract string FunsWhereCondition { get; }
 
         //Создание расчетной функции
-        protected abstract FunCalcBase CreateFun(string code, //Код реализации функции
+        protected abstract CalcBaseFun CreateFun(string code, //Код реализации функции
                                                                   string ftype, //Тип делегата функции
                                                                   int errNum); //Номер ошибки
 
         //Словарь перегрузок функций, ключи - коды реализаций
-        private readonly DicS<FunCalcBase> _funs = new DicS<FunCalcBase>();
-        public DicS<FunCalcBase> Funs { get { return _funs; } }
+        private readonly DicS<CalcBaseFun> _funs = new DicS<CalcBaseFun>();
+        public DicS<CalcBaseFun> Funs { get { return _funs; } }
 
         //Пул ошибок
         protected ErrMomPool ErrPool { get; private set; }
@@ -54,7 +54,7 @@ namespace CommonTypes
         protected abstract IContextable Contextable { get; }
 
         //Текущая вычисляемая функция
-        public FunCalcBase CurFun { private get; set; }
+        public CalcBaseFun CurFun { get; set; }
         
         //Добавить особую ошибку в заданный MomEdit
         public void PutErr(MomEdit mom, 

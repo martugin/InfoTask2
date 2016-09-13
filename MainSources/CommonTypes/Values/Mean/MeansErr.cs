@@ -8,7 +8,7 @@ namespace CommonTypes
     {
         public override ErrMom Error { get; internal set; }
         
-        public MeanErrBool(bool b, ErrMom err = null) : base(b)
+        public MeanErrBool(bool b, ErrMom err) : base(b)
         {
             Error = err;
         }
@@ -21,7 +21,7 @@ namespace CommonTypes
     {
         public override ErrMom Error { get; internal set; }
 
-        public MeanErrInt(int i, ErrMom err = null) : base(i)
+        public MeanErrInt(int i, ErrMom err) : base(i)
         {
             Error = err;
         }
@@ -34,7 +34,7 @@ namespace CommonTypes
     {
         public override ErrMom Error { get; internal set; }
 
-        public MeanErrReal(double r, ErrMom err = null) : base(r)
+        public MeanErrReal(double r, ErrMom err) : base(r)
         {
             Error = err;
         }
@@ -47,7 +47,7 @@ namespace CommonTypes
     {
         public override ErrMom Error { get; internal set; }
 
-        public MeanErrTime(DateTime t, ErrMom err = null) : base(t)
+        public MeanErrTime(DateTime t, ErrMom err) : base(t)
         {
             Error = err;
         }
@@ -60,7 +60,7 @@ namespace CommonTypes
     {
         public override ErrMom Error { get; internal set; }
 
-        public MeanErrString(string s, ErrMom err = null) : base(s)
+        public MeanErrString(string s, ErrMom err) : base(s)
         {
             Error = err;
         }
@@ -73,7 +73,7 @@ namespace CommonTypes
     {
         public override ErrMom Error { get; internal set; }
 
-        public MeanErrValue(ErrMom err = null)
+        public MeanErrValue(ErrMom err)
         {
             Error = err;
         }

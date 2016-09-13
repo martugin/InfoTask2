@@ -17,9 +17,9 @@ namespace Generator
         }
 
         //Создание функции
-        protected override FunCalcBase CreateFun(string code, string ftype, int errNum)
+        protected override CalcBaseFun CreateFun(string code, string ftype, int errNum)
         {
-            return new ScalarGenFunction(this, code, errNum);
+            return new ScalarGenFun(this, code, errNum);
         }
     }
 }

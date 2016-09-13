@@ -58,7 +58,7 @@
     <Compile Include="Exprs\NodeIf.cs" />
     <Compile Include="Exprs\NodesVar.cs" />
     <Compile Include="Exprs\NodeWhile.cs" />
-    <Compile Include="ExprsFuncs\ScalarGenFunction.cs" />
+    <Compile Include="ExprsFuncs\ScalarGenFun.cs" />
     <Compile Include="Fields\NodeOver.cs" />
     <Compile Include="Fields\FieldsParsing.cs" />
     <Compile Include="Fields\FieldsVisitor.cs" />

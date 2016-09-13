@@ -8,7 +8,7 @@ namespace CommonTypes
     {
         //Конструктор 
         internal FunOverload(FunCompile fun, //Функция-владелец
-                             IRecordRead rec) //Рекордсет с таблицей FunctionsOverloads
+                                        IRecordRead rec) //Рекордсет с таблицей FunctionsOverloads
         {
             _funCompile = fun;
 

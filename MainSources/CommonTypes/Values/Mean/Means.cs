@@ -51,7 +51,7 @@ namespace CommonTypes
 
         public override IMean CloneMean()
         {
-            if (Error != null) return new MeanBool(_bool);
+            if (Error == null) return new MeanBool(_bool);
             return new MeanErrBool(_bool, Error);
         }
 
@@ -60,13 +60,13 @@ namespace CommonTypes
             return new MeanErrBool(_bool, Error.Add(err));
         }
 
-        public override IMom CloneMom(DateTime time)
+        public override IMean CloneMom(DateTime time)
         {
-            if (Error != null) return CloneMom(time, Error);
-            return new MomBool(time, _bool);
+            if (Error == null) return new MomBool(time, _bool);
+            return new MomErrBool(time, _bool, Error);
         }
 
-        public override IMom CloneMom(DateTime time, ErrMom err)
+        public override IMean CloneMom(DateTime time, ErrMom err)
         {
             return new MomErrBool(time, _bool, Error.Add(err));
         }
@@ -140,12 +140,13 @@ namespace CommonTypes
             return new MeanErrInt(_int, Error.Add(err));
         }
 
-        public override IMom CloneMom(DateTime time)
+        public override IMean CloneMom(DateTime time)
         {
-            if (Error != null) return CloneMom(time, Error);
-            return new MomInt(time, _int);
+            if (Error == null) return new MomInt(time, _int);
+            return new MomErrInt(time, _int, Error);
         }
-        public override IMom CloneMom(DateTime time, ErrMom err)
+
+        public override IMean CloneMom(DateTime time, ErrMom err)
         {
             return new MomErrInt(time, _int, Error.Add(err));
         }
@@ -220,13 +221,13 @@ namespace CommonTypes
             return new MeanErrReal(_real, Error.Add(err));
         }
 
-        public override IMom CloneMom(DateTime time)
+        public override IMean CloneMom(DateTime time)
         {
-            if (Error != null) return CloneMom(time, Error);
-            return new MomReal(time, _real);
+            if (Error == null) return new MomReal(time, _real);
+            return new MomErrReal(time, _real, Error);
         }
 
-        public override IMom CloneMom(DateTime time, ErrMom err)
+        public override IMean CloneMom(DateTime time, ErrMom err)
         {
             return new MomErrReal(time, _real, Error.Add(err));
         }
@@ -305,13 +306,13 @@ namespace CommonTypes
             return new MeanErrString(_string, Error.Add(err));
         }
 
-        public override IMom CloneMom(DateTime time)
+        public override IMean CloneMom(DateTime time)
         {
-            if (Error != null) return CloneMom(time, Error);
-            return new MomString(time, _string);
+            if (Error == null) return new MomString(time, _string);
+            return new MomErrString(time, _string, Error);
         }
 
-        public override IMom CloneMom(DateTime time, ErrMom err)
+        public override IMean CloneMom(DateTime time, ErrMom err)
         {
             return new MomErrString(time, _string, Error.Add(err));
         }
@@ -366,7 +367,7 @@ namespace CommonTypes
 
         public override IMean CloneMean()
         {
-            if (Error != null) return new MeanTime(_date);
+            if (Error == null) return new MeanTime(_date);
             return new MeanErrTime(_date, Error);
         }
 
@@ -375,13 +376,13 @@ namespace CommonTypes
             return new MeanErrTime(_date, Error.Add(err));
         }
 
-        public override IMom CloneMom(DateTime time)
+        public override IMean CloneMom(DateTime time)
         {
-            if (Error != null) return CloneMom(time, Error);
-            return new MomTime(time, _date);
+            if (Error == null) return new MomTime(time, _date);
+            return new MomErrTime(time, _date, Error);
         }
 
-        public override IMom CloneMom(DateTime time, ErrMom err)
+        public override IMean CloneMom(DateTime time, ErrMom err)
         {
             return new MomErrTime(time, _date, Error.Add(err));
         }
@@ -420,12 +421,12 @@ namespace CommonTypes
         {
             return new MeanErrValue(Error.Add(err));
         }
-        public override IMom CloneMom(DateTime time)
+        public override IMean CloneMom(DateTime time)
         {
-            if (Error != null) return CloneMom(time, Error);
-            return new MomValue();
+            if (Error == null) return new MomValue(time);
+            return new MomErrValue(time, Error);
         }
-        public override IMom CloneMom(DateTime time, ErrMom err)
+        public override IMean CloneMom(DateTime time, ErrMom err)
         {
             return new MomErrValue(time, Error.Add(err));
         }

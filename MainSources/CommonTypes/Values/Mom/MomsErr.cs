@@ -13,11 +13,6 @@ namespace CommonTypes
             Error = err;
         }
         internal MomErrBool() {}
-
-        public override IMom CloneMom()
-        {
-            return new MomErrBool(Time, Boolean, Error);
-        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -31,11 +26,6 @@ namespace CommonTypes
             Error = err;
         }
         internal MomErrInt() { }
-
-        public override IMom CloneMom()
-        {
-            return new MomErrInt(Time, Integer, Error);
-        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -49,11 +39,6 @@ namespace CommonTypes
             Error = err;
         }
         internal MomErrReal() { }
-
-        public override IMom CloneMom()
-        {
-            return new MomErrReal(Time, Real, Error);
-        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -68,11 +53,6 @@ namespace CommonTypes
             Error = err;
         }
         internal MomErrString() { }
-
-        public override IMom CloneMom()
-        {
-            return new MomErrString(Time, String, Error);
-        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -87,11 +67,6 @@ namespace CommonTypes
             Error = err;
         }
         internal MomErrTime() { }
-
-        public override IMom CloneMom()
-        {
-            return new MomErrTime(Time, Time, Error);
-        }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -105,11 +80,6 @@ namespace CommonTypes
             Error = err;
         }
         internal MomErrWeighted() { }
-
-        public override IMom CloneMom()
-        {
-            return new MomErrWeighted(Time, Real, Weight, Error);
-        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -123,10 +93,5 @@ namespace CommonTypes
             Error = err;
         }
         internal MomErrValue() { }
-
-        public override IMom CloneMom()
-        {
-            return new MomErrValue(Time, Error);
-        }
     }
 }

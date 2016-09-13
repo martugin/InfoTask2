@@ -3,9 +3,9 @@
 namespace CommonTypes
 {
     //Одна перегрузка функции, базовый класс для функций разных типов
-    public abstract class FunCalcBase
+    public abstract class CalcBaseFun
     {
-        protected FunCalcBase(FunctionsBase funs, //Ссылка на класс реализации функций
+        protected CalcBaseFun(FunctionsBase funs, //Ссылка на класс реализации функций
                                     string code, //Код реализации функции
                                     int errNum) //Стандартный номер ошибки
         {

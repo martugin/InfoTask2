@@ -21,7 +21,7 @@ namespace ComClients
         public string Inf { get; private set; }
 
         //Текущее значение
-        internal IMom Mom { get; set; }
+        internal IMean Mom { get; set; }
 
         //Время значения
         public DateTime Time()

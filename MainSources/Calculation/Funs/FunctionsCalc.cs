@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using BaseLibrary;
 using CommonTypes;
 
@@ -14,14 +13,14 @@ namespace Calculation
         }
 
         //Создание функций разных типов
-        protected override FunCalcBase CreateFun(string code, string ftype, int errNum)
+        protected override CalcBaseFun CreateFun(string code, string ftype, int errNum)
         {
             switch (ftype)
             {
                 case "Scalar":
-                    return new ScalarFunction(this, code, errNum);
+                    return new ScalarFun(this, code, errNum);
                 case "Const":
-                    return new ConstFunction(this, code, errNum);
+                    return new ConstFun(this, code, errNum);
             }
             return null;
         }
@@ -49,25 +48,25 @@ namespace Calculation
         }
 
         //Вычисление скалярной функции для списков мгновенных значений
-        internal IMomListRead CalcScalar(DataType dataType, //Возвращаемый тип данных
-                                                            IMeanList[] par, //Список аргументов
-                                                            Action<IMean[]> action) //Действие, выполняющее вычисление для одного момента времени
+        internal IMean CalcScalar(DataType dataType, //Возвращаемый тип данных
+                                                IMean[] par, //Список аргументов
+                                                bool isComplex, //При вычислении используются флаги значений аргументов
+                                                Action<IMean[], bool[]> action) //Действие, выполняющее вычисление для одного момента времени
         {
             SetScalarDataType(dataType);
             var mpar = new IMean[par.Length];
-            var lists = new List<ScalarPar>();
-
-            bool isMom = true;
+            var cpar = new bool[par.Length];
+            
+            bool isMom = !isComplex;
             for (int i = 0; i < par.Length; i++)
             {
-                var mean = par[i] as IMean;
+                var mean = par[i] as Mean;
                 if (mean != null) mpar[i] = mean;
                 else
                 {
                     isMom = false;
-                    var moms = (IMomListRead)par[i];
-                    if (moms.Count == 0) return MFactory.NewList(dataType);
-                    lists.Add(new ScalarPar(moms, i));
+                    if (par[i].Count == 0 && !isComplex) 
+                        return MFactory.NewList(dataType);
                 }
             }
 
@@ -75,87 +74,31 @@ namespace Calculation
             {
                 DateTime t = Different.MinDate;
                 foreach (var mean in mpar)
-                    if (mean is IMom && ((IMom)mean).Time > t)
-                        t = ((IMom)mean).Time;
+                    if (mean.Time > t)
+                        t = mean.Time;
                 if (t == Different.MinDate) t = BeginPeriod;
-                CalcScalarFun(mpar, () => action(mpar));
+                CalcScalarFun(mpar, () => action(mpar, cpar));
                 return ScalarRes.CloneMom(t);
             }
-
-
+            
             //Список значений
             var rlist = MFactory.NewList(dataType);
             while (true)
             {
                 DateTime ctime = Different.MaxDate;
-                foreach (var list in lists)
+                foreach (var list in par)
                     if (list.NextTime < ctime) ctime = list.NextTime;
                 if (ctime == Different.MaxDate) break;
 
-                foreach (var list in lists)
+                for (int i = 0; i < par.Length; i++)
                 {
-                    if (list.NextTime == ctime)
-                        list.Pos++;
-                    mpar[list.Num] = ((IMomListRead)par[list.Num]). (Interpolation, list.Pos, ctime);
+                    var list = par[i];
+                    cpar[i] = list.NextTime == ctime;
+                    if (cpar[i]) list.CurNum++;
+                    mpar[i] = list.CloneMean();
                 }
-                rlist.AddMom(CalcScalarVal(dataType, scalar, complex, objec, commonVal, mpar, cpar));
-            }
-            return rlist;
-        }
-
-        //Вычисление скалярной функции для списков мгновенных значений
-        internal IMomList CalcScalarList(DataType dataType, //Возвращаемый тип данных
-                                                         IMeanList[] par, //Список аргументов
-                                                         bool isComplex, //При вычислении используются флаги значений аргументов
-                                                         Action<IMean[], bool[]> action) //Действие, выполняющее вычисление для одного момента времени
-        {
-            SetScalarDataType(dataType);
-            var mpar = new IMean[par.Length];
-            var cpar = new bool[par.Length];
-            var lists = new List<ScalarPar>();
-
-            bool isMom = true;
-            for (int i = 0; i < par.Length; i++)
-            {
-                var mean = par[i] as IMean;
-                if (mean != null) mpar[i] = mean;
-                else
-                {
-                    isMom = false;
-                    var moms = (IMomListRead)par[i];
-                    if (moms.Count == 0 && !isComplex)
-                        return MFactory.NewList(dataType);
-                    lists.Add(new ScalarPar(moms, i));
-                }
-            }
-
-            if (isMom) //Одно значение
-            {
                 CalcScalarFun(mpar, () => action(mpar, cpar));
-            }
-                
-
-            //Список значений
-            var rlist = new MomList(dataType, MaxErr(par));
-            while (true)
-            {
-                for (int i = 0; i < cpar.Length; i++)
-                    cpar[i] = false;
-                DateTime ctime = Different.MaxDate;
-                foreach (var list in lists)
-                    if (list.NextTime < ctime) ctime = list.NextTime;
-                if (ctime == Different.MaxDate) break;
-
-                foreach (var list in lists)
-                {
-                    if (list.NextTime == ctime)
-                    {
-                        list.Pos++;
-                        cpar[list.Num] = true;
-                    }
-                    mpar[list.Num] = ((MomList)par[list.Num]).Interpolation(Interpolation, list.Pos, ctime);
-                }
-                rlist.AddMom(CalcScalarVal(dataType, scalar, complex, objec, commonVal, mpar, cpar));
+                rlist.AddMom(ScalarRes.CloneMom(ctime));
             }
             return rlist;
         }

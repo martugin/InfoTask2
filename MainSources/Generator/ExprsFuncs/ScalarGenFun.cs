@@ -3,9 +3,9 @@
 namespace Generator
 {
     //Скалярная функция для генерации
-    internal class ScalarGenFunction : FunScalarBase
+    internal class ScalarGenFun : ScalarBaseFun
     {
-        internal ScalarGenFunction(FunctionsBase funs, string code, int errNum) 
+        internal ScalarGenFun(FunctionsBase funs, string code, int errNum) 
             : base(funs, code, errNum) { }
 
         //Расчет значения

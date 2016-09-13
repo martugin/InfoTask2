@@ -19,7 +19,7 @@ namespace CommonTypes
         public string Code { get { return _means["Code"].String; } }
         public int Num { get { return _means["Num"].Integer; } }
         //Тип
-        public string Type { get { return _means["Type"].String; } }
+        public string Type { get { return _means["GenType"].String; } }
 
         //Словарь значений, ключи - коды полей
         private readonly DicS<Mean> _means = new DicS<Mean>();

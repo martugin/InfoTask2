@@ -44,7 +44,6 @@ namespace ProvidersLibrary
             else if (funName == "Average") DataType = DataType.Real;
             else DataType = _initialSignal.DataType;
             MList = MFactory.NewList(DataType);
-            MomList = new MomListRead(MList);
         }
 
         //Взятие бита, pars[0] - номер бита
@@ -111,7 +110,7 @@ namespace ProvidersLibrary
         public void Min() { Agregate(MinScalar); }
         private void MinScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
-            if (mlist.Mean(i).ValueLess(res))
+            if (mlist.MeanI(i).ValueLess(res))
             {
                 res.CopyValueFrom(mlist, i);
                 res.Error = mlist.ErrorI(i);
@@ -122,7 +121,7 @@ namespace ProvidersLibrary
         public void Max() { Agregate(MaxScalar); }
         private void MaxScalar(MomEdit res, MomList mlist, int i, DateTime t)
         {
-            if (res.ValueLess(mlist.Mean(i)))
+            if (res.ValueLess(mlist.MeanI(i)))
             {
                 res.CopyValueFrom(mlist, i);
                 res.Error = mlist.ErrorI(i);
@@ -170,7 +169,7 @@ namespace ProvidersLibrary
             }
         }
 
-        private void AddUniformMom(IMomListRead fromList, MomList toList, int i, DateTime t)
+        private void AddUniformMom(IMean fromList, MomList toList, int i, DateTime t)
         {
             if (i < fromList.Count && fromList.TimeI(i) == t) return;
             toList.AddMom(fromList.CloneMomI(i == 0 ? 0 : i - 1, t));

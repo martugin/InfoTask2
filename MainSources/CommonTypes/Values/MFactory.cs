@@ -136,71 +136,71 @@ namespace CommonTypes
 
         //NewMom
         #region
-        public static IMom NewMom(DateTime time, bool b, ErrMom err = null)
+        public static IMean NewMom(DateTime time, bool b, ErrMom err = null)
         {
             return err == null ? new MomBool(time, b) : new MomErrBool(time, b, err);
         }
-        public static IMom NewMom(DataType dtype, DateTime time, bool b, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, bool b, ErrMom err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Boolean = b;
-            return (IMom) mom;
+            return (IMean) mom;
         }
 
-        public static IMom NewMom(DateTime time, int i, ErrMom err = null)
+        public static IMean NewMom(DateTime time, int i, ErrMom err = null)
         {
             return err == null ? new MomInt(time, i) : new MomErrInt(time, i, err);
         }
-        public static IMom NewMom(DataType dtype, DateTime time, int i, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, int i, ErrMom err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Integer = i;
-            return (IMom)mom;
+            return (IMean)mom;
         }
 
-        public static IMom NewMom(DateTime time, double r, ErrMom err = null)
+        public static IMean NewMom(DateTime time, double r, ErrMom err = null)
         {
             return err == null ? new MomReal(time, r) : new MomErrReal(time, r, err);
         }
-        public static IMom NewMom(DataType dtype, DateTime time, double r, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, double r, ErrMom err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Real = r;
-            return (IMom)mom;
+            return (IMean)mom;
         }
 
-        public static IMom NewMom(DateTime time, string s, ErrMom err = null)
+        public static IMean NewMom(DateTime time, string s, ErrMom err = null)
         {
             return err == null ? new MomString(time, s) : new MomErrString(time, s, err);
         }
-        public static IMom NewMom(DataType dtype, DateTime time, string s, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, string s, ErrMom err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.String = s;
-            return (IMom)mom;
+            return (IMean)mom;
         }
 
-        public static IMom NewMom(DateTime time, DateTime d, ErrMom err = null)
+        public static IMean NewMom(DateTime time, DateTime d, ErrMom err = null)
         {
             return err == null ? new MomTime(time, d) : new MomErrTime(time, d, err);
         }
-        public static IMom NewMom(DataType dtype, DateTime time, DateTime d, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, DateTime d, ErrMom err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Date = d;
-            return (IMom)mom;
+            return (IMean)mom;
         }
 
-        public static IMom NewMom(DataType dtype, DateTime time, object ob, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, object ob, ErrMom err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Object = ob;
-            return (IMom)mom;
+            return (IMean)mom;
         }
 
-        internal static IMom NewMom(DataType dtype, DateTime time, ErrMom err = null)
+        internal static IMean NewMom(DataType dtype, DateTime time, ErrMom err = null)
         {
-            return (IMom)CreateMom(dtype, time, err);
+            return (IMean)CreateMom(dtype, time, err);
         }
 
         private static Mean CreateMom(DataType dtype, DateTime time, ErrMom err)

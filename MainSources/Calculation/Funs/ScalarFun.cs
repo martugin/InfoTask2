@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CommonTypes;
@@ -9,14 +10,16 @@ namespace Calculation
     internal interface IFunction
     {
         //Вычислить значение
-        IVal Calculate(DataType resultType, IVal[] par);
+        IVal Calculate(DataType resultType, //Тип данных результата
+                             IEnumerable<IVal> par, //Входные параметры
+                             FunData funData); //Значения с предыдущего периода
     }
 
     //---------------------------------------------------------------------------------------------------
     //Константа
-    internal class ConstFunction : FunCalcBase, IFunction
+    internal class ConstFun : CalcBaseFun, IFunction
     {
-        public ConstFunction(FunctionsCalc funs, string code, int errNum)
+        public ConstFun(FunctionsCalc funs, string code, int errNum)
             : base(funs, code, errNum) { }
 
         protected override void CreateDelegateInstance(FunctionsBase funs, MethodInfo met)
@@ -29,7 +32,8 @@ namespace Calculation
         //Ссылка на реализацию функции
         private ConstDelegate _fun;
 
-        public IVal Calculate(DataType resultType, IVal[] par)
+        //Вычислить значение
+        public IVal Calculate(DataType resultType, IEnumerable<IVal> par, FunData funData)
         {
             return _fun();
         }
@@ -37,26 +41,25 @@ namespace Calculation
 
     //---------------------------------------------------------------------------------------------------
     //Скалярная функция расчета
-    internal class ScalarFunction : FunScalarBase, IFunction
+    internal class ScalarFun : ScalarBaseFun, IFunction
     {
-        public ScalarFunction(FunctionsCalc funs, string code, int errNum) 
+        public ScalarFun(FunctionsCalc funs, string code, int errNum) 
             : base(funs, code, errNum) { }
 
         //Вычислить значение
-        public IVal Calculate(DataType resultType, IVal[] par)
+        public IVal Calculate(DataType resultType, IEnumerable<IVal> par, FunData funData)
         {
             var fs = (FunctionsCalc)Functions;
-            return fs.CalcScalarList(resultType, 
-                                                par.Cast<IMeanList>().ToArray(), false,
-                                                (moms, flags) => Fun(moms));
+            return fs.CalcScalar(resultType, par.Cast<IMean>().ToArray(), false,
+                                           (moms, flags) => Fun(moms));
         }
     }
 
     //---------------------------------------------------------------------------------------------------
     //Скалярная функция расчетас указанием параметров, используемых в каждой точке
-    internal class ScalarComplexFunction : FunCalcBase, IFunction
+    internal class ScalarComplexFun : CalcBaseFun, IFunction
     {
-        public ScalarComplexFunction(FunctionsCalc funs, string code, int errNum)
+        public ScalarComplexFun(FunctionsCalc funs, string code, int errNum)
             : base(funs, code, errNum) { }
 
         //Делегат и экземпляр
@@ -69,20 +72,19 @@ namespace Calculation
         }
         
         //Вычислить значение
-        public IVal Calculate(DataType resultType, IVal[] par)
+        public IVal Calculate(DataType resultType, IEnumerable<IVal> par, FunData funData)
         {
             var fs = (FunctionsCalc)Functions;
-            return fs.CalcScalarList(resultType,
-                                                par.Cast<IMeanList>().ToArray(), true, 
-                                                (moms, flags) => _fun(moms, flags));
+            return fs.CalcScalar(resultType, par.Cast<IMean>().ToArray(), true, 
+                                           (moms, flags) => _fun(moms, flags));
         }
     }
 
     //---------------------------------------------------------------------------------------------------
     //Скалярная функция расчетас указанием параметров, используемых в каждой точке
-    internal class ScalarObjectFunction : FunCalcBase, IFunction
+    internal class ScalarObjectFun : CalcBaseFun, IFunction
     {
-        public ScalarObjectFunction(FunctionsCalc funs, string code, int errNum)
+        public ScalarObjectFun(FunctionsCalc funs, string code, int errNum)
             : base(funs, code, errNum) { }
 
         //Делегат и экземпляр
@@ -95,13 +97,14 @@ namespace Calculation
         }
 
         //Вычислить значение
-        public IVal Calculate(DataType resultType, IVal[] par)
+        public IVal Calculate(DataType resultType, IEnumerable<IVal> par, FunData funData)
         {
+            var arr = par.ToArray();
             var fs = (FunctionsCalc)Functions;
-            var args = new IMeanList[par.Length-1];
-            for (int i = 1; i < par.Length; i++)
-                args[i] = (IMeanList) par[i];
-            return fs.CalcScalarList(resultType, args, false, (moms, flags) => _fun(par[0], moms));
+            var args = new IMean[arr.Length-1];
+            for (int i = 1; i < arr.Length; i++)
+                args[i] = (IMean) arr[i];
+            return fs.CalcScalar(resultType, args, false, (moms, flags) => _fun(arr[0], moms));
         }
     }
 }
