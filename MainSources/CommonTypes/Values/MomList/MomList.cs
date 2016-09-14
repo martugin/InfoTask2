@@ -34,7 +34,7 @@ namespace CommonTypes
         public int CurNum { get; set; }
         public DateTime NextTime { get
         {
-            if (CurNum >= Count - 1) return DateTime.MaxValue;
+            if (CurNum >= Count - 1) return Different.MaxDate;
             return TimeI(CurNum + 1);
         } 
         }
@@ -206,50 +206,50 @@ namespace CommonTypes
         //Очистка самих значений
         protected abstract void ClearMeans();
 
-        public IMean CloneMeanI(int i)
+        public IMean ToMeanI(int i)
         {
-            return MeanI(i).CloneMean(ErrorI(i));
+            return MeanI(i).ToMean(ErrorI(i));
         }
 
-        public IMean CloneMeanI(int i, ErrMom err)
+        public IMean ToMeanI(int i, ErrMom err)
         {
-            return MeanI(i).CloneMean(ErrorI(i).Add(err));
+            return MeanI(i).ToMean(ErrorI(i).Add(err));
         }
 
-        public IMean CloneMomI(int i)
+        public IMean ToMomI(int i)
         {
-            return MeanI(i).CloneMom(TimeI(i), ErrorI(i));
+            return MeanI(i).ToMom(TimeI(i), ErrorI(i));
         }
 
-        public IMean CloneMomI(int i, ErrMom err)
+        public IMean ToMomI(int i, ErrMom err)
         {
-            return MeanI(i).CloneMom(TimeI(i), ErrorI(i).Add(err));
+            return MeanI(i).ToMom(TimeI(i), ErrorI(i).Add(err));
         }
 
-        public IMean CloneMomI(int i, DateTime time)
+        public IMean ToMomI(int i, DateTime time)
         {
-            return MeanI(i).CloneMom(time, ErrorI(i));
+            return MeanI(i).ToMom(time, ErrorI(i));
         }
 
-        public IMean CloneMomI(int i, DateTime time, ErrMom err)
+        public IMean ToMomI(int i, DateTime time, ErrMom err)
         {
-            return MeanI(i).CloneMom(time, ErrorI(i).Add(err));
+            return MeanI(i).ToMom(time, ErrorI(i).Add(err));
         }
 
-        public IMean CloneMean() { return CloneMeanI(CurNum);}
-        public IMean CloneMean(ErrMom err) { return CloneMeanI(CurNum, err); }
-        public IMean CloneMom() { return CloneMomI(CurNum); }
-        public IMean CloneMom(ErrMom err) { return CloneMomI(CurNum, err); }
-        public IMean CloneMom(DateTime time) { return CloneMomI(CurNum, time); }
-        public IMean CloneMom(DateTime time, ErrMom err) { return CloneMomI(CurNum, time, err); }
+        public IMean ToMean() { return ToMeanI(CurNum);}
+        public IMean ToMean(ErrMom err) { return ToMeanI(CurNum, err); }
+        public IMean ToMom() { return ToMomI(CurNum); }
+        public IMean ToMom(ErrMom err) { return ToMomI(CurNum, err); }
+        public IMean ToMom(DateTime time) { return ToMomI(CurNum, time); }
+        public IMean ToMom(DateTime time, ErrMom err) { return ToMomI(CurNum, time, err); }
         
         //Последнее значение
-        public IMean LastMean
+        public IMean LastMom
         {
             get
             {
                 if (Count == 0) return null;
-                return CloneMomI(_times.Count - 1);
+                return ToMomI(_times.Count - 1);
             }
         }
         

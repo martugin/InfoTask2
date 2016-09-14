@@ -141,29 +141,29 @@ namespace CommonTypes
         }
 
         //Создание нового значения на основе этого
-        public IMean CloneMean()
+        public IMean ToMean()
         {
-            return _mean.CloneMean();
+            return _mean.ToMean();
         }
-        public IMean CloneMean(ErrMom err)
+        public IMean ToMean(ErrMom err)
         {
-            return _mean.CloneMean(err);
+            return _mean.ToMean(err);
         }
-        public IMean CloneMom()
+        public IMean ToMom()
         {
-            return _mean.CloneMom(Time, Error);
+            return _mean.ToMom(Time, Error);
         }
-        public IMean CloneMom(ErrMom err)
+        public IMean ToMom(ErrMom err)
         {
-            return _mean.CloneMom(Time, err);
+            return _mean.ToMom(Time, err);
         }
-        public IMean CloneMom(DateTime time)
+        public IMean ToMom(DateTime time)
         {
-            return _mean.CloneMom(time, Error);
+            return _mean.ToMom(time, Error);
         }
-        public IMean CloneMom(DateTime time, ErrMom err)
+        public IMean ToMom(DateTime time, ErrMom err)
         {
-            return _mean.CloneMom(time, err);
+            return _mean.ToMom(time, err);
         }
 
         //Типы данных и значения
@@ -171,7 +171,7 @@ namespace CommonTypes
         public override ICalcVal CalcValue { get { return this; } }
         public override ErrMom TotalError { get { return Error; } }
         public int Count { get { return 1; } }
-        public IMean LastMean { get { return this; } }
+        public IMean LastMom { get { return this; } }
 
         //Методы из MomList
         public ErrMom ErrorI(int i) {return Error; }
@@ -182,12 +182,12 @@ namespace CommonTypes
         public string StringI(int i) { return String;  }
         public object ObjectI(int i) { return Object; }
         public void ValueToRecI(IRecordAdd rec, string field, int i) { ValueToRec(rec, field); }
-        public IMean CloneMeanI(int i) { return CloneMean(); }
-        public IMean CloneMeanI(int i, ErrMom err) { return CloneMean(err); }
-        public IMean CloneMomI(int i) { return CloneMom(); }
-        public IMean CloneMomI(int i, ErrMom err) { return CloneMom(err); }
-        public IMean CloneMomI(int i, DateTime time) { return CloneMom(time); }
-        public IMean CloneMomI(int i, DateTime time, ErrMom err) { return CloneMom(time, err); }
+        public IMean ToMeanI(int i) { return ToMean(); }
+        public IMean ToMeanI(int i, ErrMom err) { return ToMean(err); }
+        public IMean ToMomI(int i) { return ToMom(); }
+        public IMean ToMomI(int i, ErrMom err) { return ToMom(err); }
+        public IMean ToMomI(int i, DateTime time) { return ToMom(time); }
+        public IMean ToMomI(int i, DateTime time, ErrMom err) { return ToMom(time, err); }
         public IMean MeanI(int i) { return this; }
         public DateTime TimeI(int i) { return Time; }
     }

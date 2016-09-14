@@ -78,7 +78,7 @@ namespace Calculation
                         t = mean.Time;
                 if (t == Different.MinDate) t = BeginPeriod;
                 CalcScalarFun(mpar, () => action(mpar, cpar));
-                return ScalarRes.CloneMom(t);
+                return ScalarRes.ToMom(t);
             }
             
             //Список значений
@@ -95,10 +95,10 @@ namespace Calculation
                     var list = par[i];
                     cpar[i] = list.NextTime == ctime;
                     if (cpar[i]) list.CurNum++;
-                    mpar[i] = list.CloneMean();
+                    mpar[i] = list.ToMean();
                 }
                 CalcScalarFun(mpar, () => action(mpar, cpar));
-                rlist.AddMom(ScalarRes.CloneMom(ctime));
+                rlist.AddMom(ScalarRes.ToMom(ctime));
             }
             return rlist;
         }

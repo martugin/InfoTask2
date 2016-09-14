@@ -15,10 +15,10 @@ namespace Calculation
             var prev = data.ParamsValues[0];
             list.CurNum = 0;
             if (prev == null) res.AddMom(list);
-            IMean m = prev ?? list.CloneMean();
+            IMean m = prev ?? list.ToMean();
             for (list.CurNum = 0; list.CurNum < list.Count; list.CurNum++)
                 if (Math.Abs(list.Real - m.Real) >= dif.Real)
-                    res.AddMom(m = list.CloneMean());
+                    res.AddMom(m = list.ToMean());
             data.ParamsValues[0] = m;
             return res;
         }

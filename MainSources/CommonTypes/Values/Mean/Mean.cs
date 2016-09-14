@@ -116,19 +116,19 @@ namespace CommonTypes
         public abstract void ValueToRec(IRecordAdd rec, string field);
         public void ValueToRecI(IRecordAdd rec, string field, int i) { ValueToRec(rec, field); }
 
-        public abstract IMean CloneMean();
-        public abstract IMean CloneMean(ErrMom err);
-        public abstract IMean CloneMom(DateTime time);
-        public abstract IMean CloneMom(DateTime time, ErrMom err);
-        public IMean CloneMom() { return CloneMom(Time, Error);}
-        public IMean CloneMom(ErrMom err) { return CloneMom(Time, err); }
+        public abstract IMean ToMean();
+        public abstract IMean ToMean(ErrMom err);
+        public abstract IMean ToMom(DateTime time);
+        public abstract IMean ToMom(DateTime time, ErrMom err);
+        public IMean ToMom() { return ToMom(Time, Error);}
+        public IMean ToMom(ErrMom err) { return ToMom(Time, err); }
 
-        public IMean CloneMeanI(int i) { return CloneMean(); }
-        public IMean CloneMeanI(int i, ErrMom err) { return CloneMean(err); }
-        public IMean CloneMomI(int i) { return CloneMom(); }
-        public IMean CloneMomI(int i, ErrMom err) { return CloneMom(err); }
-        public IMean CloneMomI(int i, DateTime time) { return CloneMom(time); }
-        public IMean CloneMomI(int i, DateTime time, ErrMom err) { return CloneMom(time, err); }
+        public IMean ToMeanI(int i) { return ToMean(); }
+        public IMean ToMeanI(int i, ErrMom err) { return ToMean(err); }
+        public IMean ToMomI(int i) { return ToMom(); }
+        public IMean ToMomI(int i, ErrMom err) { return ToMom(err); }
+        public IMean ToMomI(int i, DateTime time) { return ToMom(time); }
+        public IMean ToMomI(int i, DateTime time, ErrMom err) { return ToMom(time, err); }
 
         public override ErrMom TotalError
         {
@@ -136,7 +136,7 @@ namespace CommonTypes
         }
 
         public virtual int Count { get { return 1; } }
-        public virtual IMean LastMean { get { return this; } }
+        public virtual IMean LastMom { get { return this; } }
 
         //Скопировать значение из другого значения
         internal abstract void CopyValueFrom(IMean mean);

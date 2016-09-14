@@ -80,6 +80,17 @@ namespace CommonTypes
         public override DataType DataType { get { return DataType.Weighted; } }
         //Длина интервала
         public double Weight { get; internal set; }
+
+        public override IMean ToMom(DateTime time)
+        {
+            if (Error == null) return new MomWeighted(time, Real, Weight);
+            return new MomErrWeighted(time, Real, Weight, Error);
+        }
+
+        public override IMean ToMom(DateTime time, ErrMom err)
+        {
+            return new MomErrWeighted(time, Real, Weight, Error.Add(err));
+        }
     }
 
     //---------------------------------------------------------------------------------------------------

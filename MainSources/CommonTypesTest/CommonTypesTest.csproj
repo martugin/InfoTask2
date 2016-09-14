@@ -53,6 +53,7 @@
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Values\DataTypeTest.cs" />
     <Compile Include="Values\MeanTest.cs" />
+    <Compile Include="Values\MomListTest.cs" />
     <Compile Include="Values\MomTest.cs" />
   </ItemGroup>
   <ItemGroup>

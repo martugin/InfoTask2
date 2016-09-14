@@ -1,5 +1,4 @@
 ﻿using System;
-using BaseLibrary;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Different = BaseLibrary.Different;
@@ -41,11 +40,41 @@ namespace CommonTypesTest
             var cv = m.CalcValue;
             Assert.AreEqual(DataType.Boolean, cv.DataType);
             Assert.IsNull(cv.TotalError);
-            Assert.IsNotNull(m.LastMean);
-            Assert.AreEqual(true, m.LastMean.Boolean);
+            Assert.IsNotNull(m.LastMom);
+            Assert.AreEqual(true, m.LastMom.Boolean);
+            Assert.AreEqual(d, m.TimeI(0));
+            Assert.IsNull(m.ErrorI(0));
+            Assert.AreEqual(true, m.BooleanI(0));
+            Assert.AreEqual(1, m.IntegerI(0));
+            Assert.AreEqual(1.0, m.RealI(0));
+            Assert.AreEqual("1", m.StringI(0));
+
+            var mn = m.ToMean();
+            Assert.AreEqual(Different.MinDate, mn.Time);
+            Assert.IsNull(mn.Error);
+            Assert.IsNull(mn.TotalError);
+            Assert.AreEqual(true, mn.Boolean);
+            Assert.AreEqual(1, mn.Integer);
+            Assert.AreEqual(1.0, mn.Real);
+            Assert.AreEqual("1", mn.String);
+            Assert.AreEqual(1, mn.Count);
+            Assert.AreEqual(DataType.Boolean, mn.DataType);
+            v = mn.Value;
+            Assert.AreEqual(DataType.Boolean, v.DataType);
+            cv = mn.CalcValue;
+            Assert.AreEqual(DataType.Boolean, cv.DataType);
+            Assert.IsNull(cv.TotalError);
+            Assert.IsNotNull(mn.LastMom);
+            Assert.AreEqual(true, mn.LastMom.Boolean);
+            Assert.AreEqual(Different.MinDate, mn.TimeI(0));
+            Assert.IsNull(mn.ErrorI(0));
+            Assert.AreEqual(true, mn.BooleanI(0));
+            Assert.AreEqual(1, mn.IntegerI(0));
+            Assert.AreEqual(1.0, mn.RealI(0));
+            Assert.AreEqual("1", mn.StringI(0));
 
             var d1 = new DateTime(2016, 06, 16, 11, 26, 00);
-            var m1 = m.CloneMom(d1, err);
+            var m1 = m.ToMom(d1, err);
             Assert.AreEqual(d1, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);
@@ -117,8 +146,8 @@ namespace CommonTypesTest
             Assert.AreEqual(0.0, me.Real);
             Assert.AreEqual("0", me.String);
             Assert.AreEqual(1, me.Count);
-            Assert.IsNotNull(me.LastMean);
-            Assert.AreEqual(false, me.LastMean.Boolean);
+            Assert.IsNotNull(me.LastMom);
+            Assert.AreEqual(false, me.LastMom.Boolean);
         }
 
         [TestMethod]
@@ -144,11 +173,42 @@ namespace CommonTypesTest
             var cv = m.CalcValue;
             Assert.AreEqual(DataType.Integer, cv.DataType);
             Assert.IsNull(cv.TotalError);
-            Assert.IsNotNull(m.LastMean);
-            Assert.AreEqual(24, m.LastMean.Integer);
+            Assert.IsNotNull(m.LastMom);
+            Assert.AreEqual(24, m.LastMom.Integer);
+            Assert.AreEqual(d, m.TimeI(0));
+            Assert.IsNull(m.ErrorI(0));
+            Assert.AreEqual(true, m.BooleanI(0));
+            Assert.AreEqual(24, m.IntegerI(0));
+            Assert.AreEqual(24.0, m.RealI(0));
+            Assert.AreEqual("24", m.StringI(0));
+
+            var mn = m.ToMean(err);
+            Assert.AreEqual(Different.MinDate, mn.Time);
+            Assert.IsNotNull(mn.Error);
+            Assert.IsNotNull(mn.TotalError);
+            Assert.AreEqual(2, mn.Error.Number);
+            Assert.AreEqual("Error", mn.Error.Text);
+            Assert.AreEqual(ErrMomType.Source, mn.Error.ErrType);
+            Assert.AreEqual(true, mn.Boolean);
+            Assert.AreEqual(24, mn.Integer);
+            Assert.AreEqual(24.0, mn.Real);
+            Assert.AreEqual("24", mn.String);
+            Assert.AreEqual(1, mn.Count);
+            Assert.AreEqual(DataType.Integer, m.DataType);
+            Assert.IsNotNull(mn.LastMom);
+            Assert.AreEqual(24, mn.LastMom.Integer);
+            Assert.AreEqual(Different.MinDate, mn.TimeI(0));
+            Assert.IsNotNull(mn.ErrorI(0));
+            Assert.AreEqual(2, mn.ErrorI(0).Number);
+            Assert.AreEqual("Error", mn.ErrorI(0).Text);
+            Assert.AreEqual(ErrMomType.Source, mn.ErrorI(0).ErrType);
+            Assert.AreEqual(true, mn.BooleanI(0));
+            Assert.AreEqual(24, mn.IntegerI(0));
+            Assert.AreEqual(24.0, mn.RealI(0));
+            Assert.AreEqual("24", mn.StringI(0));
 
             var d1 = new DateTime(2016, 06, 16, 11, 26, 00);
-            var m1 = m.CloneMom(d1, err);
+            var m1 = m.ToMom(d1, err);
             Assert.AreEqual(d1, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);
@@ -220,8 +280,8 @@ namespace CommonTypesTest
             Assert.AreEqual(24.0, me.Real);
             Assert.AreEqual("24", me.String);
             Assert.AreEqual(1, me.Count);
-            Assert.IsNotNull(me.LastMean);
-            Assert.AreEqual(24, me.LastMean.Integer);
+            Assert.IsNotNull(me.LastMom);
+            Assert.AreEqual(24, me.LastMom.Integer);
             Assert.IsTrue(m.ValueEquals(me));
             Assert.IsTrue(me.ValueEquals(m));
             Assert.IsFalse(m.ValueLess(me));
@@ -269,11 +329,17 @@ namespace CommonTypesTest
             var cv = m.CalcValue;
             Assert.AreEqual(DataType.Real, cv.DataType);
             Assert.IsNull(cv.TotalError);
-            Assert.IsNotNull(m.LastMean);
-            Assert.AreEqual(2.1, m.LastMean.Real);
-
+            Assert.IsNotNull(m.LastMom);
+            Assert.AreEqual(2.1, m.LastMom.Real);
+            Assert.AreEqual(d, m.TimeI(0));
+            Assert.IsNull(m.ErrorI(0));
+            Assert.AreEqual(true, m.BooleanI(0));
+            Assert.AreEqual(2, m.IntegerI(0));
+            Assert.AreEqual(2.1, m.RealI(0));
+            Assert.AreEqual("2,1", m.StringI(0));
+            
             var d1 = new DateTime(2016, 06, 16, 11, 26, 00);
-            var m1 = m.CloneMom(d1);
+            var m1 = m.ToMom(d1);
             Assert.AreEqual(d1, m1.Time);
             Assert.IsNull(m1.Error);
             Assert.IsNull(m1.TotalError);
@@ -290,6 +356,17 @@ namespace CommonTypesTest
             Assert.IsFalse(m.ValueLess(m1));
             Assert.IsFalse(m1.ValueLess(m));
 
+            var m2 = m1.ToMom();
+            Assert.AreEqual(d1, m1.Time);
+            Assert.IsNull(m2.Error);
+            Assert.IsNull(m2.TotalError);
+            Assert.AreEqual(true, m2.Boolean);
+            Assert.AreEqual(2, m2.Integer);
+            Assert.AreEqual(2.1, m2.Real);
+            Assert.AreEqual("2,1", m2.String);
+            Assert.AreEqual(1, m2.Count);
+            Assert.AreEqual(DataType.Real, m2.DataType);
+            
             m = MFactory.NewMom(d1, -1.3e24, err);
             Assert.IsNotNull(m.Error);
             Assert.IsNotNull(m.TotalError);
@@ -348,8 +425,8 @@ namespace CommonTypesTest
             Assert.AreEqual(45.0, me.Real);
             Assert.AreEqual("45", me.String);
             Assert.AreEqual(1, me.Count);
-            Assert.IsNotNull(me.LastMean);
-            Assert.AreEqual(45, me.LastMean.Integer);
+            Assert.IsNotNull(me.LastMom);
+            Assert.AreEqual(45, me.LastMom.Integer);
             Assert.IsFalse(m.ValueEquals(me));
             Assert.IsFalse(me.ValueEquals(m));
             Assert.IsTrue(m.ValueLess(me));
@@ -388,11 +465,17 @@ namespace CommonTypesTest
             var cv = m.CalcValue;
             Assert.AreEqual(DataType.String, cv.DataType);
             Assert.IsNull(cv.TotalError);
-            Assert.IsNotNull(m.LastMean);
-            Assert.AreEqual("sss", m.LastMean.String);
+            Assert.IsNotNull(m.LastMom);
+            Assert.AreEqual("sss", m.LastMom.String);
+            Assert.AreEqual(d, m.TimeI(0));
+            Assert.IsNull(m.ErrorI(0));
+            Assert.AreEqual(true, m.BooleanI(0));
+            Assert.AreEqual(0, m.IntegerI(0));
+            Assert.AreEqual(0.0, m.RealI(0));
+            Assert.AreEqual("sss", m.StringI(0));
 
             var d1 = new DateTime(2016, 06, 16, 11, 26, 00);
-            var m1 = m.CloneMom(d1, err);
+            var m1 = m.ToMom(d1, err);
             Assert.AreEqual(d1, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);
@@ -409,6 +492,24 @@ namespace CommonTypesTest
             Assert.IsFalse(m1.ValueAndErrorEquals(m));
             Assert.IsTrue(m.ValueEquals(m1));
             Assert.IsFalse(m.ValueAndErrorEquals(m1));
+
+            var m2 = m.ToMomI(0, d1, err);
+            Assert.AreEqual(d1, m2.Time);
+            Assert.IsNotNull(m2.Error);
+            Assert.IsNotNull(m2.TotalError);
+            Assert.AreEqual(2, m2.Error.Number);
+            Assert.AreEqual("Error", m2.Error.Text);
+            Assert.AreEqual(ErrMomType.Source, m2.Error.ErrType);
+            Assert.AreEqual(true, m2.Boolean);
+            Assert.AreEqual(0, m2.Integer);
+            Assert.AreEqual(0, m2.Real);
+            Assert.AreEqual("sss", m2.String);
+            Assert.AreEqual(1, m2.Count);
+            Assert.AreEqual(DataType.String, m2.DataType);
+            Assert.IsTrue(m2.ValueEquals(m));
+            Assert.IsFalse(m2.ValueAndErrorEquals(m));
+            Assert.IsTrue(m.ValueEquals(m2));
+            Assert.IsFalse(m.ValueAndErrorEquals(m2));
 
             m = MFactory.NewMom(d1, "45.67", err);
             Assert.IsNotNull(m.Error);
@@ -472,8 +573,8 @@ namespace CommonTypesTest
             Assert.AreEqual(45.0, me.Real);
             Assert.AreEqual("45", me.String);
             Assert.AreEqual(1, me.Count);
-            Assert.IsNotNull(me.LastMean);
-            Assert.AreEqual(45, me.LastMean.Integer);
+            Assert.IsNotNull(me.LastMom);
+            Assert.AreEqual(45, me.LastMom.Integer);
             Assert.IsFalse(m.ValueEquals(me));
             Assert.IsFalse(me.ValueEquals(m));
             Assert.IsTrue(m.ValueLess(me));
@@ -512,12 +613,12 @@ namespace CommonTypesTest
             var cv = m.CalcValue;
             Assert.AreEqual(DataType.Weighted, cv.DataType);
             Assert.IsNull(cv.TotalError);
-            Assert.IsNotNull(m.LastMean);
-            Assert.AreEqual(2.1, m.LastMean.Real);
-            Assert.AreEqual(0.5, ((MomWeighted)m.LastMean).Weight);
+            Assert.IsNotNull(m.LastMom);
+            Assert.AreEqual(2.1, m.LastMom.Real);
+            Assert.AreEqual(0.5, ((MomWeighted)m.LastMom).Weight);
 
             var d1 = new DateTime(2016, 06, 16, 11, 26, 00);
-            var m1 = (MomWeighted)m.CloneMom(d1, err);
+            var m1 = (MomWeighted)m.ToMom(d1, err);
             Assert.AreEqual(0.5, m1.Weight);
             Assert.AreEqual(d1, m1.Time);
             Assert.IsNotNull(m1.Error);
@@ -555,8 +656,8 @@ namespace CommonTypesTest
             Assert.AreEqual(45.0, me.Real);
             Assert.AreEqual("45", me.String);
             Assert.AreEqual(1, me.Count);
-            Assert.IsNotNull(me.LastMean);
-            Assert.AreEqual(45, me.LastMean.Integer);
+            Assert.IsNotNull(me.LastMom);
+            Assert.AreEqual(45, me.LastMom.Integer);
             Assert.IsFalse(m.ValueEquals(me));
             Assert.IsFalse(me.ValueEquals(m));
             Assert.IsTrue(m.ValueLess(me));

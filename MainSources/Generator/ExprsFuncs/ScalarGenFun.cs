@@ -14,7 +14,7 @@ namespace Generator
             Functions.CurFun = this;
             Functions.SetScalarDataType(resultType);
             Functions.CalcScalarFun(par, () => Fun(par));
-            return Functions.ScalarRes.CloneMean();
+            return Functions.ScalarRes.ToMean();
         }
     }
 }

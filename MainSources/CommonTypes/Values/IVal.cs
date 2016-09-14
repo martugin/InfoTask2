@@ -29,7 +29,7 @@ namespace CommonTypes
         //Количество значений
         int Count { get; }
         //Само отдельное значение или последнее значение списка
-        IMean LastMean { get; }
+        IMean LastMom { get; }
         
         //Значения разных типов
         bool Boolean { get; }
@@ -73,20 +73,20 @@ namespace CommonTypes
         void ValueToRecI(IRecordAdd rec, string field, int i);
 
         //Копия значения, возможно с новым временем и ошибкой
-        IMean CloneMean();
-        IMean CloneMean(ErrMom err);
-        IMean CloneMom();
-        IMean CloneMom(ErrMom err);
-        IMean CloneMom(DateTime time);
-        IMean CloneMom(DateTime time, ErrMom err);
+        IMean ToMean();
+        IMean ToMean(ErrMom err);
+        IMean ToMom();
+        IMean ToMom(ErrMom err);
+        IMean ToMom(DateTime time);
+        IMean ToMom(DateTime time, ErrMom err);
 
         //Копия значения по индексу, возможно с новым временем и ошибкой
-        IMean CloneMeanI(int i);
-        IMean CloneMeanI(int i, ErrMom err);
-        IMean CloneMomI(int i);
-        IMean CloneMomI(int i, ErrMom err);
-        IMean CloneMomI(int i, DateTime time);
-        IMean CloneMomI(int i, DateTime time, ErrMom err);
+        IMean ToMeanI(int i);
+        IMean ToMeanI(int i, ErrMom err);
+        IMean ToMomI(int i);
+        IMean ToMomI(int i, ErrMom err);
+        IMean ToMomI(int i, DateTime time);
+        IMean ToMomI(int i, DateTime time, ErrMom err);
     }
 
     //-----------------------------------------------------------------------------------------------

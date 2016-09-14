@@ -49,24 +49,24 @@ namespace CommonTypes
             rec.Put(field, _bool);
         }
 
-        public override IMean CloneMean()
+        public override IMean ToMean()
         {
             if (Error == null) return new MeanBool(_bool);
             return new MeanErrBool(_bool, Error);
         }
 
-        public override IMean CloneMean(ErrMom err)
+        public override IMean ToMean(ErrMom err)
         {
             return new MeanErrBool(_bool, Error.Add(err));
         }
 
-        public override IMean CloneMom(DateTime time)
+        public override IMean ToMom(DateTime time)
         {
             if (Error == null) return new MomBool(time, _bool);
             return new MomErrBool(time, _bool, Error);
         }
 
-        public override IMean CloneMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, ErrMom err)
         {
             return new MomErrBool(time, _bool, Error.Add(err));
         }
@@ -129,24 +129,24 @@ namespace CommonTypes
             rec.Put(field, _int);
         }
 
-        public override IMean CloneMean()
+        public override IMean ToMean()
         {
             if (Error == null) return new MeanInt(_int);
             return new MeanErrInt(_int, Error);
         }
 
-        public override IMean CloneMean(ErrMom err)
+        public override IMean ToMean(ErrMom err)
         {
             return new MeanErrInt(_int, Error.Add(err));
         }
 
-        public override IMean CloneMom(DateTime time)
+        public override IMean ToMom(DateTime time)
         {
             if (Error == null) return new MomInt(time, _int);
             return new MomErrInt(time, _int, Error);
         }
 
-        public override IMean CloneMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, ErrMom err)
         {
             return new MomErrInt(time, _int, Error.Add(err));
         }
@@ -210,24 +210,24 @@ namespace CommonTypes
             rec.Put(field, _real);
         }
 
-        public override IMean CloneMean()
+        public override IMean ToMean()
         {
             if (Error == null) return new MeanReal(_real);
             return new MeanErrReal(_real, Error);
         }
 
-        public override IMean CloneMean(ErrMom err)
+        public override IMean ToMean(ErrMom err)
         {
             return new MeanErrReal(_real, Error.Add(err));
         }
 
-        public override IMean CloneMom(DateTime time)
+        public override IMean ToMom(DateTime time)
         {
             if (Error == null) return new MomReal(time, _real);
             return new MomErrReal(time, _real, Error);
         }
 
-        public override IMean CloneMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, ErrMom err)
         {
             return new MomErrReal(time, _real, Error.Add(err));
         }
@@ -295,24 +295,24 @@ namespace CommonTypes
             rec.Put(field, _string);
         }
 
-        public override IMean CloneMean()
+        public override IMean ToMean()
         {
             if (Error == null) return new MeanString(_string);
             return new MeanErrString(_string, Error);
         }
 
-        public override IMean CloneMean(ErrMom err)
+        public override IMean ToMean(ErrMom err)
         {
             return new MeanErrString(_string, Error.Add(err));
         }
 
-        public override IMean CloneMom(DateTime time)
+        public override IMean ToMom(DateTime time)
         {
             if (Error == null) return new MomString(time, _string);
             return new MomErrString(time, _string, Error);
         }
 
-        public override IMean CloneMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, ErrMom err)
         {
             return new MomErrString(time, _string, Error.Add(err));
         }
@@ -365,24 +365,24 @@ namespace CommonTypes
             rec.Put(field, _date);
         }
 
-        public override IMean CloneMean()
+        public override IMean ToMean()
         {
             if (Error == null) return new MeanTime(_date);
             return new MeanErrTime(_date, Error);
         }
 
-        public override IMean CloneMean(ErrMom err)
+        public override IMean ToMean(ErrMom err)
         {
             return new MeanErrTime(_date, Error.Add(err));
         }
 
-        public override IMean CloneMom(DateTime time)
+        public override IMean ToMom(DateTime time)
         {
             if (Error == null) return new MomTime(time, _date);
             return new MomErrTime(time, _date, Error);
         }
 
-        public override IMean CloneMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, ErrMom err)
         {
             return new MomErrTime(time, _date, Error.Add(err));
         }
@@ -412,21 +412,21 @@ namespace CommonTypes
         public override object Object { get { return 0; } }
 
         public override void ValueToRec(IRecordAdd rec, string field) { }
-        public override IMean CloneMean()
+        public override IMean ToMean()
         {
             if (Error == null) return new MeanValue();
             return new MeanErrValue(Error);
         }
-        public override IMean CloneMean(ErrMom err)
+        public override IMean ToMean(ErrMom err)
         {
             return new MeanErrValue(Error.Add(err));
         }
-        public override IMean CloneMom(DateTime time)
+        public override IMean ToMom(DateTime time)
         {
             if (Error == null) return new MomValue(time);
             return new MomErrValue(time, Error);
         }
-        public override IMean CloneMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, ErrMom err)
         {
             return new MomErrValue(time, Error.Add(err));
         }

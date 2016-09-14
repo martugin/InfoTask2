@@ -162,7 +162,7 @@ namespace CommonTypes
         //Загрузить буферное значение из списка 
         protected override void SetBufMom(int i)
         {
-            BufMom.Time = _means[i];
+            BufMom.Date = _means[i];
         }
 
         //Очистка значений
