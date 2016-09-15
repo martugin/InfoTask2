@@ -264,7 +264,7 @@ namespace CommonTypes
             ScalarRes.Boolean = GetBit(par, 1);
         }
 
-        public void BitAnd_ii(IMean[] par)
+        public void BitAnd_iii(IMean[] par)
         {
             var b = true;
             for (int i = 1; i < par.Length; i++)
@@ -272,7 +272,7 @@ namespace CommonTypes
             ScalarRes.Boolean = b;
         }
 
-        public void BitOr_ii(IMean[] par)
+        public void BitOr_iii(IMean[] par)
         {
             var b = false;
             for (int i = 1; i < par.Length; i++)
@@ -333,7 +333,7 @@ namespace CommonTypes
             ScalarRes.Real = Math.Round(par[0].Real, par[1].Integer);
         }
 
-        public void Min_u(IMean[] par)
+        public void Min_uu(IMean[] par)
         {
             IMean mv = par[0];
             for (int i = 1; i < par.Length; ++i)
@@ -341,7 +341,7 @@ namespace CommonTypes
             ScalarRes.CopyValueFrom(mv);
         }
 
-        public void Max_u(IMean[] par)
+        public void Max_uu(IMean[] par)
         {
             IMean mv = par[0];
             for (int i = 1; i < par.Length; ++i)
@@ -541,7 +541,7 @@ namespace CommonTypes
             return dpar.Average();
         }
 
-        public void CertainNP_rrrr(IMean[] par)
+        public void CertainNP_rrrrr(IMean[] par)
         {
             var parv = new IMean[par.Length - 3];
             for (int i = 0; i < parv.Length; i++)
@@ -550,7 +550,7 @@ namespace CommonTypes
             ScalarRes.Real = Certain(parv, par[0], par[1].Real, par[2].Real);
         }
 
-        public void CertainN_rrr(IMean[] par)
+        public void CertainN_rrrr(IMean[] par)
         {
             var parv = new IMean[par.Length - 2];
             for (int i = 0; i < parv.Length; i++)
@@ -559,7 +559,7 @@ namespace CommonTypes
             ScalarRes.Real = Certain(parv, par[0], par[1].Real, double.MaxValue);
         }
 
-        public void CertainP_rrr(IMean[] par)
+        public void CertainP_rrrr(IMean[] par)
         {
             var parv = new IMean[par.Length - 2];
             for (int i = 0; i < parv.Length; i++)
@@ -568,7 +568,7 @@ namespace CommonTypes
             ScalarRes.Real = Certain(parv, par[0], double.MaxValue, par[1].Real);
         }
 
-        public void Certain_rr(IMean[] par)
+        public void Certain_rrr(IMean[] par)
         {
             var parv = new IMean[par.Length - 1];
             for (int i = 0; i < parv.Length; i++)

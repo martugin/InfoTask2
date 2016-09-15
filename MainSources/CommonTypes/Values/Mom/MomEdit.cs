@@ -134,16 +134,17 @@ namespace CommonTypes
         }
 
         //Принимает значение по умолчанию
-        public MomEdit MakeDefaultValue()
+        public MomEdit MakeDefault()
         {
             _mean.MakeDefaultValue();
+            Error = null;
             return this;
         }
 
         //Создание нового значения на основе этого
         public IMean ToMean()
         {
-            return _mean.ToMean();
+            return _mean.ToMean(Error);
         }
         public IMean ToMean(ErrMom err)
         {

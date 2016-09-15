@@ -14,7 +14,7 @@ namespace CommonTypes
             ErrPool = new ErrMomPool(factory);
 
             using (var rec = new ReaderAdo(DifferentIt.InfoTaskDir() + @"General\General.accdb",
-                                           "SELECT FunctionsOverloads.*, Functions.Name, Functions.Synonym FROM Functions INNER JOIN FunctionsOverloads ON Functions.Id = FunctionsOverloads.FunctionId " +
+                                           "SELECT FunctionsOverloads.*, Functions.Name, Functions.Synonym, Functions.Code, Functions.CalcType FROM Functions INNER JOIN FunctionsOverloads ON Functions.Id = FunctionsOverloads.FunctionId " +
                                            "WHERE " + FunsWhereCondition + " ORDER BY FunctionsOverloads.FunctionId, FunctionsOverloads.RunNumber"))
                 while (rec.Read())
                 {
@@ -22,13 +22,13 @@ namespace CommonTypes
                     string synonym = rec.GetString("Synonym");
                     if (!synonym.IsEmpty())
                         name += " (" + synonym + ")";
-                    string code = rec.GetString("Code") ?? (synonym ?? name) + "_";
+                    string code = (rec.GetString("Code") ?? (synonym ?? name)) + "_";
                     for (int i = 1; i <= 9 && rec.GetString("Operand" + i) != null; i++)
                         code += rec.GetString("Operand" + i).ToDataType().ToLetter();
                     for (int i = 1; i <= 2 && rec.GetString("More" + i) != null; i++)
-                        code += rec.GetString("Mode" + i).ToDataType().ToLetter();
-                    var errNum = rec.GetInt("FunctionId") * 10;
-                    var ftype = rec.GetString("FunType");
+                        code += rec.GetString("More" + i).ToDataType().ToLetter();
+                    var errNum = rec.GetInt("IdOverload") * 10;
+                    var ftype = rec.GetString("CalcType");
                     Funs.Add(code, CreateFun(code, ftype, errNum));
                     factory.AddDescr(errNum, "Недопустимые параметры функции " + name);
                 }
@@ -58,9 +58,9 @@ namespace CommonTypes
         
         //Добавить особую ошибку в заданный MomEdit
         public void PutErr(MomEdit mom, 
-                                     string errMess, //Сообщение ошибки
-                                     int quality = 2, //Качество ошибки
-                                     int errNum = 0) //Номер ошибки среди ошибок для одной функции, число от 0 до 8
+                                    string errMess, //Сообщение ошибки
+                                    int quality = 2, //Качество ошибки
+                                    int errNum = 0) //Номер ошибки среди ошибок для одной функции, число от 0 до 8
         {
             var number = CurFun.ErrorNumber + errNum + 1;
             ((ErrMomFactory) ErrPool.Factory).AddDescr(number, errMess, quality);
@@ -76,7 +76,7 @@ namespace CommonTypes
         //Добавить ошибку в текущее значение расчета (ScalarRes)
         public void PutErr(string errMess, int quality = 2, int errNum = 0) //Особая ошибка
         {
-            PutErr(ScalarRes, errMess, errNum);
+            PutErr(ScalarRes, errMess, quality, errNum);
         }
         public void PutErr() //По умолчанию для функции
         {
@@ -119,7 +119,7 @@ namespace CommonTypes
         public void SetScalarDataType(DataType dtype)
         {
             ScalarRes = _scalarResTypes[dtype];
-            ScalarRes.MakeDefaultValue();
+            ScalarRes.MakeDefault();
         }
 
         //Обрамление промежуточного вычисления скалярного значения
@@ -128,8 +128,7 @@ namespace CommonTypes
         {
             try
             {
-                ScalarRes.MakeDefaultValue();
-                ScalarRes.Error = null;
+                ScalarRes.MakeDefault();
                 foreach (var mean in par)
                     ScalarRes.AddError(mean.Error);
                 action();

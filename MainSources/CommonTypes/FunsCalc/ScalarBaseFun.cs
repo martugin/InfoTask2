@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace CommonTypes
 {
@@ -16,7 +17,7 @@ namespace CommonTypes
         //Создание экземпляра делегата функции
         protected override void CreateDelegateInstance(FunctionsBase funs, MethodInfo met)
         {
-            Fun = (ScalarDelegate)Delegate.CreateDelegate(typeof(ScalarDelegate), funs, met);
+            Fun = (ScalarDelegate) Delegate.CreateDelegate(typeof (ScalarDelegate), funs, met);
         }
     }
 }
