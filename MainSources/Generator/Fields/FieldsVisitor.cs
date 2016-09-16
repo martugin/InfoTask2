@@ -147,6 +147,11 @@ namespace Generator
             return new NodeField(_keeper, context.IDENT());
         }
 
+        public override Node VisitExprFunConst(P.ExprFunConstContext context)
+        {
+            return new NodeFun(_keeper, context.FUNCONST());
+        }
+
         public override Node VisitExprFun(P.ExprFunContext context)
         {
             return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
@@ -200,6 +205,11 @@ namespace Generator
         public override Node VisitConsString(P.ConsStringContext context)
         {
             return _keeper.GetStringConst(context.STRING());
+        }
+
+        public override Node VisitConsTime(P.ConsTimeContext context)
+        {
+            return _keeper.GetTimeConst(context.TIME());
         }
     }
 }

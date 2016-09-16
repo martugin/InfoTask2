@@ -16,26 +16,17 @@ namespace Calculation
     }
 
     //---------------------------------------------------------------------------------------------------
+
     //Константа
-    internal class ConstFun : CalcBaseFun, IFunction
+    internal class ConstFun : ConstBaseFun, IFunction
     {
         public ConstFun(FunctionsCalc funs, string code, int errNum)
             : base(funs, code, errNum) { }
 
-        protected override void CreateDelegateInstance(FunctionsBase funs, MethodInfo met)
-        {
-            _fun = (ConstDelegate)Delegate.CreateDelegate(typeof(ConstDelegate), funs, met);
-        }
-
-        //Делегат для функции без параметров
-        public delegate IVal ConstDelegate();
-        //Ссылка на реализацию функции
-        private ConstDelegate _fun;
-
         //Вычислить значение
         public IVal Calculate(DataType resultType, IEnumerable<IVal> par, FunData funData)
         {
-            return _fun();
+            return Fun();
         }
     }
 

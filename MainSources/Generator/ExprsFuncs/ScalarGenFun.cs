@@ -2,6 +2,21 @@
 
 namespace Generator
 {
+    //Константа
+    internal class ConstGenFun : ConstBaseFun
+    {
+        public ConstGenFun(FunctionsBase funs, string code, int errNum)
+            : base(funs, code, errNum) { }
+
+        //Расчет значения
+        internal IMean Calculate(IMean[] par, DataType resultType)
+        {
+            return (IMean)Fun();
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------------
+
     //Скалярная функция для генерации
     internal class ScalarGenFun : ScalarBaseFun
     {

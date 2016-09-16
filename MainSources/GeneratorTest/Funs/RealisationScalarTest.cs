@@ -170,6 +170,13 @@ namespace CommonTypesTest
             var funs = new FunctionsGen();
             IMean i1 = new MeanInt(21), i2 = new MeanInt(2), i3 = new MeanInt(0), i4 = new MeanInt(3);
 
+            var c = (ConstGenFun)(funs.CurFun = funs.Funs["TrueFun_"]);
+            var m = c.Calculate(new IMean[0], DataType.Boolean);
+            Assert.IsTrue(m.Boolean);
+            c = (ConstGenFun)(funs.CurFun = funs.Funs["FalseFun_"]);
+            m = c.Calculate(new IMean[0], DataType.Boolean);
+            Assert.IsFalse(m.Boolean);
+
             Assert.AreEqual(5, Calc(funs, "Sr_ii", DataType.Integer, i1, i2).Integer);
             Assert.AreEqual(84, Calc(funs, "Sl_ii", DataType.Integer, i1, i2).Integer);
 
@@ -237,6 +244,198 @@ namespace CommonTypesTest
              m = Calc(funs, "Max_uu", DataType.String, i1, r1, s1);
              Assert.AreEqual("2,345", m.String);
              Assert.IsNull(m.Error);
+
+             Assert.AreEqual(Math.Exp(2), Calc(funs, "Exp_r", DataType.Real, i1).Real);
+             Assert.AreEqual(1, Calc(funs, "Exp_r", DataType.Real, r3).Real);
+             Assert.AreEqual(Math.Exp(-1.234), Calc(funs, "Exp_r", DataType.Real, r2).Real);
+
+             Assert.AreEqual(Math.Log(2), Calc(funs, "Ln_r", DataType.Real, i1).Real);
+             Assert.AreEqual(891, Calc(funs, "Ln_r", DataType.Real, r3).Error.Number);
+             Assert.AreEqual(891, Calc(funs, "Ln_r", DataType.Real, r2).Error.Number);
+
+             Assert.AreEqual(Math.Log10(2), Calc(funs, "Log10_r", DataType.Real, i1).Real);
+             Assert.AreEqual(911, Calc(funs, "Log10_r", DataType.Real, r3).Error.Number);
+             Assert.AreEqual(911, Calc(funs, "Log10_r", DataType.Real, r2).Error.Number);
+
+             Assert.AreEqual(Math.Log(2.345, 2), Calc(funs, "Log_rr", DataType.Real, r1, i1).Real);
+             Assert.AreEqual(901, Calc(funs, "Log_rr", DataType.Real, r2, r1).Error.Number);
+             Assert.AreEqual(901, Calc(funs, "Log_rr", DataType.Real, r1, r2).Error.Number);
+
+             var c = (ConstGenFun)(funs.CurFun = funs.Funs["Pi_"]);
+             m = c.Calculate(new IMean[0], DataType.Real);
+             Assert.AreEqual(Math.PI, m.Real);
+
+             IMean r5 = new MeanReal(0.789), r6 = new MeanReal(-Math.PI/2), r7 = new MeanInt(-1);
+             Assert.AreEqual(0, Calc(funs, "Sin_r", DataType.Real, r3).Real);
+             Assert.AreEqual(Math.Sin(0.789), Calc(funs, "Sin_r", DataType.Real, r5).Real);
+             Assert.AreEqual(-1, Calc(funs, "Sin_r", DataType.Real, r6).Real);
+
+             Assert.AreEqual(1, Calc(funs, "Cos_r", DataType.Real, r3).Real);
+             Assert.AreEqual(Math.Cos(0.789), Calc(funs, "Cos_r", DataType.Real, r5).Real);
+             Assert.IsTrue(Math.Abs(Calc(funs, "Cos_r", DataType.Real, r6).Real) < 0.001);
+
+             Assert.AreEqual(0, Calc(funs, "Tan_r", DataType.Real, r3).Real);
+             Assert.AreEqual(Math.Tan(0.789), Calc(funs, "Tan_r", DataType.Real, r5).Real);
+             
+             Assert.AreEqual(870, Calc(funs, "Ctan_r", DataType.Real, r3).Error.Number);
+             Assert.IsTrue(Math.Abs(1 / Math.Tan(0.789) - Calc(funs, "Ctan_r", DataType.Real, r5).Real) < 0.001);
+             Assert.IsTrue(Math.Abs(Calc(funs, "Ctan_r", DataType.Real, r6).Real) < 0.001);
+
+             Assert.AreEqual(Math.Sinh(0), Calc(funs, "Sh_r", DataType.Real, r3).Real);
+             Assert.AreEqual(Math.Sinh(0.789), Calc(funs, "Sh_r", DataType.Real, r5).Real);
+             Assert.AreEqual(Math.Sinh(-Math.PI/2), Calc(funs, "Sh_r", DataType.Real, r6).Real);
+
+             Assert.AreEqual(Math.Cosh(0), Calc(funs, "Ch_r", DataType.Real, r3).Real);
+             Assert.AreEqual(Math.Cosh(0.789), Calc(funs, "Ch_r", DataType.Real, r5).Real);
+             Assert.AreEqual(Math.Cosh(-Math.PI / 2), Calc(funs, "Ch_r", DataType.Real, r6).Real);
+
+             Assert.AreEqual(Math.Tanh(0), Calc(funs, "Th_r", DataType.Real, r3).Real);
+             Assert.AreEqual(Math.Tanh(0.789), Calc(funs, "Th_r", DataType.Real, r5).Real);
+
+             Assert.AreEqual(0, Calc(funs, "Arcsin_r", DataType.Real, r3).Real);
+             Assert.AreEqual(Math.Asin(0.789), Calc(funs, "Arcsin_r", DataType.Real, r5).Real);
+             Assert.IsTrue(Math.Abs(- Math.PI / 2 - Calc(funs, "Arcsin_r", DataType.Real, r7).Real) < 0.001);
+
+             Assert.IsTrue(Math.Abs(Math.PI / 2 - Calc(funs, "Arccos_r", DataType.Real, r3).Real) < 0.001);
+             Assert.AreEqual(Math.Acos(0.789), Calc(funs, "Arccos_r", DataType.Real, r5).Real);
+             Assert.IsTrue(Math.Abs(Calc(funs, "Arccos_r", DataType.Real, r6).Real) < 0.0001);
+
+             Assert.AreEqual(0, Calc(funs, "Arctan_r", DataType.Real, r3).Real);
+             Assert.AreEqual(Math.Atan(0.789), Calc(funs, "Arctan_r", DataType.Real, r5).Real);
          }
+
+        [TestMethod]
+        public void DataTypes()
+        {
+            var funs = new FunctionsGen();
+            IMean s1 = new MeanString("1"), s2 = new MeanString("-5"), s3 = new MeanString("23.456"), s4 = new MeanString("10.10.2010 10:10:10");
+            IMean r1 = new MeanReal(-0.1), i1 = new MeanInt(0);
+
+            Assert.IsTrue(Calc(funs, "IsInt_u", DataType.Boolean, s1).Boolean);
+            Assert.IsTrue(Calc(funs, "IsInt_u", DataType.Boolean, s2).Boolean);
+            Assert.IsFalse(Calc(funs, "IsInt_u", DataType.Boolean, s3).Boolean);
+            Assert.IsFalse(Calc(funs, "IsInt_u", DataType.Boolean, s4).Boolean);
+            Assert.IsTrue(Calc(funs, "IsInt_u", DataType.Boolean, i1).Boolean);
+            Assert.IsFalse(Calc(funs, "IsInt_u", DataType.Boolean, r1).Boolean);
+
+            Assert.IsTrue(Calc(funs, "IsReal_u", DataType.Boolean, s1).Boolean);
+            Assert.IsTrue(Calc(funs, "IsReal_u", DataType.Boolean, s2).Boolean);
+            Assert.IsTrue(Calc(funs, "IsReal_u", DataType.Boolean, s3).Boolean);
+            Assert.IsFalse(Calc(funs, "IsReal_u", DataType.Boolean, s4).Boolean);
+            Assert.IsTrue(Calc(funs, "IsReal_u", DataType.Boolean, i1).Boolean);
+            Assert.IsTrue(Calc(funs, "IsReal_u", DataType.Boolean, r1).Boolean);
+
+            Assert.IsFalse(Calc(funs, "IsTime_u", DataType.Boolean, s3).Boolean);
+            Assert.IsTrue(Calc(funs, "IsTime_u", DataType.Boolean, s4).Boolean);
+            Assert.IsFalse(Calc(funs, "IsTime_u", DataType.Boolean, i1).Boolean);
+
+            Assert.IsTrue(Calc(funs, "Bool_u", DataType.Boolean, s1).Boolean);
+            Assert.IsTrue(Calc(funs, "Bool_u", DataType.Boolean, s2).Boolean);
+            Assert.IsFalse(Calc(funs, "Bool_u", DataType.Boolean, i1).Boolean);
+
+            Assert.AreEqual(1, Calc(funs, "Int_u", DataType.Integer, s1).Integer);
+            Assert.AreEqual(-5, Calc(funs, "Int_u", DataType.Integer, s2).Integer);
+            Assert.AreEqual(-1, Calc(funs, "Int_u", DataType.Integer, r1).Integer);
+
+            Assert.AreEqual(-5, Calc(funs, "Real_u", DataType.Real, s2).Real);
+            Assert.AreEqual(23.456, Calc(funs, "Real_u", DataType.Real, s3).Real);
+
+            Assert.AreEqual(new DateTime(2010, 10, 10, 10, 10, 10), Calc(funs, "Date_u", DataType.Time, s4).Date);
+
+            Assert.AreEqual("10.10.2010 10:10:10", Calc(funs, "String_u", DataType.String, s4).String);
+            Assert.AreEqual("-0,1", Calc(funs, "String_u", DataType.String, r1).String);
+            Assert.AreEqual("0", Calc(funs, "String_u", DataType.String, i1).String);
+        }
+
+        [TestMethod]
+        public void Strings()
+        {
+            var funs = new FunctionsGen();
+            IMean s1 = new MeanString(" AbAb AA  "), s2 = new MeanString("123Ab34 "), s3 = new MeanString(""), s4 = new MeanString(null);
+
+            var c = (ConstGenFun)(funs.CurFun = funs.Funs["NewLine_"]);
+            IMean m = c.Calculate(new IMean[0], DataType.String);
+            Assert.AreEqual(Environment.NewLine, m.String);
+
+            Assert.AreEqual(0, Calc(funs, "StrLen_s", DataType.Integer, s3).Integer);
+            Assert.AreEqual(0, Calc(funs, "StrLen_s", DataType.Integer, s4).Integer);
+            Assert.AreEqual(10, Calc(funs, "StrLen_s", DataType.Integer, s1).Integer);
+            Assert.AreEqual(8, Calc(funs, "StrLen_s", DataType.Integer, s2).Integer);
+
+            Assert.AreEqual("AbAb AA  ", Calc(funs, "StrLTrim_s", DataType.String, s1).String);
+            Assert.AreEqual("123Ab34 ", Calc(funs, "StrLTrim_s", DataType.String, s2).String);
+            Assert.AreEqual("", Calc(funs, "StrLTrim_s", DataType.String, s3).String);
+            Assert.AreEqual("", Calc(funs, "StrLTrim_s", DataType.String, s4).String);
+
+            Assert.AreEqual(" AbAb AA", Calc(funs, "StrRTrim_s", DataType.String, s1).String);
+            Assert.AreEqual("123Ab34", Calc(funs, "StrRTrim_s", DataType.String, s2).String);
+            Assert.AreEqual("", Calc(funs, "StrRTrim_s", DataType.String, s3).String);
+            Assert.AreEqual("", Calc(funs, "StrRTrim_s", DataType.String, s4).String);
+
+            Assert.AreEqual("AbAb AA", Calc(funs, "StrTrim_s", DataType.String, s1).String);
+            Assert.AreEqual("123Ab34", Calc(funs, "StrTrim_s", DataType.String, s2).String);
+            Assert.AreEqual("", Calc(funs, "StrTrim_s", DataType.String, s3).String);
+            Assert.AreEqual("", Calc(funs, "StrTrim_s", DataType.String, s4).String);
+
+            Assert.AreEqual(" abab aa  ", Calc(funs, "StrLCase_s", DataType.String, s1).String);
+            Assert.AreEqual("123ab34 ", Calc(funs, "StrLCase_s", DataType.String, s2).String);
+            Assert.AreEqual("", Calc(funs, "StrLCase_s", DataType.String, s3).String);
+            Assert.AreEqual("", Calc(funs, "StrLCase_s", DataType.String, s4).String);
+
+            Assert.AreEqual(" ABAB AA  ", Calc(funs, "StrUCase_s", DataType.String, s1).String);
+            Assert.AreEqual("123AB34 ", Calc(funs, "StrUCase_s", DataType.String, s2).String);
+            Assert.AreEqual("", Calc(funs, "StrUCase_s", DataType.String, s3).String);
+            Assert.AreEqual("", Calc(funs, "StrUCase_s", DataType.String, s4).String);
+
+            IMean i1 = new MeanInt(3), i2 = new MeanInt(0), i3 = new MeanInt(5), i4 = new MeanInt(-3);
+
+            Assert.AreEqual(" Ab", Calc(funs, "StrLeft_si", DataType.String, s1, i1).String);
+            Assert.AreEqual("123", Calc(funs, "StrLeft_si", DataType.String, s2, i1).String);
+            Assert.AreEqual("", Calc(funs, "StrLeft_si", DataType.String, s3, i2).String);
+            Assert.AreEqual(2480, Calc(funs, "StrLeft_si", DataType.String, s1, i4).Error.Number);
+
+            Assert.AreEqual("A  ", Calc(funs, "StrRight_si", DataType.String, s1, i1).String);
+            Assert.AreEqual("34 ", Calc(funs, "StrRight_si", DataType.String, s2, i1).String);
+            Assert.AreEqual("", Calc(funs, "StrRight_si", DataType.String, s3, i2).String);
+            Assert.AreEqual(2490, Calc(funs, "StrRight_si", DataType.String, s1, i4).Error.Number);
+
+            Assert.AreEqual("bAb A", Calc(funs, "StrMid_sii", DataType.String, s1, i1, i3).String);
+            Assert.AreEqual("b34", Calc(funs, "StrMid_sii", DataType.String, s2, i3, i1).String);
+            Assert.AreEqual("", Calc(funs, "StrMid_sii", DataType.String, s3, i2, i2).String);
+            Assert.AreEqual(2460, Calc(funs, "StrMid_sii", DataType.String, s2, i3, i3).Error.Number);
+            Assert.AreEqual("b AA  ", Calc(funs, "StrMid_si", DataType.String, s1, i3).String);
+            Assert.AreEqual(2470, Calc(funs, "StrMid_si", DataType.String, s3, i1).Error.Number);
+
+            IMean s5 = new MeanString("Ab"), s6 = new MeanString("AA");
+            Assert.AreEqual(2, Calc(funs, "StrFind_ssi", DataType.Integer, s5, s1).Integer);
+            Assert.AreEqual(4, Calc(funs, "StrFind_ssi", DataType.Integer, s5, s2).Integer);
+            Assert.AreEqual(0, Calc(funs, "StrFind_ssi", DataType.Integer, s6, s2).Integer);
+            Assert.AreEqual(0, Calc(funs, "StrFind_ssi", DataType.Integer, s5, s4).Integer);
+            Assert.AreEqual(4, Calc(funs, "StrFind_ssi", DataType.Integer, s5, s1, i1).Integer);
+            Assert.AreEqual(0, Calc(funs, "StrFind_ssi", DataType.Integer, s5, s2, i3).Integer);
+
+            Assert.AreEqual(4, Calc(funs, "StrFindLast_ssi", DataType.Integer, s5, s1).Integer);
+            Assert.AreEqual(4, Calc(funs, "StrFindLast_ssi", DataType.Integer, s5, s2).Integer);
+            Assert.AreEqual(0, Calc(funs, "StrFindLast_ssi", DataType.Integer, s6, s2).Integer);
+            Assert.AreEqual(0, Calc(funs, "StrFindLast_ssi", DataType.Integer, s5, s4).Integer);
+            Assert.AreEqual(2, Calc(funs, "StrFindLast_ssi", DataType.Integer, s5, s1, i1).Integer);
+            Assert.AreEqual(0, Calc(funs, "StrFindLast_ssi", DataType.Integer, s6, s1, i3).Integer);
+
+            Assert.AreEqual(" AAAA AA  ", Calc(funs, "StrReplace_sss", DataType.String, s1, s5, s6).String);
+            Assert.AreEqual(" AbAA  ", Calc(funs, "StrRemove_sii", DataType.String, s1, i3, i1).String);
+            Assert.AreEqual(1800, Calc(funs, "StrRemove_sii", DataType.String, s2, i3, i3).Error.Number);
+            Assert.AreEqual(" AbA", Calc(funs, "StrRemove_si", DataType.String, s1, i3).String);
+            Assert.AreEqual(" AbAAAb AA  ", Calc(funs, "StrInsert_ssi", DataType.String, s1, s6, i3).String);
+            Assert.AreEqual(1780, Calc(funs, "StrInsert_ssi", DataType.String, s1, s6, i4).Error.Number);
+
+            IMean s7 = new MeanString(".*Ab.*"), s8 = new MeanString("A.?");
+            Assert.IsTrue(Calc(funs, "StrRegMatch_ss", DataType.Boolean, s1, s7).Boolean);
+            Assert.IsFalse(Calc(funs, "StrRegMatch_ss", DataType.Boolean, s1, s8).Boolean);
+
+            Assert.AreEqual(2, Calc(funs, "StrRegFind_ss", DataType.Integer, s1, s8).Integer);
+            Assert.AreEqual(7, Calc(funs, "StrRegFind_ss", DataType.Integer, s1, s6).Integer);
+
+            Assert.AreEqual("123AA34 ", Calc(funs, "StrRegReplace_sss", DataType.String, s2, s8, s6).String);
+        }
     }
 }

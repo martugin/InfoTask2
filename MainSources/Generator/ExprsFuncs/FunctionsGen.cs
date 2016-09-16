@@ -19,6 +19,8 @@ namespace Generator
         //Создание функции
         protected override CalcBaseFun CreateFun(string code, string ftype, int errNum)
         {
+            if (ftype == "Const")
+                return new ConstGenFun(this, code, errNum);
             return new ScalarGenFun(this, code, errNum);
         }
     }

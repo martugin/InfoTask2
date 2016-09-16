@@ -293,16 +293,6 @@ namespace CommonTypes
 
         //3 - Математические
         #region
-        public IVal Random_()
-        {
-            return new MeanReal(new Random().NextDouble());
-        }
-
-        public void Random_ii(IMean[] par)
-        {
-            ScalarRes.Integer = new Random().Next(par[0].Integer, par[1].Integer);
-        }
-
         public void Abs_i(IMean[] par)
         {
             ScalarRes.Integer = Math.Abs(par[0].Integer);
@@ -472,7 +462,7 @@ namespace CommonTypes
                     PutErr("Взятие логарифма от неположительного числа или по неположительному основанию");
                 else
                 {
-                    if (m1 == 1) PutErr("Взятие логарифма по основанию 1");
+                    if (m1 == 1) PutErr("Взятие логарифма по основанию 1", 2, 1);
                     else ScalarRes.Real = Math.Log(m0, m1);
                 }
             }
@@ -619,10 +609,6 @@ namespace CommonTypes
         public void String_u(IMean[] par)
         {
             ScalarRes.String = par[0].String;
-        }
-
-        public void Value_u(IMean[] par)
-        {
         }
 
         public void IsInt_u(IMean[] par)
@@ -924,7 +910,7 @@ namespace CommonTypes
         {
             string m0 = par[0].String;
             var r1 = new Regex(par[1].String);
-            ScalarRes.Integer = r1.Match(m0).Index;
+            ScalarRes.Integer = r1.Match(m0).Index+1;
         }
 
         public void StrRegMatch_ss(IMean[] par)

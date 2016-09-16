@@ -46,6 +46,13 @@ COLON : ';';
 DOT : '.';
 SEP : ':';
 
+//‘ункции - константы
+FUNCONST : ([Tt][Rr][Uu][Ee] | [ѕп][–р][ја][¬в][ƒд][ја])
+                    | ([Ff][Aa][Ll][Ss][Ee] | [Ћл][ќо][∆ж][№ь])
+					| [Pp][Ii]					
+					| [Nn][Ee][Ww][Ll][Ii][Nn][Ee]
+					;
+
 // онстанты  и  идентификаторы
 fragment DIGIT : [0-9];
 fragment LETTER : [_a-zA-Zа-€ј-я];
@@ -55,6 +62,7 @@ INT : DIGIT+;
 REAL : INT ('.' | ',') INT
          | INT (('.' | ',') INT) ? 'e' '-' ? INT
 	     ;
+TIME : '#' INT '.' INT '.' INT ' '+ INT ':' INT ':' INT '#';
 
 IDENT : IDSYMB* LETTER IDSYMB*;
 STRING : '\'' ('\'\'' | ~[\'])*? '\'';

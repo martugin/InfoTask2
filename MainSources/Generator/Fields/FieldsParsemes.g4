@@ -28,6 +28,7 @@ expr : cons                                              #ExprCons
 		| OVERTABL LPAREN valueProg RPAREN														     #ExprOver
 		| SUBTABL LPAREN (expr COLON)? valueProg (COLON valueProg)? RPAREN     #ExprSub		
 		| IDENT                                                  #ExprIdent		
+		| FUNCONST                                          #ExprFunConst
 		| IDENT LPAREN pars RPAREN               #ExprFun	
 		| UNARY expr                 #ExprUnary		
 		| expr OPER4 expr           #ExprOper		
@@ -46,5 +47,6 @@ pars : expr (COLON expr)*    #ParamsList
 //Константы
 cons : INT                      #ConsInt
        | REAL                    #ConsReal 
-	   | STRING               #ConsString
+	   | STRING				  #ConsString
+	   | TIME					  #ConsTime
 	   ;

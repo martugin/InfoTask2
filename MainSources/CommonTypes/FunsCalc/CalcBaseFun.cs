@@ -1,7 +1,27 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace CommonTypes
 {
+    //Константа
+    public class ConstBaseFun : CalcBaseFun
+    {
+        public ConstBaseFun(FunctionsBase funs, string code, int errNum)
+            : base(funs, code, errNum) { }
+
+        protected override void CreateDelegateInstance(FunctionsBase funs, MethodInfo met)
+        {
+            Fun = (ConstDelegate)Delegate.CreateDelegate(typeof(ConstDelegate), funs, met);
+        }
+
+        //Делегат для функции без параметров
+        public delegate IVal ConstDelegate();
+        //Ссылка на реализацию функции
+        protected ConstDelegate Fun { get; private set; }
+    }
+
+    //---------------------------------------------------------------------------------------------------
+
     //Одна перегрузка функции, базовый класс для функций разных типов
     public abstract class CalcBaseFun
     {
