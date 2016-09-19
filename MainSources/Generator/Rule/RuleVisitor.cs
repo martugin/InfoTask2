@@ -42,11 +42,12 @@ namespace Generator
         public override Node VisitTablGenSimple(P.TablGenSimpleContext context)
         {
             var tabl = (NodeRSubTabl)Go(context.tabl());
+            var ctabl = tabl;
             foreach (var s in context.subTabl())
             {
                 var sub = (NodeRSubTabl)Go(s);
-                tabl.Child = sub;
-                tabl = sub;
+                ctabl.Child = sub;
+                ctabl = sub;
             }
             return tabl;
         }
@@ -54,15 +55,17 @@ namespace Generator
         public override Node VisitSubTablGen(P.SubTablGenContext context)
         {
             NodeRSubTabl tabl = null;
+            NodeRSubTabl ctabl = null;
             foreach (var s in context.subTabl())
             {
                 var sub = (NodeRSubTabl)Go(s);
-                if (tabl != null) tabl.Child = sub;
-                tabl = sub;
+                if (ctabl != null) ctabl.Child = sub;
+                ctabl = sub;
+                if (tabl == null) tabl = sub;
             }
             return tabl;
         }
-
+        
         public override Node VisitTablIdent(P.TablIdentContext context)
         {
             return new NodeRTabl(_keeper, context.IDENT());
@@ -87,24 +90,24 @@ namespace Generator
 
         public override Node VisitSubTablIdent(P.SubTablIdentContext context)
         {
-            return new NodeRTabl(_keeper, context.SUBTABL());
+            return new NodeRSubTabl(_keeper, context.SUBTABL());
         }
 
         public override Node VisitSubTablCond(P.SubTablCondContext context)
         {
-            return new NodeRTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
+            return new NodeRSubTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
         }
 
         public override Node VisitSubTablParenLost(P.SubTablParenLostContext context)
         {
             _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeRTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
+            return new NodeRSubTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
         }
 
         public override Node VisitSubTablParenExtra(P.SubTablParenExtraContext context)
         {
             _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN());
-            return new NodeRTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
+            return new NodeRSubTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
         }
 
         //Выражения

@@ -159,7 +159,7 @@ namespace Generator
 
         public override Node VisitExprUnary(P.ExprUnaryContext context)
         {
-            return new NodeFun(_keeper, context.UNARY(), GoExpr(context.expr()));
+            return new NodeFun(_keeper, (ITerminalNode)context.children[0], GoExpr(context.expr()));
         }
 
         public override Node VisitExprOper(P.ExprOperContext context)

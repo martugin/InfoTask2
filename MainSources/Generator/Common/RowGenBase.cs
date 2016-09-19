@@ -22,7 +22,7 @@ namespace Generator
             RuleString = rec.GetString(ruleField);
             if (!RuleString.IsEmpty())
             {
-                var parse = new RuleParsing(Keeper, ruleField, RuleString, isSubTabl);
+                var parse = isSubTabl ? new SubRuleParsing(Keeper, ruleField, RuleString) : new RuleParsing(Keeper, ruleField, RuleString);
                 Rule = parse.ResultTree;
             }
 

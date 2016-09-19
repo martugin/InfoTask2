@@ -1,38 +1,40 @@
 grammar Rule;
 
 //GenRule параметров
-tablGen : IDENT '.' OVERTABL EOF    #TablGenOver
-			 | tabl ('.' subTabl)* EOF          #TablGenSimple
+tablGen : IDENT '.' OVERTABL EOF						  #TablGenOver
+             | tabl ('.' subTabl)* EOF						     #TablGenSimple			 
 			 ;
 
 //GenRule подпараметров
-subTablGen : subTabl ('.' subTabl)* EOF; 
+subTablGen : subTabl ('.' subTabl)* EOF 
+				  ; 
 
 tabl : IDENT                           #TablIdent
        | IDENT '(' expr ')'          #TablCond
 	   //Ошибки
-	   | IDENT LPAREN expr             #TablParenLost
-	   | IDENT '(' expr ')' RPAREN    #TablParenExtra
+	   | IDENT LPAREN expr?            #TablParenLost
+	   | IDENT '(' expr? ')' RPAREN    #TablParenExtra
 	   ;
 
 subTabl : SUBTABL                     #SubTablIdent
 			 | SUBTABL '(' expr ')'    #SubTablCond
 			 //Ошибки
-			 | SUBTABL LPAREN expr             #SubTablParenLost
-			 | SUBTABL '(' expr ')' RPAREN    #SubTablParenExtra
+			 | SUBTABL LPAREN expr?             #SubTablParenLost
+			 | SUBTABL '(' expr? ')' RPAREN    #SubTablParenExtra
 		     ;
 
 //Выражения
 expr : cons                                #ExprCons		
 		| '(' expr ')'                     #ExprParen		
 		| IDENT                          #ExprIdent		
-		| FUNCONST                  #ExprFunConst
+		| FUNCONST ('(' ')')?     #ExprFunConst
 		| IDENT '(' pars ')'         #ExprFun		
 		| MINUS expr                 #ExprUnary 
-		| NOT expr                      #ExprUnary
+		| expr OPER5 expr           #ExprOper		
 		| expr OPER4 expr           #ExprOper		
-		| expr OPER3 expr           #ExprOper		
-		| expr OPER2 expr           #ExprOper		
+		| expr (OPER3 | MINUS) expr  #ExprOper		
+		| expr OPER2 expr           #ExprOper	
+		| NOT expr                      #ExprUnary	
 		| expr OPER1 expr            #ExprOper		
 		//Ошибки		
 		| IDENT LPAREN pars              #ExprFunParenLost		
@@ -73,8 +75,9 @@ fragment DIV : [Dd][Ii][Vv];
 NOT : [Nn][Oo][Tt] | [Нн][Ее];
 MINUS : '-';
 
+OPER5 : ('^');
 OPER4 : ('*' | '/' | DIV | MOD);
-OPER3 : ('+' | '-' );
+OPER3 : ('+' );
 OPER2 : ('==' | '<>' | '<' | '>' | '<=' | '>=' | LIKE);
 OPER1 : (AND | OR | XOR);
 					   

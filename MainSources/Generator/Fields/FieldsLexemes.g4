@@ -32,9 +32,12 @@ fragment LIKE : [Ll][Ii][Kk][Ee] | [œÔ][ŒÓ][ƒ‰][ŒÓ][¡·][ÕÌ][ŒÓ];
 fragment MOD : [Mm][Oo][Dd];
 fragment DIV : [Dd][Ii][Vv];
 
-UNARY : '-' | ([Nn][Oo][Tt] | [ÕÌ][≈Â]);
+NOT : [Nn][Oo][Tt] | [ÕÌ][≈Â];
+MINUS : '-';
+
+OPER5 : ('^');
 OPER4 : ('*' | '/' | DIV | MOD);
-OPER3 : ('+' | '-' );
+OPER3 : ('+' );
 OPER2 : ('==' | '<>' | '<' | '>' | '<=' | '>=' | LIKE);
 OPER1 : (AND | OR | XOR);
 					   

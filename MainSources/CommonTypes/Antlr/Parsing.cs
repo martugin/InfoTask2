@@ -10,6 +10,7 @@ namespace CommonTypes
                                    string fieldName, //Имя разбираемого поля (для сообщений об ошибках)
                                    string fieldValue) //Разбираемое выражение
         {
+            _keeper = keeper;
             keeper.SetFieldName(fieldName);
             var reader = new StringReader(fieldValue);
             var input = new AntlrInputStream(reader.ReadToEnd());
@@ -27,11 +28,13 @@ namespace CommonTypes
 
         //Возвращаемое дерево и строка с ошибками разбора
         public Node ResultTree { get; private set; }
-
+        
+        //Накопление ошибки
+        private readonly ParsingKeeper _keeper;
         //Строка с результатами парсинга для тестов
         public string ToTestString()
         {
-            return (ResultTree == null ? "" : ResultTree.ToTestString());
+            return (ResultTree == null ? "" : ResultTree.ToTestString()) + (_keeper.ErrMess == "" ? "" : (" " + _keeper.ErrMess));
         }
 
         //Создать лексер

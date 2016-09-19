@@ -28,13 +28,15 @@ expr : cons                                              #ExprCons
 		| OVERTABL LPAREN valueProg RPAREN														     #ExprOver
 		| SUBTABL LPAREN (expr COLON)? valueProg (COLON valueProg)? RPAREN     #ExprSub		
 		| IDENT                                                  #ExprIdent		
-		| FUNCONST                                          #ExprFunConst
+		| FUNCONST ('(' ')')?								#ExprFunConst
 		| IDENT LPAREN pars RPAREN               #ExprFun	
-		| UNARY expr                 #ExprUnary		
+		| MINUS expr                 #ExprUnary		
+		| expr OPER5 expr           #ExprOper		
 		| expr OPER4 expr           #ExprOper		
-		| expr OPER3 expr           #ExprOper		
+		| expr  (OPER3 | MINUS) expr   #ExprOper		
 		| expr OPER2 expr           #ExprOper		
-		| expr OPER1 expr            #ExprOper		
+		| NOT expr		               #ExprUnary
+		| expr OPER1 expr           #ExprOper		
 		//Ошибки		
 		| IDENT LPAREN pars                                #ExprFunParenLost		
 		| IDENT LPAREN pars RPAREN RPAREN    #ExprFunParenExtra		

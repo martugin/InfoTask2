@@ -7,14 +7,8 @@ namespace Generator
     //Класс, запускающий разбор для GenRule
     internal class RuleParsing : Parsing
     {
-        public RuleParsing(GenKeeper keeper, string fieldName, string fieldValue, bool isSubTabl = false)
-            : base(keeper, fieldName, fieldValue)
-        {
-            _isSubTabl = isSubTabl;
-        }
-
-        //Используется для подтаблицы
-        private readonly bool _isSubTabl;
+        public RuleParsing(GenKeeper keeper, string fieldName, string fieldValue)
+            : base(keeper, fieldName, fieldValue +"\n") { }
 
         protected override Lexer GetLexer(ICharStream input)
         {
@@ -28,9 +22,20 @@ namespace Generator
 
         protected override Node RunVisitor(Parser parser, ParsingKeeper keeper)
         {
-            var p = (RuleParser)parser;
-            var v = new RuleVisitor(keeper);
-            return _isSubTabl ? v.Go(p.subTablGen()) : v.Go(p.tablGen());
+            return new RuleVisitor(keeper).Go(((RuleParser)parser).tablGen());
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------------
+    //Класс, запускающий разбор для GenRule подтаблицы
+    internal class SubRuleParsing : RuleParsing
+    {
+        public SubRuleParsing(GenKeeper keeper, string fieldName, string fieldValue) 
+            : base(keeper, fieldName, fieldValue + "\n") { }
+
+        protected override Node RunVisitor(Parser parser, ParsingKeeper keeper)
+        {
+            return new RuleVisitor(keeper).Go(((RuleParser)parser).subTablGen());
         }
     }
 }
