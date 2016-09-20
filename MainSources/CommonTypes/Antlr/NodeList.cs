@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace CommonTypes
 {
@@ -11,6 +12,12 @@ namespace CommonTypes
         }
 
         protected override string NodeType { get { return "NodeList"; } }
+
+        //Запись в строку
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(Children.ToArray());
+        }
 
         // Список узлов 
         public IEnumerable<INode> Children { get; private set; }

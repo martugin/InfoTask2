@@ -17,6 +17,11 @@ namespace Generator
 
         protected override string NodeType { get { return "If"; } }
 
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(_conditions.Union(_variants).ToArray());
+        }
+
         //Список условий
         private readonly List<INodeExpr> _conditions;
         //Список вариантов значений
@@ -58,6 +63,11 @@ namespace Generator
         }
 
         protected override string NodeType { get { return "IfVoid"; } }
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(_conditions.Cast<Node>().Union(_variants.Cast<Node>()).ToArray());
+        }
 
         //Список условий
         private readonly List<INodeExpr> _conditions;

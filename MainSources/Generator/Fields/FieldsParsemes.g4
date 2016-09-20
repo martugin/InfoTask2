@@ -1,11 +1,13 @@
 parser grammar FieldsParsemes;
 options { tokenVocab=FieldsLexemes; }
 
-fieldGen : element* EOF;  
+fieldGen : textGen EOF;  
 
-element : TEXT          #ElementText
-            | voidProg      #ElementVoid			
-			| valueProg     #ElementValue			
+textGen : element*;
+
+element : TEXT          #ElementText            
+            | TLSQUARE voidProg RSQUARE     #ElementVoid			
+			| TLSQUARE valueProg RSQUARE    #ElementValue						
 			;
 
 voidProg : voidExpr (SEP voidExpr)*;   
@@ -13,17 +15,17 @@ voidProg : voidExpr (SEP voidExpr)*;
 valueProg : (voidExpr SEP)* expr;			   
 
 //Выражения без значения
-voidExpr : IDENT SET expr														 #VoidExprVar
-              | IF LPAREN expr COLON voidProg (COLON expr COLON voidProg)* COLON voidProg? RPAREN   #VoidExprIf
-			  | WHILE LPAREN expr COLON voidProg RPAREN	 	 #VoidExprWhile
-			  | OVERTABL LPAREN voidProg RPAREN						 #VoidExprOver			  
+voidExpr : IDENT SET expr															 #VoidExprVar
+              | IF LPAREN expr COLON voidProg (COLON expr COLON voidProg)* (COLON voidProg)? RPAREN   #VoidExprIf
+			  | WHILE LPAREN expr COLON voidProg RPAREN	 		 #VoidExprWhile
+			  | OVERTABL LPAREN voidProg RPAREN							 #VoidExprOver			  
 			  | SUBTABL LPAREN (expr COLON)? voidProg RPAREN    #VoidExprSub
 			  ;
 
 //Выражения со значением
 expr : cons                                              #ExprCons		
 		| LPAREN expr RPAREN                 #ExprParen		
-		| IF LPAREN expr COLON valueProg (COLON expr COLON valueProg)* valueProg? RPAREN    #ExprIf
+		| IF LPAREN expr COLON valueProg (COLON expr COLON valueProg)* (COLON valueProg)? RPAREN    #ExprIf
 		| WHILE LPAREN expr COLON valueProg COLON expr RPAREN					     #ExprWhile
 		| OVERTABL LPAREN valueProg RPAREN														     #ExprOver
 		| SUBTABL LPAREN (expr COLON)? valueProg (COLON valueProg)? RPAREN     #ExprSub		
@@ -37,6 +39,7 @@ expr : cons                                              #ExprCons
 		| expr OPER2 expr           #ExprOper		
 		| NOT expr		               #ExprUnary
 		| expr OPER1 expr           #ExprOper		
+		| LSQUARE textGen TRSQUARE     #ExprTextGen			 
 		//Ошибки		
 		| IDENT LPAREN pars                                #ExprFunParenLost		
 		| IDENT LPAREN pars RPAREN RPAREN    #ExprFunParenExtra		

@@ -47,7 +47,11 @@ namespace Generator
          }
 
          protected override string NodeType { get { return "VarSet"; } }
-         
+         public override string ToTestString()
+         {
+             return ToTestWithChildren(_nodeMean);
+         }
+
          //Переменная
          private readonly Var _var;
          //Присваиваемое значение

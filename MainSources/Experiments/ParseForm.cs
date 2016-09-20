@@ -33,7 +33,7 @@ namespace Experiments
         private void ButGenField_Click(object sender, EventArgs e)
         {
             var generator = new TablGenerator(new Logger(), null, null, null, null, null, null);
-            Result.Text = new FieldsParsing(new GenKeeper(generator), "поле", Formula.Text + "\n").ToTestString();
+            Result.Text = new FieldsParsing(new GenKeeper(generator), "поле", Formula.Text).ToTestString();
         }
     }
 }

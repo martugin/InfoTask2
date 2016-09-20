@@ -13,6 +13,10 @@ namespace Generator
         }
 
         protected override string NodeType { get { return "Over"; } }
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(_expr);
+        }
 
         //Вычисляемое выражение
         private readonly INodeExpr _expr;
@@ -46,6 +50,11 @@ namespace Generator
         }
 
         protected override string NodeType { get { return "OverVoid"; } }
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(_prog);
+        }
 
         //Вычисляемое выражение
         private readonly INodeVoid _prog;

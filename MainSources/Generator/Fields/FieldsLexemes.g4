@@ -5,7 +5,7 @@ lexer grammar FieldsLexemes;
 TLSQUARE : '['  -> pushMode(EXPRESSION) ;
 TRSQUARE : ']'  -> popMode;
 
-TEXT: ~('[' | ']')+?;
+TEXT: ~('[' | ']')+;
 
 //Режим выражения
 mode EXPRESSION;

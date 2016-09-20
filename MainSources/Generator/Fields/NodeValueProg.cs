@@ -12,6 +12,11 @@ namespace Generator
 
         protected override string NodeType { get { return "VoidProg"; } }
 
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(_voidParts);
+        }
+
         //Список частей программы
         private readonly INodeVoid[] _voidParts;
 
@@ -44,6 +49,11 @@ namespace Generator
         private readonly NodeVoidProg _voidProg;
         //Выражение, возвращающее значение
         private readonly INodeExpr _expr;
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(_voidProg, _expr);
+        }
 
         protected override string NodeType { get { return "ValueProg"; } }
 

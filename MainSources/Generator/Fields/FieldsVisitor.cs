@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Windows.Forms;
 using Antlr4.Runtime.Tree;
 using CommonTypes;
 using Generator.Fields;
@@ -37,7 +38,12 @@ namespace Generator
 
         public override Node VisitFieldGen(P.FieldGenContext context)
         {
-            return new NodeText(context.element().Select(GoExpr));
+            return Go(context.textGen());
+        }
+
+        public override Node VisitTextGen(P.TextGenContext context)
+        {
+            return new NodeTextList(context.element().Select(Go));
         }
 
         public override Node VisitElementText(P.ElementTextContext context)
@@ -166,6 +172,11 @@ namespace Generator
         {
             var fun = (ITerminalNode)context.children[1];
             return new NodeFun(_keeper, fun, context.expr().Select(GoExpr).ToArray());
+        }
+
+        public override Node VisitExprTextGen(P.ExprTextGenContext context)
+        {
+            return Go(context.textGen());
         }
 
         public override Node VisitExprFunParenLost(P.ExprFunParenLostContext context)

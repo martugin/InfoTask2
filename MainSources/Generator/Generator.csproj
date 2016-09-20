@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -63,7 +64,7 @@
     <Compile Include="Fields\FieldsParsing.cs" />
     <Compile Include="Fields\FieldsVisitor.cs" />
     <Compile Include="Fields\NodeSub.cs" />
-    <Compile Include="Fields\NodeText.cs" />
+    <Compile Include="Fields\NodeTextList.cs" />
     <Compile Include="Fields\NodeValueProg.cs" />
     <Compile Include="obj\Debug\FieldsLexemes.cs" />
     <Compile Include="obj\Debug\FieldsParsemes.cs" />

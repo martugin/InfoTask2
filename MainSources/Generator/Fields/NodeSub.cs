@@ -17,6 +17,11 @@ namespace Generator
 
         protected override string NodeType { get { return "Sub"; } }
 
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(_condition, _expr, _separator);
+        }
+
         //Условие фильтрации или имя типа
         private readonly INodeExpr _condition;
         //Выражение, вычисяемое для каждой строки подтаблицы
@@ -70,6 +75,11 @@ namespace Generator
         }
 
         protected override string NodeType { get { return "SubVoid"; } }
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(_condition, _prog);
+        }
 
         //Условие фильтрации или имя типа
         private readonly INodeExpr _condition;

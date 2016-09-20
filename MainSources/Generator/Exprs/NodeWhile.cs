@@ -16,6 +16,11 @@ namespace Generator
 
         protected override string NodeType { get { return "While"; } }
 
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(_condition, _prog, _elseProg);
+        }
+
         //Условие, вычисляеое выражение и значение возвращаемое если цикл ни разу не выполнялся
         private readonly INodeExpr _condition;
         private readonly INodeExpr _prog;
@@ -54,6 +59,11 @@ namespace Generator
         }
 
         protected override string NodeType { get { return "WhileVoid"; } }
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(_condition, _prog);
+        }
 
         //Условие и выполняемая программа
         private readonly INodeExpr _condition;

@@ -17,12 +17,12 @@ namespace GeneratorTest
         private string Parse(GenKeeper keeper, string formula)
         {
             keeper.Errors.Clear();
-            return new RuleParsing(keeper, "поле", formula +"\n").ToTestString();
+            return new RuleParsing(keeper, "поле", formula).ToTestString();
         }
         private string ParseSub(GenKeeper keeper, string formula)
         {
             keeper.Errors.Clear();
-            return new SubRuleParsing(keeper, "поле", formula + "\n").ToTestString();
+            return new SubRuleParsing(keeper, "поле", formula).ToTestString();
         }
 
         [TestMethod]

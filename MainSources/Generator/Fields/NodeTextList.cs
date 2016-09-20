@@ -5,17 +5,18 @@ using CommonTypes;
 namespace Generator
 {
     //Главный узел генерации значения поля
-    internal class NodeText : NodeList, INodeExpr
+    internal class NodeTextList : NodeList, INodeExpr
     {
-        public NodeText(IEnumerable<INodeExpr> children) 
+        public NodeTextList(IEnumerable<Node> children) 
             : base(children) { }
 
         //Проверка формулы
         public DataType Check(TablStruct tabl)
         {
             var dtype = DataType.Value;
-            foreach (INodeExpr child in Children)
-                dtype = dtype.Add(child.Check(tabl));
+            foreach (var child in Children)
+                if (child is INodeExpr)
+                    dtype = dtype.Add(((INodeExpr)child).Check(tabl));
             return dtype;
         }
 
@@ -25,8 +26,9 @@ namespace Generator
             if (Children.Count() == 1)
                 return ((INodeExpr) Children.First()).Generate(row);
             string s = "";
-            foreach (INodeExpr child in Children)
-                s += child.Generate(row).String;
+            foreach (var child in Children)
+                if (child is INodeExpr)
+                    s += ((INodeExpr)child).Generate(row).String;
             return new MeanString(s);
         }
     }
