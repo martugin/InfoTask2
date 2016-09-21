@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Windows.Forms;
 using Antlr4.Runtime.Tree;
 using CommonTypes;
 using Generator.Fields;
@@ -48,16 +47,18 @@ namespace Generator
 
         public override Node VisitElementText(P.ElementTextContext context)
         {
-            return _keeper.GetStringConst(context.TEXT());
+            return _keeper.GetStringConst((ITerminalNode)context.children[0]);
         }
 
         public override Node VisitElementVoid(P.ElementVoidContext context)
         {
+            _keeper.CheckSquareParenths(context);
             return Go(context.voidProg());
         }
 
         public override Node VisitElementValue(P.ElementValueContext context)
         {
+            _keeper.CheckSquareParenths(context);
             return Go(context.valueProg());
         }
 
@@ -115,11 +116,13 @@ namespace Generator
 
         public override Node VisitExprParen(P.ExprParenContext context)
         {
+            _keeper.CheckParenths(context);
             return Go(context.expr());
         }
 
         public override Node VisitExprIf(P.ExprIfContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeIf(_keeper, context.IF(),
                                          context.expr().Select(GoExpr).ToList(),
                                          context.valueProg().Select(GoExpr).ToList());
@@ -127,6 +130,7 @@ namespace Generator
 
         public override Node VisitExprWhile(P.ExprWhileContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeWhile(_keeper, context.WHILE(), 
                                               GoExpr(context.expr(0)), 
                                               GoExpr(context.valueProg()), 
@@ -135,11 +139,13 @@ namespace Generator
 
         public override Node VisitExprOver(P.ExprOverContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeOver(_keeper, context.OVERTABL(), GoExpr(context.valueProg()));
         }
 
         public override Node VisitExprSub(P.ExprSubContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeSub(_keeper, context.SUBTABL(),
                                            context.expr() == null ? null : GoExpr(context.expr()),
                                            GoExpr(context.valueProg(0)), 
@@ -160,6 +166,7 @@ namespace Generator
 
         public override Node VisitExprFun(P.ExprFunContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
         }
 
@@ -177,18 +184,6 @@ namespace Generator
         public override Node VisitExprTextGen(P.ExprTextGenContext context)
         {
             return Go(context.textGen());
-        }
-
-        public override Node VisitExprFunParenLost(P.ExprFunParenLostContext context)
-        {
-            _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
-        }
-
-        public override Node VisitExprFunParenExtra(P.ExprFunParenExtraContext context)
-        {
-            _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN(1));
-            return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
         }
 
         public override Node VisitParamsList(P.ParamsListContext context)

@@ -12,15 +12,15 @@ subTablGen : subTabl ('.' subTabl)* EOF
 tabl : IDENT                           #TablIdent
        | IDENT '(' expr ')'          #TablCond
 	   //Ошибки
-	   | IDENT LPAREN expr?            #TablParenLost
-	   | IDENT '(' expr? ')' RPAREN    #TablParenExtra
+	   | IDENT '(' expr?             #TablCond
+	   | IDENT '(' expr? ')' ')'    #TablCond
 	   ;
 
 subTabl : SUBTABL                     #SubTablIdent
 			 | SUBTABL '(' expr ')'    #SubTablCond
 			 //Ошибки
-			 | SUBTABL LPAREN expr?             #SubTablParenLost
-			 | SUBTABL '(' expr? ')' RPAREN    #SubTablParenExtra
+			 | SUBTABL '(' expr?             #SubTablCond
+			 | SUBTABL '(' expr? ')' ')'    #SubTablCond
 		     ;
 
 //Выражения
@@ -37,8 +37,10 @@ expr : cons                                #ExprCons
 		| NOT expr                      #ExprUnary	
 		| expr OPER1 expr            #ExprOper		
 		//Ошибки		
-		| IDENT LPAREN pars              #ExprFunParenLost		
-		| IDENT '(' pars ')' RPAREN    #ExprFunParenExtra		
+		| '(' expr                          #ExprParen	
+		| '(' expr ')' ')'                 #ExprParen		
+		| IDENT '(' pars		        #ExprFun
+		| IDENT '(' pars ')' ')'		#ExprFun		
 		;
 
 pars : expr (';' expr)*    #ParamsList
@@ -80,10 +82,6 @@ OPER4 : ('*' | '/' | DIV | MOD);
 OPER3 : ('+' );
 OPER2 : ('==' | '<>' | '<' | '>' | '<=' | '>=' | LIKE);
 OPER1 : (AND | OR | XOR);
-					   
-//Символы
-LPAREN : '(';
-RPAREN : ')';
 
 //Функции - константы
 FUNCONST : ([Tt][Rr][Uu][Ee] | [Пп][Рр][Аа][Вв][Дд][Аа])

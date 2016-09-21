@@ -1,16 +1,21 @@
 lexer grammar FieldsLexemes;
 
-//Ğåæèì ïî óìîë÷åíèş (DEFAULT_MODE)
+//Ğåæèì òåêñòà ïî óìîë÷åíèş (DEFAULT_MODE)
 
 TLSQUARE : '['  -> pushMode(EXPRESSION) ;
-TRSQUARE : ']'  -> popMode;
-
+TRSQUARE : ']';
 TEXT: ~('[' | ']')+;
+
+//Ğåæèì âíóòğåííåãî òåêñòà 
+mode INNER_TEXT;
+ILSQUARE : '['  -> pushMode(EXPRESSION) ;
+IRSQUARE : ']'  -> popMode;
+ITEXT: ~('[' | ']')+;
 
 //Ğåæèì âûğàæåíèÿ
 mode EXPRESSION;
-LSQUARE : '['  -> pushMode(DEFAULT_MODE) ;
-RSQUARE : ']'  -> popMode;
+ELSQUARE : '['  -> pushMode(INNER_TEXT) ;
+ERSQUARE : ']'  -> popMode;
 
 //Ïğîáåëû è êîììåíòàğèè
 WS  : [' '\n\r\t] -> skip;

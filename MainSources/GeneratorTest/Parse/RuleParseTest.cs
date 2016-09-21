@@ -95,26 +95,28 @@ namespace GeneratorTest
         public void Errors()
         {
             var k = MakeKeeper();
-            Assert.AreEqual("Tabl: aa (, ) Не закрытая скобка, '(' (поле, строка: 1, позиция: 3)", Parse(k, "aa("));
-            Assert.AreEqual("Tabl: aa (Fun: + (Field: x, Boolean: 1), ) Не закрытая скобка, '(' (поле, строка: 1, позиция: 3)", Parse(k, "aa(x+1"));
-            Assert.AreEqual("Tabl: aa (Fun: == (Field: x, String: 'ddd'), ) Лишняя закрывающаяся скобка, ')' (поле, строка: 1, позиция: 12)", Parse(k, "aa(x=='ddd'))"));
-            Assert.AreEqual("Tabl: aa (, ) Лишняя закрывающаяся скобка, ')' (поле, строка: 1, позиция: 4)", Parse(k, "aa())"));
+            Assert.AreEqual("Tabl: aa (, ) Незакрытая скобка, '(' (поле, строка: 1, позиция: 3)", Parse(k, "aa("));
+            Assert.AreEqual("Tabl: aa (Fun: + (Field: x, Boolean: 1), ) Незакрытая скобка, '(' (поле, строка: 1, позиция: 3)", Parse(k, "aa(x+1"));
+            Assert.AreEqual("Tabl: aa (Fun: == (Field: x, String: 'ddd'), ) Лишняя закрывающаяся скобка, ')' (поле, строка: 1, позиция: 13)", Parse(k, "aa(x=='ddd'))"));
+            Assert.AreEqual("Tabl: aa (, ) Лишняя закрывающаяся скобка, ')' (поле, строка: 1, позиция: 5)", Parse(k, "aa())"));
             Assert.AreEqual("Tabl: aaaa (, ) Недопустимое использование лексемы, '(' (поле, строка: 1, позиция: 1)", Parse(k, "(aaaa"));
             Assert.AreEqual(" Недопустимое использование лексемы, ')' (поле, строка: 1, позиция: 12)", Parse(k, "Tabl(sd+dd+)"));
             Assert.AreEqual("Tabl: Tabl (Fun: + (Field: ss, Real: 1.2), ) Недопустимое использование лексемы, '3' (поле, строка: 1, позиция: 13)", Parse(k, "Tabl(ss+1.2.3)"));
             Assert.AreEqual("Tabl: Tabl (Fun: + (Field: ss, Field: a), ) Недопустимое использование лексемы, '3' (поле, строка: 1, позиция: 11)", Parse(k, "Tabl(ss+a.3)"));
-            Assert.AreEqual("Tabl: Tabl (, SubTabl: SubTabl (, )) Не закрытая скобка, '(' (поле, строка: 1, позиция: 13)", Parse(k, "Tabl.SubTabl("));
-            Assert.AreEqual("Tabl: Tabl (, SubTabl: SubTabl (Fun: * (Field: x, Fun: cos (Field: x)), )) Не закрытая скобка, '(' (поле, строка: 1, позиция: 13)", Parse(k, "Tabl.SubTabl(x*cos(x"));
-            Assert.AreEqual("Tabl: Tabl (, SubTabl: SubTabl (Field: x, )) Лишняя закрывающаяся скобка, ')' (поле, строка: 1, позиция: 15)", Parse(k, "Tabl.SubTabl(x))"));
+            Assert.AreEqual("Tabl: Tabl (, SubTabl: SubTabl (, )) Незакрытая скобка, '(' (поле, строка: 1, позиция: 13)", Parse(k, "Tabl.SubTabl("));
+            Assert.AreEqual("Tabl: Tabl (, SubTabl: SubTabl (Fun: * (Field: x, Fun: cos (Field: x)), )) Незакрытая скобка, '(' (поле, строка: 1, позиция: 13)", Parse(k, "Tabl.SubTabl(x*cos(x"));
+            Assert.AreEqual("Tabl: Tabl (, SubTabl: SubTabl (Field: x, )) Лишняя закрывающаяся скобка, ')' (поле, строка: 1, позиция: 16)", Parse(k, "Tabl.SubTabl(x))"));
             Assert.AreEqual("Tabl: Tabl (, SubTabl: SubTabl (, )) Недопустимое использование лексемы, 'абв' (поле, строка: 1, позиция: 14)", Parse(k, "Tabl.SubTabl абв+где)"));
             Assert.AreEqual("Tabl: Tabl (, SubTabl: SubTabl (Boolean: 987654321987, )) Недопустимое целое число, '987654321987' (поле, строка: 1, позиция: 14)", Parse(k, "Tabl.SubTabl(987654321987)"));
             Assert.AreEqual("Tabl: ghs (, ) Недопустимое использование лексемы, '/' (поле, строка: 1, позиция: 11)", Parse(k, "ghs(/*sd*//dd)"));
-            Assert.AreEqual("Tabl: ghs (, ) Не закрытая скобка, '(' (поле, строка: 1, позиция: 4)", Parse(k, "ghs(/*sd*///dd)"));
+            Assert.AreEqual("Tabl: ghs (, ) Незакрытая скобка, '(' (поле, строка: 1, позиция: 4)", Parse(k, "ghs(/*sd*///dd)"));
             Assert.AreEqual(" Недопустимое использование лексемы, 'SubTabl' (поле, строка: 1, позиция: 1)", Parse(k, "SubTabl(s)"));
-            Assert.AreEqual("SubTabl: SubTabl (Field: Ч, ) Не закрытая скобка, '(' (поле, строка: 1, позиция: 8)", ParseSub(k, "SubTabl(Ч"));
+            Assert.AreEqual("Tabl: aaa (Fun: + (Field: x, Integer: 2), ) Незакрытая скобка, '(' (поле, строка: 1, позиция: 5)", Parse(k, "aaa((x+2)"));
+            Assert.AreEqual("SubTabl: SubTabl (Field: Ч, ) Незакрытая скобка, '(' (поле, строка: 1, позиция: 8)", ParseSub(k, "SubTabl(Ч"));
             Assert.AreEqual("SubTabl: SubTabl (Field: Ч, ) Недопустимое использование лексемы, 'Н' (поле, строка: 1, позиция: 11)", ParseSub(k, "SubTabl(Ч Н)"));
             Assert.AreEqual("SubTabl: SubTabl (Field: aa, )", ParseSub(k, "SubTabl(/*ddd*/aa)//fff"));
             Assert.AreEqual(" Недопустимое использование лексемы, 'Tabl' (поле, строка: 1, позиция: 1)", ParseSub(k, "Tabl(s)"));
+            Assert.AreEqual("SubTabl: SubTabl (Fun: + (Field: x, Integer: 20), ) Лишняя закрывающаяся скобка, ')' (поле, строка: 1, позиция: 14)", ParseSub(k, "SubTabl(x+20))"));
         }
     }
 }

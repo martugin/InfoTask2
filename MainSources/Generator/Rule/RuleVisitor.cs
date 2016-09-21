@@ -73,21 +73,10 @@ namespace Generator
 
         public override Node VisitTablCond(P.TablCondContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeRTabl(_keeper, context.IDENT(), GoExpr(context.expr()));
         }
-
-        public override Node VisitTablParenLost(P.TablParenLostContext context)
-        {
-            _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeRTabl(_keeper, context.IDENT(), GoExpr(context.expr()));
-        }
-
-        public override Node VisitTablParenExtra(P.TablParenExtraContext context)
-        {
-            _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN());
-            return new NodeRTabl(_keeper, context.IDENT(), GoExpr(context.expr()));
-        }
-
+        
         public override Node VisitSubTablIdent(P.SubTablIdentContext context)
         {
             return new NodeRSubTabl(_keeper, context.SUBTABL());
@@ -95,21 +84,10 @@ namespace Generator
 
         public override Node VisitSubTablCond(P.SubTablCondContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeRSubTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
         }
-
-        public override Node VisitSubTablParenLost(P.SubTablParenLostContext context)
-        {
-            _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeRSubTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
-        }
-
-        public override Node VisitSubTablParenExtra(P.SubTablParenExtraContext context)
-        {
-            _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN());
-            return new NodeRSubTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
-        }
-
+        
         //Выражения
 
         public override Node VisitExprCons(P.ExprConsContext context)
@@ -119,6 +97,7 @@ namespace Generator
 
         public override Node VisitExprParen(P.ExprParenContext context)
         {
+            _keeper.CheckParenths(context);
             return Go(context.expr());
         }
 
@@ -134,6 +113,7 @@ namespace Generator
 
         public override Node VisitExprFun(P.ExprFunContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
         }
 
@@ -148,19 +128,7 @@ namespace Generator
             var fun = (ITerminalNode)context.children[1];
             return new NodeFun(_keeper, fun, GoExpr(context.expr(0)), GoExpr(context.expr(1)));
         }
-
-        public override Node VisitExprFunParenLost(P.ExprFunParenLostContext context)
-        {
-            _keeper.AddError("Не закрытая скобка", context.LPAREN());
-            return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
-        }
-
-        public override Node VisitExprFunParenExtra(P.ExprFunParenExtraContext context)
-        {
-            _keeper.AddError("Лишняя закрывающаяся скобка", context.RPAREN());
-            return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
-        }
-
+        
         public override Node VisitParamsList(P.ParamsListContext context)
         {
             return new NodeList(context.expr().Select(Visit));

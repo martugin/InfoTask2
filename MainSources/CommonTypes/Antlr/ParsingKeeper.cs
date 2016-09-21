@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using BaseLibrary;
@@ -51,6 +52,38 @@ namespace CommonTypes
                 }
                 return s;
             }
+        }
+
+        //Проверка на недостающие и лишние скобки, если нужно, то добавляется ошибка
+        public void CheckParenths(ParserRuleContext context)
+        {
+            var childs = context.children;
+            string last = childs[childs.Count - 1].GetText();
+            string prev = childs.Count == 1 ? ")" : childs[childs.Count - 2].GetText();
+            int num = childs.Count ==1 || childs[0].GetText() == "(" ? 0 : 1;
+            if (last != ")") AddError("Незакрытая скобка", (ITerminalNode)childs[num]);
+            if (last == ")" && prev == ")")
+                AddError("Лишняя закрывающаяся скобка", (ITerminalNode)childs.Last());
+        }
+        public void CheckSquareParenths(ParserRuleContext context)
+        {
+            var childs = context.children;
+            string last = childs[childs.Count - 1].GetText();
+            string prev = childs.Count == 1 ? "]" : childs[childs.Count - 2].GetText();
+            int num = childs.Count == 1 || childs[0].GetText() == "[" ? 0 : 1;
+            if (last != "]") AddError("Незакрытая квадратная скобка", (ITerminalNode)childs[num]);
+            if (last == "]" && prev == "]")
+                AddError("Лишняя закрывающаяся квадратная скобка", (ITerminalNode)childs.Last());
+        }
+        public void CheckFigureParenths(ParserRuleContext context)
+        {
+            var childs = context.children;
+            string last = childs[childs.Count - 1].GetText();
+            string prev = childs.Count == 1 ? "}" : childs[childs.Count - 2].GetText();
+            int num = childs.Count == 1 || childs[0].GetText() == "{" ? 0 : 1;
+            if (last != "}") AddError("Незакрытая фигурная скобка", (ITerminalNode)childs[num]);
+            if (last == "}" && prev == "}")
+                AddError("Лишняя закрывающаяся фигурная скобка", (ITerminalNode)childs.Last());
         }
 
         //Методы создания узлов - констант разного типа
