@@ -8,7 +8,7 @@ namespace CommonTypes
         public Tabl(int maxLevel)
         {
             _rows = new DicI<TablRow>[maxLevel - 1];
-            for (int i = 0; i < maxLevel; i++)
+            for (int i = 0; i < maxLevel - 1; i++)
                 _rows[i] = new DicI<TablRow>();
         }
 

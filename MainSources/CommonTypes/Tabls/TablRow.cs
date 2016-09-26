@@ -16,10 +16,10 @@ namespace CommonTypes
         public int Id { get { return _means["Id"].Integer; } }
         public int ParentId { get { return _means["ParentId"].Integer; } }
         //Ключи числовой и строковый
-        public string Code { get { return _means["Code"].String; } }
-        public int Num { get { return _means["Num"].Integer; } }
+        public string Code { get { return _means.ContainsKey("Code") ? _means["Code"].String : null; } }
+        public int Num { get { return _means.ContainsKey("Num") ?_means["Num"].Integer : 0; } }
         //Тип
-        public string Type { get { return _means["GenType"].String; } }
+        public string Type { get { return _means.ContainsKey("GenType") ?  _means["GenType"].String : null; } }
 
         //Словарь значений, ключи - коды полей
         private readonly DicS<Mean> _means = new DicS<Mean>();

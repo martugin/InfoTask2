@@ -17,6 +17,7 @@ namespace CommonTypes
         public TablGroup AddStruct(DaoDb db, //База данных
                                         string table0, string table1 = null, string table2 = null, string table3 = null) //Имена таблиц разной вложенности
         {
+            db.ConnectDao();
             var s = new TablGroup(db.File, table0);
             Structs.Add(table0, s);
             s.AddTabl(db, table0, 0);
@@ -49,9 +50,10 @@ namespace CommonTypes
                 {
                     var tabl = Tabls.Add(s.Key, new Tabl(s.Value.Tabls.Count));
                     foreach (var tsi in s.Value.Tabls.Values)
-                        using (var rec = new RecDao(db, tsi.TableName))
-                            while (rec.Read())
-                                tabl.AddRow(new TablRow(rec));
+                        if (tsi.Level >= 0)
+                            using (var rec = new RecDao(db, tsi.TableName))
+                                while (rec.Read())
+                                    tabl.AddRow(tsi.Level, new TablRow(rec));
                 }
         }
     }
