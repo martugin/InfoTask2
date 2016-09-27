@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using CommonTypes;
 
 namespace Generator
@@ -15,10 +16,11 @@ namespace Generator
         private readonly ParsingKeeper _keeper;
 
         //Проверка выражения
-        public void Check(INodeExpr condition, TablStruct tabl)
+        public void Check(INodeExpr condition, IToken tablToken, TablStruct tabl)
         {
-            if (!(condition is NodeConst) && condition.Check(tabl) != DataType.Boolean)
-                _keeper.AddError("Недопустимый тип данных условия", condition.Token);
+            if (condition != null)
+                if (!(condition is NodeConst) && condition.Check(tabl) != DataType.Boolean)
+                    _keeper.AddError("Недопустимый тип данных условия", tablToken);
         }
 
         //Выбрать ряды для геренации

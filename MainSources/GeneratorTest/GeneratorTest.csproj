@@ -49,11 +49,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Funs\RealisationScalarTest.cs" />
+    <Compile Include="Generation\CheckTest.cs" />
     <Compile Include="Parse\FieldsParseTest.cs" />
     <Compile Include="Parse\RuleParseTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BaseLibraryTest\BaseLibraryTest.csproj">
+      <Project>{D7B4D56D-F810-4AEB-ABE2-359327730790}</Project>
+      <Name>BaseLibraryTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
       <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
       <Name>BaseLibrary</Name>
@@ -67,6 +72,7 @@
       <Name>Generator</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

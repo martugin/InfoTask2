@@ -50,20 +50,21 @@ namespace CommonTypes
         //Словарь всех функций, ключи - все возможные имена
         private readonly DicS<FunCompile> _funs = new DicS<FunCompile>();
 
-        //Определяет, какая функция используется в выражении
+        //Определяет, какая перегрузка функции используется в выражении
         //Возвращает пару - код реализации функции и тип данных результата
+        //Если перегрузка не найдена, то возвращает сообщение об ошибке
         public Tuple<string, DataType> DefineFun(string name, //Имя функции в выражении
                                                  params DataType[] par) //Типы параметров в выражении
         {
             if (!_funs.ContainsKey(name))
-                return new Tuple<string, DataType>(null, DataType.Error);
+                return new Tuple<string, DataType>("Неизвестная функция", DataType.Error);
             foreach (var ov in _funs[name].Overloads)
             {
                 var dt = ov.Check(par);
                 if (dt != DataType.Error)
                     return new Tuple<string, DataType>(ov.RealisationName, dt);
             }
-            return new Tuple<string, DataType>(null, DataType.Error);
+            return new Tuple<string, DataType>("Недопустимые типы данных параметров функции", DataType.Error);
         }
     }
 }

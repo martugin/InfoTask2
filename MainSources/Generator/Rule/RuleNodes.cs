@@ -79,9 +79,14 @@ namespace Generator
         //Проверка выражения
         public TablStruct Check(TablStruct tabl) //таблица уровня родителя
         {
-            _rowsChecker.Check(Condition, tabl);
-            if (Child != null) return Child.Check(tabl.Child);
-            return tabl;
+            if (tabl.Child == null)
+                AddError("Подтаблица отстутствует");
+            else
+            {
+                _rowsChecker.Check(Condition, Token, tabl.Child);
+                if (Child != null) return Child.Check(tabl.Child);    
+            }
+            return tabl.Child;
         }
 
         //Выбрать ряды для генерации
@@ -116,7 +121,7 @@ namespace Generator
                 AddError("Не найдена таблица");
                 return null;
             }
-            return Check(dataTabls.Structs[_tablName].Tabls[0]);
+            return Check(dataTabls.Structs[_tablName].Tabls[-1]);
         }
 
         //Выбрать ряды для генерации

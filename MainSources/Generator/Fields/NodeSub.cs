@@ -40,7 +40,7 @@ namespace Generator
                 AddError("Недопустимый переход к подтаблице");
                 return DataType.Error;
             }
-            _rowsSelector.Check(_condition, tabl.Child);
+            _rowsSelector.Check(_condition, Token, tabl.Child);
             _expr.Check(tabl.Child);
             if (_separator != null)
                 _separator.Check(tabl.Child);

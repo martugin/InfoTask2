@@ -29,7 +29,7 @@ namespace Generator
         //Аргументы
         private readonly INodeExpr[] _args;
         //Функция для расчета
-        private ScalarGenFun _fun;
+        private IGenFun _fun;
         //Тип данных результата
         private DataType _resultType;
 
@@ -43,7 +43,9 @@ namespace Generator
         {
             var generator = ((GenKeeper) Keeper).Generator;
             var t = generator.FunsChecker.DefineFun(Token.Text, _args.Select(a => a.Check(tabl)).ToArray());
-            _fun = (ScalarGenFun)generator.Functions.Funs[t.Item1];
+            if (t.Item2 == DataType.Error)
+                AddError(t.Item1);
+            else _fun = (IGenFun)generator.Functions.Funs[t.Item1];
             return _resultType = t.Item2;
         }
 
