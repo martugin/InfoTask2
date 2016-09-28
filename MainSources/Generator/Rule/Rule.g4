@@ -58,10 +58,10 @@ cons : INT                      #ConsInt
 // Lexer 
 
 //ѕробелы и комментарии
-WS  : [' '\n\r\t] -> skip;
+WS  : [ \n\r\t] -> skip;
 COMMENT : '/*' .*? '*/' -> skip;
 LINECOMMENT : '//' .*? '\r'? '\n' -> skip;
-
+ 
 // лючевые слова
 OVERTABL : [Oo][Vv][Ee][Rr][Tt][Aa][Bb][Ll] | [Ќн][ја][ƒд][“т][ја][Ѕб][Ћл];
 SUBTABL : [Ss][Uu][Bb][Tt][Aa][Bb][Ll] | [ѕп][ќо][ƒд][“т][ја][Ѕб][Ћл];

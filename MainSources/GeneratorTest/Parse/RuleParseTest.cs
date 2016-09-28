@@ -29,6 +29,8 @@ namespace GeneratorTest
         public void Tabl()
         {
             var k = MakeKeeper();
+            Assert.AreEqual("Tabl: aaa (, )", Parse(k, "aaa"));
+            
             Assert.AreEqual("OverTabl: aaa", Parse(k, "aaa.OverTabl"));
             Assert.AreEqual("OverTabl: aaa", Parse(k, "aaa.НадТабл"));
 
@@ -95,6 +97,7 @@ namespace GeneratorTest
         public void Errors()
         {
             var k = MakeKeeper();
+            Assert.AreEqual("Tabl: aa (, ) Недопустимая последовательность символов, ''" + Environment.NewLine + "' (поле, строка: 1, позиция: 3)", Parse(k, "aa'"));
             Assert.AreEqual("Tabl: aa (, ) Незакрытая скобка, '(' (поле, строка: 1, позиция: 3)", Parse(k, "aa("));
             Assert.AreEqual("Tabl: aa (Fun: + (Field: x, Boolean: 1), ) Незакрытая скобка, '(' (поле, строка: 1, позиция: 3)", Parse(k, "aa(x+1"));
             Assert.AreEqual("Tabl: aa (Fun: == (Field: x, String: 'ddd'), ) Лишняя закрывающаяся скобка, ')' (поле, строка: 1, позиция: 13)", Parse(k, "aa(x=='ddd'))"));

@@ -22,17 +22,13 @@ namespace GeneratorTest
             }
             return tabls;
         }
-        
-        private GenKeeper MakeKeeper()
-        {
-            return new GenKeeper(new TablGenerator(new Logger(), null, null, null, null, null, null));
-        }
+
 
         //Разбор выражения GenRule таблицы и подтаблицы
         private TablStruct CheckRule(GenKeeper keeper, TablsList tabls, string formula)
         {
             keeper.Errors.Clear();
-            var parsing =  new RuleParsing(keeper, "поле", formula);
+            var parsing = new RuleParsing(keeper, "поле", formula);
             if (parsing.ResultTree == null) return null;
             return ((INodeTabl) parsing.ResultTree).Check(tabls);
         }
@@ -43,12 +39,19 @@ namespace GeneratorTest
             if (parsing.ResultTree == null) return null;
             return ((NodeRSubTabl)parsing.ResultTree).Check(tstruct);
         }
+        private DataType CheckField(GenKeeper keeper, TablStruct tstruct, string formula)
+        {
+            keeper.Errors.Clear();
+            var parsing = new FieldsParsing(keeper, "поле", formula);
+            if (parsing.ResultTree == null) return DataType.Error;
+            return ((INodeExpr)parsing.ResultTree).Check(tstruct);
+        }
 
         [TestMethod]
         public void CheckRule()
         {
             var tabls = Load();
-            var keeper = MakeKeeper();
+            var keeper = new GenKeeper(new TablGenerator(new Logger(), null, null, null, null, null, null));
             var tstruct = CheckRule(keeper, tabls, "Tabl");
             Assert.AreEqual(0, tstruct.Level);
             Assert.AreEqual("Tabl", tstruct.TableName);
@@ -207,7 +210,117 @@ namespace GeneratorTest
         [TestMethod]
         public void CheckFields()
         {
+            var tabls = Load();
+            var keeper = new GenKeeper(new TablGenerator(new Logger(), null, null, null, null, null, null));
+            var tstruct = CheckRule(keeper, tabls, "Tabl");
             
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "aaa"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[IntField]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Boolean, CheckField(keeper, tstruct, "[BoolField]"));
+            Assert.AreEqual("", keeper.ErrMess);
+
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "aaa_[Code]_2"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[RealField]_"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[Id][IntField]"));
+            Assert.AreEqual("", keeper.ErrMess);
+
+            Assert.AreEqual(DataType.Boolean, CheckField(keeper, tstruct, "[1]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Real, CheckField(keeper, tstruct, "[1234.789]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[8][IntField][1]"));
+            Assert.AreEqual("", keeper.ErrMess);
+
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[a=5:a]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[a=5][a]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[a=5]sss[b=4]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Value, CheckField(keeper, tstruct, "[a=5]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Real, CheckField(keeper, tstruct, "[a=True][a=StrLen('eee'):a=a+0.2][a]"));
+            Assert.AreEqual("", keeper.ErrMess);
+
+            Assert.AreEqual(DataType.Real, CheckField(keeper, tstruct, "[2 * (3 + 1,5 + 2,0)]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[1+Cos((Pi+1)/2/*ooo*/)][BoolField]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[1 or True] "));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[Sign(Sqr(RealField + Log(2;IntField)))-1]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[StrReplace(StringField;'S';'uu')]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Boolean, CheckField(keeper, tstruct, "[NameField Like Code]"));
+            Assert.AreEqual("", keeper.ErrMess);
+
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[If(Code == 's1';IntField;3)]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Real, CheckField(keeper, tstruct, "[Если(True;IntField;False();3.1+1;BoolField And (IntField==5);56 div 3;7)]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Real, CheckField(keeper, tstruct, "[While(True;1;2,3)]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[i=0:s=0:While(i<IntField;s=s+3:s;0)]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[If(IntField < 10; a = 1; a = 2): a]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Real, CheckField(keeper, tstruct, "[n = 3: While(n > 0.001; n = n / 2): n]"));
+            Assert.AreEqual("", keeper.ErrMess);
+
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[[aaa]]"));
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[StrLen([aaa])]"));
+            Assert.AreEqual(DataType.Real, CheckField(keeper, tstruct, "[a=1:If(True;[[a=2][a]];[[a=4.5][a]]]"));
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[a=[[IntField+1]]:a]"));
+
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[OverTabl(a=2)]aaa"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Boolean, CheckField(keeper, tstruct, "[OverTabl(1)]"));
+            Assert.AreEqual("", keeper.ErrMess);
+
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[SubTabl(NameSub)]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[SubTablCond(True;NameSub)]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[SubTabl(NameSub;';')]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[SubTablCond('type';IntSub;[_])]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[SubTablCond('type';[[Code]_[NameSub]];[_])]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[n = 0: SubTabl(n=n+IntSub): n]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Real, CheckField(keeper, tstruct, "[n = 0: SubTabl(n=n+RealSub): n]"));
+            Assert.AreEqual("", keeper.ErrMess);
+
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[OverTabl(SubTabl(NameField;';'))]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[OverTabl(SubTabl(Num==11;NameField))]"));
+            Assert.AreEqual("", keeper.ErrMess);
+
+            tstruct = CheckSubRule(keeper, tstruct, "SubTabl");
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "bbb"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Real, CheckField(keeper, tstruct, "[RealSub]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[StrTrim(Code+NameSub)]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Real, CheckField(keeper, tstruct, "[If(BoolSub;IntSub;RealSub)]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[OverTabl(IntField)]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[SubTablCond(IntInt==222;NameName;'_')]"));
+            Assert.AreEqual("", keeper.ErrMess);
+
+            tstruct = CheckRule(keeper, tabls, "VtzTz");
+            Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[SysNumVtz]"));
+            Assert.AreEqual("", keeper.ErrMess);
+            Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "ss_[SubTabl(NameTz;Id)]"));
+            Assert.AreEqual("", keeper.ErrMess);
         }
     }
 }

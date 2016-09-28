@@ -8,14 +8,14 @@ namespace Generator
     internal class NodeFun : NodeKeeper, INodeExpr
     {
         public NodeFun(ParsingKeeper keeper, ITerminalNode terminal, //Имя функции
-                       params INodeExpr[] args) //Аргументы
+                                params INodeExpr[] args) //Аргументы
             : base(keeper, terminal)
         {
             _args = args;
         }
 
         public NodeFun(ParsingKeeper keeper, ITerminalNode terminal, //Имя функции
-                       NodeList argsList) //Узел с аргументами
+                                NodeList argsList) //Узел с аргументами
             : base(keeper, terminal)
         {
             _args = argsList.Children.Cast<INodeExpr>().ToArray();

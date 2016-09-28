@@ -25,6 +25,7 @@ LINECOMMENT : '//' .*? '\r'? '\n' -> skip;
 // лючевые слова
 OVERTABL : [Oo][Vv][Ee][Rr][Tt][Aa][Bb][Ll] | [Ќн][ја][ƒд][“т][ја][Ѕб][Ћл];
 SUBTABL : [Ss][Uu][Bb][Tt][Aa][Bb][Ll] | [ѕп][ќо][ƒд][“т][ја][Ѕб][Ћл];
+SUBTABLCOND : [Ss][Uu][Bb][Tt][Aa][Bb][Ll][Cc][Oo][Nn][Dd] | [ѕп][ќо][ƒд][“т][ја][Ѕб][Ћл][”у][—с][Ћл];
 
 IF : [Ii][Ff] | [≈е][—с][Ћл][»и];
 WHILE : [Ww][Hh][Ii][Ll][Ee] | [ѕп][ќо][ к][ја];

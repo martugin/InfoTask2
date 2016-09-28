@@ -79,6 +79,8 @@ namespace Generator
         {
             if (_conditions.Any(c => c.Check(tabl) != DataType.Boolean))
                 AddError("Недопустимый тип данных условия");
+            foreach (var expr in _variants)
+                expr.Check(tabl);
         }
 
         //Вычисление значения

@@ -16,7 +16,12 @@ namespace Generator
             var dtype = DataType.Value;
             foreach (var child in Children)
                 if (child is INodeExpr)
-                    dtype = dtype.Add(((INodeExpr)child).Check(tabl));
+                {
+                    var res = ((INodeExpr)child).Check(tabl);
+                    dtype = dtype == DataType.Value ? res : DataType.String;
+                } 
+                else if (child is INodeVoid)
+                    ((INodeVoid)child).Check(tabl);
             return dtype;
         }
 

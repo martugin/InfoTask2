@@ -69,9 +69,8 @@ namespace Generator
         
         public override Node VisitValueProg(P.ValueProgContext context)
         {
-            return new NodeValueProg(
-                                new NodeVoidProg(context.voidExpr().Select(GoVoid).ToArray()), 
-                                GoExpr(context.expr()));
+            return new NodeValueProg(new NodeVoidProg(context.voidExpr().Select(GoVoid).ToArray()), 
+                                                    GoExpr(context.expr()));
         }
 
         //Выражения без значения
@@ -146,10 +145,10 @@ namespace Generator
         public override Node VisitExprSub(P.ExprSubContext context)
         {
             _keeper.CheckParenths(context);
-            return new NodeSub(_keeper, context.SUBTABL(),
+            return new NodeSub(_keeper, (ITerminalNode)context.children[0],
                                            context.expr() == null ? null : GoExpr(context.expr()),
-                                           GoExpr(context.valueProg(0)), 
-                                           context.valueProg().Count() == 1 ? null : GoExpr(context.valueProg(1)));
+                                           GoExpr(context.valueProg(0)),
+                                           context.valueProg().Length == 1 ? null : GoExpr(context.valueProg(1)));
         }
 
         public override Node VisitExprIdent(P.ExprIdentContext context)

@@ -27,7 +27,8 @@ voidExpr : IDENT SET expr															 #VoidExprVar
               | IF LPAREN expr COLON voidProg (COLON expr COLON voidProg)* (COLON voidProg)? RPAREN   #VoidExprIf
 			  | WHILE LPAREN expr COLON voidProg RPAREN	 		 #VoidExprWhile
 			  | OVERTABL LPAREN voidProg RPAREN							 #VoidExprOver			  
-			  | SUBTABL LPAREN (expr COLON)? voidProg RPAREN    #VoidExprSub
+			  | SUBTABL LPAREN voidProg RPAREN								  #VoidExprSub
+			  | SUBTABLCOND LPAREN expr COLON voidProg RPAREN    #VoidExprSub
 			  //Ошибки		
 			  | IF LPAREN expr COLON voidProg (COLON expr COLON voidProg)* (COLON voidProg)?    #VoidExprIf
 			  | IF LPAREN expr COLON voidProg (COLON expr COLON voidProg)* (COLON voidProg)? RPAREN RPAREN  #VoidExprIf
@@ -35,8 +36,10 @@ voidExpr : IDENT SET expr															 #VoidExprVar
 			  | WHILE LPAREN expr COLON voidProg RPAREN RPAREN	 	#VoidExprWhile
 			  | OVERTABL LPAREN voidProg  												#VoidExprOver			  
 			  | OVERTABL LPAREN voidProg RPAREN RPAREN   					#VoidExprOver			  
-			  | SUBTABL LPAREN (expr COLON)? voidProg						    #VoidExprSub
-			  | SUBTABL LPAREN (expr COLON)? voidProg RPAREN RPAREN  #VoidExprSub
+			  | SUBTABL LPAREN voidProg									#VoidExprSub
+			  | SUBTABL LPAREN voidProg RPAREN RPAREN		#VoidExprSub
+			  | SUBTABLCOND LPAREN (expr COLON)? voidProg									#VoidExprSub
+			  | SUBTABLCOND LPAREN (expr COLON)? voidProg RPAREN RPAREN		#VoidExprSub
 			  ;
 
 //Выражения со значением
@@ -45,7 +48,8 @@ expr : cons                                              #ExprCons
 		| IF LPAREN expr COLON valueProg (COLON expr COLON valueProg)* (COLON valueProg)? RPAREN    #ExprIf
 		| WHILE LPAREN expr COLON valueProg COLON expr RPAREN					     #ExprWhile
 		| OVERTABL LPAREN valueProg RPAREN														     #ExprOver
-		| SUBTABL LPAREN (expr COLON)? valueProg (COLON valueProg)? RPAREN     #ExprSub		
+		| SUBTABL LPAREN valueProg (COLON valueProg)? RPAREN									  #ExprSub		
+		| SUBTABLCOND LPAREN expr COLON valueProg (COLON valueProg)? RPAREN     #ExprSub		
 		| IDENT                                                  #ExprIdent		
 		| FUNCONST (LPAREN RPAREN)?		   #ExprFunConst
 		| IDENT LPAREN pars RPAREN               #ExprFun	
@@ -68,8 +72,10 @@ expr : cons                                              #ExprCons
 		| WHILE LPAREN expr COLON valueProg COLON expr RPAREN RPAREN   #ExprWhile
 		| OVERTABL LPAREN valueProg      														      #ExprOver
 		| OVERTABL LPAREN valueProg RPAREN	RPAREN  								      #ExprOver
-		| SUBTABL LPAREN (expr COLON)? valueProg (COLON valueProg)?            #ExprSub		
-		| SUBTABL LPAREN (expr COLON)? valueProg (COLON valueProg)? RPAREN RPAREN   #ExprSub		
+		| SUBTABL LPAREN valueProg (COLON valueProg)?									  #ExprSub		
+		| SUBTABL LPAREN valueProg (COLON valueProg)? RPAREN RPAREN		  #ExprSub		
+		| SUBTABLCOND LPAREN (expr COLON)? valueProg (COLON valueProg)?								   #ExprSub		
+		| SUBTABLCOND LPAREN (expr COLON)? valueProg (COLON valueProg)? RPAREN RPAREN   #ExprSub		
 		;
 
 pars : expr (COLON expr)*    #ParamsList

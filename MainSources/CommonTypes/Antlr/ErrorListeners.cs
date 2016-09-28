@@ -20,12 +20,15 @@ namespace CommonTypes
         {
             var lexer = (Lexer)recognizer;
             const string mess = "Недопустимая последовательность символов";
+            string last = "";
+            if (lexer.CharIndex < _fieldValue.Length)
+                last += _fieldValue[lexer.CharIndex];
             if (lexer.Token != null)
             {
                 var t = lexer.Token;
-                _keeper.AddError(mess, t.Text + _fieldValue[lexer.CharIndex], t.Line, t.Column, t);
+                _keeper.AddError(mess, t.Text + last, t.Line, t.Column, t);
             }
-            else _keeper.AddError(mess, lexer.Text + _fieldValue[lexer.CharIndex], line, charPositionInLine);
+            else _keeper.AddError(mess, lexer.Text + last, line, charPositionInLine);
         }
     }
 

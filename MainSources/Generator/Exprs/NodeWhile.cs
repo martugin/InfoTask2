@@ -7,7 +7,7 @@ namespace Generator
     internal class NodeWhile : NodeKeeper, INodeExpr
     {
         public NodeWhile(ParsingKeeper keeper, ITerminalNode terminal, INodeExpr condition, INodeExpr prog, INodeExpr elseProg)
-            : base(keeper, terminal)
+            : base(keeper,terminal)
         {
             _condition = condition;
             _prog = prog;
@@ -74,6 +74,7 @@ namespace Generator
         {
             if (_condition.Check(tabl) != DataType.Boolean)
                 AddError("Недопустимый тип данных условия");
+            _prog.Check(tabl);
         }
 
         //Вычисление значения

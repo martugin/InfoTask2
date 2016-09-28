@@ -60,7 +60,7 @@ namespace Generator
          //Проверка корректности выражений генерации
          public void Check(TablStruct tabl)
          {
-             _var.DataType.Add(_nodeMean.Check(tabl));
+             _var.DataType = _var.DataType.Add(_nodeMean.Check(tabl));
          }
 
          //Обработка при генерации
