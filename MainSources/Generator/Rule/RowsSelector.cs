@@ -19,7 +19,7 @@ namespace Generator
         public void Check(INodeExpr condition, IToken tablToken, TablStruct tabl)
         {
             if (condition != null)
-                if (!(condition is NodeConst) && condition.Check(tabl) != DataType.Boolean)
+                if (condition.Check(tabl) != DataType.Boolean && (!(condition is NodeConst) || condition.Check(tabl) != DataType.String))
                     _keeper.AddError("Недопустимый тип данных условия", tablToken);
         }
 
