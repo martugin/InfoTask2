@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Описание структуры каталогов и файлов InfoTask-->
+<ФайловаяМодель>
+  <Projects>
+    <!--Каталог проектов-->
+    <_КодПроекта>
+      <!--Каталог может иметь произвольное имя, не связанное с кодом проекта-->
+      <!--Каталог проекта InfoTask-->
+      <!--Шаблон: Projects\Project-->
+      <ProjectProperties.xml>Файл свойств проекта (исходный)</ProjectProperties.xml>
+      <Manuals.accdb>Файл справочников единиц измерения и групп</Manuals.accdb>
+      <Modules>
+        <!--Каталог модулей проекта-->
+        <_КодМодуля>
+          <!--Каталог модуля -->
+          <!--Шаблон: Projects\Module-->
+          <ModuleProperties.xml>Файл свойств модуля (исходный)</ModuleProperties.xml>
+          <CalcParams.accdb>Файл расчетных параметров без генерации, шаблон Projects\Module\CalcParams.accdb (исходный)</CalcParams.accdb>
+          <Grafics.accdb>Файл графиков, шаблон Projects\Module\Grafic.accdb (порожденный) </Grafics.accdb>
+          <Compilled.accdb>Файл результатов и ошибок генерации и компиляции, шаблон Projects\Module\Compiled.accdb (порожденный) </Compilled.accdb>
+          <Tables.accdb>Файл таблиц пользовательских, шаблон Projects\Module\Tables.accdb (исходный) </Tables.accdb>
+        </_КодМодуля>
+      </Modules>
+      <SignalsHandInput>
+        <!--Каталог файлов ручного ввода (исходный)-->
+        <КодСоединения.accdb>Файл сигналов ручного ввода, шаблон Projects\HandInputSignals.accdb</КодСоединения.accdb>
+      </SignalsHandInput>
+      <SignalsSource>
+        <!--Каталог списков сигналов источников (порожденный)-->
+        <_КодСоединения.accdb>Файл списка сигналов одного источника, шаблон Projects\Signals.accdb</_КодСоединения.accdb>
+        <_КодСоединенияModule>
+          <!--Библиотечный модуль расчетных сигналов источника-->
+          <!--Основная структура файлов как у обычного модуля-->
+          <!--Шаблон: Projects\Module-->
+        </_КодСоединенияModule>
+      </SignalsSource>
+      <SignalsReceiver>
+        <!--Каталог списков сигналов приемника (порожденный)-->
+        <_КодСоединения.accdb>Файл списка сигналов одного приемника, шаблон Projects\Signals.accdb</_КодСоединения.accdb>
+      </SignalsReceiver>
+      <SignalsMoment перспективный="">
+        <!--Каталог списков сигналов приемника реального времени -->
+        <_КодСоединения.accdb>Файл списка сигналов одного источника мгновенных значений (порожденный)</_КодСоединения.accdb>
+        <_КодСоединенияArchivation.xml>Файл списка архивируемых сигналов одного источника мгновенных значений с настройками (исходный)</_КодСоединенияArchivation.xml>
+        <_КодСоединенияProps.xml>Свойства списка сигналов источника мгновенных значений (порожденный)</_КодСоединенияProps.xml>
+      </SignalsMoment>
+      <ReportsParams>
+        <!--Каталог файлов списков архивных параметров модуля или внешнего архивного модуля результатов (порожденный)-->
+        <_КодМодуля.accdb>Файл списка архивных параметров одного модуля или архивного модуля</_КодМодуля.accdb>
+      </ReportsParams>
+      <ReportsExcel>
+        <!--Каталог бланков отчетов в формате Exсel (исходный)-->
+        <_КодОтчета.xlsx>Бланк отчета Excel, шаблон Projects\Report.xlsx</_КодОтчета.xlsx>
+      </ReportsExcel>
+      <ReportsWord перспективный="">
+        <!--Каталог бланков отчетов в формате Word (исходный)-->
+        <_КодОтчета.docs>Бланк отчета Word </_КодОтчета.docs>
+      </ReportsWord>
+      <ReportsPDF перспективный="">
+        <!--Каталог бланков отчетов в формате PDF-->
+      </ReportsPDF>
+      <ReportsWEB перспективный="">
+        <!--Каталог бланков отчетов WEB-->
+      </ReportsWEB>
+    </_КодПроекта>
+  </Projects>
+  <LocalData>
+    <!--Каталог локальных данных проектов-->
+    <_КодПроекта>
+      <!--Каталог локальных данных конкретного проекта-->
+      <Constructor>
+        <!--Локальные данные конструктора по одному проекту-->
+        <!--Шаблон LocalData\Constructor-->
+        <ConstructorProjectData.accdb>Локальные настройки конструктора, общие для проекта (настройки)</ConstructorProjectData.accdb>
+        <ConnectProperties.xml>Значения настроек соединений конструктора для проекта (настройки)</ConnectProperties.xml>
+        <HandInput>
+          <!--Значения отладочного ручного ввода (значения)-->
+          <_КодСоединенияValues.accdb>Значения ручного ввода для одного соединения</_КодСоединенияValues.accdb>
+        </HandInput>
+        <Imit>
+          <!--Файлы имитации-->
+          <_КодИсточника_Imit.accdb>Файл имитации значений сигналов источника (значения)</_КодИсточника_Imit.accdb>
+          <_КодМодуля_Imit.accdb>Файл имитации значений порожденных параметров (значения)</_КодМодуля_Imit.accdb>
+        </Imit>
+        <Result>
+          <!--Результаты отладочного расчета (значения)-->
+          <_КодМодуля.accdb>Результаты отладочного расчета по модулю, включая значения сигналов</_КодМодуля.accdb>
+        </Result>
+        <Archives>
+          <!--Результаты отладочного расчета (значения)-->
+          <_КодМодуля_Archive.accdb>Результаты отладочного периодического расчета по модулю, шаблон Providers\CalcArchive.accdb</_КодМодуля_Archive.accdb>
+        </Archives>
+      </Constructor>
+      <Analyzer>
+        <!--Локальные данный анализатора-->
+        <AnalyzerProjectData.accdb>Локальные настройки анализатора, общие для проекта (настройки)</AnalyzerProjectData.accdb>
+        <Modules>
+          <!--Сформированные ведомости-->
+          <_КомМодуля_Data.xml>Локальные настройки анализатора для модуля (настройки)</_КомМодуля_Data.xml>
+        </Modules>
+        <Ved>
+          <!--Сформированные ведомости (значения)-->
+          <_КомМодуля_Ved.accdb>Файл сформированной ведомости Access, по целому набору</_КомМодуля_Ved.accdb>
+          <_КомМодуля_КодЗадачи_Ved.accdb>Файл сформированной ведомости Access, по одной задаче</_КомМодуля_КодЗадачи_Ved.accdb>
+        </Ved>
+      </Analyzer>
+      <Server>
+        <!--Данные сервера-->
+        <ServerData.xml>Настройки сервера, общие для проекта (настройки)</ServerData.xml>
+        <Threads>
+          <!--Настройки потоков расчета-->
+          <_Thread_НомерПотока>
+            <!--Настройки одного потока расчетов-->
+            <ThreadProperties.xml>Свойства потока (настройки)</ThreadProperties.xml>
+            <ThreadData.xml>Параметры текущего расчета потока (значения)</ThreadData.xml>
+            <Errors.xml>Ошибки текущего потока (значения)</Errors.xml>
+            <CashValues.xml>Кэш значений при остановке расчета (значения)</CashValues.xml>
+          </_Thread_НомерПотока>
+        </Threads>
+        <MomentThreads>
+          <!--Настройки потоков архивации-->
+          <_Thread_НомерПотока>
+            <!--Настройки одного потока архивации-->
+            <ThreadProperties.xml>Свойства потока (настройки)</ThreadProperties.xml>
+            <Errors.xml>Ошибки текущего потока (значения)</Errors.xml>
+          </_Thread_НомерПотока>
+        </MomentThreads>
+        <HandInput>
+          <!--Значения ручного ввода (значения)-->
+          <_КодСоединенияValues.accdb>Файл значений ручного ввода одного соединения</_КодСоединенияValues.accdb>
+          <_КодМодуляAbsoluteEdit.accdb>Файл правки абсолютных значений</_КодМодуляAbsoluteEdit.accdb>
+        </HandInput>
+        <Clients>
+          <!--Администрирование клиентов-->
+          <_КодКлиента_Rights.xml>Права клиента</_КодКлиента_Rights.xml>
+        </Clients>
+        <Sheduler>
+          <!--Планировщик формирования отчетов-->
+          <_КодНазначенногоЗадания.xml>Настройки назначенного задания</_КодНазначенногоЗадания.xml>
+        </Sheduler>
+        <ReportsJournal>
+          <!--Каталог журнала отчетов по умолчанию-->
+          <_КодОтчета>
+            <!--Журнал отчетов, для одного бланка отчета-->
+            <_ДатаФормирования.xlsx>Сформированный отчет Excel</_ДатаФормирования.xlsx>
+            <_ДатаФормирования.docs>Сформированный отчет Word</_ДатаФормирования.docs>
+            <_ДатаФормирования.xml>Данные сформированного WEB-отчета</_ДатаФормирования.xml>
+          </_КодОтчета>
+        </ReportsJournal>
+      </Server>
+      <Client>
+        <!--Настройки клиента-->
+        <TreeSettings.xml>Настройка отображения главного дерева клиента</TreeSettings.xml>
+        <FormingData.xml>Параметры последнего формирования для всех отчетов</FormingData.xml>
+        <Groups>
+          <!--Шаблоны для группового формирования отчетов-->
+          <_КодГруппы.xml>Свойства группы формирования отчетов</_КодГруппы.xml>
+          <GroupFormingData.xml>Параметры последнего формирования для всех групп отчетов</GroupFormingData.xml>
+        </Groups>
+      </Client>
+      <Comm>
+        <!--Файлы данных коммуникаторов (настройки, порожденный)-->
+        <_КодИсточника_Data.accdb>Данный коммуникатора для проекта </_КодИсточника_Data.accdb>
+        <_КодПриемника_Data.accdb>Данный коммуникатора приемника для проекта</_КодПриемника_Data.accdb>
+      </Comm>
+      <History>
+        <!--Файлы истории (значения)-->
+        <Threads>
+          <!--История потоков расчета-->
+          <_History_НомерПотока.accdb>История работы потока</_History_НомерПотока.accdb>
+          <ServerHistory.accdb>История работы сервера, не относящаяся к конкретному потоку</ServerHistory.accdb>
+        </Threads>
+        <Analyzer>
+          <!--История анализатора-->
+          <TablikHistory.accdb>История компиляции и генерации </TablikHistory.accdb>
+          <CalcHistory.accdb>История расчетов</CalcHistory.accdb>
+          <AnalyzerHistory.accdb>Общая история анализатора</AnalyzerHistory.accdb>
+        </Analyzer>
+        <Constructor>
+          <!--История конструктора-->
+          <TablikHistory.accdb>История компиляции и генерации </TablikHistory.accdb>
+          <CalcHistory.accdb>История расчетов</CalcHistory.accdb>
+          <ConstructorHistory.accdb>Общая история конструктора</ConstructorHistory.accdb>
+        </Constructor>
+        <Client>
+          <!--История клиента-->
+          <ClientHistory.accdb>История клиента, включая администрирование и формирование отчетов</ClientHistory.accdb>
+        </Client>
+        <ReporterExcel>
+          <!--История построителя отчетов Excel-->
+          <ExcelServerHistory.accdb>История сервера отчетов</ExcelServerHistory.accdb>
+          <ExcelConstructorHistory.accdb>История конструктора отчетов</ExcelConstructorHistory.accdb>
+          <_КодКлиента_ExcelHistory.accdb>История построения отчетов на сервере для одного клиента</_КодКлиента_ExcelHistory.accdb>
+        </ReporterExcel>
+        <ReporterWord>
+          <!--История построителя отчетов Word-->
+          <WordServerHistory.accdb>История сервера отчетов</WordServerHistory.accdb>
+          <WordConstructorHistory.accdb>История конструктора отчетов</WordConstructorHistory.accdb>
+          <_КодКлиента_WordHistory.accdb>История построения отчетов на сервере для одного клиента</_КодКлиента_WordHistory.accdb>
+        </ReporterWord>
+        <ReporterWord>
+          <!--История построителя web-отчетов-->
+          <WebServerHistory.accdb>История сервера отчетов</WebServerHistory.accdb>
+          <WebConstructorHistory.accdb>История конструктора отчетов</WebConstructorHistory.accdb>
+          <_КодКлиента_WebHistory.accdb>История построения отчетов на сервере для одного клиента</_КодКлиента_WebHistory.accdb>
+        </ReporterWord>
+        <Comm>
+          <!--История коммуникаторов-->
+          <_КодКоммуникатора_History.accdb>История коммуникатора</_КодКоммуникатора_History.accdb>
+        </Comm>
+      </History>
+      <Calibrator>
+        <!--Локальные данные калибратора по одному проекту-->
+      </Calibrator>
+    </_КодПроекта>
+  </LocalData>
+</ФайловаяМодель>

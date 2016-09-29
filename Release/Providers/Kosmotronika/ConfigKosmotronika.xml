@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл установленной конфигурации InfoTask-->
+<Config>
+  <Packages>
+    <!--Установленные пакеты-->
+    <Kosmotronika Description="Комплект провайдеров для ПТК Космотроника-Венец" InstallDate="" />
+  </Packages>
+  <Providers>
+    <!--Список провайдеров-->
+    <Kosmotronika Description="Комплект провайдеров для связи с ПТК Космотроника-Венец" DllFile="Providers\Kosmotronika\Kosmotronika.dll">
+      <KosmotronikaRetroSource ProviderType="Источник" Description="Ретро-сервер ПТК Космотроника-Венец">
+        <ProviderProps>
+          <RetroServerName PropNum="1" Description="Имя Ретро - сервера" DefaultValue="RetroServer" />
+        </ProviderProps>
+      </KosmotronikaRetroSource>
+      <KosmotronikaSQLComm ProviderType="Коммуникатор" Description="Коммуникатор SQL-базы ПТК Космотроника-Венец" ProviderFile="Providers\Kosmotronika\KosmotronikaSQLComm.accde">
+        <ProviderProps>
+          <TemplateName PropNum="1" Description="Шаблон сигналов" DefaultValue="InfoTask" RowSource="InfoTask;ArhAnalyzer;Минимальный"></TemplateName>
+          <SQLServer PropNum="2" Description="Имя SQL-сервера"></SQLServer>
+          <IndentType PropNum="3" Description="Тип идентификации" DefaultValue="Windows" RowSource="Windows;SqlServer"></IndentType>
+          <Login PropNum="4" Description="Логин пользователя SQL-сервера" />
+          <Password PropNum="5" Description="Пароль входа в SQL-сервер" />
+          <Database PropNum="6" Description="База данных"></Database>
+        </ProviderProps>
+      </KosmotronikaSQLComm>
+      <KosmotronikaDBFComm ProviderType="Коммуникатор" Description="Коммуникатор баз DBF ПТК Космотроника-Венец" ProviderFile="Providers\Kosmotronika\KosmotronikaDBFComm.accde">
+        <ProviderProps>
+          <TemplateName PropNum="1" Description="Шаблон сигналов" DefaultValue="InfoTask" RowSource="InfoTask;ArhAnalyzer;Минимальный"></TemplateName>
+          <DbfDir PropNum="2" Description="Каталог таблиц Dbf" />
+          <SystemDir PropNum="3" Description="Каталог System" />
+        </ProviderProps>
+      </KosmotronikaDBFComm>
+      <KosmotronikaOPCReceiver ProviderType="Приемник" Description="Приемник OPC-сервер ПТК Космотроника-Венец">
+        <ProviderProps>
+          <OPCServerName PropNum="1" Description="Имя OPC-сервера" DefaultValue="Progress.OpenOPC.2" RawSource="Progress.OpenOPC.2" />
+          <Node PropNum="2" Description="Рабочая станция" />
+          <ServerGroup PropNum="3" Description="Имя серверной группы" />
+        </ProviderProps>
+      </KosmotronikaOPCReceiver>
+      <KosmotronikaSQLOPCReceiverComm ProviderType="КоммуникаторПриемника" Description="Коммуникатор точек для записи в OPC SQL-базы ПТК Космотроника-Венец" ProviderFile="Providers\Kosmotronika\KosmotronikaSQLComm.accde">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера"></SQLServer>
+          <IndentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows" RowSource="Windows;SqlServer"></IndentType>
+          <Login PropNum="3" Description="Логин пользователя SQL-сервера" />
+          <Password PropNum="4" Description="Пароль входа в SQL-сервер" />
+          <Database PropNum="5" Description="База данных"></Database>
+          <ReceiverFilter PropNum="6" Description="Добавлять в сигналы приемника OPC" DefaultValue="Точки из стойки" RowSource="Все точки;Точки из стойки" />
+          <ReceiverST PropNum="7" Description="Номер стойки с точками приемника OPC" />
+        </ProviderProps>
+      </KosmotronikaSQLOPCReceiverComm>
+      <KosmotronikaDBFOPCReceiverComm ProviderType="КоммуникаторПриемника" Description="Коммуникатор точек для записи в OPC DBF-базы ПТК Космотроника-Венец" ProviderFile="Providers\Kosmotronika\KosmotronikaDBFComm.accde">
+        <ProviderProps>
+          <DbfDir PropNum="1" Description="Каталог таблиц Dbf" />
+          <ReceiverFilter PropNum="2" Description="Добавлять в сигналы приемника OPC" DefaultValue="Точки из стойки" RowSource="Все точки;Точки из стойки" />
+          <ReceiverST PropNum="3" Description="Номер стойки с точками приемника OPC" />
+        </ProviderProps>
+      </KosmotronikaDBFOPCReceiverComm>
+    </Kosmotronika>
+  </Providers>
+</Config>
