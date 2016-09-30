@@ -27,9 +27,14 @@ namespace Generator
         public IEnumerable<SubRows> SelectRows(INodeExpr condition, SubRows parent)
         {
             if (condition == null) return parent.SubList;
-            if (condition is NodeConst && parent.SubTypes.ContainsKey(((NodeConst)condition).Mean.String))
-                return parent.SubTypes[((NodeConst)condition).Mean.String];
-            return parent.SubList.Where(row => condition.Generate(row).Boolean);
+            if (condition is NodeConst)
+            {
+                var type = ((NodeConst) condition).Mean.String;
+                if (parent.SubTypes.ContainsKey(type))
+                    return parent.SubTypes[type];
+                return new SubRows[0];
+            }
+            return parent.SubList.Where(row => condition.Generate(row).Boolean);    
         }
     }
 }

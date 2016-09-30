@@ -61,7 +61,7 @@ namespace CommonTypes
         public string String
         {
             get { return _mean.String; }
-            set { _mean.String = value;}
+            set { _mean.String = value ?? "";}
         }
         public object Object
         {

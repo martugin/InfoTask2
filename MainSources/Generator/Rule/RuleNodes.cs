@@ -35,7 +35,7 @@ namespace Generator
         //Проверка выражения
         public TablStruct Check(TablsList dataTabls)
         {
-            if (!dataTabls.Tabls.ContainsKey(_tablName))
+            if (!dataTabls.Structs.ContainsKey(_tablName))
             {
                 AddError("Не найдена таблица");
                 return null;
@@ -46,7 +46,7 @@ namespace Generator
         //Выбрать ряды для генерации
         public IEnumerable<SubRows> SelectRows(TablsList dataTabls)
         {
-            return new[] { dataTabls.Tabls[_tablName].Parent };
+            return new[] { dataTabls.Tabls[_tablName] };
         }
     }
 
@@ -92,7 +92,12 @@ namespace Generator
         //Выбрать ряды для генерации
         public IEnumerable<SubRows> SelectRows(SubRows parent)
         {
-            return _rowsChecker.SelectRows(Condition, parent);
+            var rows = _rowsChecker.SelectRows(Condition, parent);
+            if (Child == null) return rows;
+            var list = new List<SubRows>();
+            foreach (var row in rows)
+                list.AddRange(Child.SelectRows(row));
+            return list;
         }
     }
 
@@ -116,7 +121,7 @@ namespace Generator
         //Проверка выражения
         public TablStruct Check(TablsList dataTabls)
         {
-            if (!dataTabls.Tabls.ContainsKey(_tablName))
+            if (!dataTabls.Structs.ContainsKey(_tablName))
             {
                 AddError("Не найдена таблица");
                 return null;
@@ -127,7 +132,7 @@ namespace Generator
         //Выбрать ряды для генерации
         public IEnumerable<SubRows> SelectRows(TablsList dataTabls)
         {
-            return SelectRows(dataTabls.Tabls[_tablName].Parent);
+            return SelectRows(dataTabls.Tabls[_tablName]);
         }
     }
 }

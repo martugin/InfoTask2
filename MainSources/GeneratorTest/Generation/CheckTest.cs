@@ -18,11 +18,15 @@ namespace GeneratorTest
             {
                 tabls.AddStruct(db, "Tabl", "SubTabl", "SubSubTabl");
                 tabls.AddDbStructs(db);    
-                tabls.LoadValues(db);
             }
             return tabls;
         }
 
+        //Созда накопитель ошибок
+        private static GenKeeper MakeKeeper()
+        {
+            return new GenKeeper(new TablGenerator(new Logger(), null, null, null, null, null, null));
+        }
 
         //Разбор выражения GenRule таблицы и подтаблицы
         private TablStruct CheckRule(GenKeeper keeper, TablsList tabls, string formula)
@@ -51,7 +55,7 @@ namespace GeneratorTest
         public void CheckRule()
         {
             var tabls = Load();
-            var keeper = new GenKeeper(new TablGenerator(new Logger(), null, null, null, null, null, null));
+            var keeper = MakeKeeper();
             var tstruct = CheckRule(keeper, tabls, "Tabl");
             Assert.AreEqual(0, tstruct.Level);
             Assert.AreEqual("Tabl", tstruct.TableName);
@@ -206,12 +210,12 @@ namespace GeneratorTest
             CheckRule(keeper, tabls, "VtzTz(UnitTypeVTZ * StrLen(NameVTZ;1) + Field)");
             Assert.AreEqual("Недопустимые типы данных параметров функции, 'StrLen' (поле, строка: 1, позиция: 21)", keeper.ErrMess);
         }
-
+        
         [TestMethod]
         public void CheckFields()
         {
             var tabls = Load();
-            var keeper = new GenKeeper(new TablGenerator(new Logger(), null, null, null, null, null, null));
+            var keeper = MakeKeeper();
             var tstruct = CheckRule(keeper, tabls, "Tabl");
             
             Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "aaa"));
