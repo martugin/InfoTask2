@@ -134,12 +134,13 @@ namespace CommonTypes
         }
 
         //Обработка токена строковой константы
-        public Node GetStringConst(ITerminalNode terminal)
+        public Node GetStringConst(ITerminalNode terminal, 
+                                                  bool delAportrof) //Удалять кавычки
         {
             if (terminal == null || terminal.Symbol == null)
                 return MakeNodeConst(null, "");
             var text = terminal.Symbol.Text;
-            return MakeNodeConst(terminal, text.Substring(1, text.Length - 2));
+            return MakeNodeConst(terminal, delAportrof ? text.Substring(1, text.Length - 2) : text);
         }
     }
 }
