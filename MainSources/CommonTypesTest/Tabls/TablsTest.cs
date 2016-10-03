@@ -177,7 +177,7 @@ namespace CommonTypesTest
                 Assert.AreEqual(DataType.String, row["Code"].DataType);
                 Assert.AreEqual("a", row["Code"].String);
                 Assert.AreEqual(DataType.String, row["StringSub"].DataType);
-                Assert.AreEqual(null, row["StringSub"].String);
+                Assert.AreEqual("", row["StringSub"].String);
                 Assert.AreEqual(DataType.Boolean, row["BoolSub"].DataType);
                 Assert.AreEqual(true, row["StringSub"].Boolean);
                 Assert.AreEqual(DataType.Real, row["RealSub"].DataType);

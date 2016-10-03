@@ -138,7 +138,8 @@ namespace CommonTypes
         {
             if (terminal == null || terminal.Symbol == null)
                 return MakeNodeConst(null, "");
-            return MakeNodeConst(terminal, terminal.Symbol.Text);
+            var text = terminal.Symbol.Text;
+            return MakeNodeConst(terminal, text.Substring(1, text.Length - 2));
         }
     }
 }

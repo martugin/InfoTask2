@@ -249,7 +249,7 @@ namespace CommonTypes
     {
         public MeanString(string s)
         {
-            _string = s;
+            _string = s ?? "";
         }
         public MeanString() { }
 
@@ -282,12 +282,12 @@ namespace CommonTypes
         public override string String
         {
             get { return _string; }
-            internal set { _string = value; }
+            internal set { _string = value ?? ""; }
         }
         public override object Object
         {
             get { return _string; }
-            internal set { _string = (string)value; }
+            internal set { _string = (string)value ?? ""; }
         }
 
         public override void ValueToRec(IRecordAdd rec, string field)

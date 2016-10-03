@@ -11,7 +11,7 @@ namespace CommonTypes
             foreach (Field f in rec.Recordset.Fields)
                 _means.Add(f.Name, rec.GetMean(f.Type.ToDataType(), f.Name));
         }
-
+        
         //Id себя и родителя
         public int Id { get { return _means["Id"].Integer; } }
         public int ParentId { get { return _means["ParentId"].Integer; } }

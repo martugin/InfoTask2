@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Funs\RealisationScalarTest.cs" />
     <Compile Include="Generation\CheckTest.cs" />
+    <Compile Include="Generation\SelectRowsTest.cs" />
     <Compile Include="Parse\FieldsParseTest.cs" />
     <Compile Include="Parse\RuleParseTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
