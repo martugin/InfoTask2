@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using BaseLibrary;
 
@@ -44,13 +43,13 @@ namespace ProvidersLibrary
         protected ValuesCount ReadWhole(IEnumerable<SourceObject> part,
                                           DateTime beg, DateTime en, //Период считывания
                                           bool isCut, //Считывается срез
-                                          Func<List<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, //Функция - запрос рекордсета по одному блоку, возвращает запрошенный рекорсет
+                                          Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, //Функция - запрос рекордсета по одному блоку, возвращает запрошенный рекорсет
                                           Func<IRecordRead, SourceObject> defineObjectFun) //Функция - определение текущего считываемого объекта
         {
             try
             {
-                _queryValuesFun = QueryValues;
-                _defineObjectFun = DefineObject;
+                _queryValuesFun = queryValuesFun;
+                _defineObjectFun = defineObjectFun;
                 var list = part is IList<SourceObject> ? (IList<SourceObject>)part : part.ToList();
                 return ReadPart(list, beg, en, isCut);
             }
@@ -61,10 +60,10 @@ namespace ProvidersLibrary
             }
         }
         protected ValuesCount ReadWhole(IEnumerable<SourceObject> part,
-                                                           Func<List<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun,
+                                                           Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun,
                                                            Func<IRecordRead, SourceObject> defineObjectFun)
         {
-            return ReadWhole(part, queryValuesFun, defineObjectFun);
+            return ReadWhole(part, PeriodBegin, PeriodEnd, false, queryValuesFun, defineObjectFun);
         }
 
         //Чтение всех значений одним блоком c использованием стандартных функций
@@ -79,14 +78,14 @@ namespace ProvidersLibrary
 
         //Чтение значений по одному явно указанному объекту
         protected ValuesCount ReadOneObject(SourceObject ob, DateTime beg, DateTime en, bool isCut,
-                                          Func<List<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, //Функция - запрос рекордсета 
+                                          Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, //Функция - запрос рекордсета 
                                           string msg = null) //Сообщение для истории о запуске чтения данных
         {
             if (ob == null) return new ValuesCount();
             AddEvent(msg ?? "Чтение значений объекта " + ob.Context);
             return ReadWhole(new[] {ob}, beg, en, isCut, queryValuesFun, rec => ob);
         }
-        protected ValuesCount ReadOneObject(SourceObject ob, Func<List<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, string msg = null)
+        protected ValuesCount ReadOneObject(SourceObject ob, Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, string msg = null)
         {
             return ReadOneObject(ob, PeriodBegin, PeriodEnd, false, queryValuesFun, msg);
         }
@@ -108,12 +107,12 @@ namespace ProvidersLibrary
                 {
                     AddEvent("Чтение значений блока объектов", part.Count + " объектов");
                     rec = _queryValuesFun(part, beg, en, isCut);
-                    if (rec == null) return new ValuesCount().MakeBad();
+                    if (rec == null) return new ValuesCount(VcStatus.NoSuccess);
                 }
                 catch (Exception ex)
                 {
                     AddError("Ошибка при запросе данных из источника", ex);
-                    return new ValuesCount().MakeBad();
+                    return new ValuesCount(VcStatus.NoSuccess);
                 }
             }
             using (Start(50, 100))
@@ -131,7 +130,7 @@ namespace ProvidersLibrary
                 catch (Exception ex)
                 {
                     AddError("Ошибка при формировании значений", ex);
-                    return new ValuesCount().MakeBad();
+                    return new ValuesCount(VcStatus.NoSuccess);
                 }
             }
         }
@@ -139,7 +138,7 @@ namespace ProvidersLibrary
         //Чтение значений из рекордсета по одному блоку
         private ValuesCount ReadPartValues(IRecordRead rec)
         {
-            var vc = new ValuesCount(ValuesCountStatus.Success);
+            var vc = new ValuesCount();
             while (rec.Read())
             {
                 vc.ReadCount++;
@@ -149,11 +148,12 @@ namespace ProvidersLibrary
                     ob = _defineObjectFun(rec);
                     if (ob != null)
                         vc.WriteCount += ob.ReadMoments(rec);
+                    vc.AddStatus(VcStatus.Success);
                 }
                 catch (Exception ex)
                 {
                     SourceConnect.AddErrorObject(ob == null ? "" : ob.Context, "Ошибка при чтении значений из рекордсета", ex);
-                    vc.Status = ValuesCountStatus.Partial;
+                    vc.AddStatus(VcStatus.NoSuccess);
                 }
             }
             return vc;

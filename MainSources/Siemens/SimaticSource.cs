@@ -93,7 +93,7 @@ namespace Provider
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(Code, ErrMomType.Source) {UndefinedErrorText = "Ошибка"};
+            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source) {UndefinedErrorText = "Ошибка"};
             factory.AddGoodDescr(128);
             return factory;
         }

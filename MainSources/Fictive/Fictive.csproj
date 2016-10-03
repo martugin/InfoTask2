@@ -44,6 +44,8 @@
     <Compile Include="FictiveSource.cs" />
     <Compile Include="ObjectFictive.cs" />
     <Compile Include="FictiveSimpleSource.cs" />
+    <Compile Include="ObjectFictiveOperator.cs" />
+    <Compile Include="ObjectFictiveSmall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

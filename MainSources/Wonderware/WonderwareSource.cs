@@ -5,6 +5,7 @@ using System.Text;
 using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
+using Different = BaseLibrary.Different;
 
 namespace Provider
 {
@@ -70,11 +71,11 @@ namespace Provider
             factory.AddDescr(150, "Storage startup");
             factory.AddDescr(151, "Store forward storage startup");
             factory.AddDescr(152, "Incomplete calculated value");
-            factory.AddDescr(202, "Good point of version Latest", ErrorQuality.Warning);
+            factory.AddDescr(202, "Good point of version Latest", ErrQuality.Warning);
             factory.AddDescr(212, "Counter rollover has occurred");
-            factory.AddDescr(248, "First value received in store forward mode", ErrorQuality.Warning);
+            factory.AddDescr(248, "First value received in store forward mode", ErrQuality.Warning);
             factory.AddDescr(249, "Not a number");
-            factory.AddDescr(252, "First value received from IOServer", ErrorQuality.Warning);
+            factory.AddDescr(252, "First value received from IOServer", ErrQuality.Warning);
             factory.AddDescr(65536, "No data stored in history, NULL");
             return factory;
         }

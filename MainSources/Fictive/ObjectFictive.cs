@@ -12,8 +12,10 @@ namespace Fictive
         {
             ValuesInterval = valuesInterval;
         }
-        internal ObjectFictive(SourceBase source) 
-            : base(source) { }
+        internal ObjectFictive(SourceBase source, bool isErorObject) : base(source)
+        {
+            IsErrorObject = isErorObject;
+        }
 
         //Сигнал недостоверности
         internal InitialSignal StateSignal { get; private set; }
@@ -26,9 +28,12 @@ namespace Fictive
 
         //Частота возвращаемых значений в секундах
         internal int ValuesInterval { get; private set; }
+        
+        //Любое чтение значений объекта вызывает ошибку
+        internal bool IsErrorObject { get; private set; }
         //Объект инициализирован
         internal bool IsInitialized { get; set; }
-
+        
         //Id в таблице объектов
         internal int Id { get; set; }
 
@@ -79,13 +84,13 @@ namespace Fictive
         {
             var time = rec.GetTime("Time");
             var state = rec.GetInt("StateSignal");
-            return AddMom(ValueSignal, time, rec.GetDouble("ValueSignal")) +
+            return AddMomReal(ValueSignal, time, rec, "ValueSignal") +
                       AddMom(StateSignal, time, state) +
-                      AddMom(BoolSignal, time, rec.GetBool("BoolSignal")) +
-                      AddMom(IntSignal, time, rec.GetInt("IntSignal")) +
-                      AddMom(RealSignal, time, rec.GetDouble("RealSignal"), MakeError(state)) +
-                      AddMom(StringSignal, time, rec.GetString("StringSignal"), MakeError(state)) +
-                      AddMom(TimeSignal, time, rec.GetTime("TimeSignal"));
+                      AddMomBool(BoolSignal, time, rec, "BoolSignal") +
+                      AddMomInt(IntSignal, time, rec, "IntSignal") +
+                      AddMomReal(RealSignal, time, rec, "RealSignal", MakeError(state)) +
+                      AddMomString(StringSignal, time, rec, "StringSignal", MakeError(state)) +
+                      AddMomTime(TimeSignal, time, rec, "TimeSignal");
         }
     }
 } 

@@ -158,7 +158,7 @@ namespace Provider
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
                 vc += ReadByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
-            if (vc.IsBad) return vc;
+            if (vc.IsFail) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), 100))
@@ -173,12 +173,12 @@ namespace Provider
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
                 vc += ReadByParts(_analogs.Values, PartSize(), "Изменения значений по аналоговым сигналам");
-            if (vc.IsBad) return vc;
+            if (vc.IsFail) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), OutsProcent()))
                 vc += ReadByParts(_outs.Values, PartSize(), "Изменения значений по выходам");
-            if (vc.IsBad) return vc;
+            if (vc.IsFail) return vc;
 
             using (Start(OutsProcent(), 100))
                 vc += ReadOneObject(_operatorObject, QueryValuesOperator);

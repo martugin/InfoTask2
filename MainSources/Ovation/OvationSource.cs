@@ -84,8 +84,8 @@ namespace Provider
         {
             var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
             factory.AddGoodDescr(0);
-            factory.AddDescr(1, "FAIR", ErrorQuality.Warning);
-            factory.AddDescr(2, "POOR", ErrorQuality.Warning);
+            factory.AddDescr(1, "FAIR", ErrQuality.Warning);
+            factory.AddDescr(2, "POOR", ErrQuality.Warning);
             factory.AddDescr(3, "BAD");
             factory.AddDescr(4, "Нет данных");
             return factory;
@@ -144,7 +144,7 @@ namespace Provider
             var vc = new ValuesCount();
             using (Start(0, 50)) //Срез по 4 минутам
                 vc += ReadByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
-            if (vc.IsBad) return vc;
+            if (vc.IsFail) return vc;
             using (Start(50, 100)) //Срез по 61 минуте
                 vc += ReadByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
             return vc;

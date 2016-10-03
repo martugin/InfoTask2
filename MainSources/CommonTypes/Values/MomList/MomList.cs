@@ -5,36 +5,97 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Список мгновенных значений
-    public abstract class MomList : CalcVal, IMomList
+    public abstract class MomList : CalcVal, IMeanList
     {
+        //Тип данных
+        public override DataType DataType { get { return BufMom.DataType; } }
+
         //Количество значений
         public int Count { get { return _times.Count; } }
         
         //Список времен
         private readonly List<DateTime> _times = new List<DateTime>();
-        //Время i-ого значения
-        public DateTime Time(int i) { return _times[i]; }
-
         //Список ошибок
         private List<ErrMom> _errors;
+
+        //Мгновенное значение для добавления в список и получения из списка
+        protected Mean BufMom { get; set; }
+        //Записать i-е значение в BufMom
+        protected abstract void SetBufMom(int i);
+
+        //Получить значение из списка по индексу
+        public IMean MeanI(int i)
+        {
+            SetBufMom(i);
+            return BufMom;
+        }
+
+        //Текущий номер значения и время слдующего значения, для прохода по списку
+        public int CurNum { get; set; }
+        public DateTime NextTime { get
+        {
+            if (CurNum >= Count - 1) return Different.MaxDate;
+            return TimeI(CurNum + 1);
+        } 
+        }
+
+        //Время i-ого значения
+        public DateTime TimeI(int i) { return _times[i]; }
+        //Время значения с номером CurNum
+        public DateTime Time { get { return _times[CurNum]; } }
+
         //Ошибка i-ого значения
-        public ErrMom Error(int i)
+        public ErrMom ErrorI(int i)
         {
             if (_errors == null) return null;
             return _errors[i];
         }
+        //Ошибка значения с номером CurNum
+        public ErrMom Error { get { return _errors[CurNum]; } }
 
-        //Мгновенное значение для добавления в список и получения из списка
-        protected Mean BufMean { get; set; }
-        //Тип данных
-        public override DataType DataType { get { return BufMean.DataType; } }
+        //Значение по индексу
+        public bool BooleanI(int i) { return MeanI(i).Boolean;}
+        public int IntegerI(int i) { return MeanI(i).Integer; }
+        public double RealI(int i) { return MeanI(i).Real; }
+        public DateTime DateI(int i) { return MeanI(i).Date; }
+        public string StringI(int i) { return MeanI(i).String; }
+        public object ObjectI(int i) { return MeanI(i).Object; }
 
+        //Значение по CurNum
+        public bool Boolean { get { return MeanI(CurNum).Boolean; } }
+        public int Integer { get { return MeanI(CurNum).Integer; } }
+        public double Real { get { return MeanI(CurNum).Real; } }
+        public DateTime Date { get { return MeanI(CurNum).Date; } }
+        public string String { get { return MeanI(CurNum).String; } }
+        public object Object { get { return MeanI(CurNum).Object; } }
+
+        //Сравнение значений и ошибок
+        public bool ValueEquals(IMean mean)
+        {
+            return MeanI(CurNum).ValueEquals(mean);
+        }
+        public bool ValueLess(IMean mean)
+        {
+            return MeanI(CurNum).ValueLess(mean);
+        }
+        public bool ValueAndErrorEquals(IMean mean)
+        {
+            return MeanI(CurNum).ValueAndErrorEquals(mean);
+        }
+
+        //Запись значения в рекордсет rec, поле field
+        public void ValueToRecI(IRecordAdd rec, string field, int i)
+        {
+            MeanI(i).ValueToRec(rec, field);
+        }
+        public void ValueToRec(IRecordAdd rec, string field)
+        {
+            MeanI(CurNum).ValueToRec(rec, field);
+        }
+        
         //Добавить буферное значение в список по индексу или в конец
         protected abstract void AddBufMom(int i);
         protected abstract void AddBufMomEnd();
-
-        //Получить значение из списка по индексу
-        public abstract Mean Mean(int i);
 
         //Добавить ошибку в i-ю позицию списка
         private void AddError(ErrMom err, int i)
@@ -75,52 +136,64 @@ namespace CommonTypes
             AddBufMomEnd();
         }
 
-        //Добавление значений в список, возвращают количество реально добавленных значений
-        public void AddMom(IMom mom)
+        //Добавление мгновенного значения
+        public void AddMom(IMean mom)
         {
-            BufMean.CopyValueFrom(mom);
+            BufMom.CopyValueFrom(mom);
             AddTimeErrorMean(mom.Time, mom.Error);
         }
 
         public void AddMom(DateTime time, IMean mean)
         {
-            BufMean.CopyValueFrom(mean);
+            BufMom.CopyValueFrom(mean);
             AddTimeErrorMean(time, mean.Error);
+        }
+
+        public void AddMom(IMean mom, ErrMom err)
+        {
+            BufMom.CopyValueFrom(mom);
+            AddTimeErrorMean(mom.Time, err);
+        }
+
+        public void AddMom(DateTime time, IMean mean, ErrMom err)
+        {
+            BufMom.CopyValueFrom(mean);
+            AddTimeErrorMean(time, err);
         }
 
         public void AddMom(DateTime time, bool b, ErrMom err = null)
         {
-            BufMean.Boolean = b;
+            BufMom.Boolean = b;
             AddTimeErrorMean(time, err);
         }
 
         public void AddMom(DateTime time, int i, ErrMom err = null)
         {
-            BufMean.Integer = i;
+            BufMom.Integer = i;
             AddTimeErrorMean(time, err);
         }
 
         public void AddMom(DateTime time, double r, ErrMom err = null)
         {
-            BufMean.Real = r;
+            BufMom.Real = r;
             AddTimeErrorMean(time, err);
         }
 
         public void AddMom(DateTime time, DateTime d, ErrMom err = null)
         {
-            BufMean.Date = d;
+            BufMom.Date = d;
             AddTimeErrorMean(time, err);
         }
 
         public void AddMom(DateTime time, string s, ErrMom err = null)
         {
-            BufMean.String = s;
+            BufMom.String = s;
             AddTimeErrorMean(time, err);
         }
 
         public void AddMom(DateTime time, object ob, ErrMom err = null)
         {
-            BufMean.Object = ob;
+            BufMom.Object = ob;
             AddTimeErrorMean(time, err);
         }
 
@@ -133,61 +206,53 @@ namespace CommonTypes
         //Очистка самих значений
         protected abstract void ClearMeans();
 
-        //Получение значений по индексу
-        public bool Boolean(int i)
+        public IMean ToMeanI(int i)
         {
-            return Mean(i).Boolean;
-        }
-        public int Integer(int i)
-        {
-            return Mean(i).Integer;
+            return MeanI(i).ToMean(ErrorI(i));
         }
 
-        public double Real(int i)
+        public IMean ToMeanI(int i, ErrMom err)
         {
-            return Mean(i).Real;
+            return MeanI(i).ToMean(ErrorI(i).Add(err));
         }
 
-        public DateTime Date(int i)
+        public IMean ToMomI(int i)
         {
-            return Mean(i).Date;
+            return MeanI(i).ToMom(TimeI(i), ErrorI(i));
         }
 
-        public string String(int i)
+        public IMean ToMomI(int i, ErrMom err)
         {
-            return Mean(i).String;
+            return MeanI(i).ToMom(TimeI(i), ErrorI(i).Add(err));
         }
 
-        //Запись значения в рекордсет rec, поле field
-        public void ValueToRec(IRecordAdd rec, string field, int i)
+        public IMean ToMomI(int i, DateTime time)
         {
-            Mean(i).ValueToRec(rec, field);
+            return MeanI(i).ToMom(time, ErrorI(i));
         }
 
-        //Клонирование текущего значения
-        public IMom Clone(int i)
+        public IMean ToMomI(int i, DateTime time, ErrMom err)
         {
-            return Mean(i).Clone(Time(i), Error(i));
+            return MeanI(i).ToMom(time, ErrorI(i).Add(err));
         }
-        public IMom Clone(int i, DateTime time)
-        {
-            return Mean(i).Clone(time, Error(i));
-        }
-        public IMom Clone(int i, DateTime time, ErrMom err)
-        {
-            return Mean(i).Clone(time, err);
-        }
+
+        public IMean ToMean() { return ToMeanI(CurNum);}
+        public IMean ToMean(ErrMom err) { return ToMeanI(CurNum, err); }
+        public IMean ToMom() { return ToMomI(CurNum); }
+        public IMean ToMom(ErrMom err) { return ToMomI(CurNum, err); }
+        public IMean ToMom(DateTime time) { return ToMomI(CurNum, time); }
+        public IMean ToMom(DateTime time, ErrMom err) { return ToMomI(CurNum, time, err); }
         
         //Последнее значение
-        public IMean LastMean
+        public IMean LastMom
         {
             get
             {
                 if (Count == 0) return null;
-                return Clone(_times.Count - 1);
+                return ToMomI(_times.Count - 1);
             }
         }
-
+        
         //Итоговая ошибка
         public override ErrMom TotalError
         {
@@ -203,7 +268,7 @@ namespace CommonTypes
 
         //Todo Подумать, что сделать с интерполяций
         //Интерполяция типа type значений list на время time по точке с номером n и следующим за ней, если n = -1, то значение в начале
-        //public IMom Interpolation(InterpolationType type, int n, DateTime time)
+        //public IMean Interpolation(InterpolationType type, int n, DateTime time)
         //{
         //    if (Count == 0) return MFactory.NewMom(DataType.Value, time);
         //    if (n >= 0 && time == Moments[n].Time)

@@ -37,6 +37,37 @@ namespace CommonTypes
             internal set { }
         }
 
+        public bool BooleanI(int i) { return Boolean; }
+        public int IntegerI(int i) { return Integer; }
+        public double RealI(int i) { return Real; }
+        public DateTime DateI(int i) { return Date; }
+        public string StringI(int i) { return String; }
+        public object ObjectI(int i) { return Object; }
+
+        public virtual ErrMom Error
+        {
+            get { return null; }
+            internal set { }
+        }
+        public ErrMom ErrorI(int i) { return Error; }
+
+        public virtual DateTime Time
+        {
+            get { return Different.MinDate; }
+            internal set {}
+        }
+        public DateTime TimeI(int i) { return Time; }
+
+        public int CurNum { get; set; }
+        public DateTime NextTime
+        {
+            get
+            {
+                if (CurNum <= -1) return Time;
+                return Different.MaxDate; 
+            }
+        }
+
         public bool ValueEquals(IMean mean)
         {
             var dt = DataType.Add(mean.DataType);
@@ -83,14 +114,21 @@ namespace CommonTypes
         }
 
         public abstract void ValueToRec(IRecordAdd rec, string field);
-        public abstract IMom Clone(DateTime time);
-        public abstract IMom Clone(DateTime time, ErrMom err);
+        public void ValueToRecI(IRecordAdd rec, string field, int i) { ValueToRec(rec, field); }
 
-        public virtual ErrMom Error
-        {
-            get { return null; }
-            internal set { }
-        }
+        public abstract IMean ToMean();
+        public abstract IMean ToMean(ErrMom err);
+        public abstract IMean ToMom(DateTime time);
+        public abstract IMean ToMom(DateTime time, ErrMom err);
+        public IMean ToMom() { return ToMom(Time, Error);}
+        public IMean ToMom(ErrMom err) { return ToMom(Time, err); }
+
+        public IMean ToMeanI(int i) { return ToMean(); }
+        public IMean ToMeanI(int i, ErrMom err) { return ToMean(err); }
+        public IMean ToMomI(int i) { return ToMom(); }
+        public IMean ToMomI(int i, ErrMom err) { return ToMom(err); }
+        public IMean ToMomI(int i, DateTime time) { return ToMom(time); }
+        public IMean ToMomI(int i, DateTime time, ErrMom err) { return ToMom(time, err); }
 
         public override ErrMom TotalError
         {
@@ -98,9 +136,11 @@ namespace CommonTypes
         }
 
         public virtual int Count { get { return 1; } }
-        public virtual IMean LastMean { get { return this; } }
+        public virtual IMean LastMom { get { return this; } }
 
         //Скопировать значение из другого значения
-        internal virtual void CopyValueFrom(IMean mean) { }
+        internal abstract void CopyValueFrom(IMean mean);
+        //Присвоить значение по умолчанию
+        internal abstract void MakeDefaultValue();
     }
 }

@@ -50,9 +50,11 @@
   <ItemGroup>
     <Compile Include="ErrMoms\ErrMomTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tabls\TablsTest.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Values\DataTypeTest.cs" />
     <Compile Include="Values\MeanTest.cs" />
+    <Compile Include="Values\MomListTest.cs" />
     <Compile Include="Values\MomTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +65,10 @@
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
       <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
       <Name>BaseLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Calculation\Calculation.csproj">
+      <Project>{A4B84B9B-4130-4066-971D-3D597C141097}</Project>
+      <Name>Calculation</Name>
     </ProjectReference>
     <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>

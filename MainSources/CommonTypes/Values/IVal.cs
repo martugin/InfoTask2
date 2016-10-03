@@ -23,19 +23,14 @@ namespace CommonTypes
     }
     
     //-----------------------------------------------------------------------------------------------
-    //Интерфейс для мгновенных значений и списков
-    public interface ISingleVal : ICalcVal
+    //Интерфейс для мгновенных значений и списков без учета времени
+    public interface IMean : ICalcVal
     {
         //Количество значений
         int Count { get; }
-        //Само отделное значение или последнее значение списка
-        IMean LastMean { get; }
-    } 
-
-    //-----------------------------------------------------------------------------------------------
-    //Интерфейс для Mean
-    public interface IMean : ISingleVal
-    {
+        //Само отдельное значение или последнее значение списка
+        IMean LastMom { get; }
+        
         //Значения разных типов
         bool Boolean { get; }
         int Integer { get; }
@@ -44,9 +39,29 @@ namespace CommonTypes
         string String { get; }
         object Object { get; }
 
+        //Значения разных типов i-ого значения
+        bool BooleanI(int i);
+        int IntegerI(int i);
+        double RealI(int i);
+        DateTime DateI(int i);
+        string StringI(int i);
+        object ObjectI(int i);
+
         //Ошибка
         ErrMom Error { get; }
+        //Ошибка i-ого значения
+        ErrMom ErrorI(int i);
 
+        //Время или MinDate
+        DateTime Time { get; }
+        //Время i-ого значения
+        DateTime TimeI(int i);
+
+        //Номер текущего значения
+        int CurNum { get; set; }
+        //Время следующего значения в списке или MaxDate
+        DateTime NextTime { get; }
+        
         //Сравнение значений и ошибок
         bool ValueEquals(IMean mean);
         bool ValueLess(IMean mean);
@@ -54,55 +69,36 @@ namespace CommonTypes
 
         //Запись значения в рекордсет
         void ValueToRec(IRecordAdd rec, string field);
-        //Копия значения с новым временем и ошибкой
-        IMom Clone(DateTime time);
-        IMom Clone(DateTime time, ErrMom err);
-    }
-
-    //-----------------------------------------------------------------------------------------------
-    //Интерфейс для Mom и MomErr
-    public interface IMom : IMean
-    {
-        //Время
-        DateTime Time { get; }
-        //Клонирование значения
-        IMom Clone();
-    }
-
-    //-----------------------------------------------------------------------------------------------
-    //Интерфейс для списков мгновенных значений только для чтения
-    public interface IMomListReadOnly : ISingleVal
-    {
-        //Время i-ого значения
-        DateTime Time(int i);
-        //Ошибка i-ого значения
-        ErrMom Error(int i);
-
-        //Значения разных типов i-ого значения
-        bool Boolean(int i);
-        int Integer(int i);
-        double Real(int i);
-        DateTime Date(int i);
-        string String(int i);
         //Запись значения в рекордсет rec, поле field
-        void ValueToRec(IRecordAdd rec, string field, int i);
-        
+        void ValueToRecI(IRecordAdd rec, string field, int i);
+
+        //Копия значения, возможно с новым временем и ошибкой
+        IMean ToMean();
+        IMean ToMean(ErrMom err);
+        IMean ToMom();
+        IMean ToMom(ErrMom err);
+        IMean ToMom(DateTime time);
+        IMean ToMom(DateTime time, ErrMom err);
+
         //Копия значения по индексу, возможно с новым временем и ошибкой
-        IMom Clone(int i);
-        IMom Clone(int i, DateTime time);
-        IMom Clone(int i, DateTime time, ErrMom err);
-        //Загрузить буферное значение из списка 
-        Mean Mean(int i);
+        IMean ToMeanI(int i);
+        IMean ToMeanI(int i, ErrMom err);
+        IMean ToMomI(int i);
+        IMean ToMomI(int i, ErrMom err);
+        IMean ToMomI(int i, DateTime time);
+        IMean ToMomI(int i, DateTime time, ErrMom err);
     }
 
     //-----------------------------------------------------------------------------------------------
     //Интерфейс для списков мгновенных значений 
-    public interface IMomList : IMomListReadOnly
+    public interface IMeanList : IMean
     {
         //Добавление мгновенного значения
-        void AddMom(IMom mom);
+        void AddMom(IMean mom);
         void AddMom(DateTime time, IMean mean);
-        //Дгобавление с указанием времени и значения
+        void AddMom(IMean mom, ErrMom err);
+        void AddMom(DateTime time, IMean mean, ErrMom err);
+        //Добавление с указанием времени и значения
         void AddMom(DateTime time, bool b, ErrMom err = null);
         void AddMom(DateTime time, int i, ErrMom err = null);
         void AddMom(DateTime time, double r, ErrMom err = null);

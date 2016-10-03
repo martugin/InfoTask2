@@ -17,7 +17,7 @@ namespace ProvidersLibrary
         //Текущий провайдер источника
         private SourceBase Source { get { return (SourceBase) Provider; } }
 
-         //Получение диапазона времени источника
+        //Получение диапазона времени источника
         //Возвращает Default интервал, если нет связи с источником
         //Возвращает TimeInterval(Different.MinDate, DateTime.Now) если источник не позволяет определять диапазон
         public TimeInterval GetTime()
@@ -71,6 +71,7 @@ namespace ProvidersLibrary
             _signals.Clear();
             InitialSignals.Clear();
             CalcSignals.Clear();
+            _isPrepared = false;
         }
 
         //Источник был подготовлен
@@ -79,10 +80,10 @@ namespace ProvidersLibrary
         //Конец предыдущего периода расчета
         internal DateTime PrevPeriodEnd { get; private set; }
 
-
         //Чтение значений из источника, возвращает true, если прочитались все значения или частично
-        public bool GetValues(DateTime periodBegin, DateTime periodEnd) 
+        public ValuesCount GetValues(DateTime periodBegin, DateTime periodEnd)
         {
+            var valuesCount = new ValuesCount();
             using (Start())
             {
                 try
@@ -92,32 +93,36 @@ namespace ProvidersLibrary
                     foreach (var sig in _signals.Values)
                         sig.ClearMoments(PeriodBegin != PrevPeriodEnd);
                     using (Start(5, 80))
-                        if (GetValues()) return true;
-
+                    {
+                        valuesCount += GetValues();
+                        if (!valuesCount.IsFail) return valuesCount;
+                    }
                     _isPrepared = false;
-                    if (ChangeProvider())
-                        using (Start(80, 100))
-                        {
-                            foreach (var sig in _signals.Values)
-                                sig.ClearMoments(true);
-                            return GetValues();
-                        }
+                    if (!ChangeProvider()) return valuesCount;
+                    using (Start(80, 100))
+                    {
+                        foreach (var sig in _signals.Values)
+                            sig.ClearMoments(true);
+                        return GetValues();
+                    }
                 }
                 catch (Exception ex)
                 {
                     AddError("Ошибка при чтении значений из источника", ex);
+                    return new ValuesCount(VcStatus.Fail);
                 }
                 finally { PrevPeriodEnd = periodEnd; }
             }
-            return false;
         }
 
         //Чтение значений из источника
-        private bool GetValues()
+        private ValuesCount GetValues()
         {
+            var vcount = new ValuesCount();
             try
             {
-                if (!Source.Connect()) return false;
+                if (!Source.Connect()) 
+                    return new ValuesCount(VcStatus.Fail);
                 if (!_isPrepared)
                 {
                     Source.Prepare();
@@ -125,7 +130,6 @@ namespace ProvidersLibrary
                 }
 
                 //Чтение среза
-                var vcount = new ValuesCount();
                 using (Start(0, PeriodBegin < PeriodEnd ? 30 : 100))
                 {
                     vcount += Source.ReadCut();
@@ -134,7 +138,8 @@ namespace ProvidersLibrary
                         if (sig is UniformSignal)
                             vcount.WriteCount += ((UniformSignal)sig).MakeBegin();
                     AddEvent("Срез значений получен", vcount.ToString());
-                    if (vcount.IsBad) return false;
+                    if (vcount.Status == VcStatus.Fail) 
+                        return vcount;
                 }
                 
                 //Чтение изменений
@@ -148,7 +153,7 @@ namespace ProvidersLibrary
                                 changes.WriteCount += ((UniformSignal)sig).MakeEnd();
                         AddEvent("Изменения значений получены", changes.ToString());
                         vcount += changes;
-                        if (vcount.IsBad) return false;
+                        if (vcount.IsFail) return vcount;
                     }
 
                 //Вычисление значений расчетных сигналов
@@ -168,10 +173,10 @@ namespace ProvidersLibrary
             catch (Exception ex)
             {
                 AddError("Ошибка при чтении значений из источника", ex);
-                return false;
+                return vcount.AddStatus(VcStatus.Fail);
             }
             finally {AddErrorObjectsWarning();}
-            return true;
+            return vcount;
         }
 
         //Создание клона
@@ -241,8 +246,8 @@ namespace ProvidersLibrary
         }
 
         //Создание клона источника
-        public void MakeClone(DateTime beginRead, //Начало периода клона
-                                          DateTime endRead, //Конец периода клона
+        public void MakeClone(DateTime periodBegin, //Начало периода клона
+                                          DateTime periodEnd, //Конец периода клона
                                           string cloneDir) //Каталог клона
         {
             try
@@ -257,7 +262,7 @@ namespace ProvidersLibrary
                     using (CloneStrRec = new RecDao(db, "MomentStrValues"))
                     using (CloneStrCutRec = new RecDao(db, "MomentStrValuesCut"))
                     using (CloneErrorsRec = new RecDao(db, "ErrorsObjects"))
-                        GetValues(beginRead, endRead);
+                        GetValues(periodBegin, periodEnd);
                     WriteMomentErrors(db);
                 }
             }

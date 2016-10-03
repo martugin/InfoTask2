@@ -36,3 +36,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("2.0.0.0")]
 
 [assembly: InternalsVisibleTo("CalculationTest")]
+[assembly: InternalsVisibleTo("CommonTypesTest")]
+[assembly: InternalsVisibleTo("Experiments")]

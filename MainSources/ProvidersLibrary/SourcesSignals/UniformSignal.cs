@@ -1,6 +1,7 @@
 ﻿using System;
 using BaseLibrary;
 using CommonTypes;
+using Different = BaseLibrary.Different;
 
 namespace ProvidersLibrary
 {
@@ -50,13 +51,13 @@ namespace ProvidersLibrary
         //Для сигнала был задан срез
         internal bool HasBegin
         {
-            get { return _beginMom.Time == Different.MinDate; }
+            get { return _beginMom.Time != Different.MinDate; }
         }
 
         //Добавляет значение среза на начало периода в список или клон, возвращает 1, если срез был получен, иначе 0
         internal int MakeBegin()
         {
-            if (HasBegin) return 0;
+            if (!HasBegin) return 0;
             return PutMom(_beginMom);    
         }
 
@@ -73,7 +74,7 @@ namespace ProvidersLibrary
 
         //Запись значения в клон
         //Чтение одной строчки значений из рекордсета, и запись ее в клон
-        protected override int PutClone(IMom mom, //Рекордсет срезов клона
+        protected override int PutClone(IMean mom, //Рекордсет срезов клона
                                                        bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {
             bool isReal = DataType.LessOrEquals(DataType.Real);

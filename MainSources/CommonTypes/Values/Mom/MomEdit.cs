@@ -4,7 +4,7 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Мгновенные значения с возможностью изменения, декоратор над Mean
-    public class MomEdit: Val, IMom
+    public class MomEdit: CalcVal, IMean
     {
         public MomEdit(DataType dtype)
         {
@@ -30,6 +30,12 @@ namespace CommonTypes
         public DateTime Time { get; set; }
         //Ошибка
         public ErrMom Error { get; set; }
+        //Добавить ошибку в значение, возвращает себя
+        public MomEdit AddError(ErrMom err)
+        {
+            Error = Error.Add(err);
+            return this;
+        }
 
         //Значения разных типов 
         public bool Boolean
@@ -55,12 +61,22 @@ namespace CommonTypes
         public string String
         {
             get { return _mean.String; }
-            set { _mean.String = value;}
+            set { _mean.String = value ?? "";}
         }
         public object Object
         {
             get { return _mean.Object; }
             set { _mean.Object = value; }
+        }
+
+        public int CurNum { get; set; }
+        public DateTime NextTime
+        {
+            get
+            {
+                if (CurNum <= -1) return Time;
+                return Different.MaxDate;
+            }
         }
 
         public bool ValueEquals(IMean mean)
@@ -90,8 +106,8 @@ namespace CommonTypes
             _mean.CopyValueFrom(mean);
             return this;
         }
-        //Копирует время, ошибку и значение из другого IMom, возвращает себя
-        public MomEdit CopyAllFrom(IMom mom)
+        //Копирует время, ошибку и значение из другого IMean, возвращает себя
+        public MomEdit CopyAllFrom(IMean mom)
         {
             _mean.CopyValueFrom(mom);
             Time = mom.Time;
@@ -99,42 +115,81 @@ namespace CommonTypes
             return this;
         }
         //Копирует значение из списка мгновенных значений по указанной позиции
-        public MomEdit CopyValueFrom(IMomListReadOnly list, //список значений
+        public MomEdit CopyValueFrom(IMean list, //список значений
                                                         int i) //Позиция
         {
-            var buf = list.Mean(i);
-            _mean.CopyValueFrom(buf);
+            list.CurNum = i;
+            _mean.CopyValueFrom(list);
             return this;
         }
         //Копирует время, ошибку и значение из списка мгновенных значений по указанной позиции
-        public MomEdit CopyAllFrom(IMomListReadOnly list, //список значений
-                                                        int i) //Позиция
+        public MomEdit CopyAllFrom(IMean list, //список значений
+                                                    int i) //Позиция
         {
-            var buf = list.Mean(i);
-            _mean.CopyValueFrom(buf);
-            Time = list.Time(i);
-            Error = list.Error(i);
+            list.CurNum = i;
+            _mean.CopyValueFrom(list);
+            Time = list.TimeI(i);
+            Error = list.ErrorI(i);
             return this;
         }
 
-        public IMom Clone()
+        //Принимает значение по умолчанию
+        public MomEdit MakeDefault()
         {
-            return _mean.Clone(Time, Error);
+            _mean.MakeDefaultValue();
+            Error = null;
+            return this;
         }
-        public IMom Clone(DateTime time)
+
+        //Создание нового значения на основе этого
+        public IMean ToMean()
         {
-            return _mean.Clone(time, Error);
+            return _mean.ToMean(Error);
         }
-        public IMom Clone(DateTime time, ErrMom err)
+        public IMean ToMean(ErrMom err)
         {
-            return _mean.Clone(time, err);
+            return _mean.ToMean(err);
+        }
+        public IMean ToMom()
+        {
+            return _mean.ToMom(Time, Error);
+        }
+        public IMean ToMom(ErrMom err)
+        {
+            return _mean.ToMom(Time, err);
+        }
+        public IMean ToMom(DateTime time)
+        {
+            return _mean.ToMom(time, Error);
+        }
+        public IMean ToMom(DateTime time, ErrMom err)
+        {
+            return _mean.ToMom(time, err);
         }
 
         //Типы данных и значения
         public override DataType DataType { get { return _mean.DataType; } }
         public override ICalcVal CalcValue { get { return this; } }
-        public ErrMom TotalError { get { return Error; } }
+        public override ErrMom TotalError { get { return Error; } }
         public int Count { get { return 1; } }
-        public IMean LastMean { get { return this; } }
+        public IMean LastMom { get { return this; } }
+
+        //Методы из MomList
+        public ErrMom ErrorI(int i) {return Error; }
+        public bool BooleanI(int i) { return Boolean; }
+        public int IntegerI(int i) { return Integer; }
+        public double RealI(int i) { return Real; }
+        public DateTime DateI(int i) { return Date; }
+        public string StringI(int i) { return String;  }
+        public object ObjectI(int i) { return Object; }
+        public void ValueToRecI(IRecordAdd rec, string field, int i) { ValueToRec(rec, field); }
+        public IMean ToMeanI(int i) { return ToMean(); }
+        public IMean ToMeanI(int i, ErrMom err) { return ToMean(err); }
+        public IMean ToMomI(int i) { return ToMom(); }
+        public IMean ToMomI(int i, ErrMom err) { return ToMom(err); }
+        public IMean ToMomI(int i, DateTime time) { return ToMom(time); }
+        public IMean ToMomI(int i, DateTime time, ErrMom err) { return ToMom(time, err); }
+        public IMean MeanI(int i) { return this; }
+        public DateTime TimeI(int i) { return Time; }
     }
 }

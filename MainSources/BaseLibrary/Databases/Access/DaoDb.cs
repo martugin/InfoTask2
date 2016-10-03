@@ -18,7 +18,7 @@ namespace BaseLibrary
         }
         
         //Путь к файлу
-        internal string File { get; set; }
+        public string File { get; internal set; }
         //Соединение DAO с базой данных
         public Database Database { get; private set; }
         public DBEngine Engine { get; private set; }

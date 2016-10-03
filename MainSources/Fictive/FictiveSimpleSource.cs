@@ -14,9 +14,14 @@ namespace Fictive
         //Код
         public override string Code { get { return "FictiveSimpleSource"; } }
         //Свойства
-        protected override string Hash { get { return "Fictive"; } }
-        protected override void ReadInf(DicS<string> dic) { }
-
+        protected override void ReadInf(DicS<string> dic)
+        {
+            Label = dic["Label"];
+        }
+        protected override string Hash { get { return "Fictive: " + Label; } }
+        //Метка правйдера, чтобы различать экземпляры
+        internal string Label { get; private set; }
+        
         //Диапазон источника
         protected override TimeInterval GetTimeSource()
         {
@@ -52,9 +57,9 @@ namespace Fictive
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(Code, ErrMomType.Source);
+            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
             factory.AddGoodDescr(0);
-            factory.AddDescr(1, "Предупреждение", ErrorQuality.Warning);
+            factory.AddDescr(1, "Предупреждение", ErrQuality.Warning);
             factory.AddDescr(2, "Ошибка");
             return factory;
         }
@@ -69,10 +74,23 @@ namespace Fictive
         }
         protected override ValuesCount ReadChanges()
         {
+            if (_makeNextError)
+            {
+                _makeNextError = false;
+                return new ValuesCount(VcStatus.Fail);
+            }
+
             var vc = new ValuesCount();
             foreach (var ob in _objects.Values)
                 vc.WriteCount += ob.MakeUniformValues(PeriodBegin, PeriodEnd, false);
             return vc;
+        }
+
+        //В следующий запуск произойдет ошибка
+        private bool _makeNextError;
+        internal void MakeErrorOnTheNextReading()
+        {
+            _makeNextError = true;
         }
     }
 }

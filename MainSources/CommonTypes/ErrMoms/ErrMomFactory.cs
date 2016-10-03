@@ -35,7 +35,7 @@ namespace CommonTypes
         public ErrDescr GetDescr(int number)
         {
             if (!_errDescrs.ContainsKey(number))
-                return new ErrDescr(number, UndefinedErrorText, ErrorQuality.Error, ErrMomType);
+                return new ErrDescr(number, UndefinedErrorText, ErrQuality.Error, ErrMomType);
             return _errDescrs[number];
         }
 
@@ -43,14 +43,18 @@ namespace CommonTypes
         private readonly DicI<ErrDescr> _errDescrs = new DicI<ErrDescr>();
         
         //Добавляет описание ошибки с числовым ключом
-        public void AddDescr(int number, string text, ErrorQuality quality = ErrorQuality.Error)
+        public void AddDescr(int number, string text, ErrQuality quality = ErrQuality.Error)
         {
-            _errDescrs.Add(number, new ErrDescr(number, text, quality, ErrMomType));
+            if (!_errDescrs.ContainsKey(number))
+                _errDescrs.Add(number, new ErrDescr(number, text, quality, ErrMomType));
         }
         public void AddDescr(int number, string text, int quality)
         {
-            var q = quality == 2 ? ErrorQuality.Error : (quality == 1 ? ErrorQuality.Warning : ErrorQuality.Good);
-            _errDescrs.Add(number, new ErrDescr(number, text, q, ErrMomType));
+            if (!_errDescrs.ContainsKey(number))
+            {
+                var q = quality == 2 ? ErrQuality.Error : (quality == 1 ? ErrQuality.Warning : ErrQuality.Good);
+                _errDescrs.Add(number, new ErrDescr(number, text, q, ErrMomType));    
+            }
         }
 
         //Добавляет пустое описание с хорошим качеством
