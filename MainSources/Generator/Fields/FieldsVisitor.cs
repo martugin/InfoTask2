@@ -47,7 +47,7 @@ namespace Generator
 
         public override Node VisitElementText(P.ElementTextContext context)
         {
-            return _keeper.GetStringConst((ITerminalNode)context.children[0]);
+            return _keeper.GetStringConst((ITerminalNode)context.children[0], false);
         }
 
         public override Node VisitElementVoid(P.ElementVoidContext context)
@@ -209,7 +209,7 @@ namespace Generator
 
         public override Node VisitConsString(P.ConsStringContext context)
         {
-            return _keeper.GetStringConst(context.STRING());
+            return _keeper.GetStringConst(context.STRING(), true);
         }
 
         public override Node VisitConsTime(P.ConsTimeContext context)

@@ -153,7 +153,7 @@ namespace Generator
 
         public override Node VisitConsString(P.ConsStringContext context)
         {
-            return _keeper.GetStringConst(context.STRING());
+            return _keeper.GetStringConst(context.STRING(), true);
         }
 
         public override Node VisitConsTime(P.ConsTimeContext context)
