@@ -264,6 +264,18 @@ namespace BaseLibrary
             }
         }
 
+        //Копирование каталога, файлы заменяются на новые
+        public static void CopyDir(string fromDir, string toDir)
+        {
+            var d = new DirectoryInfo(fromDir);
+            if (Directory.Exists(toDir) != true)
+                Directory.CreateDirectory(toDir);
+            foreach (DirectoryInfo dir in d.GetDirectories())
+                CopyDir(dir.FullName, toDir + "\\" + dir.Name);
+            foreach (string file in Directory.GetFiles(fromDir))
+                File.Copy(file, toDir + "\\" + file.Substring(file.LastIndexOf('\\') + 1), true);
+        }
+
         //Заполняет значение контрола pick, по значению поля text
         public static void ChangePickerValue(this TextBox text, DateTimePicker pick)
         {

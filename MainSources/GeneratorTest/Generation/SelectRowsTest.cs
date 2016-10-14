@@ -12,10 +12,10 @@ namespace GeneratorTest
     public class SelectRowsTest
     {
         //Загрузка таблиц
-        private TablsList Load()
+        private TablsList Load(string prefix)
         {
             var tabls = new TablsList();
-            using (var db = new DaoDb(TestLib.CopyFile(@"Generator\GenData.accdb")))
+            using (var db = new DaoDb(TestLib.CopyFile("Generator", "GenData.accdb", "Rows" + prefix + ".accdb")))
             {
                 tabls.AddStruct(db, "Tabl", "SubTabl", "SubSubTabl");
                 tabls.AddDbStructs(db);
@@ -24,7 +24,7 @@ namespace GeneratorTest
             return tabls;
         }
 
-        //Созда накопитель ошибок
+        //Создать накопитель ошибок
         private static GenKeeper MakeKeeper()
         {
             return new GenKeeper(new TablGenerator(new Logger(), null, null, null, null, null, null));
@@ -64,7 +64,7 @@ namespace GeneratorTest
         [TestMethod]
         public void Simple()
         {
-            var tabls = Load();
+            var tabls = Load("Simple");
             var keeper = MakeKeeper();
             var rows = SelectRows(keeper, tabls, "Tabl");
             Assert.AreEqual(3, rows.Length);
@@ -174,7 +174,7 @@ namespace GeneratorTest
         [TestMethod]
         public void Complex()
         {
-            var tabls = Load();
+            var tabls = Load("Complex");
             var keeper = MakeKeeper();
             TablStruct tstruct;
             var t = SelectRowsStruct(keeper, tabls, "Tabl.OverTabl", out tstruct);

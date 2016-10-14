@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -20,8 +19,8 @@ namespace BaseLibrary
         //Ссылки на базу данных
         public DaoDb DaoDb { get; private set; }
         //Словари полей рекордсета, ключи имена или номера полей
-        private readonly Dictionary<string, Field> _fields = new Dictionary<string, Field>();
-        private readonly Dictionary<int, Field> _fieldsNum = new Dictionary<int, Field>();
+        private readonly DicS<Field> _fields = new DicS<Field>();
+        private readonly DicI<Field> _fieldsNum = new DicI<Field>();
 
         //Существует ли поле в рекордсете
         public bool ContainsField(string fname)

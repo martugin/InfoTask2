@@ -11,10 +11,10 @@ namespace GeneratorTest
     public class CheckTest
     {
         //Загрузка таблиц
-        private TablsList Load()
+        private TablsList Load(string prefix)
         {
             var tabls = new TablsList();
-            using (var db = new DaoDb(TestLib.CopyFile(@"Generator\GenData.accdb")))
+            using (var db = new DaoDb(TestLib.CopyFile("Generator", "GenData.accdb", "Check" + prefix + ".accdb")))
             {
                 tabls.AddStruct(db, "Tabl", "SubTabl", "SubSubTabl");
                 tabls.AddDbStructs(db);    
@@ -54,7 +54,7 @@ namespace GeneratorTest
         [TestMethod]
         public void CheckRule()
         {
-            var tabls = Load();
+            var tabls = Load("Rule");
             var keeper = MakeKeeper();
             var tstruct = CheckRule(keeper, tabls, "Tabl");
             Assert.AreEqual(0, tstruct.Level);
@@ -214,7 +214,7 @@ namespace GeneratorTest
         [TestMethod]
         public void CheckFields()
         {
-            var tabls = Load();
+            var tabls = Load("Fields");
             var keeper = MakeKeeper();
             var tstruct = CheckRule(keeper, tabls, "Tabl");
             

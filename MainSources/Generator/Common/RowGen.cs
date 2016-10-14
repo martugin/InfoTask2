@@ -17,8 +17,11 @@ namespace Generator
             Id = rec.GetInt(idField);
             var tabl = ((INodeTabl)Rule).Check(dataTabls);
             if (tabl == null) return;
-            foreach (INodeExpr expr in Fields.Values)
-                expr.Check(tabl);
+            foreach (string key in Fields.Keys)
+            {
+                Keeper.SetFieldName(key);
+                Fields[key].Check(tabl);
+            }
             if (subRec != null)
             {
                 bool subErr = false;

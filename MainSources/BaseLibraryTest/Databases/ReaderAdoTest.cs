@@ -8,23 +8,27 @@ namespace BaseLibraryTest
     [TestClass]
     public class ReaderAdoTest
     {
-        //Файлы используемых баз данных
-        private readonly string _file = TestLib.TestRunDir + @"BaseLibrary\DbDao.accdb";
-        //Открытие тестовых баз с копированием и без
-        private DaoDb CopyDb()
+        //Открытие тестовых баз с копированием 
+        private DaoDb CopyDb(string prefix)
         {
-            return new DaoDb(TestLib.CopyFile(@"BaseLibrary\DbDao.accdb"));
+            return new DaoDb(TestLib.CopyFile("BaseLibrary", "DbDao.accdb", "Reader" + prefix + ".accdb"));
+        }
+        //Путь к файлу
+        private string File(string prefix)
+        {
+            return TestLib.TestRunDir + @"BaseLibrary\Reader" + prefix + ".accdb";
         }
 
         [TestMethod]
         public void RecAccess()
         {
-            var db = CopyDb();
+            var db = CopyDb("");
+            var file = File("");
             var rec = new ReaderAdo(db, "SELECT * FROM Tabl");
             Assert.IsNotNull(rec.DaoDb);
             Assert.IsNotNull(rec.Reader);
             Assert.AreEqual(DatabaseType.Access, rec.DatabaseType);
-            Assert.AreEqual(_file, rec.DaoDb.File);
+            Assert.AreEqual(file, rec.DaoDb.File);
             Assert.IsTrue(rec.HasRows);
             Assert.AreEqual(5, rec.RecordCount("SELECT Count(*) FROM Tabl"));
             Assert.IsFalse(rec.EOF);
@@ -41,7 +45,7 @@ namespace BaseLibraryTest
 
             rec = new ReaderAdo(db, "SELECT * FROM EmptyTabl");
             Assert.AreEqual(DatabaseType.Access, rec.DatabaseType);
-            Assert.AreEqual(_file, rec.DaoDb.File);
+            Assert.AreEqual(file, rec.DaoDb.File);
             Assert.IsFalse(rec.HasRows);
             Assert.AreEqual(0, rec.RecordCount("SELECT Count(*) FROM EmptyTabl"));
             Assert.IsTrue(rec.EOF);
@@ -52,7 +56,7 @@ namespace BaseLibraryTest
             rec = new ReaderAdo(db, "SELECT Tabl.IntField, Tabl.RealField, SubTabl.StringSubField FROM Tabl INNER JOIN SubTabl ON Tabl.Id = SubTabl.ParentId");
             Assert.IsNotNull(rec.DaoDb);
             Assert.IsNotNull(rec.Reader);
-            Assert.AreEqual(_file, rec.DaoDb.File);
+            Assert.AreEqual(file, rec.DaoDb.File);
             Assert.AreEqual(DatabaseType.Access, rec.DatabaseType);
             Assert.IsTrue(rec.HasRows);
             Assert.IsFalse(rec.EOF);
@@ -73,7 +77,7 @@ namespace BaseLibraryTest
         [TestMethod]
         public void RecAccessRead()
         {
-            using (var rec = new ReaderAdo(CopyDb(), "SELECT * FROM Tabl"))
+            using (var rec = new ReaderAdo(CopyDb("Read"), "SELECT * FROM Tabl"))
             {
                 Assert.IsTrue(rec.GetBool("BoolField"));
                 Assert.AreEqual(true, rec.GetBoolNull("BoolField"));
@@ -146,7 +150,7 @@ namespace BaseLibraryTest
                 Assert.IsNotNull(exception);
             }
 
-            using (var rec = new ReaderAdo(new DaoDb(_file), 
+            using (var rec = new ReaderAdo(new DaoDb(File("Read")), 
                 "SELECT Tabl.Id, Tabl.IntField AS IntF, Tabl.RealField, SubTabl.StringSubField AS StringF " +
                 "FROM Tabl LEFT JOIN SubTabl ON Tabl.Id = SubTabl.ParentId ORDER BY Tabl.Id, SubTabl.StringSubField;"))
             {

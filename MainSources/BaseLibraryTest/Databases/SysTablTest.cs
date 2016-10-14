@@ -4,20 +4,20 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BaseLibraryTest
 {
-    //Тесты для ЫныЕфид
+    //Тесты для SysTabl
     [TestClass]
     public class SysTablTest
     {
-        //Открытие тестовых баз с копированием
-        private string CopyFile() 
+        //Открытие тестовых баз с копированием 
+        private string CopyFile(string prefix)
         {
-            return TestLib.CopyFile(@"BaseLibrary\DbDao.accdb");
+            return TestLib.CopyFile("BaseLibrary", "DbDao.accdb", "SysTabl" + prefix + ".accdb");
         }
 
         [TestMethod]
         public void InstanceFuns()
         {
-            using (var sys = new SysTabl(CopyFile(), false))
+            using (var sys = new SysTabl(CopyFile(""), false))
             {
                 Assert.IsNotNull(sys);
                 Assert.AreEqual("OptionsValue", sys.Value("FileOptions"));
@@ -44,7 +44,7 @@ namespace BaseLibraryTest
                 Assert.AreEqual("Tag", sys.Tag("Param"));
             }
 
-            var db = new DaoDb(CopyFile());
+            var db = new DaoDb(CopyFile(""));
             using (var sys = new SysTabl(db))
             {
                 Assert.IsNotNull(sys);
@@ -85,7 +85,7 @@ namespace BaseLibraryTest
         [TestMethod]
         public void StaticFuns()
         {
-            var file = CopyFile();
+            var file = CopyFile("Static");
             Assert.AreEqual("OptionsValue", SysTabl.ValueS(file, "FileOptions"));
             Assert.AreEqual("ParamValue", SysTabl.ValueS(file, "Param"));
             Assert.AreEqual("OptionsTag", SysTabl.TagS(file, "FileOptions"));

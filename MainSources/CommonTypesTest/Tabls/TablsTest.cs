@@ -9,18 +9,21 @@ namespace CommonTypesTest
     [TestClass]
     public class TablsTest
     {
-        //Файлы используемых баз данных
-        private readonly string _file = TestLib.TestRunDir + @"Generator\GenData.accdb";
         //Открытие тестовых баз с копированием 
-        private DaoDb CopyDb()
+        private DaoDb CopyDb(string prefix)
         {
-            return new DaoDb(TestLib.CopyFile(@"Generator\GenData.accdb"));
+            return new DaoDb(TestLib.CopyFile("CommonTypes", "TablsData.accdb", "Tabls" + prefix + ".accdb"));
+        }
+        //Путь к файлу
+        private string File(string prefix)
+        {
+            return TestLib.TestRunDir + @"CommonTypes\Tabls" + prefix + ".accdb";
         }
         
         [TestMethod]
         public void TablStruct()
         {
-            using (var db = CopyDb())
+            using (var db = CopyDb("Struct"))
             {
                 var tlist = new TablsList();
                 Assert.AreEqual(0, tlist.Structs.Count);
@@ -28,7 +31,7 @@ namespace CommonTypesTest
                 var gr = tlist.AddStruct(db, "Tabl", "SubTabl", "SubSubTabl");
                 Assert.AreEqual(1, tlist.Structs.Count);
                 Assert.AreEqual("Tabl", gr.Code);
-                Assert.AreEqual(_file, gr.DbFile);
+                Assert.AreEqual(File("Struct"), gr.DbFile);
                 Assert.AreEqual(4, gr.Tabls.Count);
 
                 var tstruct = gr.Tabls[-1];
@@ -78,7 +81,7 @@ namespace CommonTypesTest
                 Assert.AreEqual(0, tlist.Tabls.Count);
                 gr = tlist.Structs["VTZTZ"];
                 Assert.AreEqual("VTZTZ", gr.Code);
-                Assert.AreEqual(_file, gr.DbFile);
+                Assert.AreEqual(File("Struct"), gr.DbFile);
                 Assert.AreEqual(3, gr.Tabls.Count);
 
                 tstruct = gr.Tabls[-1];
@@ -116,7 +119,7 @@ namespace CommonTypesTest
         [TestMethod]
         public void TablValues()
         {
-            using (var db = CopyDb())
+            using (var db = CopyDb("Values"))
             {
                 var tlist = new TablsList();
                 Assert.AreEqual(0, tlist.Tabls.Count);
