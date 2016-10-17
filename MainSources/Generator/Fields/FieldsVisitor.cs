@@ -42,7 +42,7 @@ namespace Generator
 
         public override Node VisitTextGen(P.TextGenContext context)
         {
-            return new NodeTextList(context.element().Select(Go));
+            return new NodeTextList(context.element().Select(Go).ToList());
         }
 
         public override Node VisitElementText(P.ElementTextContext context)
@@ -187,12 +187,12 @@ namespace Generator
 
         public override Node VisitParamsList(P.ParamsListContext context)
         {
-            return new NodeList(context.expr().Select(Go));
+            return new NodeList(context.expr().Select(Go).ToList());
         }
 
         public override Node VisitParamsEmpty(P.ParamsEmptyContext context)
         {
-            return new NodeList(new Node[0]);
+            return new NodeList(new Node[0].ToList());
         }
 
         //Константы

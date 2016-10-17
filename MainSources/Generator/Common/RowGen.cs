@@ -52,6 +52,7 @@ namespace Generator
                                        RecDao rec, //Рекордсет генерируемой таблицы
                                        RecDao subrec) //Рекордсет генерируемой подтаблицы
         {
+            if (!Keeper.ErrMess.IsEmpty()) return;
             foreach (var row in ((INodeTabl)Rule).SelectRows(dataTabls))
             {
                 rec.AddNew();

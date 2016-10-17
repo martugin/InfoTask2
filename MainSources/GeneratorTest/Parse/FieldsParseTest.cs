@@ -63,6 +63,8 @@ namespace GeneratorTest
                 Parse(k, "---[переменная_=StrInsert('ddaa';2+2;'ee'+'kk')]---[переменная_]"));
             Assert.AreEqual("NodeList: (String: ss, ValueProg: (VoidProg: , Fun: + (Fun: + (Field: w, Field: x), Field: y)))",
                 Parse(k, "ss[w+x/*+[sss]*/+y]"));
+            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Fun: StrUCase (Fun: StrLeft (Field: NameField, Integer: 2))))",
+                Parse(k, "[StrUCase(StrLeft(NameField;2))]"));
         }
 
         [TestMethod]

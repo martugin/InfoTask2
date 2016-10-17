@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace CommonTypes
 {
     //Промежуточный узел, собирающий список узлов 
     public class NodeList : Node
     {
-        public NodeList(IEnumerable<INode> children) : base(null)
+        public NodeList(List<Node> children) : base(null)
         {
             Children = children;
         }
@@ -20,6 +19,6 @@ namespace CommonTypes
         }
 
         // Список узлов 
-        public IEnumerable<INode> Children { get; private set; }
+        public List<Node> Children { get; private set; }
     }
 }

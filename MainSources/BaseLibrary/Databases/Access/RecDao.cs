@@ -20,7 +20,9 @@ namespace BaseLibrary
         public DaoDb DaoDb { get; private set; }
         //Словари полей рекордсета, ключи имена или номера полей
         private readonly DicS<Field> _fields = new DicS<Field>();
+        public IDicSForRead<Field> Fileds { get { return _fields; } }
         private readonly DicI<Field> _fieldsNum = new DicI<Field>();
+        public IDicIForRead<Field> FiledsNum { get { return _fieldsNum; } }
 
         //Существует ли поле в рекордсете
         public bool ContainsField(string fname)

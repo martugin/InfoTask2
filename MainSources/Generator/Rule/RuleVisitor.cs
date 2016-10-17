@@ -131,7 +131,7 @@ namespace Generator
         
         public override Node VisitParamsList(P.ParamsListContext context)
         {
-            return new NodeList(context.expr().Select(Visit));
+            return new NodeList(context.expr().Select(Visit).ToList());
         }
 
         public override Node VisitParamsEmpty(P.ParamsEmptyContext context)
