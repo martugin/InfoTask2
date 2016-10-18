@@ -20,16 +20,5 @@ namespace Generator
 
         //ParentId ряда подтаблицы шаблона
         public int ParentId { get; private set; }
-        
-        //Сгенерировать таблицу по данному ряду
-        public void Generate(int parentId, //Id сгенерированного ряда родителя
-                             SubRows row, //Текущий исходный ряд в процессе генерации по ряду родителя
-                             RecDao subrec) //Рекордсет генерируемой подтаблицы
-        {
-            subrec.AddNew();
-            subrec.Put(IdField, parentId);
-            GenerateFields(row, subrec);
-            subrec.Update();
-        }
     }
 }

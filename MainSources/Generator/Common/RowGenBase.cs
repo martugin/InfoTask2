@@ -53,7 +53,7 @@ namespace Generator
 
         //Условие генерации
         public string RuleString { get; private set; }
-        protected INode Rule { get; private set; }
+        internal INode Rule { get; private set; }
 
         //Имя поля ошибки генерации
         protected string ErrField { get; private set; }
@@ -68,7 +68,7 @@ namespace Generator
         protected DicS<INodeExpr> Fields { get { return _fields; } }
 
         //Сгенерировать значения полей по ряду таблицы
-        protected void GenerateFields(SubRows row, RecDao rec)
+        internal void GenerateFields(SubRows row, RecDao rec)
         {
             foreach (var field in Fields.Keys)
                 if (rec.ContainsField(field))

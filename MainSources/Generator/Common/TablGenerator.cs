@@ -32,7 +32,7 @@ namespace Generator
                 using (var rec = new RecDao(file, "SELECT * FROM " + tabl + " ORDER BY " + tablIdField))
                     using (var subRec = !hasSub ? null : new RecDao(rec.DaoDb, "SELECT * FROM " + subTabl + " ORDER BY " + subParentIdField))
                     {
-                        if (hasSub) subRec.MoveFirst();
+                        if (hasSub && !subRec.EOF) subRec.MoveFirst();
                         while (rec.Read())
                         {
                             var row = new RowGen(this, dataTabls, rec, tablIdField, tablRuleField, tablErrField, subRec, subParentIdField, subRuleField, subErrField);

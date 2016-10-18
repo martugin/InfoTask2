@@ -30,10 +30,21 @@ namespace GeneratorTest
         }
 
         [TestMethod]
-        public void GenSimple()
+        public void GenOneLevel()
         {
             Generate("OneLevel");
+        }
 
+        [TestMethod]
+        public void GenTwoLevel()
+        {
+            Generate("TwoLevel", "TwoLevelSub");
+        }
+
+        [TestMethod]
+        public void GenErrors()
+        {
+            Generate("Errors", "ErrorsSub");
         }
     }
 }

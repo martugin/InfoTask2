@@ -22,7 +22,7 @@ namespace Generator
                 Keeper.SetFieldName(key);
                 Fields[key].Check(tabl);
             }
-            if (subRec != null)
+            if (subRec != null && !subRec.EOF)
             {
                 bool subErr = false;
                 while (subRec.GetInt(subIdField) == Id)
@@ -60,8 +60,14 @@ namespace Generator
                 GenerateFields(row, rec);
                 rec.Update();
                 if (subrec != null)
-                    foreach (var subRow in SubRows)
-                        subRow.Generate(id, row, subrec);
+                    foreach (var subRowGen in SubRows)
+                        foreach (var subRow in (((NodeRSubTabl)subRowGen.Rule).SelectRows(row)))
+                        {
+                            subrec.AddNew();
+                            subrec.Put(subRowGen.IdField, id);
+                            subRowGen.GenerateFields(subRow, subrec);
+                            subrec.Update();
+                        }
             }
         }
     }
