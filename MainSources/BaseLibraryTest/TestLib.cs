@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BaseLibrary;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BaseLibraryTest
 {
@@ -52,5 +53,23 @@ namespace BaseLibraryTest
             return s;
         }
 
+        //Сравнение двух таблиц на полное совпадение, 
+        public static bool CompareTables(DaoDb db1, DaoDb db2, string tableName1, string tableName2, string idField1 = "Id", string idField2 = "Id")
+        {
+            using (var rec1 = new RecDao(db1, "SELECT * FROM " + tableName1 + " ORDER BY " + idField1))
+                using (var rec2 = new RecDao(db2, "SELECT * FROM " + tableName2 + " ORDER BY " + idField2))
+                {
+                    rec1.Read();
+                    while (rec2.Read())
+                    {
+                        Assert.AreEqual(rec1.EOF, rec2.EOF);
+                        foreach (var k in rec1.Fileds.Keys)
+                            Assert.AreEqual(rec1.Recordset.Fields[k].Value, rec2.Recordset.Fields[k].Value);
+                        rec1.Read();
+                    }
+                    Assert.AreEqual(rec1.EOF, rec2.EOF);
+                }
+            return true;
+        }
     }
 }
