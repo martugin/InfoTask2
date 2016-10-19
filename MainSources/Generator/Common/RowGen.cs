@@ -15,8 +15,7 @@ namespace Generator
             : base(generator, rec, idField, ruleField, errField, false)
         {
             Id = rec.GetInt(idField);
-            var tabl = ((INodeTabl)Rule).Check(dataTabls);
-            if (tabl == null) return;
+            var tabl = Rule == null ? null : ((INodeTabl)Rule).Check(dataTabls);
             foreach (string key in Fields.Keys)
             {
                 Keeper.SetFieldName(key);
@@ -53,7 +52,22 @@ namespace Generator
                                        RecDao subrec) //Рекордсет генерируемой подтаблицы
         {
             if (!Keeper.ErrMess.IsEmpty()) return;
-            foreach (var row in ((INodeTabl)Rule).SelectRows(dataTabls))
+            if (Rule == null)
+            {
+                rec.AddNew();
+                int id = rec.GetInt(IdField);
+                GenerateFields(null, rec);
+                rec.Update();
+                if (subrec != null)
+                    foreach (var subRowGen in SubRows)
+                    {
+                        subrec.AddNew();
+                        subrec.Put(subRowGen.IdField, id);
+                        subRowGen.GenerateFields(null, subrec);
+                        subrec.Update();
+                    }
+            }
+            else foreach (var row in ((INodeTabl)Rule).SelectRows(dataTabls))
             {
                 rec.AddNew();
                 int id = rec.GetInt(IdField);

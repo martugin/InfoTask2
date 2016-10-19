@@ -12,9 +12,9 @@ namespace Generator
             : base(generator, rec, idField, ruleField, errField, true)
         {
             ParentId = rec.GetInt(idField);
-            var subTabl = ((NodeRSubTabl)Rule).Check(tabl);
+            var subTabl = Rule == null ? tabl : ((NodeRSubTabl)Rule).Check(tabl);
             foreach (INodeExpr expr in Fields.Values)
-                expr.Check(subTabl);    
+                expr.Check(subTabl);        
             rec.Put(errField, Keeper.ErrMess); 
         }
 

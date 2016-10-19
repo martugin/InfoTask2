@@ -18,21 +18,26 @@ namespace Generator
         //Имя поля 
         private readonly string _field;
         
-        //Вычисление значения
-        public IMean Generate(SubRows row)
-        {
-            return ((TablRow)row)[_field];
-        }
-
         //Получение типа данных
         public DataType Check(TablStruct tabl)
         {
+            if (tabl == null)
+            {
+                AddError("Попытка получения значения поля при не заданой таблице");
+                return DataType.Error;
+            }
             if (!tabl.Fields.ContainsKey(_field))
             {
                 AddError("Поле не найдено в исходной таблице");
                 return DataType.Error;
             }
             return tabl.Fields[_field];
+        }
+
+        //Вычисление значения
+        public IMean Generate(SubRows row)
+        {
+            return ((TablRow)row)[_field];
         }
     }
 }
