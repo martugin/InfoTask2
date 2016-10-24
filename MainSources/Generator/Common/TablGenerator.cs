@@ -11,13 +11,14 @@ namespace Generator
                                          TablsList dataTabls, //Таблицы с данными для генерации
                                          string file, //Файл шаблона генерации
                                          string tabl, //Главная таблица шаблона генерации, можно запрос
-                                         string tablIdField, //Имя поля Id главной таблицы
                                          string tablRuleField, //Имя поля правила генерации главной таблицы
                                          string tablErrField, //Имя поля для записи ошибок генерации в главной таблице
+                                         string tablIdField, //Имя поля Id главной таблицы
                                          string subTabl = null, //Подчиненная таблицы шаблона генерации, можно запрос
-                                         string subParentIdField = null, //Имя поля Id из главной таблицы в подчиненной таблице
                                          string subRuleField = null, //Имя поля правила генерации подчиненной таблицы
-                                         string subErrField = null) //Имя поля для записи ошибок генерации в подчиненной таблице
+                                         string subErrField = null, //Имя поля для записи ошибок генерации в подчиненной таблице
+                                         string subIdField = null, //Имя поля Id из главной таблицы в подчиненной таблице
+                                         string subParentIdField = null) //Имя поля ParentId из главной таблицы в подчиненной таблице
         {
             Logger = logger;
             AddEvent("Загрузка списка функций");
@@ -35,7 +36,7 @@ namespace Generator
                         if (hasSub && !subRec.EOF) subRec.MoveFirst();
                         while (rec.Read())
                         {
-                            var row = new RowGen(this, dataTabls, rec, tablIdField, tablRuleField, tablErrField, subRec, subParentIdField, subRuleField, subErrField);
+                            var row = new RowGen(this, dataTabls, rec, tablRuleField, tablErrField, tablIdField, subRec, subRuleField, subErrField, subIdField, subParentIdField);
                             _rowsGen.Add(row.Id, row);
                         }
                     }

@@ -8,17 +8,13 @@ namespace Generator
     {
         public SubRowGen(TablGenerator generator, //Ссылка на генератор
                          TablStruct tabl, //Таблица - шаблон генерации
-                         RecDao rec, string idField, string ruleField, string errField) 
-            : base(generator, rec, idField, ruleField, errField, true)
+                         RecDao rec, string ruleField, string errField, string idField, string parentIdField)
+            : base(generator, rec, ruleField, errField, idField, parentIdField)
         {
-            ParentId = rec.GetInt(idField);
             var subTabl = Rule == null ? tabl : ((NodeRSubTabl)Rule).Check(tabl);
             foreach (INodeExpr expr in Fields.Values)
                 expr.Check(subTabl);        
             rec.Put(errField, Keeper.ErrMess); 
         }
-
-        //ParentId ряда подтаблицы шаблона
-        public int ParentId { get; private set; }
     }
 }

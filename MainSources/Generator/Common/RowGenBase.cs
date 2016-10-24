@@ -10,23 +10,26 @@ namespace Generator
     {
         public RowGenBase(TablGenerator generator, //Ссылка на генератор
                           RecDao rec, //Рекордсет таблицы шаблона генерации
-                          string idField, //Имя поля Id таблицы или ParentId подтаблицы
                           string ruleField, //Имя поля с условием генерации
                           string errField, //Имя поля ошибок генерации
-                          bool isSubTabl) //Генерация  
+                          string idField, //Имя поля Id таблицы, если нет такого, то null
+                          string parentIdField = null) //Имя ParentId подтаблицы, если применимо
         {
             IdField = idField;
+            ParentIdField = parentIdField;
             ErrField = errField;
             Keeper = new GenKeeper(generator);
 
             RuleString = rec.GetString(ruleField);
             if (!RuleString.IsEmpty())
             {
-                var parse = isSubTabl ? new SubRuleParsing(Keeper, ruleField, RuleString) : new RuleParsing(Keeper, ruleField, RuleString);
+                var parse = parentIdField != null  ? new SubRuleParsing(Keeper, ruleField, RuleString) : new RuleParsing(Keeper, ruleField, RuleString);
                 Rule = parse.ResultTree;
             }
 
-            var special = new HashSet<string> { idField, ruleField, errField };
+            var special = new HashSet<string> { ruleField, errField};
+            if (!IdField.IsEmpty()) special.Add(IdField);
+            if (!ParentIdField.IsEmpty()) special.Add(ParentIdField);
             foreach (Field field in rec.Recordset.Fields)
             {
                 var name = field.Name;
@@ -60,9 +63,10 @@ namespace Generator
         //Накопитель ошибок
         public GenKeeper Keeper { get; private set; }
         
-        //Имя поля Id таблицы, или ParentId подтаблицы шаблона
+        //Имена полей Id и ParentId
         public string IdField { get; private set; }
-        
+        public string ParentIdField { get; private set; }
+
         //Словарь остальных полей таблицы шаблонов
         private readonly DicS<INodeExpr> _fields = new DicS<INodeExpr>();
         protected DicS<INodeExpr> Fields { get { return _fields; } }

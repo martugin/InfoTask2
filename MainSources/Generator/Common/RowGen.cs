@@ -10,9 +10,9 @@ namespace Generator
     {
         public RowGen(TablGenerator generator, //Ссылка на генератор
                               TablsList dataTabls, //Исходные таблицы для генерации
-                              RecDao rec, string idField, string ruleField, string errField, //Рекортсет и поля таблицы
-                              RecDao subRec, string subIdField, string subRuleField, string subErrField) //Рекордсет и и поля подтаблицы
-            : base(generator, rec, idField, ruleField, errField, false)
+                              RecDao rec, string ruleField, string errField, string idField,  //Рекортсет и поля таблицы
+                              RecDao subRec, string subRuleField, string subErrField, string subIdField, string subParentIdField) //Рекордсет и и поля подтаблицы
+            : base(generator, rec, ruleField, errField, idField)
         {
             Id = rec.GetInt(idField);
             var tabl = Rule == null ? null : ((INodeTabl)Rule).Check(dataTabls);
@@ -24,9 +24,9 @@ namespace Generator
             if (subRec != null && !subRec.EOF)
             {
                 bool subErr = false;
-                while (subRec.GetInt(subIdField) == Id)
+                while (subRec.GetInt(subParentIdField) == Id)
                 {
-                    var row = new SubRowGen(generator, tabl, subRec, subIdField, subRuleField, subErrField);
+                    var row = new SubRowGen(generator, tabl, subRec, subRuleField, subErrField, subIdField, subParentIdField);
                     if (row.Keeper.Errors.Count != 0 && !subErr)
                     {
                         Keeper.AddError("Ошибки в рядах подтаблицы", (IToken)null);
@@ -38,13 +38,13 @@ namespace Generator
             }
             rec.Put(errField, Keeper.ErrMess); 
         }
-
-        //Id ряда таблицы 
-        public int Id { get; private set; }
-
+        
         //Подчиненные ряды подтаблицы
         private List<SubRowGen> _subRows;
         internal List<SubRowGen> SubRows { get { return _subRows ?? (_subRows = new List<SubRowGen>()); } }
+
+        //Значение поля Id
+        public int Id { get; protected set; }
 
         //Сгенерировать таблицу по данному ряду
         public void Generate(TablsList dataTabls, //Список таблиц с данными для генерации
@@ -78,7 +78,7 @@ namespace Generator
                         foreach (var subRow in (((NodeRSubTabl)subRowGen.Rule).SelectRows(row)))
                         {
                             subrec.AddNew();
-                            subrec.Put(subRowGen.IdField, id);
+                            subrec.Put(subRowGen.ParentIdField, id);
                             subRowGen.GenerateFields(subRow, subrec);
                             subrec.Update();
                         }
