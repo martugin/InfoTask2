@@ -62,7 +62,7 @@ namespace Generator
                     foreach (var subRowGen in SubRows)
                     {
                         subrec.AddNew();
-                        subrec.Put(subRowGen.IdField, id);
+                        subrec.Put(subRowGen.ParentIdField, id);
                         subRowGen.GenerateFields(null, subrec);
                         subrec.Update();
                     }
