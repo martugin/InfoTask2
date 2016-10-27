@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using BaseLibrary;
+﻿using BaseLibrary;
 using CommonTypes;
 using Microsoft.Office.Interop.Access.Dao;
 
@@ -9,31 +8,25 @@ namespace Generator
     internal class RowGenBase
     {
         public RowGenBase(TablGenerator generator, //Ссылка на генератор
-                          RecDao rec, //Рекордсет таблицы шаблона генерации
-                          string ruleField, //Имя поля с условием генерации
-                          string errField, //Имя поля ошибок генерации
-                          string idField, //Имя поля Id таблицы, если нет такого, то null
-                          string parentIdField = null) //Имя ParentId подтаблицы, если применимо
+                          GenTemplateTable table, //Описание полей таблицы-шаблона
+                          RecDao rec) //Рекордсет таблицы шаблона генерации
         {
-            IdField = idField;
-            ParentIdField = parentIdField;
-            ErrField = errField;
+            Table = table;
             Keeper = new GenKeeper(generator);
 
-            RuleString = rec.GetString(ruleField);
+            RuleString = rec.GetString(Table.RuleField);
             if (!RuleString.IsEmpty())
             {
-                var parse = parentIdField != null  ? new SubRuleParsing(Keeper, ruleField, RuleString) : new RuleParsing(Keeper, ruleField, RuleString);
+                var parse = Table.IsSub  
+                        ? new SubRuleParsing(Keeper, Table.RuleField, RuleString) 
+                        : new RuleParsing(Keeper, Table.RuleField, RuleString);
                 Rule = parse.ResultTree;
             }
 
-            var special = new HashSet<string> { ruleField, errField};
-            if (!IdField.IsEmpty()) special.Add(IdField);
-            if (!ParentIdField.IsEmpty()) special.Add(ParentIdField);
             foreach (Field field in rec.Recordset.Fields)
             {
                 var name = field.Name;
-                if (!special.Contains(name) && !rec.IsNull(name))
+                if (!Table.IsSpecial(name) && !rec.IsNull(name))
                 {
                     var dataType = field.Type.ToDataType();
                     if (dataType != DataType.String)
@@ -54,19 +47,15 @@ namespace Generator
             }
         }
 
+        //Описание полей таблицы
+        public GenTemplateTable Table { get; private set; }
+        //Накопитель ошибок
+        public GenKeeper Keeper { get; private set; }
+
         //Условие генерации
         public string RuleString { get; private set; }
         internal INode Rule { get; private set; }
-
-        //Имя поля ошибки генерации
-        protected string ErrField { get; private set; }
-        //Накопитель ошибок
-        public GenKeeper Keeper { get; private set; }
         
-        //Имена полей Id и ParentId
-        public string IdField { get; private set; }
-        public string ParentIdField { get; private set; }
-
         //Словарь остальных полей таблицы шаблонов
         private readonly DicS<INodeExpr> _fields = new DicS<INodeExpr>();
         protected DicS<INodeExpr> Fields { get { return _fields; } }

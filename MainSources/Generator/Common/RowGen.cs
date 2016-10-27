@@ -10,23 +10,23 @@ namespace Generator
     {
         public RowGen(TablGenerator generator, //Ссылка на генератор
                               TablsList dataTabls, //Исходные таблицы для генерации
-                              RecDao rec, string ruleField, string errField, string idField,  //Рекортсет и поля таблицы
-                              RecDao subRec, string subRuleField, string subErrField, string subIdField, string subParentIdField) //Рекордсет и и поля подтаблицы
-            : base(generator, rec, ruleField, errField, idField)
+                              GenTemplateTable table, RecDao rec, //Рекортсет и поля таблицы
+                              GenTemplateTable subTable, RecDao subRec) //Рекордсет и и поля подтаблицы
+            : base(generator, table, rec)
         {
-            Id = rec.GetInt(idField);
-            var tabl = Rule == null ? null : ((INodeTabl)Rule).Check(dataTabls);
+            Id = rec.GetInt(table.IdField);
+            var dataTabl = Rule == null ? null : ((INodeTabl)Rule).Check(dataTabls);
             foreach (string key in Fields.Keys)
             {
                 Keeper.SetFieldName(key);
-                Fields[key].Check(tabl);
+                Fields[key].Check(dataTabl);
             }
             if (subRec != null && !subRec.EOF)
             {
                 bool subErr = false;
-                while (subRec.GetInt(subParentIdField) == Id)
+                while (subRec.GetInt(subTable.ParentIdField) == Id)
                 {
-                    var row = new SubRowGen(generator, tabl, subRec, subRuleField, subErrField, subIdField, subParentIdField);
+                    var row = new SubRowGen(generator, dataTabl, subTable, subRec);
                     if (row.Keeper.Errors.Count != 0 && !subErr)
                     {
                         Keeper.AddError("Ошибки в рядах подтаблицы", (IToken)null);
@@ -36,7 +36,7 @@ namespace Generator
                     if (!subRec.MoveNext()) break;
                 }
             }
-            rec.Put(errField, Keeper.ErrMess); 
+            rec.Put(table.ErrField, Keeper.ErrMess); 
         }
         
         //Подчиненные ряды подтаблицы
@@ -55,14 +55,14 @@ namespace Generator
             if (Rule == null)
             {
                 rec.AddNew();
-                int id = rec.GetInt(IdField);
+                int id = rec.GetInt(Table.IdField);
                 GenerateFields(null, rec);
                 rec.Update();
                 if (subrec != null)
                     foreach (var subRowGen in SubRows)
                     {
                         subrec.AddNew();
-                        subrec.Put(subRowGen.ParentIdField, id);
+                        subrec.Put(subRowGen.Table.ParentIdField, id);
                         subRowGen.GenerateFields(null, subrec);
                         subrec.Update();
                     }
@@ -70,7 +70,7 @@ namespace Generator
             else foreach (var row in ((INodeTabl)Rule).SelectRows(dataTabls))
             {
                 rec.AddNew();
-                int id = rec.GetInt(IdField);
+                int id = rec.GetInt(Table.IdField);
                 GenerateFields(row, rec);
                 rec.Update();
                 if (subrec != null)
@@ -78,7 +78,7 @@ namespace Generator
                         foreach (var subRow in (((NodeRSubTabl)subRowGen.Rule).SelectRows(row)))
                         {
                             subrec.AddNew();
-                            subrec.Put(subRowGen.ParentIdField, id);
+                            subrec.Put(subRowGen.Table.ParentIdField, id);
                             subRowGen.GenerateFields(subRow, subrec);
                             subrec.Update();
                         }

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\GenKeeper.cs" />
+    <Compile Include="Common\GenTemplateTable.cs" />
     <Compile Include="Common\RowGenBase.cs" />
     <Compile Include="Common\SubRowGen.cs" />
     <Compile Include="ExprsFuncs\FunctionsGen.cs" />

@@ -35,5 +35,7 @@ namespace Provider
         {
             return !inf["ArchiveDir"].IsEmpty() ? "" : "Не задан путь к каталогу архива";
         }
+
+        protected override int PartSize { get { return 25; }}
     }
 }

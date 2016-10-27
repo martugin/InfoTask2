@@ -10,15 +10,8 @@ namespace Generator
         public TablGenerator(Logger logger, //Логгер
                                          TablsList dataTabls, //Таблицы с данными для генерации
                                          string file, //Файл шаблона генерации
-                                         string tabl, //Главная таблица шаблона генерации, можно запрос
-                                         string tablRuleField, //Имя поля правила генерации главной таблицы
-                                         string tablErrField, //Имя поля для записи ошибок генерации в главной таблице
-                                         string tablIdField, //Имя поля Id главной таблицы
-                                         string subTabl = null, //Подчиненная таблицы шаблона генерации, можно запрос
-                                         string subRuleField = null, //Имя поля правила генерации подчиненной таблицы
-                                         string subErrField = null, //Имя поля для записи ошибок генерации в подчиненной таблице
-                                         string subIdField = null, //Имя поля Id из главной таблицы в подчиненной таблице
-                                         string subParentIdField = null) //Имя поля ParentId из главной таблицы в подчиненной таблице
+                                         GenTemplateTable table, //Главная таблица шаблона генерации
+                                         GenTemplateTable subTable = null) //Подчиненная таблица шаблона генерации
         {
             Logger = logger;
             AddEvent("Загрузка списка функций");
@@ -28,15 +21,16 @@ namespace Generator
             DataTabls = dataTabls;
             try
             {
-                bool hasSub = subTabl != null;
-                AddEvent("Загрузка таблиц шаблона генерации", file + ", " + tabl);
-                using (var rec = new RecDao(file, "SELECT * FROM " + tabl + " ORDER BY " + tablIdField))
-                    using (var subRec = !hasSub ? null : new RecDao(rec.DaoDb, "SELECT * FROM " + subTabl + " ORDER BY " + subParentIdField))
+                bool hasSub = subTable != null;
+                AddEvent("Загрузка таблиц шаблона генерации", file + ", " + table.Name);
+                
+                using (var rec = new RecDao(file, table.QueryString))
+                    using (var subRec = !hasSub ? null : new RecDao(rec.DaoDb, subTable.QueryString))
                     {
                         if (hasSub && !subRec.EOF) subRec.MoveFirst();
                         while (rec.Read())
                         {
-                            var row = new RowGen(this, dataTabls, rec, tablRuleField, tablErrField, tablIdField, subRec, subRuleField, subErrField, subIdField, subParentIdField);
+                            var row = new RowGen(this, dataTabls, table, rec, subTable, subRec);
                             _rowsGen.Add(row.Id, row);
                         }
                     }

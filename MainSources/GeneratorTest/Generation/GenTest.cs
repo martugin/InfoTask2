@@ -24,11 +24,13 @@ namespace GeneratorTest
             TestLib.CopyFile("Generator", "CorrectGen" + tablName + ".accdb", "Gen" + tablName + "Correct.accdb");
 
             var templatesFile = TestLib.TestRunDir + @"Generator\Gen" + tablName + "Template.accdb";
-            var generator = subTablName != null
-                                ? new TablGenerator(new Logger(), tabls, templatesFile, tablName, "GenRule", "ErrMess", "Id", subTablName, "GenRule", "ErrMess", "Id", "ParentId")
-                                : new TablGenerator(new Logger(), tabls, templatesFile, tablName, "GenRule", "ErrMess", "Id");
+            var table = new GenTemplateTable(tablName, "GenRule", "ErrMess", "CalcOn", "Id");
+            var subTable = subTablName == null ? null : new GenTemplateTable(subTablName, table, "GenRule", "ErrMess", "CalcOn", "Id", "ParentId");
+            var generator = new TablGenerator(new Logger(), tabls, templatesFile, table, subTable);
+
             var s = TestLib.TestRunDir + @"Generator\Gen" + tablName;
             if (copyRes) generator.Generate(s + "Res.accdb", tablName, subTablName);
+
             using (var db1 = new DaoDb(s + (copyRes ? "Res" : "Template") + ".accdb"))
                 using (var db2 = new DaoDb(s + "Correct" + ".accdb"))
                 {
