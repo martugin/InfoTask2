@@ -9,35 +9,37 @@ namespace Generator
     {
         public TablGenerator(Logger logger, //Логгер
                                          TablsList dataTabls, //Таблицы с данными для генерации
-                                         string file, //Файл шаблона генерации
+                                         string templateFile, //Файл шаблона генерации
                                          GenTemplateTable table, //Главная таблица шаблона генерации
                                          GenTemplateTable subTable = null) //Подчиненная таблица шаблона генерации
         {
+            GenErrorsCount = 0;
             Logger = logger;
             AddEvent("Загрузка списка функций");
             FunsChecker = new FunsChecker(FunsCheckType.Gen);
             Functions = new FunctionsGen();
-
+            
             DataTabls = dataTabls;
             try
             {
                 bool hasSub = subTable != null;
-                AddEvent("Загрузка таблиц шаблона генерации", file + ", " + table.Name);
+                AddEvent("Загрузка таблиц шаблона генерации", templateFile + ", " + table.Name);
                 
-                using (var rec = new RecDao(file, table.QueryString))
+                using (var rec = new RecDao(templateFile, table.QueryString))
                     using (var subRec = !hasSub ? null : new RecDao(rec.DaoDb, subTable.QueryString))
                     {
                         if (hasSub && !subRec.EOF) subRec.MoveFirst();
                         while (rec.Read())
                         {
                             var row = new RowGen(this, dataTabls, table, rec, subTable, subRec);
+                            GenErrorsCount += row.Keeper.Errors.Count;
                             _rowsGen.Add(row.Id, row);
                         }
                     }
             }
             catch (Exception ex)
             {
-                AddError("Ошибка при загрузке шаблона генерации", ex, file);
+                AddError("Ошибка при загрузке шаблона генерации", ex, templateFile);
             }
         }
 
@@ -49,7 +51,10 @@ namespace Generator
         internal TablsList DataTabls { get; private set; }
         //Ряды таблицы с шаблоном генерации
         private readonly DicI<RowGen> _rowsGen = new DicI<RowGen>();
-        
+
+        //Количество ошибок при последней проверке шаблона генерации
+        public int GenErrorsCount { get; private set; }
+
         //Сгенерировать 
         public void Generate(string makedFile, //Файл сгенерированных таблиц
                                        string makedTabl, //Главная сгенерированная таблица

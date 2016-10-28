@@ -13,8 +13,11 @@ namespace Generator
             : base(generator, table, rec)
         {
             var subTabl = Rule == null ? dataTabl : ((NodeRSubTabl)Rule).Check(dataTabl);
-            foreach (INodeExpr expr in Fields.Values)
-                expr.Check(subTabl);        
+            foreach (var key in Fields.Keys)
+            {
+                Keeper.SetFieldName(key);
+                Fields[key].Check(subTabl);
+            }        
             rec.Put(table.ErrField, Keeper.ErrMess); 
         }
     }

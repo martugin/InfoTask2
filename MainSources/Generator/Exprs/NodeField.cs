@@ -23,7 +23,7 @@ namespace Generator
         {
             if (tabl == null)
             {
-                AddError("Попытка получения значения поля при не заданой таблице");
+                AddError("Попытка получения значения поля при не заданной таблице");
                 return DataType.Error;
             }
             if (!tabl.Fields.ContainsKey(_field))

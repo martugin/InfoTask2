@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using BaseLibrary;
 
@@ -918,6 +919,15 @@ namespace CommonTypes
             string m0 = par[0].String;
             var r1 = new Regex("^" + par[1].String + "$");
             ScalarRes.Boolean = r1.Match(m0).Success;
+        }
+
+        public void ToIdent_s(IMean[] par)
+        {
+            string s = par[0].String.Trim();
+            var sb = new StringBuilder();
+            foreach (char c in s)
+                sb.Append(char.IsLetterOrDigit(c) ? c : '_');
+            ScalarRes.String = sb.ToString();
         }
         #endregion
     }

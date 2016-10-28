@@ -16,13 +16,14 @@ namespace Generator
         {
             Id = rec.GetInt(table.IdField);
             var dataTabl = Rule == null ? null : ((INodeTabl)Rule).Check(dataTabls);
-            foreach (string key in Fields.Keys)
+            foreach (var key in Fields.Keys)
             {
                 Keeper.SetFieldName(key);
                 Fields[key].Check(dataTabl);
             }
             if (subRec != null && !subRec.EOF)
             {
+                Keeper.SetFieldName("");
                 bool subErr = false;
                 while (subRec.GetInt(subTable.ParentIdField) == Id)
                 {
@@ -52,22 +53,8 @@ namespace Generator
                                        RecDao subrec) //Рекордсет генерируемой подтаблицы
         {
             if (!Keeper.ErrMess.IsEmpty()) return;
-            if (Rule == null)
-            {
-                rec.AddNew();
-                int id = rec.GetInt(Table.IdField);
-                GenerateFields(null, rec);
-                rec.Update();
-                if (subrec != null)
-                    foreach (var subRowGen in SubRows)
-                    {
-                        subrec.AddNew();
-                        subrec.Put(subRowGen.Table.ParentIdField, id);
-                        subRowGen.GenerateFields(null, subrec);
-                        subrec.Update();
-                    }
-            }
-            else foreach (var row in ((INodeTabl)Rule).SelectRows(dataTabls))
+            IEnumerable<SubRows> rows = Rule == null ? new SubRows[] {null} : ((INodeTabl) Rule).SelectRows(dataTabls);
+            foreach (var row in rows)
             {
                 rec.AddNew();
                 int id = rec.GetInt(Table.IdField);
@@ -75,13 +62,16 @@ namespace Generator
                 rec.Update();
                 if (subrec != null)
                     foreach (var subRowGen in SubRows)
-                        foreach (var subRow in (((NodeRSubTabl)subRowGen.Rule).SelectRows(row)))
+                    {
+                        IEnumerable<SubRows> subRows = subRowGen.RuleString.IsEmpty() ? new [] { row } : (((NodeRSubTabl)subRowGen.Rule).SelectRows(row));
+                        foreach (var subRow in subRows)
                         {
                             subrec.AddNew();
                             subrec.Put(subRowGen.Table.ParentIdField, id);
                             subRowGen.GenerateFields(subRow, subrec);
                             subrec.Update();
                         }
+                    }
             }
         }
     }

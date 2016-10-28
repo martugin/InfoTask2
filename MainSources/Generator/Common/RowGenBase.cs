@@ -1,4 +1,5 @@
-﻿using BaseLibrary;
+﻿using System.Collections.Generic;
+using BaseLibrary;
 using CommonTypes;
 using Microsoft.Office.Interop.Access.Dao;
 
@@ -34,7 +35,7 @@ namespace Generator
                     else
                     {
                         string s = rec.GetString(name);
-                        if (Rule == null || !s.Contains("["))
+                        if (!s.Contains("["))
                             Fields.Add(name, new NodeGenConst(null, s));
                         else
                         {
@@ -57,8 +58,8 @@ namespace Generator
         internal INode Rule { get; private set; }
         
         //Словарь остальных полей таблицы шаблонов
-        private readonly DicS<INodeExpr> _fields = new DicS<INodeExpr>();
-        protected DicS<INodeExpr> Fields { get { return _fields; } }
+        private readonly Dictionary<string, INodeExpr> _fields = new Dictionary<string, INodeExpr>();
+        protected Dictionary<string, INodeExpr> Fields { get { return _fields; } }
 
         //Сгенерировать значения полей по ряду таблицы
         internal void GenerateFields(SubRows row, RecDao rec)

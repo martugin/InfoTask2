@@ -54,10 +54,10 @@ namespace BaseLibraryTest
         }
 
         //Сравнение двух таблиц на полное совпадение, 
-        public static bool CompareTables(DaoDb db1, DaoDb db2, string tableName1, string tableName2, string idField1 = "Id", string idField2 = "Id")
+        public static bool CompareTables(DaoDb db1, DaoDb db2, string tableName1, string idField1 = "Id", string tableName2 = null, string idField2 = "Id")
         {
             using (var rec1 = new RecDao(db1, "SELECT * FROM " + tableName1 + " ORDER BY " + idField1))
-                using (var rec2 = new RecDao(db2, "SELECT * FROM " + tableName2 + " ORDER BY " + idField2))
+                using (var rec2 = new RecDao(db2, "SELECT * FROM " + (tableName2 ?? tableName1) + " ORDER BY " + (tableName2 != null ? idField2 : idField1)))
                 {
                     rec1.Read();
                     while (rec2.Read())

@@ -46,7 +46,7 @@ namespace CommonTypes
         //Запись в строку
         public override string ToString()
         {
-            return ErrMess + (Lexeme.IsEmpty() ? "" : (", '" + Lexeme + "'")) + " (" + FieldName + ", строка: " + Line + ", позиция: " + (Pos + 1) + ")";
+            return ErrMess + (Lexeme.IsEmpty() ? "" : (", '" + Lexeme + "'")) + (FieldName.IsEmpty() ? "" : (" (" +FieldName + ", строка: " + Line + ", позиция: " + (Pos + 1) + ")"));
         }
     }
 }
