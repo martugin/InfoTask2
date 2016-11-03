@@ -67,6 +67,18 @@
     <Compile Include="Fields\NodeSub.cs" />
     <Compile Include="Fields\NodeTextList.cs" />
     <Compile Include="Fields\NodeValueProg.cs" />
+    <Compile Include="obj\Debug\FieldsLexemes.cs" />
+    <Compile Include="obj\Debug\FieldsParsemes.cs" />
+    <Compile Include="obj\Debug\FieldsParsemesBaseListener.cs" />
+    <Compile Include="obj\Debug\FieldsParsemesBaseVisitor.cs" />
+    <Compile Include="obj\Debug\FieldsParsemesListener.cs" />
+    <Compile Include="obj\Debug\FieldsParsemesVisitor.cs" />
+    <Compile Include="obj\Debug\RuleBaseListener.cs" />
+    <Compile Include="obj\Debug\RuleBaseVisitor.cs" />
+    <Compile Include="obj\Debug\RuleLexer.cs" />
+    <Compile Include="obj\Debug\RuleListener.cs" />
+    <Compile Include="obj\Debug\RuleParser.cs" />
+    <Compile Include="obj\Debug\RuleVisitor.cs" />
     <Compile Include="Rule\RowsSelector.cs" />
     <Compile Include="Rule\RuleParsing.cs" />
     <Compile Include="Rule\RuleVisitor.cs" />
@@ -101,9 +113,7 @@
     </Antlr4>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="obj\Debug\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -160,7 +160,7 @@ namespace BaseLibrary
         //Вызывается, если при работе с историей произошла ошибка
         private void AddErrorAboutHistory(Exception ex)
         {
-            _reasonUpdate = "Ошибка при работе с файлом истории." + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace;
+            _reasonUpdate = ex.MessageString("Ошибка при работе с файлом истории");
             UpdateHistory(true);
         }
         #endregion
