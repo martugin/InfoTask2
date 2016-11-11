@@ -79,11 +79,12 @@
     <Compile Include="obj\Debug\RuleListener.cs" />
     <Compile Include="obj\Debug\RuleParser.cs" />
     <Compile Include="obj\Debug\RuleVisitor.cs" />
+    <Compile Include="RuleNodes\RowGroupStruct.cs" />
     <Compile Include="Rule\RowsSelector.cs" />
     <Compile Include="Rule\RuleParsing.cs" />
     <Compile Include="Rule\RuleVisitor.cs" />
     <Compile Include="ExprsFuncs\NodeFun.cs" />
-    <Compile Include="Rule\RuleNodes.cs" />
+    <Compile Include="RuleNodes\RuleNodes.cs" />
     <Compile Include="Common\RowGen.cs" />
     <Compile Include="Common\TablGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -18,12 +18,12 @@ namespace CommonTypes
         public DicI<TablRow>[] Rows { get { return _rows; } }
 
         //Добавляет ряд значений на указанный уровень
-        public void AddRow(int level, TablRow row)
+        public void AddRow(int level, TablRow row, bool addIndices)
         {
             if (level < Rows.Length - 1)
                 Rows[level].Add(row.Id, row);
             var parent = level == 0 ? (SubRows)this : Rows[level - 1][row.ParentId];
-            parent.AddRow(row);
+            parent.AddRow(row, addIndices);
         }
     }
 }

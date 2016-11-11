@@ -53,7 +53,7 @@ namespace CommonTypes
                         if (tsi.Level >= 0)
                             using (var rec = new RecDao(db, tsi.TableName))
                                 while (rec.Read())
-                                    tabl.AddRow(tsi.Level, new TablRow(rec));
+                                    tabl.AddRow(tsi.Level, new TablRow(rec), true);
                 }
         }
     }

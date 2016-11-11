@@ -19,7 +19,7 @@ namespace Generator
         public void Check(INodeExpr condition, IToken tablToken, TablStruct tabl)
         {
             if (condition != null)
-                if (condition.Check(tabl) != DataType.Boolean && (!(condition is NodeConst) || condition.Check(tabl) != DataType.String))
+                if (condition.Check(tabl) != DataType.Boolean)
                     _keeper.AddError("Недопустимый тип данных условия", tablToken);
         }
 
@@ -27,13 +27,6 @@ namespace Generator
         public IEnumerable<SubRows> SelectRows(INodeExpr condition, SubRows parent)
         {
             if (condition == null) return parent.SubList;
-            if (condition is NodeConst)
-            {
-                var type = ((NodeConst) condition).Mean.String;
-                if (parent.SubTypes.ContainsKey(type))
-                    return parent.SubTypes[type];
-                return new SubRows[0];
-            }
             return parent.SubList.Where(row => condition.Generate(row).Boolean);    
         }
     }
