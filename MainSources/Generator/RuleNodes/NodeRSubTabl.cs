@@ -26,16 +26,16 @@ namespace Generator
         }
 
         //Проверка выражения
-        public override void Check(TablsList dataTabls, TablStruct parentStruct)
+        public override IRowStruct Check(TablsList dataTabls, TablStruct parentStruct)
         {
             if (parentStruct.Child == null)
             {
                 AddError("Подтаблица отстутствует");
-                return;
+                return null;
             }
             if (_condition != null && _condition.Check(parentStruct.Child) != DataType.Boolean)
                 AddError("Недопустимый тип данных условия");
-            ChildNode.Check(dataTabls, parentStruct.Child);
+            return ChildNode == null ? parentStruct.Child : ChildNode.Check(dataTabls, parentStruct.Child);
         }
 
         //Выбрать ряды для генерации

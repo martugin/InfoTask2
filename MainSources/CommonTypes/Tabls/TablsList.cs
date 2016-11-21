@@ -6,10 +6,10 @@ namespace CommonTypes
     //Список таблиц одного файла
     public class TablsList
     {
-        //Словарь структур таблиц
+        //Словарь структур групп таблиц
         private readonly DicS<TablGroup> _structs = new DicS<TablGroup>();
         public DicS<TablGroup> Structs { get { return _structs; } }
-        //Словарь значений таблиц
+        //Словарь групп таблиц
         private readonly DicS<Tabl> _tabls = new DicS<Tabl>();
         public DicS<Tabl> Tabls { get { return _tabls; } }
 

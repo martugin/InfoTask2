@@ -8,7 +8,7 @@ namespace CommonTypes
     {
         //Список строк подчиненных таблиц
         private List<TablRow> _subList;
-        public List<TablRow> SubList { get { return _subList ?? (_subList = new List<TablRow>()); } }
+        public List<TablRow> SubList { get { return _subList ?? (_subList = new List<TablRow>()); }}
         //Словари строк подчиненных таблиц по полям Num и Code
         private DicI<TablRow> _subNums;
         public DicI<TablRow> SubNums { get { return _subNums ?? (_subNums = new DicI<TablRow>()); } }

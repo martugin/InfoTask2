@@ -2,8 +2,17 @@
 
 namespace CommonTypes
 {
+    //Интерфейс для структур таблиц и сгруппированых рядов
+    public interface IRowStruct
+    {
+        //Словарь полей, ключи - коды, значения - типы данных
+        DicS<DataType> Fields { get; }
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------------------
+
     //Структура одной пользовательской таблицы
-    public class TablStruct
+    public class TablStruct : IRowStruct
     {
         public TablStruct(string name, int level)
         {

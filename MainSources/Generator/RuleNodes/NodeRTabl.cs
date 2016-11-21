@@ -30,26 +30,25 @@ namespace Generator
         }
 
         //Проверка выражения
-        public override void Check(TablsList dataTabls, TablStruct parentStruct)
+        public override IRowStruct Check(TablsList dataTabls, TablStruct parentStruct)
         {
             if (!dataTabls.Structs.ContainsKey(_tablName))
             {
                 AddError("Не найдена таблица");
-                return;
+                return null;
             }
             var tstruct = dataTabls.Structs[_tablName].Tabls[0];
             if (_condition != null && _condition.Check(tstruct) != DataType.Boolean)
                 AddError("Недопустимый тип данных условия");
-            if (ChildNode != null)
-                ChildNode.Check(dataTabls, tstruct.Child);
+            if (ChildNode == null) return tstruct;
+            return ChildNode.Check(dataTabls, tstruct.Child);
         }
 
         //Выбрать ряды для генерации
         public override IEnumerable<SubRows> SelectRows(TablsList dataTabls, IEnumerable<SubRows> parentRows)
         {
-            var rows = dataTabls.Tabls[_tablName].SubList;
-            if (_condition == null) return rows;
-            return rows.Where(row => _condition.Generate(row).Boolean);    
+            IEnumerable<SubRows> rows = dataTabls.Tabls[_tablName].SubList;
+            return _condition != null ? rows : rows.Where(row => _condition.Generate(row).Boolean);
         }
     }
 }

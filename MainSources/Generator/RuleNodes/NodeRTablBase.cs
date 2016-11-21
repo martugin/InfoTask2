@@ -14,8 +14,8 @@ namespace Generator
         }
 
         //Проверка выражения, возвращает уровень таблицы, ряды которого перебираются
-        public abstract void Check(TablsList dataTabls, //Список всех таблиц
-                                   TablStruct parentStruct); //Структрура родительской таблицы
+        public abstract IRowStruct Check(TablsList dataTabls, //Список всех таблиц
+                                                           TablStruct parentStruct); //Структрура родительской таблицы
         //Сгененирировать таблицу по исходным данным
         public abstract IEnumerable<SubRows> SelectRows(TablsList dataTabls, //Список всех таблиц
                                                         IEnumerable<SubRows> parentRows); //Ряды предыдущей таблицы, на основе которых производится итерация
