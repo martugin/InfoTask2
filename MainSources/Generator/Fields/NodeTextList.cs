@@ -6,11 +6,11 @@ namespace Generator
     //Главный узел генерации значения поля
     internal class NodeTextList : NodeList, INodeExpr
     {
-        public NodeTextList(List<Node> children)
+        public NodeTextList(IEnumerable<Node> children)
             : base(children) { }
 
         //Проверка формулы
-        public DataType Check(TablStruct tabl)
+        public DataType Check(ITablStruct tabl)
         {
             var dtype = DataType.Value;
             foreach (var child in Children)

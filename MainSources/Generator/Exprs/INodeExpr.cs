@@ -4,7 +4,7 @@
     internal interface INodeExpr : INode
     {
         //Проверка корректности выражений генерации, определение типа данных выражения
-        DataType Check(TablStruct tabl);
+        DataType Check(ITablStruct tabl);
         //Вычисление значения по ряду исходной таблицы
         IMean Generate(SubRows row);
     }
@@ -14,7 +14,7 @@
     internal interface INodeVoid : INode
     {
         //Проверка корректности выражений генерации
-        void Check(TablStruct tabl);
+        void Check(ITablStruct tabl);
         //Выполнение действий по ряду исходной таблицы
         void Generate(SubRows row);
     }

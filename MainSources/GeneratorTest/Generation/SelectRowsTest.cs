@@ -19,7 +19,7 @@ namespace GeneratorTest
             {
                 tabls.AddStruct(db, "Tabl", "SubTabl", "SubSubTabl");
                 tabls.AddDbStructs(db);
-                tabls.LoadValues(db);
+                tabls.LoadValues(db, true);
             }
             return tabls;
         }
@@ -36,29 +36,29 @@ namespace GeneratorTest
             keeper.Errors.Clear();
             var parsing = new RuleParsing(keeper, "поле", formula);
             if (parsing.ResultTree == null) return null;
-            var node = (INodeTabl) parsing.ResultTree;
-            node.Check(tabls);
-            return node.SelectRows(tabls).Cast<TablRow>().ToArray();
+            var node = (NodeRTabl)parsing.ResultTree;
+            node.Check(tabls, null);
+            return node.SelectRows(tabls, null).Cast<TablRow>().ToArray();
         }
-        private IEnumerable<SubRows> SelectRowsStruct(GenKeeper keeper, TablsList tabls, string formula, out TablStruct tstruct)
+        private IEnumerable<SubRows> SelectRowsStruct(GenKeeper keeper, TablsList tabls, string formula, out ITablStruct tstruct)
         {
             tstruct = null;
             keeper.Errors.Clear();
             var parsing = new RuleParsing(keeper, "поле", formula);
             if (parsing.ResultTree == null) return null;
-            var node = (INodeTabl)parsing.ResultTree;
-            tstruct = node.Check(tabls);
-            return node.SelectRows(tabls);
+            var node = (NodeRTabl)parsing.ResultTree;
+            tstruct = node.Check(tabls, null);
+            return node.SelectRows(tabls, null);
         }
         //Выбрать ряды по условию генерации подтаблицы
-        private TablRow[] SelectSubRows(GenKeeper keeper, TablStruct tstruct, SubRows rows, string formula)
+        private TablRow[] SelectSubRows(GenKeeper keeper, TablsList tabls, ITablStruct tstruct, SubRows rows, string formula)
         {
             keeper.Errors.Clear();
             var parsing = new SubRuleParsing(keeper, "поле", formula);
             if (parsing.ResultTree == null) return null;
-            var node = (NodeRSubTabl)parsing.ResultTree;
-            node.Check(tstruct);
-            return node.SelectRows(rows).Cast<TablRow>().ToArray();
+            var node = (NodeRSub)parsing.ResultTree;
+            node.Check(tabls, tstruct);
+            return node.SelectRows(tabls, rows).Cast<TablRow>().ToArray();
         }
 
         [TestMethod]
@@ -70,7 +70,6 @@ namespace GeneratorTest
             Assert.AreEqual(3, rows.Length);
             Assert.AreEqual("s1", rows[0].Code);
             Assert.AreEqual(12, rows[1].Num);
-            Assert.AreEqual("type", rows[1].Type);
             Assert.AreEqual("sSs", rows[2]["StringField"].String);
             Assert.AreEqual(777, rows[2]["IntField"].Integer);
             Assert.AreEqual(true, rows[2]["BoolField"].Boolean);
@@ -126,7 +125,6 @@ namespace GeneratorTest
             Assert.AreEqual(4, rows.Length);
             Assert.AreEqual("a", rows[0].Code);
             Assert.AreEqual(2, rows[1].Num);
-            Assert.AreEqual("c", rows[2].Type);
             Assert.AreEqual(1, rows[3]["RealSub"].Real);
 
             rows = SelectRows(keeper, tabls, "Tabl('type').SubTabl");
@@ -176,25 +174,24 @@ namespace GeneratorTest
         {
             var tabls = Load("Complex");
             var keeper = MakeKeeper();
-            TablStruct tstruct;
+            ITablStruct tstruct;
             var t = SelectRowsStruct(keeper, tabls, "Tabl.OverTabl", out tstruct);
             Assert.AreEqual(1, t.Count());
             var tabl = t.First();
             Assert.IsNull(tabl.Parent);
             Assert.AreEqual(3, tabl.SubCodes.Count);
-            Assert.AreEqual(2, tabl.SubTypes.Count);
 
-            var rows = SelectSubRows(keeper, tstruct, tabl, "SubTabl");
+            var rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl");
             Assert.AreEqual(3, rows.Length);
             Assert.AreEqual("s1", rows[0].Code);
             Assert.AreEqual("s2", rows[1].Code);
             Assert.AreEqual("s3", rows[2].Code);
 
-            rows = SelectSubRows(keeper, tstruct, tabl, "SubTabl(IntField < 700 And BoolField)");
+            rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl(IntField < 700 And BoolField)");
             Assert.AreEqual(1, rows.Length);
             Assert.AreEqual("s1", rows[0].Code);
 
-            rows = SelectSubRows(keeper, tstruct, tabl, "SubTabl.SubTabl(RealSub==2)");
+            rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl.SubTabl(RealSub==2)");
             Assert.AreEqual(1, rows.Length);
             Assert.AreEqual("b", rows[0].Code);
 
@@ -204,23 +201,23 @@ namespace GeneratorTest
             Assert.AreEqual(3, tabl.SubCodes.Count);
             Assert.AreEqual(3, tabl.SubNums.Count);
 
-            rows = SelectSubRows(keeper, tstruct, tabl, "SubTabl");
+            rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl");
             Assert.AreEqual(3, rows.Length);
             Assert.AreEqual("a", rows[0].Code);
             Assert.AreEqual("b", rows[1].Code);
             Assert.AreEqual("c", rows[2].Code);
 
-            rows = SelectSubRows(keeper, tstruct, tabl, "SubTabl(BoolSub)");
+            rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl(BoolSub)");
             Assert.AreEqual(2, rows.Length);
             Assert.AreEqual("a", rows[0].Code);
             Assert.AreEqual("c", rows[1].Code);
 
-            rows = SelectSubRows(keeper, tstruct, tabl, "SubTabl(BoolSub And StringSub=='' )");
+            rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl(BoolSub And StringSub=='' )");
             Assert.AreEqual(2, rows.Length);
             Assert.AreEqual("a", rows[0].Code);
             Assert.AreEqual("c", rows[1].Code);
 
-            rows = SelectSubRows(keeper, tstruct, tabl, "SubTabl.SubTabl");
+            rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl.SubTabl");
             Assert.AreEqual(2, rows.Length);
             Assert.AreEqual("qqq", rows[0].Code);
             Assert.AreEqual("ppp", rows[1].Code);
@@ -231,7 +228,7 @@ namespace GeneratorTest
             Assert.AreEqual(5, tabl.SubCodes.Count);
             Assert.AreEqual(5, tabl.SubList.Count);
 
-            rows = SelectSubRows(keeper, tstruct, tabl, "SubTabl");
+            rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl");
             Assert.AreEqual(5, rows.Length);
             Assert.AreEqual("1NZ00Z803-1", rows[0].Code);
             Assert.AreEqual("1NZ00Z804-1", rows[1].Code);
@@ -239,13 +236,13 @@ namespace GeneratorTest
             Assert.AreEqual("ТЗ_З00210110208", rows[3].Code);
             Assert.AreEqual("ТЗ_З00210110212", rows[4].Code);
 
-            rows = SelectSubRows(keeper, tstruct, tabl, "SubTabl(Code Like 'ТЗ*')");
+            rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl(Code Like 'ТЗ*')");
             Assert.AreEqual(3, rows.Length);
             Assert.AreEqual("ТЗ_З00210110095", rows[0].Code);
             Assert.AreEqual("ТЗ_З00210110208", rows[1].Code);
             Assert.AreEqual("ТЗ_З00210110212", rows[2].Code);
 
-            rows = SelectSubRows(keeper, tstruct, tabl, "SubTabl(UnitTypeTz <> 'ТЗ' ИЛИ SysNumTz < 45000)");
+            rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl(UnitTypeTz <> 'ТЗ' ИЛИ SysNumTz < 45000)");
             Assert.AreEqual(5, rows.Length);
             Assert.AreEqual("1NZ00Z803-1", rows[0].Code);
             Assert.AreEqual("1NZ00Z804-1", rows[1].Code);

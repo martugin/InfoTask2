@@ -3,16 +3,23 @@
 namespace CommonTypes
 {
     //Интерфейс для структур таблиц и сгруппированых рядов
-    public interface IRowStruct
+    public interface ITablStruct
     {
         //Словарь полей, ключи - коды, значения - типы данных
         DicS<DataType> Fields { get; }
+        //Следующий и предыдущий уровни таблицы
+        TablStruct Child { get; }
+        TablStruct Parent { get; }
+        //Имя таблицы
+        string TableName { get; }
+        //Уровень таблицы в группе
+        int Level { get; }
     }
 
     //-----------------------------------------------------------------------------------------------------------------------------
 
     //Структура одной пользовательской таблицы
-    public class TablStruct : IRowStruct
+    public class TablStruct : ITablStruct
     {
         public TablStruct(string name, int level)
         {
@@ -24,7 +31,7 @@ namespace CommonTypes
         public string TableName { get; private set; }
         //Уровень таблицы в группе
         public int Level { get; private set; }
-        //Слудующий и предыдущий уровни таблицы
+        //Следующий и предыдущий уровни таблицы
         public TablStruct Child { get; internal set; }
         public TablStruct Parent { get; internal set; }
 

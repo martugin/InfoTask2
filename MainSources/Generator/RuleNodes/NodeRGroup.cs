@@ -6,9 +6,9 @@ using CommonTypes;
 namespace Generator
 {
     //Узел - родительский ряд для таблицы
-    internal class NodeRGroupTabl : NodeRTablBase
+    internal class NodeRGroup : NodeKeeper, INodeRQuery
     {
-        public NodeRGroupTabl(ParsingKeeper keeper, ITerminalNode terminal, NodeList fields)
+        public NodeRGroup(ParsingKeeper keeper, ITerminalNode terminal, NodeList fields)
             : base(keeper, terminal)
         {
             _fields = fields.Children.Select(node => node.Token.Text).ToArray();
@@ -21,9 +21,9 @@ namespace Generator
         protected override string NodeType { get { return "GroupTabl"; } }
 
         //Проверка выражения
-        public override IRowStruct Check(TablsList dataTabls, TablStruct tablParent)
+        public ITablStruct Check(TablsList dataTabls, ITablStruct tablParent)
         {
-            var gstruct = new RowGroupStruct(tablParent, _fields);
+            var gstruct = new RowGroupStruct((TablStruct)tablParent, _fields);
             foreach (var field in _fields)
             {
                 if (!tablParent.Fields.ContainsKey(field))
@@ -34,7 +34,7 @@ namespace Generator
         }
 
         //Выбрать ряды для генерации
-        public override IEnumerable<SubRows> SelectRows(TablsList dataTabls, IEnumerable<SubRows> parentRows)
+        public IEnumerable<SubRows> SelectRows(IEnumerable<SubRows> parentRows)
         {
             var groupDic = new GroupDic();
             foreach (TablRow row in parentRows)

@@ -4,7 +4,7 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Интерфейс для строк таблиц и данных старшей таблицы
-    public abstract class SubRows
+    public class SubRows
     {
         //Список строк подчиненных таблиц
         private List<TablRow> _subList;
@@ -28,6 +28,21 @@ namespace CommonTypes
                 SubNums.Add(row.Num, row);
                 if (!row.Code.IsEmpty())
                     SubCodes.Add(row.Code, row);    
+            }
+        }
+
+        //Словарь значений, ключи - коды полей
+        private readonly DicS<Mean> _means = new DicS<Mean>();
+        public DicS<Mean> Means { get { return _means; } }
+
+        //Доступ к значению по имени поля 
+        public Mean this[string name]
+        {
+            get
+            {
+                if (_means.ContainsKey(name))
+                    return _means[name];
+                return null;
             }
         }
     }

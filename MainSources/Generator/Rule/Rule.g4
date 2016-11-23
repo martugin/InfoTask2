@@ -1,8 +1,8 @@
 grammar Rule;
 
 //GenRule подпараметров
-subTablGen : tablGen                #SubTablGenTabl
-				  | query EOF			#SubTablGenQuery
+subTablGen : tablGen				#SubTablGenTabl
+				  | query EOF		#SubTablGenQuery
 				  ;
 
 //GenRule параметров
@@ -10,12 +10,10 @@ tablGen : tabl EOF						#TablGenSimple
 			| tabl '.' query EOF           #TablGenQuery			 
 			;
 
-query : '.' subTablList					 #QuerySubTabl
-         | '.' group	  							 #QueryGroup
-         | '.' subTablList '.' group		 #QuerySubTablGroup
+query : '.' subTabl						 #QuerySubTabl
+         | '.' rowGroup				   	 #QueryGroup
+         | '.' subTabl '.' query		 #QuerySubTablGroup
 		 ;
-
-subTablList : subTabl ('.' subTabl)* ;
 
 tabl : IDENT                           #TablIdent
        | IDENT '(' expr ')'          #TablCond
@@ -31,11 +29,11 @@ subTabl : SUBTABL                     #SubTablIdent
 			 | SUBTABL '(' expr? ')' ')'    #SubTablCond
 		     ;
 
-group : GROUP								#GroupSimple
-         | GROUP '(' ')'						#GroupSimple
-         | GROUP '(' IDENT (';' IDENT)* ')'         #GroupIdent
-		 | GROUP '(' IDENT (';' IDENT)*	  	   	  #GroupIdent
-		 | GROUP '(' IDENT (';' IDENT)* ')' ')'    #GroupIdent
+rowGroup : ROWGROUP									#GroupSimple
+				| ROWGROUP '(' ')'							#GroupSimple
+				| ROWGROUP '(' IDENT (';' IDENT)* ')'         #GroupIdent
+				| ROWGROUP '(' IDENT (';' IDENT)*	  	   		 #GroupIdent
+				| ROWGROUP '(' IDENT (';' IDENT)* ')' ')'	  #GroupIdent
 		 ;
 
 //¬ыражени€
@@ -78,7 +76,7 @@ COMMENT : '/*' .*? '*/' -> skip;
 LINECOMMENT : '//' .*? '\r'? '\n' -> skip;
  
 // лючевые слова
-GROUP : [Gg][Rr][Oo][Uu][Pp] | [√г][–р][”у][ѕп][ја];
+ROWGROUP : [Gg][Rr][Oo][Uu][Pp] | [√г][–р][”у][ѕп][ја];
 SUBTABL : [Ss][Uu][Bb][Tt][Aa][Bb][Ll] | [ѕп][ќо][ƒд][“т][ја][Ѕб][Ћл];
 
 //ќперации

@@ -36,16 +36,16 @@ namespace Generator
         }
 
         //Итоговый список групп
-        public IEnumerable<RowGroup> GetGroups()
+        public IEnumerable<SubRows> GetGroups()
         {
             if (_rows != null)
             {
-                var g = new RowGroup();
+                var g = new SubRows();
                 foreach (var tablRow in Rows)
                     g.AddRow(tablRow, false);
                 return new [] { g };
             }
-            var glist = new List<RowGroup>();
+            var glist = new List<SubRows>();
             foreach (var grDic in Dic.Dic.Values)
             {
                 var groups = grDic.GetGroups();

@@ -22,7 +22,7 @@ namespace Generator
         private readonly INodeExpr _expr;
 
         //Получение типа данных
-        public DataType Check(TablStruct tabl)
+        public DataType Check(ITablStruct tabl)
         {
             if (tabl.Parent == null)
             {
@@ -60,7 +60,7 @@ namespace Generator
         private readonly INodeVoid _prog;
 
         //Проверка корректности выражений генерации
-        public void Check(TablStruct tabl)
+        public void Check(ITablStruct tabl)
         {
             if (tabl.Parent == null)
                 AddError("Недопустимый переход к надтаблице");

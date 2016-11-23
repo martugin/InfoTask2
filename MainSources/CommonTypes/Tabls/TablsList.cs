@@ -43,7 +43,8 @@ namespace CommonTypes
         }
 
         //Загрузка значений всех таблиц одной базы
-        public void LoadValues(DaoDb db)
+        public void LoadValues(DaoDb db, 
+                                          bool onlyOtm) //Загружать только отмеченные ряды
         {
             foreach (var s in Structs.Dic)
                 if (s.Value.DbFile == db.File)
@@ -53,7 +54,8 @@ namespace CommonTypes
                         if (tsi.Level >= 0)
                             using (var rec = new RecDao(db, tsi.TableName))
                                 while (rec.Read())
-                                    tabl.AddRow(tsi.Level, new TablRow(rec), true);
+                                    if (!onlyOtm || (rec.ContainsField("Otm") && rec.GetBool("Otm")))
+                                        tabl.AddRow(tsi.Level, new TablRow(rec), true);
                 }
         }
     }

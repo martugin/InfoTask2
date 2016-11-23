@@ -27,7 +27,7 @@ namespace Generator
         private readonly INodeExpr _elseProg;
 
         //Получение типа данных
-        public DataType Check(TablStruct tabl)
+        public DataType Check(ITablStruct tabl)
         {
             if (_condition.Check(tabl) != DataType.Boolean)
             {
@@ -70,7 +70,7 @@ namespace Generator
         private readonly INodeVoid _prog;
 
         //Проверка корректности выражений генерации
-        public void Check(TablStruct tabl)
+        public void Check(ITablStruct tabl)
         {
             if (_condition.Check(tabl) != DataType.Boolean)
                 AddError("Недопустимый тип данных условия");

@@ -7,12 +7,13 @@ namespace Generator
     internal class SubRowGen : RowGenBase
     {
         public SubRowGen(TablGenerator generator, //Ссылка на генератор
-                         TablStruct dataTabl, //Таблица - шаблон генерации
+                         TablsList dataTabls, //Исходные таблицы для генерации
+                         ITablStruct dataTabl, //Таблица - шаблон генерации
                          GenTemplateTable table, //Поля таблицы - шаблона генерации   
                          RecDao rec) //Рекордсет таблицы результатов
             : base(generator, table, rec)
         {
-            var subTabl = Rule == null ? dataTabl : ((NodeRSubTabl)Rule).Check(dataTabl);
+            var subTabl = Rule == null ? dataTabl : ((INodeRTabl)Rule).Check(dataTabls, dataTabl);
             foreach (var key in Fields.Keys)
             {
                 Keeper.SetFieldName(key);

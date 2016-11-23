@@ -6,10 +6,10 @@ using CommonTypes;
 namespace Generator
 {
     //Узел - проход по таблице
-    internal class NodeRTabl : NodeRTablBase
+    internal class NodeRTabl : NodeKeeper, INodeRTabl
     {
-        public NodeRTabl(ParsingKeeper keeper, ITerminalNode terminal, INodeExpr condition, NodeRTablBase childNode)
-            : base(keeper, terminal, childNode)
+        public NodeRTabl(ParsingKeeper keeper, ITerminalNode terminal, INodeExpr condition)
+            : base(keeper, terminal)
         {
             if (terminal != null)
                 _tablName = terminal.Symbol.Text;
@@ -20,7 +20,9 @@ namespace Generator
         private readonly string _tablName;
         //Условие фильтрации или имя типа
         private readonly INodeExpr _condition;
-        
+        //Следующий узел в цепочке
+        public INodeRQuery ChildNode { get; set; }
+
         //Тип узла
         protected override string NodeType { get { return "Tabl"; } }
 
@@ -30,7 +32,7 @@ namespace Generator
         }
 
         //Проверка выражения
-        public override IRowStruct Check(TablsList dataTabls, TablStruct parentStruct)
+        public ITablStruct Check(TablsList dataTabls, ITablStruct parentStruct)
         {
             if (!dataTabls.Structs.ContainsKey(_tablName))
             {
@@ -45,7 +47,7 @@ namespace Generator
         }
 
         //Выбрать ряды для генерации
-        public override IEnumerable<SubRows> SelectRows(TablsList dataTabls, IEnumerable<SubRows> parentRows)
+        public IEnumerable<SubRows> SelectRows(TablsList dataTabls, SubRows parentRow)
         {
             IEnumerable<SubRows> rows = dataTabls.Tabls[_tablName].SubList;
             return _condition != null ? rows : rows.Where(row => _condition.Generate(row).Boolean);

@@ -29,21 +29,21 @@ namespace GeneratorTest
         }
 
         //Разбор выражения GenRule таблицы и подтаблицы
-        private TablStruct CheckRule(GenKeeper keeper, TablsList tabls, string formula)
+        private ITablStruct CheckRule(GenKeeper keeper, TablsList tabls, string formula)
         {
             keeper.Errors.Clear();
             var parsing = new RuleParsing(keeper, "поле", formula);
             if (parsing.ResultTree == null) return null;
-            return ((INodeTabl) parsing.ResultTree).Check(tabls);
+            return ((NodeRTabl) parsing.ResultTree).Check(tabls, null);
         }
-        private TablStruct CheckSubRule(GenKeeper keeper, TablStruct tstruct, string formula)
+        private ITablStruct CheckSubRule(GenKeeper keeper, TablsList tabls, ITablStruct tstruct, string formula)
         {
             keeper.Errors.Clear();
             var parsing = new SubRuleParsing(keeper, "поле", formula);
             if (parsing.ResultTree == null) return null;
-            return ((NodeRSubTabl)parsing.ResultTree).Check(tstruct);
+            return ((INodeRTabl)parsing.ResultTree).Check(tabls, tstruct);
         }
-        private DataType CheckField(GenKeeper keeper, TablStruct tstruct, string formula)
+        private DataType CheckField(GenKeeper keeper, ITablStruct tstruct, string formula)
         {
             keeper.Errors.Clear();
             var parsing = new FieldsParsing(keeper, "поле", formula);
@@ -65,7 +65,7 @@ namespace GeneratorTest
             Assert.AreEqual(0, keeper.Errors.Count);
             Assert.AreEqual("", keeper.ErrMess);
 
-            tstruct = CheckSubRule(keeper, tstruct, "SubTabl");
+            tstruct = CheckSubRule(keeper, tabls, tstruct, "SubTabl");
             Assert.AreEqual(1, tstruct.Level);
             Assert.AreEqual("SubTabl", tstruct.TableName);
             Assert.IsNotNull(tstruct.Parent);
@@ -79,7 +79,7 @@ namespace GeneratorTest
             Assert.AreEqual(10, tstruct.Fields.Count);
             Assert.AreEqual("", keeper.ErrMess);
 
-            tstruct = CheckSubRule(keeper, tstruct, "SubTabl(Code=='a')");
+            tstruct = CheckSubRule(keeper, tabls, tstruct, "SubTabl(Code=='a')");
             Assert.AreEqual(1, tstruct.Level);
             Assert.AreEqual("SubTabl", tstruct.TableName);
             Assert.AreEqual(11, tstruct.Fields.Count);
@@ -93,7 +93,7 @@ namespace GeneratorTest
             Assert.AreEqual(11, tstruct.Fields.Count);
             Assert.AreEqual("", keeper.ErrMess);
 
-            tstruct = CheckSubRule(keeper, tstruct, "SubTabl");
+            tstruct = CheckSubRule(keeper, tabls, tstruct, "SubTabl");
             Assert.AreEqual(2, tstruct.Level);
             Assert.AreEqual("SubSubTabl", tstruct.TableName);
             Assert.IsNotNull(tstruct.Parent);
@@ -101,7 +101,7 @@ namespace GeneratorTest
             Assert.AreEqual(11, tstruct.Fields.Count);
             Assert.AreEqual("", keeper.ErrMess);
 
-            tstruct = CheckSubRule(keeper, tstruct, "SubTabl");
+            tstruct = CheckSubRule(keeper, tabls, tstruct, "SubTabl");
             Assert.IsNull(tstruct);
             Assert.AreEqual(1, keeper.Errors.Count);
             Assert.AreEqual("Подтаблица отстутствует, 'SubTabl' (поле, строка: 1, позиция: 1)", keeper.ErrMess);
@@ -114,7 +114,7 @@ namespace GeneratorTest
             Assert.AreEqual(0, tstruct.Fields.Count);
             Assert.AreEqual("", keeper.ErrMess);
 
-            tstruct = CheckSubRule(keeper, tstruct, "SubTabl(Code=='s1') /*И вааще*/");
+            tstruct = CheckSubRule(keeper, tabls, tstruct, "SubTabl(Code=='s1') /*И вааще*/");
             Assert.AreEqual(0, tstruct.Level);
             Assert.AreEqual("Tabl", tstruct.TableName);
             Assert.IsNotNull(tstruct.Parent);
@@ -130,7 +130,7 @@ namespace GeneratorTest
             Assert.AreEqual(10, tstruct.Fields.Count);
             Assert.AreEqual("", keeper.ErrMess);
 
-            tstruct = CheckSubRule(keeper, tstruct, "SubTabl(NameSub Like 'ss*' Или -Cos(-RealSub) <= 0.2*IntSub ИсклИли StrLeft(NameSub;2) == 'ff')");
+            tstruct = CheckSubRule(keeper, tabls, tstruct, "SubTabl(NameSub Like 'ss*' Или -Cos(-RealSub) <= 0.2*IntSub ИсклИли StrLeft(NameSub;2) == 'ff')");
             Assert.AreEqual(1, tstruct.Level);
             Assert.AreEqual("SubTabl", tstruct.TableName);
             Assert.AreEqual(11, tstruct.Fields.Count);
@@ -172,16 +172,16 @@ namespace GeneratorTest
 
             tstruct = CheckRule(keeper, tabls, "Tabl");
 
-            CheckSubRule(keeper, tstruct, "SubTabl(2+3 log(1))");
+            CheckSubRule(keeper, tabls, tstruct, "SubTabl(2+3 log(1))");
             Assert.AreEqual("Недопустимое использование лексемы, 'log' (поле, строка: 1, позиция: 13)", keeper.ErrMess);
 
-            CheckSubRule(keeper, tstruct, "SubTabl(Mid('s';1)==0)");
+            CheckSubRule(keeper, tabls, tstruct, "SubTabl(Mid('s';1)==0)");
             Assert.AreEqual("Неизвестная функция, 'Mid' (поле, строка: 1, позиция: 9)", keeper.ErrMess);
 
-            CheckSubRule(keeper, tstruct, "SubTabl(StrMid('s')==0)");
+            CheckSubRule(keeper, tabls, tstruct, "SubTabl(StrMid('s')==0)");
             Assert.AreEqual("Недопустимые типы данных параметров функции, 'StrMid' (поле, строка: 1, позиция: 9)", keeper.ErrMess);
 
-            CheckSubRule(keeper, tstruct, "SubTabl(Sin(RealSub;3)==0)");
+            CheckSubRule(keeper, tabls, tstruct, "SubTabl(Sin(RealSub;3)==0)");
             Assert.AreEqual("Недопустимые типы данных параметров функции, 'Sin' (поле, строка: 1, позиция: 9)", keeper.ErrMess);
 
             tstruct = CheckRule(keeper, tabls, "VtzTz(Code=='ВТЗЗ00120101002')");
@@ -195,7 +195,7 @@ namespace GeneratorTest
             Assert.AreEqual(8, tstruct.Fields.Count);
             Assert.AreEqual("", keeper.ErrMess);
 
-            tstruct = CheckSubRule(keeper, tstruct, "SubTabl((SysNumTZ >= 40000) And (ParentId < 500))");
+            tstruct = CheckSubRule(keeper, tabls, tstruct, "SubTabl((SysNumTZ >= 40000) And (ParentId < 500))");
             Assert.AreEqual(1, tstruct.Level);
             Assert.AreEqual("Tbl_VTZTZ_Sub1", tstruct.TableName);
             Assert.AreEqual(8, tstruct.Fields.Count);
@@ -216,7 +216,7 @@ namespace GeneratorTest
         {
             var tabls = Load("Fields");
             var keeper = MakeKeeper();
-            var tstruct = CheckRule(keeper, tabls, "Tabl");
+            var tstruct = (TablStruct)CheckRule(keeper, tabls, "Tabl");
             
             Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "aaa"));
             Assert.AreEqual("", keeper.ErrMess);
@@ -359,7 +359,7 @@ namespace GeneratorTest
             Assert.AreEqual(DataType.Error, CheckField(keeper, tstruct, "[SubTablCond(1;a=SubTablCond(0;SubTablCond(0;b='')))][a]"));
             Assert.AreEqual("Недопустимое использование лексемы, ')' (поле, строка: 1, позиция: 52)", keeper.ErrMess);
 
-            tstruct = CheckSubRule(keeper, tstruct, "SubTabl");
+            tstruct = (TablStruct)CheckSubRule(keeper, tabls, tstruct, "SubTabl");
             Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "bbb"));
             Assert.AreEqual("", keeper.ErrMess);
             Assert.AreEqual(DataType.Real, CheckField(keeper, tstruct, "[RealSub]"));
@@ -373,7 +373,7 @@ namespace GeneratorTest
             Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "[SubTablCond(IntInt==222;NameName;'_')]"));
             Assert.AreEqual("", keeper.ErrMess);
 
-            tstruct = CheckRule(keeper, tabls, "VtzTz");
+            tstruct = (TablStruct)CheckRule(keeper, tabls, "VtzTz");
             Assert.AreEqual(DataType.Integer, CheckField(keeper, tstruct, "[SysNumVtz]"));
             Assert.AreEqual("", keeper.ErrMess);
             Assert.AreEqual(DataType.String, CheckField(keeper, tstruct, "ss_[SubTabl(NameTz;Id)]"));
