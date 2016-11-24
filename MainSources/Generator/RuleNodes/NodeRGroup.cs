@@ -8,27 +8,35 @@ namespace Generator
     //Узел - родительский ряд для таблицы
     internal class NodeRGroup : NodeKeeper, INodeRQuery
     {
-        public NodeRGroup(ParsingKeeper keeper, ITerminalNode terminal, NodeList fields)
+        public NodeRGroup(ParsingKeeper keeper, ITerminalNode terminal, IEnumerable<INode> fieldsNodes)
             : base(keeper, terminal)
         {
-            _fields = fields.Children.Select(node => node.Token.Text).ToArray();
+            _fieldsNodes = (fieldsNodes ?? new INode[0]).ToArray();
+            _fields = _fieldsNodes.Select(node => node.Token.Text).ToArray();
         }
 
         //Массив полей группировки
+        private readonly INode[] _fieldsNodes;
         private readonly string[] _fields;
 
         //Тип узла
-        protected override string NodeType { get { return "GroupTabl"; } }
+        protected override string NodeType { get { return "Group"; } }
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(_fieldsNodes);
+        }
 
         //Проверка выражения
         public ITablStruct Check(TablsList dataTabls, ITablStruct tablParent)
         {
             var gstruct = new RowGroupStruct((TablStruct)tablParent, _fields);
-            foreach (var field in _fields)
+            foreach (var field in _fieldsNodes)
             {
-                if (!tablParent.Fields.ContainsKey(field))
-                    AddError("Поле для группировки не найдено в таблице");
-                else gstruct.Fields.Add(field, tablParent.Fields[field]);
+                var s = ((NodeConst)field).Mean.String;
+                if (!tablParent.Fields.ContainsKey(s))
+                    Keeper.AddError("Поле для группировки не найдено в таблице", field.Token);
+                else gstruct.Fields.Add(s, tablParent.Fields[s]);
             }
             return gstruct;
         }

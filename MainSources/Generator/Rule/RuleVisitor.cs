@@ -31,6 +31,13 @@ namespace Generator
         {
             return (NodeList)Go(tree);
         }
+        public Node GoTabl(IParseTree tabl, IParseTree query)
+        {
+            var t = (INodeRTabl)Go(tabl);
+            if (t == null) return null;
+            t.ChildNode = (INodeRQuery)Go(query);
+            return (Node)t;
+        }
 
         //Обход разных типов узлов
 
@@ -39,26 +46,19 @@ namespace Generator
             return Go(context.tablGen());
         }
        
-        public override Node VisitSubTablGenQuery(P.SubTablGenQueryContext context)
+        public override Node VisitSubTablGenSub(P.SubTablGenSubContext context)
         {
-            return Go(context.query());
+            return GoTabl(context.subTabl(), context.query());
         }
 
-        public override Node VisitTablGenSimple(P.TablGenSimpleContext context)
+        public override Node VisitTablGen(P.TablGenContext context)
         {
-            return Go(context.tabl());
-        }
-
-        public override Node VisitTablGenQuery(P.TablGenQueryContext context)
-        {
-            var tabl = (NodeRTabl)Go(context.tabl());
-            tabl.ChildNode = (INodeRQuery)Go(context.query());
-            return tabl;
+            return GoTabl(context.tabl(), context.query());
         }
 
         public override Node VisitQuerySubTabl(P.QuerySubTablContext context)
         {
-            return Go(context.subTabl());
+            return GoTabl(context.subTabl(), context.query());
         }
 
         public override Node VisitQueryGroup(P.QueryGroupContext context)
@@ -66,11 +66,9 @@ namespace Generator
             return Go(context.rowGroup());
         }
 
-        public override Node VisitQuerySubTablGroup(P.QuerySubTablGroupContext context)
+        public override Node VisitQueryEmpty(P.QueryEmptyContext context)
         {
-            var sub = (NodeRSub)Go(context.subTabl());
-            sub.ChildNode = (INodeRQuery)Go(context.query());
-            return sub;
+            return null;
         }
         
         public override Node VisitTablIdent(P.TablIdentContext context)
@@ -104,7 +102,7 @@ namespace Generator
         {
             _keeper.CheckParenths(context);
             return new NodeRGroup(_keeper, context.ROWGROUP(), 
-                                                new NodeList(context.IDENT().Select(field => _keeper.GetStringConst(field, false))));
+                                                context.IDENT().Select(field => _keeper.GetStringConst(field, false)));
         }
 
         //Выражения

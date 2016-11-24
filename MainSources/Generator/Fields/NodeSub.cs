@@ -19,7 +19,7 @@ namespace Generator
 
         public override string ToTestString()
         {
-            return ToTestWithChildren(_condition, _expr, _separator);
+            return ToTestWithChildren(_pars);
         }
 
         //Узлы - параметры функции SubTabl
@@ -35,12 +35,13 @@ namespace Generator
         //Проверка корректности выражений генерации
         public DataType Check(ITablStruct tabl)
         {
-            if (tabl.Child == null)
+            var child = tabl.Child;
+            if (child == null)
             {
                 AddError("Недопустимый переход к подтаблице");
                 return DataType.Error;
             }
-            if (_pars[0].Check(tabl) == DataType.Boolean)
+            if (_pars.Length > 1 && _pars[0].Check(child) == DataType.Boolean)
             {
                 _condition = _pars[0];
                 _expr = _pars[1];
@@ -54,9 +55,9 @@ namespace Generator
                     AddError("Недопустимый тип данных условия");
             }
 
-            _expr.Check(tabl.Child);
+            _expr.Check(child);
             if (_separator != null)
-                _separator.Check(tabl.Child);
+                _separator.Check(child);
             return DataType.String;
         }
 

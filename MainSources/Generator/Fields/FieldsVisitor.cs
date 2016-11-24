@@ -82,7 +82,7 @@ namespace Generator
 
         public override Node VisitVoidExprIf(P.VoidExprIfContext context)
         {
-            _keeper.CheckSquareParenths(context);
+            _keeper.CheckParenths(context);
             return new NodeIfVoid(_keeper, context.IF(), 
                                                context.expr().Select(GoExpr).ToList(),
                                                context.voidProg().Select(GoVoid).ToList());
@@ -90,7 +90,7 @@ namespace Generator
 
         public override Node VisitVoidExprWhile(P.VoidExprWhileContext context)
         {
-            _keeper.CheckSquareParenths(context);
+            _keeper.CheckParenths(context);
             return new NodeWhileVoid(_keeper, context.WHILE(),
                                                     GoExpr(context.expr()),
                                                     GoVoid(context.voidProg()));
@@ -98,13 +98,13 @@ namespace Generator
 
         public override Node VisitVoidExprOver(P.VoidExprOverContext context)
         {
-            _keeper.CheckSquareParenths(context);
+            _keeper.CheckParenths(context);
             return new NodeOverVoid(_keeper, context.OVERTABL(), GoVoid(context.voidProg()));
         }
 
         public override Node VisitVoidExprSub(P.VoidExprSubContext context)
         {
-            _keeper.CheckSquareParenths(context);
+            _keeper.CheckParenths(context);
             return new NodeSubVoid(_keeper, context.SUBTABL(),  
                                                   context.expr() == null ? null : GoExpr(context.expr()),
                                                   GoVoid(context.voidProg()));

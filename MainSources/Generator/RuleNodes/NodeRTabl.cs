@@ -43,7 +43,7 @@ namespace Generator
             if (_condition != null && _condition.Check(tstruct) != DataType.Boolean)
                 AddError("Недопустимый тип данных условия");
             if (ChildNode == null) return tstruct;
-            return ChildNode.Check(dataTabls, tstruct.Child);
+            return ChildNode.Check(dataTabls, tstruct);
         }
 
         //Выбрать ряды для генерации
