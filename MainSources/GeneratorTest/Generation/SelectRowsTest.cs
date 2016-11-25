@@ -31,14 +31,18 @@ namespace GeneratorTest
         }
 
         //Выбрать ряды по условию генерации таблицы, возвращает ряды и, возможно, также структуру
-        private TablRow[] SelectRows(GenKeeper keeper, TablsList tabls, string formula)
+        private SubRows[] SelectRowsS(GenKeeper keeper, TablsList tabls, string formula)
         {
             keeper.Errors.Clear();
             var parsing = new RuleParsing(keeper, "поле", formula);
             if (parsing.ResultTree == null) return null;
             var node = (NodeRTabl)parsing.ResultTree;
             node.Check(tabls, null);
-            return node.SelectRows(tabls, null).Cast<TablRow>().ToArray();
+            return node.SelectRows(tabls, null).ToArray();
+        }
+        private TablRow[] SelectRows(GenKeeper keeper, TablsList tabls, string formula)
+        {
+            return SelectRowsS(keeper, tabls, formula).Cast<TablRow>().ToArray();
         }
         private IEnumerable<SubRows> SelectRowsStruct(GenKeeper keeper, TablsList tabls, string formula, out ITablStruct tstruct)
         {
@@ -51,18 +55,23 @@ namespace GeneratorTest
             return node.SelectRows(tabls, null);
         }
         //Выбрать ряды по условию генерации подтаблицы
-        private TablRow[] SelectSubRows(GenKeeper keeper, TablsList tabls, ITablStruct tstruct, SubRows rows, string formula)
+        private SubRows[] SelectSubRowsS(GenKeeper keeper, TablsList tabls, ITablStruct tstruct, SubRows rows, string formula)
         {
             keeper.Errors.Clear();
             var parsing = new SubRuleParsing(keeper, "поле", formula);
             if (parsing.ResultTree == null) return null;
             var node = (NodeRSub)parsing.ResultTree;
             node.Check(tabls, tstruct);
-            return node.SelectRows(tabls, rows).Cast<TablRow>().ToArray();
+            return node.SelectRows(tabls, rows).ToArray();
+        }
+        private TablRow[] SelectSubRows(GenKeeper keeper, TablsList tabls, ITablStruct tstruct, SubRows rows, string formula)
+        {
+            return SelectSubRowsS(keeper, tabls, tstruct, rows, formula).Cast<TablRow>().ToArray();
         }
 
+
         [TestMethod]
-        public void Simple()
+        public void OneLevel()
         {
             var tabls = Load("Simple");
             var keeper = MakeKeeper();
@@ -74,12 +83,12 @@ namespace GeneratorTest
             Assert.AreEqual(777, rows[2]["IntField"].Integer);
             Assert.AreEqual(true, rows[2]["BoolField"].Boolean);
 
-            rows = SelectRows(keeper, tabls, "Tabl('type')");
+            rows = SelectRows(keeper, tabls, "Tabl(TypeRec=='type')");
             Assert.AreEqual(2, rows.Length);
             Assert.AreEqual("s1", rows[0].Code);
             Assert.AreEqual("s2", rows[1].Code);
 
-            rows = SelectRows(keeper, tabls, "Tabl('ttype')");
+            rows = SelectRows(keeper, tabls, "Tabl(TypeRec=='ttype')");
             Assert.AreEqual(1, rows.Length);
             Assert.AreEqual("s3", rows[0].Code);
 
@@ -138,13 +147,9 @@ namespace GeneratorTest
             Assert.AreEqual(1, rows.Length);
             Assert.AreEqual("1", rows[0].Code);
 
-            rows = SelectRows(keeper, tabls, "Tabl.SubTabl('a')");
+            rows = SelectRows(keeper, tabls, "Tabl.SubTabl(TypeRec=='a')");
             Assert.AreEqual(1, rows.Length);
             Assert.AreEqual("a", rows[0].Code);
-
-            rows = SelectRows(keeper, tabls, "Tabl('type').SubTabl('b')");
-            Assert.AreEqual(1, rows.Length);
-            Assert.AreEqual("b", rows[0].Code);
 
             rows = SelectRows(keeper, tabls, "Tabl.SubTabl(Num==1)");
             Assert.AreEqual(2, rows.Length);
@@ -167,19 +172,65 @@ namespace GeneratorTest
             rows = SelectRows(keeper, tabls, "Tabl(Code=='s1').SubTabl(Code=='a').SubTabl(Code=='ppp')");
             Assert.AreEqual(1, rows.Length);
             Assert.AreEqual("ppp", rows[0].Code);
+
+            var grows = SelectRowsS(keeper, tabls, "Tabl.Group()");
+            Assert.AreEqual(1, grows.Length);
+            Assert.AreEqual(0, grows[0].Means.Count);
+
+            grows = SelectRowsS(keeper, tabls, "Tabl.Group(TypeRec)");
+            Assert.AreEqual(2, grows.Length);
+            Assert.AreEqual(1, grows[0].Means.Count);
+            Assert.AreEqual("type", grows[0]["TypeRec"].String);
+            Assert.AreEqual("ttype", grows[1]["TypeRec"].String);
+
+            grows = SelectRowsS(keeper, tabls, "Tabl.Group(IntField; NameField; Code)");
+            Assert.AreEqual(3, grows.Length);
+            Assert.AreEqual(3, grows[0].Means.Count);
+            Assert.AreEqual("s1", grows[0]["Code"].String);
+            Assert.AreEqual("HHH", grows[0]["NameField"].String);
+            Assert.AreEqual(555, grows[0]["IntField"].Integer);
+            Assert.AreEqual(1, grows[0].SubList.Count);
+            Assert.AreEqual(11, grows[0].SubList[0].Num);
+            Assert.AreEqual("s1", grows[0].SubList[0].Code);
+
+            Assert.AreEqual("s2", grows[1]["Code"].String);
+            Assert.AreEqual("JJJ", grows[1]["NameField"].String);
+            Assert.AreEqual(666, grows[1]["IntField"].Integer);
+            Assert.AreEqual(1, grows[1].SubList.Count);
+            Assert.AreEqual(12, grows[1].SubList[0].Num);
+            Assert.AreEqual("s2", grows[1].SubList[0].Code);
+
+            Assert.AreEqual("s3", grows[2]["Code"].String);
+            Assert.AreEqual("DDD", grows[2]["NameField"].String);
+            Assert.AreEqual(777, grows[2]["IntField"].Integer);
+            Assert.AreEqual(1, grows[2].SubList.Count);
+            Assert.AreEqual(11, grows[2].SubList[0].Num);
+            Assert.AreEqual("s3", grows[2].SubList[0].Code);
+
+            grows = SelectRowsS(keeper, tabls, "Tabl.SubTabl(Num<>3).Group(Num)");
+            Assert.AreEqual(2, grows.Length);
+            Assert.AreEqual(1, grows[0].Means.Count);
+            Assert.AreEqual(1, grows[0]["Num"].Integer);
+            Assert.AreEqual(2, grows[0].SubList.Count);
+            Assert.AreEqual("a", grows[0].SubList[0].Code);
+            Assert.AreEqual("1", grows[0].SubList[1].Code);
+
+            Assert.AreEqual(2, grows[1]["Num"].Integer);
+            Assert.AreEqual(1, grows[1].SubList.Count);
+            Assert.AreEqual("b", grows[1].SubList[0].Code);
         }
 
         [TestMethod]
-        public void Complex()
+        public void TwoLevel()
         {
             var tabls = Load("Complex");
             var keeper = MakeKeeper();
             ITablStruct tstruct;
-            var t = SelectRowsStruct(keeper, tabls, "Tabl.OverTabl", out tstruct);
+            var t = SelectRowsStruct(keeper, tabls, "Tabl.Group", out tstruct);
             Assert.AreEqual(1, t.Count());
             var tabl = t.First();
             Assert.IsNull(tabl.Parent);
-            Assert.AreEqual(3, tabl.SubCodes.Count);
+            Assert.AreEqual(3, tabl.SubList.Count);
 
             var rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl");
             Assert.AreEqual(3, rows.Length);
@@ -194,6 +245,17 @@ namespace GeneratorTest
             rows = SelectSubRows(keeper, tabls, tstruct, tabl, "SubTabl.SubTabl(RealSub==2)");
             Assert.AreEqual(1, rows.Length);
             Assert.AreEqual("b", rows[0].Code);
+
+            var grows = SelectSubRowsS(keeper, tabls, tstruct, tabl, "SubTabl.SubTabl.Group(TypeRec)");
+            Assert.AreEqual(4, grows.Length);
+            Assert.AreEqual("a", grows[0]["TypeRec"].String);
+            Assert.AreEqual(1, grows[0].SubList.Count);
+            Assert.AreEqual("b", grows[1]["TypeRec"].String);
+            Assert.AreEqual(1, grows[1].SubList.Count);
+            Assert.AreEqual("c", grows[2]["TypeRec"].String);
+            Assert.AreEqual(1, grows[2].SubList.Count);
+            Assert.AreEqual("", grows[3]["TypeRec"].String);
+            Assert.AreEqual(1, grows[3].SubList.Count);
 
             t = SelectRowsStruct(keeper, tabls, "Tabl(StrLCase(NameField)=='hhh')", out tstruct);
             Assert.AreEqual(1, t.Count());
@@ -221,7 +283,7 @@ namespace GeneratorTest
             Assert.AreEqual(2, rows.Length);
             Assert.AreEqual("qqq", rows[0].Code);
             Assert.AreEqual("ppp", rows[1].Code);
-
+            
             t = SelectRowsStruct(keeper, tabls, "VTZTZ(SysNumVTZ==43014)", out tstruct);
             Assert.AreEqual(1, t.Count());
             tabl = t.First();

@@ -46,7 +46,7 @@ namespace Generator
         {
             var groupDic = new GroupDic();
             foreach (TablRow row in parentRows)
-                groupDic.AddRow(row, _fields, -1);
+                groupDic.AddRow(row, _fields, 0);
             return groupDic.GetGroups();
         }
     }

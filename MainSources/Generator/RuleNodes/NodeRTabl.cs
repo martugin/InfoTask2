@@ -50,7 +50,8 @@ namespace Generator
         public IEnumerable<SubRows> SelectRows(TablsList dataTabls, SubRows parentRow)
         {
             IEnumerable<SubRows> rows = dataTabls.Tabls[_tablName].SubList;
-            return _condition != null ? rows : rows.Where(row => _condition.Generate(row).Boolean);
+            rows = _condition == null ? rows : rows.Where(row => _condition.Generate(row).Boolean);
+            return ChildNode == null ? rows : ChildNode.SelectRows(rows);
         }
     }
 }

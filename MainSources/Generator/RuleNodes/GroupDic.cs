@@ -9,14 +9,14 @@ namespace Generator
     {
         public GroupDic(string fieldName, Mean fieldMean)
         {
-            _fieldName = fieldName;
-            _fieldMean = fieldMean;
+            FieldName = fieldName;
+            FieldMean = fieldMean;
         }
         public GroupDic() { } //Старший уровень
 
         //Имя и значение поля, по которым идет группировка
-        private readonly string _fieldName;
-        private readonly Mean _fieldMean;
+        internal string FieldName { get; private set; }
+        internal Mean FieldMean { get; private set; }
         
         //Словарь с ключами - значениями поля группировки и значением - словарями группировки по следующим полям
         private DicS<GroupDic> _dic;
@@ -28,10 +28,13 @@ namespace Generator
         //Добавляет ряд в структуру группировки
         public void AddRow(TablRow row, string[] fields, int level)
         {
-            string s = row[fields[level]].String ?? "";
             if (level < fields.Length)
-                Dic.Add(s, new GroupDic(fields[level], row[fields[level]]))
-                   .AddRow(row, fields, level + 1);
+            {
+                var fieldMean = row[fields[level]].String ?? "";
+                if (!Dic.ContainsKey(fieldMean))
+                    Dic.Add(fieldMean, new GroupDic(fields[level], row[fields[level]]));
+                Dic[fieldMean].AddRow(row, fields, level + 1);
+            }
             else Rows.Add(row);
         }
 
@@ -51,7 +54,7 @@ namespace Generator
                 var groups = grDic.GetGroups();
                 foreach (var rowGroup in groups)
                 {
-                    rowGroup.Means.Add(_fieldName ,_fieldMean);
+                    rowGroup.Means.Add(grDic.FieldName, grDic.FieldMean);
                     glist.Add(rowGroup);
                 }
             }

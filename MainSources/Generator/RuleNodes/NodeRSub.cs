@@ -52,9 +52,10 @@ namespace Generator
         //Выбрать ряды для генерации, узел запроса
         public IEnumerable<SubRows> SelectRows(IEnumerable<SubRows> parentRows)
         {
-            if (Condition == null)
-                return parentRows.SelectMany(row => row.SubList);
-            return parentRows.SelectMany(row => row.SubList.Where(r => Condition.Generate(r).Boolean));
+            var rows = parentRows.SelectMany(row => Condition == null 
+                                                                               ? row.SubList 
+                                                                               : row.SubList.Where(r => Condition.Generate(r).Boolean));
+            return ChildNode == null ? rows : ChildNode.SelectRows(rows);
         }
     }
 }
