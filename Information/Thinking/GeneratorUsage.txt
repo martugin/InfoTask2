@@ -1,9 +1,9 @@
-Пример использования:
+пример использования:
 Dim t As Object
-  Set t = CreateObject("InfoTaskClient.InfoTaskClient")
-  //Application - код приложения
-  //Project - код проекта
-  t.Initialize(application, project) 
-  'moduleDir - полный путь к каталогу модулЯ
-  MsgBox t.GenerateParams(moduleDir)
+  Set t = CreateObject("ComClients.InfoTaskClient")
+  'Application - код приложения
+  'Project - код проекта
+  t.Initialize application, project
+  'ModuleDir - полный путь к каталогу модулЯ
+  MsgBox t.GenerateParams(ModuleDir)
   t.Close

@@ -1,6 +1,5 @@
 ﻿using System;
 using ProvidersLibrary;
-using CommonTypes;
 
 namespace ComClients
 {
@@ -11,7 +10,7 @@ namespace ComClients
         public void Initialize(string application, //Код приложения
                                         string project) //Код проекта
         {
-            Logger.OpenHistory(DifferentIt.LocalDataProjectDir(project) + @"History\" + application + @"\History.accdb");
+            //Logger.OpenHistory(DifferentIt.LocalDataProjectDir(project) + @"History\" + application + @"\History.accdb");
         }
 
         //Закрытие клиента
