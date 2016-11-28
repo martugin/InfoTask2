@@ -1,4 +1,5 @@
 ﻿using System;
+using CommonTypes;
 using ProvidersLibrary;
 
 namespace ComClients
@@ -6,11 +7,11 @@ namespace ComClients
     //Клиент работы с провайдерами, вызываемый из внешних приложений через COM
     public class ProvidersClient : LoggerClient
     {
-        //Инициалоизация
+        //Инициализация
         public void Initialize(string application, //Код приложения
                                         string project) //Код проекта
         {
-            //Logger.OpenHistory(DifferentIt.LocalDataProjectDir(project) + @"History\" + application + @"\History.accdb");
+            Logger.OpenHistory(DifferentIt.LocalDataProjectDir(project) + @"History\" + application + @"\History.accdb", DifferentIt.TemplatesDir() + @"LocalData\History\History.accdb");
         }
 
         //Закрытие клиента

@@ -1,4 +1,5 @@
-﻿using BaseLibrary;
+﻿using System;
+using BaseLibrary;
 using CommonTypes;
 using Generator;
 
@@ -9,19 +10,35 @@ namespace ComClients
     {
         public string GenerateParams(string moduleDir)
         {
-            var dir = moduleDir.EndsWith("\\") ? moduleDir : moduleDir + "\\";
-            var table = new GenTemplateTable("GenParams", "GenRule", "ErrMess", "CalcOn", "ParamId");
-            var subTable = new GenTemplateTable("GenSubParams", table, "GenRule", "ErrMess", "CalcOn", "SubParamId", "ParamId");
-            var dataTabls = new TablsList();
-            using (var db = new DaoDb(dir + "Tables.accdb"))
+            using (Logger.StartLog("Генерация параметров", moduleDir))
             {
-                dataTabls.AddDbStructs(db);
-                dataTabls.LoadValues(db, true);
+                try
+                {
+                    var dir = moduleDir.EndsWith("\\") ? moduleDir : moduleDir + "\\";
+                    var table = new GenTemplateTable("GenParams", "GenRule", "ErrMess", "CalcOn", "ParamId");
+                    var subTable = new GenTemplateTable("GenSubParams", table, "GenRule", "ErrMess", "CalcOn", "SubParamId", "ParamId");
+                    var dataTabls = new TablsList();
+                    Logger.AddEvent("Загрузка структуры исходных таблиц");
+                    using (var db = new DaoDb(dir + "Tables.accdb"))
+                    {
+                        dataTabls.AddDbStructs(db);
+                        Logger.AddEvent("Загрузка значений из исходных таблиц");
+                        dataTabls.LoadValues(db, true);
+                    }
+                    Logger.AddEvent("Загрузка и проверка генерирующих параметров");
+                    var generator = new TablGenerator(Logger, dataTabls, dir + "CalcParams.accdb", table, subTable);
+                    Logger.AddEvent("Генерация");
+                    generator.Generate(dir + "Compiled.accdb", "GeneratedParams", "GeneratedSubParams");
+                    Logger.AddEvent("Генерация завершена", generator.GenErrorsCount + " ошибок");
+                    if (generator.GenErrorsCount == 0) return "";
+                    return "Шаблон генерации содержит " + generator.GenErrorsCount + " ошибок";    
+                }
+                catch (Exception ex)
+                {
+                    Logger.AddError("Ошибка при генерации параметров", ex);
+                    return ex.MessageString("Ошибка при генерации параметров");
+                }
             }
-            var generator = new TablGenerator(Logger, dataTabls, dir + "CalcParams.accdb", table, subTable);
-            generator.Generate(dir + "Compiled.accdb", "GeneratedParams", "GeneratedSubParams");
-            if (generator.GenErrorsCount == 0) return "";
-            return "Шаблон генерации содержит " + generator.GenErrorsCount + " ошибок";
         }
     }
 }
