@@ -12,9 +12,9 @@ element : TEXT            #ElementText
 			| TLSQUARE valueProg ERSQUARE    #ElementValue						
 			| ILSQUARE valueProg ERSQUARE    #ElementValue						
 			//Ошибки		
-			| TLSQUARE voidProg						  #ElementVoid			
+			| TLSQUARE voidProg											#ElementVoid			
 			| TLSQUARE voidProg ERSQUARE TRSQUARE   #ElementVoid			
-			| TLSQUARE valueProg					      #ElementValue					
+			| TLSQUARE valueProg											 #ElementValue					
 			| TLSQUARE valueProg ERSQUARE TRSQUARE   #ElementVoid			
 			;
 
@@ -30,8 +30,8 @@ voidExpr : IDENT SET expr															 #VoidExprVar
 			  | SUBTABL LPAREN voidProg RPAREN							 #VoidExprSub
 			  | SUBTABL LPAREN expr COLON voidProg RPAREN		 #VoidExprSub
 			  //Ошибки		
-			  | IF LPAREN expr COLON voidProg (COLON expr COLON voidProg)* (COLON voidProg)?    #VoidExprIf
-			  | IF LPAREN expr COLON voidProg (COLON expr COLON voidProg)* (COLON voidProg)? RPAREN RPAREN  #VoidExprIf
+			  | IF LPAREN expr COLON voidProg (COLON expr COLON voidProg)* (COLON voidProg)?									#VoidExprIf
+			  | IF LPAREN expr COLON voidProg (COLON expr COLON voidProg)* (COLON voidProg)? RPAREN RPAREN		#VoidExprIf
 			  | WHILE LPAREN expr COLON voidProg	 								#VoidExprWhile
 			  | WHILE LPAREN expr COLON voidProg RPAREN RPAREN	 	#VoidExprWhile
 			  | OVERTABL LPAREN voidProg  												#VoidExprOver			  
@@ -53,7 +53,7 @@ expr : cons                                              #ExprCons
 		| MINUS expr                 #ExprUnary		
 		| expr OPER5 expr           #ExprOper		
 		| expr OPER4 expr           #ExprOper		
-		| expr  (OPER3 | MINUS) expr   #ExprOper		
+		| expr (OPER3 | MINUS) expr   #ExprOper		
 		| expr OPER2 expr           #ExprOper		
 		| NOT expr		               #ExprUnary
 		| expr OPER1 expr           #ExprOper		

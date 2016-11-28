@@ -17,7 +17,7 @@ namespace GeneratorTest
             {
                 tabls.AddStruct(db, "Tabl", "SubTabl", "SubSubTabl");
                 tabls.AddDbStructs(db);
-                tabls.LoadValues(db);
+                tabls.LoadValues(db, true);
             }
 
             TestLib.CopyFile("Generator", "GenTemplate.accdb", "Gen" + tablName + "Template.accdb");

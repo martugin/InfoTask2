@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace CommonTypes
 {
     //Промежуточный узел, собирающий список узлов 
     public class NodeList : Node
     {
-        public NodeList(List<Node> children) : base(null)
+        public NodeList(IEnumerable<Node> children) : base(null)
         {
-            Children = children;
+            Children = children.ToList();
         }
 
         protected override string NodeType { get { return "NodeList"; } }

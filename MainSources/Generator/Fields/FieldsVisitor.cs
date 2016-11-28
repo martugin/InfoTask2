@@ -42,7 +42,7 @@ namespace Generator
 
         public override Node VisitTextGen(P.TextGenContext context)
         {
-            return new NodeTextList(context.element().Select(Go).ToList());
+            return new NodeTextList(context.element().Select(Go));
         }
 
         public override Node VisitElementText(P.ElementTextContext context)
@@ -82,6 +82,7 @@ namespace Generator
 
         public override Node VisitVoidExprIf(P.VoidExprIfContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeIfVoid(_keeper, context.IF(), 
                                                context.expr().Select(GoExpr).ToList(),
                                                context.voidProg().Select(GoVoid).ToList());
@@ -89,6 +90,7 @@ namespace Generator
 
         public override Node VisitVoidExprWhile(P.VoidExprWhileContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeWhileVoid(_keeper, context.WHILE(),
                                                     GoExpr(context.expr()),
                                                     GoVoid(context.voidProg()));
@@ -96,11 +98,13 @@ namespace Generator
 
         public override Node VisitVoidExprOver(P.VoidExprOverContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeOverVoid(_keeper, context.OVERTABL(), GoVoid(context.voidProg()));
         }
 
         public override Node VisitVoidExprSub(P.VoidExprSubContext context)
         {
+            _keeper.CheckParenths(context);
             return new NodeSubVoid(_keeper, context.SUBTABL(),  
                                                   context.expr() == null ? null : GoExpr(context.expr()),
                                                   GoVoid(context.voidProg()));
@@ -145,10 +149,7 @@ namespace Generator
         public override Node VisitExprSub(P.ExprSubContext context)
         {
             _keeper.CheckParenths(context);
-            return new NodeSub(_keeper, (ITerminalNode)context.children[0],
-                                           context.expr() == null ? null : GoExpr(context.expr()),
-                                           GoExpr(context.valueProg(0)),
-                                           context.valueProg().Length == 1 ? null : GoExpr(context.valueProg(1)));
+            return new NodeSub(_keeper, (ITerminalNode) context.children[0], context.valueProg().Select(GoExpr));
         }
 
         public override Node VisitExprIdent(P.ExprIdentContext context)
@@ -187,12 +188,12 @@ namespace Generator
 
         public override Node VisitParamsList(P.ParamsListContext context)
         {
-            return new NodeList(context.expr().Select(Go).ToList());
+            return new NodeList(context.expr().Select(Go));
         }
 
         public override Node VisitParamsEmpty(P.ParamsEmptyContext context)
         {
-            return new NodeList(new Node[0].ToList());
+            return new NodeList(new Node[0]);
         }
 
         //Константы

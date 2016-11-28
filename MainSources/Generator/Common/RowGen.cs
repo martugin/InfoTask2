@@ -15,7 +15,7 @@ namespace Generator
             : base(generator, table, rec)
         {
             Id = rec.GetInt(table.IdField);
-            var dataTabl = Rule == null ? null : ((INodeTabl)Rule).Check(dataTabls);
+            var dataTabl = Rule == null ? null : ((NodeRTabl)Rule).Check(dataTabls, null);
             foreach (var key in Fields.Keys)
             {
                 Keeper.SetFieldName(key);
@@ -27,7 +27,7 @@ namespace Generator
                 bool subErr = false;
                 while (subRec.GetInt(subTable.ParentIdField) == Id)
                 {
-                    var row = new SubRowGen(generator, dataTabl, subTable, subRec);
+                    var row = new SubRowGen(generator, dataTabls, dataTabl, subTable, subRec);
                     if (row.Keeper.Errors.Count != 0 && !subErr)
                     {
                         Keeper.AddError("Ошибки в рядах подтаблицы", (IToken)null);
@@ -53,7 +53,7 @@ namespace Generator
                                        RecDao subrec) //Рекордсет генерируемой подтаблицы
         {
             if (!Keeper.ErrMess.IsEmpty()) return;
-            IEnumerable<SubRows> rows = Rule == null ? new SubRows[] {null} : ((INodeTabl) Rule).SelectRows(dataTabls);
+            IEnumerable<SubRows> rows = Rule == null ? new SubRows[] { null } : ((NodeRTabl)Rule).SelectRows(dataTabls, null);
             foreach (var row in rows)
             {
                 rec.AddNew();
@@ -63,7 +63,7 @@ namespace Generator
                 if (subrec != null)
                     foreach (var subRowGen in SubRows)
                     {
-                        IEnumerable<SubRows> subRows = subRowGen.RuleString.IsEmpty() ? new [] { row } : (((NodeRSubTabl)subRowGen.Rule).SelectRows(row));
+                        IEnumerable<SubRows> subRows = subRowGen.RuleString.IsEmpty() ? new [] { row } : (((INodeRTabl)subRowGen.Rule).SelectRows(dataTabls, row));
                         foreach (var subRow in subRows)
                         {
                             subrec.AddNew();

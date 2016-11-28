@@ -45,7 +45,7 @@ namespace CommonTypesTest
                 Assert.AreEqual(0, tstruct.Level);
                 Assert.IsNotNull(tstruct.Parent);
                 Assert.IsNotNull(tstruct.Child);
-                Assert.AreEqual(10, tstruct.Fields.Count);
+                Assert.AreEqual(11, tstruct.Fields.Count);
                 Assert.AreEqual(DataType.String, tstruct.Fields["Code"]);
                 Assert.AreEqual(DataType.Integer, tstruct.Fields["Num"]);
                 Assert.AreEqual(DataType.String, tstruct.Fields["NameField"]);
@@ -56,7 +56,7 @@ namespace CommonTypesTest
                 Assert.AreEqual(1, tstruct.Level);
                 Assert.IsNotNull(tstruct.Parent);
                 Assert.IsNotNull(tstruct.Child);
-                Assert.AreEqual(11, tstruct.Fields.Count);
+                Assert.AreEqual(12, tstruct.Fields.Count);
                 Assert.AreEqual(DataType.String, tstruct.Fields["GenType"]);
                 Assert.AreEqual(DataType.Integer, tstruct.Fields["Num"]);
                 Assert.AreEqual(DataType.String, tstruct.Fields["StringSub"]);
@@ -69,7 +69,7 @@ namespace CommonTypesTest
                 Assert.AreEqual(2, tstruct.Level);
                 Assert.IsNotNull(tstruct.Parent);
                 Assert.IsNull(tstruct.Child);
-                Assert.AreEqual(11, tstruct.Fields.Count);
+                Assert.AreEqual(12, tstruct.Fields.Count);
                 Assert.AreEqual(DataType.String, tstruct.Fields["Code"]);
                 Assert.AreEqual(DataType.Integer, tstruct.Fields["Id"]);
                 Assert.AreEqual(DataType.String, tstruct.Fields["StringString"]);
@@ -95,7 +95,7 @@ namespace CommonTypesTest
                 Assert.AreEqual(0, tstruct.Level);
                 Assert.IsNotNull(tstruct.Parent);
                 Assert.IsNotNull(tstruct.Child);
-                Assert.AreEqual(8, tstruct.Fields.Count);
+                Assert.AreEqual(9, tstruct.Fields.Count);
                 Assert.AreEqual(DataType.String, tstruct.Fields["Code"]);
                 Assert.AreEqual(DataType.Integer, tstruct.Fields["Num"]);
                 Assert.AreEqual(DataType.String, tstruct.Fields["NameVTZ"]);
@@ -107,7 +107,7 @@ namespace CommonTypesTest
                 Assert.AreEqual(1, tstruct.Level);
                 Assert.IsNotNull(tstruct.Parent);
                 Assert.IsNull(tstruct.Child);
-                Assert.AreEqual(8, tstruct.Fields.Count);
+                Assert.AreEqual(9, tstruct.Fields.Count);
                 Assert.AreEqual(DataType.String, tstruct.Fields["Code"]);
                 Assert.AreEqual(DataType.Integer, tstruct.Fields["ParentId"]);
                 Assert.AreEqual(DataType.String, tstruct.Fields["NameTZ"]);
@@ -125,7 +125,7 @@ namespace CommonTypesTest
                 Assert.AreEqual(0, tlist.Tabls.Count);
                 tlist.AddStruct(db, "Tabl", "SubTabl", "SubSubTabl");
                 Assert.AreEqual(1, tlist.Structs.Count);
-                tlist.LoadValues(db);
+                tlist.LoadValues(db, false);
                 Assert.AreEqual(1, tlist.Tabls.Count);
                 var tabl = tlist.Tabls["Tabl"];
                 Assert.AreEqual(3, tabl.Rows[0].Count);
@@ -134,25 +134,20 @@ namespace CommonTypesTest
                 Assert.AreEqual(3, tabl.SubCodes.Count);
                 Assert.AreEqual(2, tabl.SubNums.Count);
                 Assert.AreEqual(3, tabl.SubList.Count);
-                Assert.AreEqual(2, tabl.SubTypes.Count);
 
                 Assert.IsTrue(tabl.SubCodes.ContainsKey("s1"));
                 Assert.IsTrue(tabl.SubCodes.ContainsKey("s2"));
                 Assert.IsTrue(tabl.SubCodes.ContainsKey("s3"));
                 Assert.IsTrue(tabl.SubNums.ContainsKey(11));
                 Assert.IsTrue(tabl.SubNums.ContainsKey(12));
-                Assert.IsTrue(tabl.SubTypes.ContainsKey("type"));
-                Assert.IsTrue(tabl.SubTypes.ContainsKey("ttype"));
 
                 var row = tabl.SubCodes["s1"];
                 Assert.AreEqual(3, row.SubCodes.Count);
                 Assert.AreEqual(3, row.SubNums.Count);
-                Assert.AreEqual(3, row.SubTypes.Count);
                 Assert.AreEqual(3, row.SubList.Count);
                 Assert.AreEqual(1, row.Id);
                 Assert.AreEqual(11, row.Num);
                 Assert.AreEqual("s1", row.Code);
-                Assert.AreEqual("type", row.Type);
 
                 Assert.AreEqual(DataType.Integer, row["Num"].DataType);
                 Assert.AreEqual(11, row["Num"].Integer);
@@ -167,13 +162,11 @@ namespace CommonTypesTest
                 row = row.SubNums[1];
                 Assert.AreEqual(2, row.SubCodes.Count);
                 Assert.AreEqual(2, row.SubNums.Count);
-                Assert.AreEqual(1, row.SubTypes.Count);
                 Assert.AreEqual(2, row.SubList.Count);
                 Assert.AreEqual(1, row.Id);
                 Assert.AreEqual(1, row.ParentId);
                 Assert.AreEqual(1, row.Num);
                 Assert.AreEqual("a", row.Code);
-                Assert.AreEqual("a", row.Type);
 
                 Assert.AreEqual(DataType.Integer, row["Num"].DataType);
                 Assert.AreEqual(1, row["Num"].Integer);
@@ -189,13 +182,11 @@ namespace CommonTypesTest
                 row = row.SubNums[2000];
                 Assert.AreEqual(0, row.SubCodes.Count);
                 Assert.AreEqual(0, row.SubNums.Count);
-                Assert.AreEqual(0, row.SubTypes.Count);
                 Assert.AreEqual(0, row.SubList.Count);
                 Assert.AreEqual(2, row.Id);
                 Assert.AreEqual(1, row.ParentId);
                 Assert.AreEqual(2000, row.Num);
                 Assert.AreEqual("ppp", row.Code);
-                Assert.AreEqual("qqq", row.Type);
 
                 Assert.AreEqual(DataType.String, row["Code"].DataType);
                 Assert.AreEqual("ppp", row["Code"].String);
@@ -207,12 +198,10 @@ namespace CommonTypesTest
                 row = tabl.SubNums[12];
                 Assert.AreEqual(1, row.SubCodes.Count);
                 Assert.AreEqual(1, row.SubNums.Count);
-                Assert.AreEqual(0, row.SubTypes.Count);
                 Assert.AreEqual(1, row.SubList.Count);
                 Assert.AreEqual(2, row.Id);
                 Assert.AreEqual(12, row.Num);
                 Assert.AreEqual("s2", row.Code);
-                Assert.AreEqual("type", row.Type);
 
                 Assert.AreEqual(DataType.Integer, row["Num"].DataType);
                 Assert.AreEqual(12, row["Num"].Integer);
@@ -223,35 +212,22 @@ namespace CommonTypesTest
                 Assert.AreEqual(DataType.Real, row["RealField"].DataType);
                 Assert.AreEqual(123.5, row["RealField"].Real);
 
-                row = tabl.SubTypes["ttype"][0];
-                Assert.AreEqual(0, row.SubCodes.Count);
-                Assert.AreEqual(0, row.SubNums.Count);
-                Assert.AreEqual(0, row.SubTypes.Count);
-                Assert.AreEqual(0, row.SubList.Count);
-                Assert.AreEqual(3, row.Id);
-                Assert.AreEqual(11, row.Num);
-                Assert.AreEqual("s3", row.Code);
-                Assert.AreEqual("ttype", row.Type);
-
                 tlist.AddDbStructs(db);
-                tlist.LoadValues(db);
+                tlist.LoadValues(db, true);
                 Assert.AreEqual(2, tlist.Tabls.Count);
                 Assert.AreEqual(2, tlist.Structs.Count);
                 tabl = tlist.Tabls["VTZTZ"];
                 Assert.AreEqual(6, tabl.SubCodes.Count);
                 Assert.AreEqual(1, tabl.SubNums.Count);
-                Assert.AreEqual(0, tabl.SubTypes.Count);
                 Assert.AreEqual(6, tabl.SubList.Count);
 
                 row = tabl.SubCodes["ВТЗЗ00120101002"];
                 Assert.AreEqual(1, row.SubCodes.Count);
                 Assert.AreEqual(1, row.SubNums.Count);
-                Assert.AreEqual(0, row.SubTypes.Count);
                 Assert.AreEqual(1, row.SubList.Count);
                 Assert.AreEqual(386, row.Id);
                 Assert.AreEqual(0, row.Num);
                 Assert.AreEqual("ВТЗЗ00120101002", row.Code);
-                Assert.AreEqual(null, row.Type);
 
                 Assert.AreEqual(DataType.String, row["Code"].DataType);
                 Assert.AreEqual("ВТЗЗ00120101002", row["Code"].String);
@@ -266,13 +242,11 @@ namespace CommonTypesTest
                 Assert.IsNotNull(row.Parent);
                 Assert.AreEqual(0, row.SubCodes.Count);
                 Assert.AreEqual(0, row.SubNums.Count);
-                Assert.AreEqual(0, row.SubTypes.Count);
                 Assert.AreEqual(0, row.SubList.Count);
                 Assert.AreEqual(1, row.Id);
                 Assert.AreEqual(386, row.ParentId);
                 Assert.AreEqual(0, row.Num);
                 Assert.AreEqual("ТЗ_З00120101004", row.Code);
-                Assert.AreEqual(null, row.Type);
 
                 Assert.AreEqual(DataType.String, row["Code"].DataType);
                 Assert.AreEqual("ТЗ_З00120101004", row["Code"].String);

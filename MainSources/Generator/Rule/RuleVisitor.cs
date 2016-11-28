@@ -31,44 +31,49 @@ namespace Generator
         {
             return (NodeList)Go(tree);
         }
+        public Node GoTabl(IParseTree tabl, IParseTree query)
+        {
+            var t = (INodeRTabl)Go(tabl);
+            if (t == null) return null;
+            t.ChildNode = (INodeRQuery)Go(query);
+            return (Node)t;
+        }
 
         //Обход разных типов узлов
 
-        public override Node VisitTablGenOver(P.TablGenOverContext context)
+        public override Node VisitSubTablGenTabl(P.SubTablGenTablContext context)
         {
-            return new NodeROverTabl(_keeper, context.IDENT());
+            return Go(context.tablGen());
+        }
+       
+        public override Node VisitSubTablGenSub(P.SubTablGenSubContext context)
+        {
+            return GoTabl(context.subTabl(), context.query());
         }
 
-        public override Node VisitTablGenSimple(P.TablGenSimpleContext context)
+        public override Node VisitTablGen(P.TablGenContext context)
         {
-            var tabl = (NodeRSubTabl)Go(context.tabl());
-            var ctabl = tabl;
-            foreach (var s in context.subTabl())
-            {
-                var sub = (NodeRSubTabl)Go(s);
-                ctabl.Child = sub;
-                ctabl = sub;
-            }
-            return tabl;
+            return GoTabl(context.tabl(), context.query());
         }
 
-        public override Node VisitSubTablGen(P.SubTablGenContext context)
+        public override Node VisitQuerySubTabl(P.QuerySubTablContext context)
         {
-            NodeRSubTabl tabl = null;
-            NodeRSubTabl ctabl = null;
-            foreach (var s in context.subTabl())
-            {
-                var sub = (NodeRSubTabl)Go(s);
-                if (ctabl != null) ctabl.Child = sub;
-                ctabl = sub;
-                if (tabl == null) tabl = sub;
-            }
-            return tabl;
+            return GoTabl(context.subTabl(), context.query());
+        }
+
+        public override Node VisitQueryGroup(P.QueryGroupContext context)
+        {
+            return Go(context.rowGroup());
+        }
+
+        public override Node VisitQueryEmpty(P.QueryEmptyContext context)
+        {
+            return null;
         }
         
         public override Node VisitTablIdent(P.TablIdentContext context)
         {
-            return new NodeRTabl(_keeper, context.IDENT());
+            return new NodeRTabl(_keeper, context.IDENT(), null);
         }
 
         public override Node VisitTablCond(P.TablCondContext context)
@@ -79,15 +84,27 @@ namespace Generator
         
         public override Node VisitSubTablIdent(P.SubTablIdentContext context)
         {
-            return new NodeRSubTabl(_keeper, context.SUBTABL());
+            return new NodeRSub(_keeper, context.SUBTABL(), null);
         }
 
         public override Node VisitSubTablCond(P.SubTablCondContext context)
         {
             _keeper.CheckParenths(context);
-            return new NodeRSubTabl(_keeper, context.SUBTABL(), GoExpr(context.expr()));
+            return new NodeRSub(_keeper, context.SUBTABL(), GoExpr(context.expr()));
         }
-        
+
+        public override Node VisitGroupSimple(P.GroupSimpleContext context)
+        {
+            return new NodeRGroup(_keeper, context.ROWGROUP(), null);
+        }
+
+        public override Node VisitGroupIdent(P.GroupIdentContext context)
+        {
+            _keeper.CheckParenths(context);
+            return new NodeRGroup(_keeper, context.ROWGROUP(), 
+                                                context.IDENT().Select(field => _keeper.GetStringConst(field, false)));
+        }
+
         //Выражения
 
         public override Node VisitExprCons(P.ExprConsContext context)

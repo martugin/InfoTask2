@@ -96,16 +96,16 @@ namespace GeneratorTest
             Assert.AreEqual("NodeList: (ValueProg: (VoidProg: (OverVoid: OverTabl (VoidProg: (VarSet: a (Field: UpField)))), Var: a))",
                 Parse(k, "[OverTabl(a=UpField):a]"));
 
-            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Sub: SubTabl (, ValueProg: (VoidProg: , Fun: + (Field: a, Fun: NewLine)), )))",
+            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Sub: SubTabl (ValueProg: (VoidProg: , Fun: + (Field: a, Fun: NewLine)))))",
                 Parse(k, "[SubTabl(a + NewLine)]"));
-            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Sub: SubTablCond (Fun: > (Field: x, Boolean: 1), ValueProg: (VoidProg: , Field: a), ValueProg: (VoidProg: , String: ';'))))",
-                Parse(k, "[SubTablCond(x>1;a;';')]"));
-            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Sub: SubTabl (, ValueProg: (VoidProg: , NodeList: (String: sss_, ValueProg: (VoidProg: , Field: SubFied))), ValueProg: (VoidProg: , NodeList: (String: ';')))))",
+            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Sub: SubTabl (ValueProg: (VoidProg: , Fun: > (Field: x, Boolean: 1)), ValueProg: (VoidProg: , Field: a), ValueProg: (VoidProg: , String: ';'))))",
+                Parse(k, "[SubTabl(x>1;a;';')]"));
+            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Sub: SubTabl (ValueProg: (VoidProg: , NodeList: (String: sss_, ValueProg: (VoidProg: , Field: SubFied))), ValueProg: (VoidProg: , NodeList: (String: ';')))))",
                 Parse(k, "[ SubTabl ([sss_[SubFied]];[';'])]"));
-            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Sub: ПодТабл (, ValueProg: (VoidProg: , Fun: + (Field: Поле, Over: НадТабл (ValueProg: (VoidProg: , Field: Поле)))), ValueProg: (VoidProg: , NodeList: (String: ';')))))",
+            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Sub: ПодТабл (ValueProg: (VoidProg: , Fun: + (Field: Поле, Over: НадТабл (ValueProg: (VoidProg: , Field: Поле)))), ValueProg: (VoidProg: , NodeList: (String: ';')))))",
                 Parse(k, "[ПодТабл (Поле + НадТабл(Поле) ;[';'])]"));
-            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Sub: ПодТаблУсл (Fun: True, ValueProg: (VoidProg: , Fun: + (If: Если (Fun: and (Fun: == (Field: type, String: 'int'), Fun: == (Field: x, Boolean: 1)), ValueProg: (VoidProg: , Integer: 16), ValueProg: (VoidProg: , Integer: 32)), String: 'd')), )), String: ooo)",
-                Parse(k, "[ПодТаблУсл(True;Если(type=='int' and x==1; 16; 32)+'d')]ooo"));
+            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Sub: ПодТабл (ValueProg: (VoidProg: , Fun: True), ValueProg: (VoidProg: , Fun: + (If: Если (Fun: and (Fun: == (Field: type, String: 'int'), Fun: == (Field: x, Boolean: 1)), ValueProg: (VoidProg: , Integer: 16), ValueProg: (VoidProg: , Integer: 32)), String: 'd')))), String: ooo)",
+                Parse(k, "[ПодТабл(True;Если(type=='int' and x==1; 16; 32)+'d')]ooo"));
             Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , While: while (If: If (Fun: > (Field: x, Boolean: 1), ValueProg: (VoidProg: , Boolean: 1), ValueProg: (VoidProg: , Boolean: 0)), ValueProg: (VoidProg: , Field: a), Field: b)))",
                 Parse(k, "[while(If(x>1;1;0);a;b)]"));
         }
@@ -131,24 +131,27 @@ namespace GeneratorTest
                 Parse(k, "[cos(asa))]"));
             Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Fun: strMid (String: 'ddd'))) Недопустимая последовательность символов, ',' (поле, строка: 1, позиция: 14)",
                 Parse(k, "[strMid('ddd',2))]"));
+
             Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , If: If (Fun: > (Field: x, Integer: 3), ValueProg: (VoidProg: , Integer: 11), ValueProg: (VoidProg: , Integer: 12)))) Незакрытая скобка, '(' (поле, строка: 1, позиция: 4)",
                 Parse(k, "[If(x>3;11;12]"));
             Assert.AreEqual("NodeList: (, ) Недопустимое использование лексемы, '1' (поле, строка: 1, позиция: 8)",
                 Parse(k, "[while 1;2;3]]"));
             Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , While: while (If: If (Fun: > (Field: x, Boolean: 1), ValueProg: (VoidProg: , Boolean: 1), ValueProg: (VoidProg: , Boolean: 0)), ValueProg: (VoidProg: , Field: a), Field: b))) Незакрытая скобка, '(' (поле, строка: 1, позиция: 10)",
                 Parse(k, "[while(If(x>1;1;0;a;b)]"));
+
             Assert.AreEqual("NodeList: (, ) Недопустимое использование лексемы, ')' (поле, строка: 1, позиция: 11)",
                 Parse(k, "[OverTabl()]"));
             Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Over: OverTabl (ValueProg: (VoidProg: , Field: Field)))) Недопустимое использование лексемы, ';' (поле, строка: 1, позиция: 18)",
                 Parse(k, "[OverTabl( Field ;1)]"));
             Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Over: OverTabl (ValueProg: (VoidProg: , Field: Field)))) Лишняя закрывающаяся скобка, ')' (поле, строка: 1, позиция: 18)",
                 Parse(k, "[OverTabl( Field))]"));
-            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Fun: + (Field: a, Sub: SubTablCond (Fun: True, ValueProg: (VoidProg: , Field: b), ValueProg: (VoidProg: , String: ':'))))) Недопустимое использование лексемы, ';' (поле, строка: 1, позиция: 28)",
-                Parse(k, "[a + SubTablCond(True;b;':';c]"));
-            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Fun: + (Field: a, ))) Недопустимое использование лексемы, ';' (поле, строка: 1, позиция: 25)",
-                Parse(k, "[a + SubTablCond(True;b);':')]"));
-            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Fun: + (Field: a, Sub: SubTablCond (Fun: True, ValueProg: (VoidProg: , Fun: + (Field: b, Boolean: 1)), )))) Незакрытая скобка, '(' (поле, строка: 1, позиция: 17)",
-                Parse(k, "[a + SubTablCond(True;b+1]"));
+
+            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Fun: + (Field: a, Sub: SubTabl (ValueProg: (VoidProg: , Fun: True), ValueProg: (VoidProg: , Field: b), ValueProg: (VoidProg: , String: ':'))))) Недопустимое использование лексемы, ';' (поле, строка: 1, позиция: 24)",
+                Parse(k, "[a + SubTabl(True;b;':';c]"));
+            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Fun: + (Field: a, ))) Недопустимое использование лексемы, ';' (поле, строка: 1, позиция: 21)",
+                Parse(k, "[a + SubTabl(True;b);':')]"));
+            Assert.AreEqual("NodeList: (ValueProg: (VoidProg: , Fun: + (Field: a, Sub: SubTabl (ValueProg: (VoidProg: , Fun: True), ValueProg: (VoidProg: , Fun: + (Field: b, Boolean: 1)))))) Незакрытая скобка, '(' (поле, строка: 1, позиция: 13)",
+                Parse(k, "[a + SubTabl(True;b+1]"));
         }
     }
 }

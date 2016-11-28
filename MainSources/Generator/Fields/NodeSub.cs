@@ -1,4 +1,6 @@
-﻿using Antlr4.Runtime.Tree;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Antlr4.Runtime.Tree;
 using CommonTypes;
 
 namespace Generator
@@ -6,53 +8,67 @@ namespace Generator
     //Узел прохода по подтаблице, возвращает значение
     internal class NodeSub : NodeKeeper, INodeExpr
     {
-        public NodeSub(ParsingKeeper keeper, ITerminalNode terminal, INodeExpr condition, INodeExpr expr, INodeExpr separator)
+        public NodeSub(ParsingKeeper keeper, ITerminalNode terminal,
+                                 IEnumerable<INodeExpr> pars) //Параметры, смысл каждого параметра определяется при проверке
             : base(keeper, terminal)
         {
-            _condition = condition;
-            _expr = expr;
-            _separator = separator;
-            _rowsSelector = new RowsSelector(keeper);
+            _pars = pars.ToArray();
         }
 
         protected override string NodeType { get { return "Sub"; } }
 
         public override string ToTestString()
         {
-            return ToTestWithChildren(_condition, _expr, _separator);
+            return ToTestWithChildren(_pars);
         }
 
-        //Условие фильтрации или имя типа
-        private readonly INodeExpr _condition;
-        //Выражение, вычисяемое для каждой строки подтаблицы
-        private readonly INodeExpr _expr;
-        //Разделитель
-        private readonly INodeExpr _separator;
+        //Узлы - параметры функции SubTabl
+        private readonly INodeExpr[] _pars;
 
-        //Фильтрация списка рядов подтаблицы
-        private readonly RowsSelector _rowsSelector;
+        //Условие фильтрации или имя типа
+        private INodeExpr _condition;
+        //Выражение, вычисляемое для каждой строки подтаблицы
+        private INodeExpr _expr;
+        //Разделитель
+        private INodeExpr _separator;
 
         //Проверка корректности выражений генерации
-        public DataType Check(TablStruct tabl)
+        public DataType Check(ITablStruct tabl)
         {
-            if (tabl.Child == null)
+            var child = tabl.Child;
+            if (child == null)
             {
                 AddError("Недопустимый переход к подтаблице");
                 return DataType.Error;
             }
-            _rowsSelector.Check(_condition, Token, tabl.Child);
-            _expr.Check(tabl.Child);
+            if (_pars.Length > 1 && _pars[0].Check(child) == DataType.Boolean)
+            {
+                _condition = _pars[0];
+                _expr = _pars[1];
+                if (_pars.Length == 3) _separator = _pars[2];
+            }
+            else
+            {
+                _expr = _pars[0];
+                if (_pars.Length == 2) _separator = _pars[1];
+                if (_pars.Length == 3)
+                    AddError("Недопустимый тип данных условия");
+            }
+
+            _expr.Check(child);
             if (_separator != null)
-                _separator.Check(tabl.Child);
+                _separator.Check(child);
             return DataType.String;
         }
 
         //Вычисление значения по ряду исходной таблицы
         public IMean Generate(SubRows row)
         {
-            _rowsSelector.SelectRows(_condition, row);
+            IEnumerable<SubRows> rows = row.SubList;
+            if (_condition != null)
+                rows = rows.Where(r => _condition.Generate(r).Boolean);
             string s = "";
-            foreach (var r in _rowsSelector.SelectRows(_condition, row))
+            foreach (var r in rows)
             {
                 if (s != "" && _separator != null)
                     s += _separator.Generate(r).String;
@@ -71,7 +87,6 @@ namespace Generator
         {
             _condition = condition;
             _prog = prog;
-            _rowsSelector = new RowsSelector(keeper);
         }
 
         protected override string NodeType { get { return "SubVoid"; } }
@@ -85,11 +100,9 @@ namespace Generator
         private readonly INodeExpr _condition;
         //Выражение, вычисяемое для каждой строки подтаблицы
         private readonly INodeVoid _prog;
-        //Фильтрация списка рядов подтаблицы
-        private readonly RowsSelector _rowsSelector;
 
         //Проверка корректности выражений генерации
-        public void Check(TablStruct tabl)
+        public void Check(ITablStruct tabl)
         {
             if (tabl.Child == null)
                 AddError("Недопустимый переход к подтаблице");
@@ -101,7 +114,10 @@ namespace Generator
         //Вычисление значения по ряду исходной таблицы
         public void Generate(SubRows row)
         {
-            foreach (var r in _rowsSelector.SelectRows(_condition, row))
+            IEnumerable<SubRows> rows = row.SubList;
+            if (_condition != null)
+                rows = rows.Where(r => _condition.Generate(r).Boolean);
+            foreach (var r in rows)
                 _prog.Generate(r);
         }
     }

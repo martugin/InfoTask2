@@ -63,15 +63,22 @@ namespace Generator
             try
             {
                 AddEvent("Открытие рекордсетов для генерации");
-                using (var rec = new RecDao(makedFile, makedTabl))
-                    using (var subRec = makedSubTabl == null ? null : new RecDao(rec.DaoDb, makedSubTabl))
-                        foreach (var row in _rowsGen.Values)
-                            if (row.Keeper.Errors.Count == 0)
-                            {
-                                if (!row.RuleString.IsEmpty() )
-                                    AddEvent("Генерация данных по шаблону", row.RuleString);
-                                row.Generate(DataTabls, rec, subRec);
-                            }
+                using (var db = new DaoDb(makedFile))
+                {
+                    if (makedSubTabl != null)
+                        db.Execute("DELETE * FROM " + makedSubTabl);
+                    db.Execute("DELETE * FROM " + makedTabl);
+                    using (var rec = new RecDao(db, makedTabl))
+                        using (var subRec = makedSubTabl == null ? null : new RecDao(db, makedSubTabl))
+                            foreach (var row in _rowsGen.Values)
+                                if (row.Keeper.Errors.Count == 0)
+                                {
+                                    if (!row.RuleString.IsEmpty())
+                                        AddEvent("Генерация данных по шаблону", row.RuleString);
+                                    row.Generate(DataTabls, rec, subRec);
+                                }    
+                }
+                
             }
             catch (Exception ex)
             {

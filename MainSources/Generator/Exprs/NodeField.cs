@@ -19,7 +19,7 @@ namespace Generator
         private readonly string _field;
         
         //Получение типа данных
-        public DataType Check(TablStruct tabl)
+        public DataType Check(ITablStruct tabl)
         {
             if (tabl == null)
             {
@@ -37,7 +37,7 @@ namespace Generator
         //Вычисление значения
         public IMean Generate(SubRows row)
         {
-            return ((TablRow)row)[_field];
+            return row[_field];
         }
     }
 }

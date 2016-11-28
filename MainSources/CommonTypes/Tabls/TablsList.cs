@@ -6,10 +6,10 @@ namespace CommonTypes
     //Список таблиц одного файла
     public class TablsList
     {
-        //Словарь структур таблиц
+        //Словарь структур групп таблиц
         private readonly DicS<TablGroup> _structs = new DicS<TablGroup>();
         public DicS<TablGroup> Structs { get { return _structs; } }
-        //Словарь значений таблиц
+        //Словарь групп таблиц
         private readonly DicS<Tabl> _tabls = new DicS<Tabl>();
         public DicS<Tabl> Tabls { get { return _tabls; } }
 
@@ -43,7 +43,8 @@ namespace CommonTypes
         }
 
         //Загрузка значений всех таблиц одной базы
-        public void LoadValues(DaoDb db)
+        public void LoadValues(DaoDb db, 
+                                          bool onlyOtm) //Загружать только отмеченные ряды
         {
             foreach (var s in Structs.Dic)
                 if (s.Value.DbFile == db.File)
@@ -53,7 +54,8 @@ namespace CommonTypes
                         if (tsi.Level >= 0)
                             using (var rec = new RecDao(db, tsi.TableName))
                                 while (rec.Read())
-                                    tabl.AddRow(tsi.Level, new TablRow(rec), true);
+                                    if (!onlyOtm || (rec.ContainsField("Otm") && rec.GetBool("Otm")))
+                                        tabl.AddRow(tsi.Level, new TablRow(rec), true);
                 }
         }
     }

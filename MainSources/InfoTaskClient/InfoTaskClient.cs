@@ -16,7 +16,7 @@ namespace ComClients
             using (var db = new DaoDb(dir + "Tables.accdb"))
             {
                 dataTabls.AddDbStructs(db);
-                dataTabls.LoadValues(db);
+                dataTabls.LoadValues(db, true);
             }
             var generator = new TablGenerator(Logger, dataTabls, dir + "CalcParams.accdb", table, subTable);
             generator.Generate(dir + "Compiled.accdb", "GeneratedParams", "GeneratedSubParams");
