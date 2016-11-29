@@ -28,7 +28,6 @@ namespace ComClients
                     }
                     Logger.AddEvent("Загрузка и проверка генерирующих параметров");
                     var generator = new TablGenerator(Logger, dataTabls, dir + "CalcParams.accdb", table, subTable);
-                    Logger.AddEvent("Генерация");
                     generator.Generate(dir + "Compiled.accdb", "GeneratedParams", "GeneratedSubParams");
                     Logger.AddEvent("Генерация завершена", generator.GenErrorsCount + " ошибок");
                     if (generator.GenErrorsCount == 0) return "";
