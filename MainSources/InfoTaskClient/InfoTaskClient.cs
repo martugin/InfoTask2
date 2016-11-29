@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using BaseLibrary;
 using CommonTypes;
 using Generator;
@@ -18,7 +19,7 @@ namespace ComClients
                     var table = new GenTemplateTable("GenParams", "GenRule", "ErrMess", "CalcOn", "ParamId");
                     var subTable = new GenTemplateTable("GenSubParams", table, "GenRule", "ErrMess", "CalcOn", "SubParamId", "ParamId");
                     var dataTabls = new TablsList();
-                    Logger.AddEvent("Загрузка структуры исходных таблиц");
+                    Logger.AddEvent("Загрузка структуры исходных таблиц", dir + "Tables.accdb");
                     using (var db = new DaoDb(dir + "Tables.accdb"))
                     {
                         dataTabls.AddDbStructs(db);
