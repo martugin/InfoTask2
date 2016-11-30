@@ -46,7 +46,8 @@ namespace CommonTypes
 
         public override void ValueToRec(IRecordAdd rec, string field)
         {
-            rec.Put(field, _bool);
+            try { rec.Put(field, _bool ? 1 : 0);}
+            catch { rec.Put(field, _bool); }
         }
 
         public override IMean ToMean()

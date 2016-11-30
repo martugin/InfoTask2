@@ -13,7 +13,13 @@ namespace CommonTypes
             if (!dir.EndsWith(@"\")) dir += @"\";
             return dir;
         }
-
+        
+        //Каталог шаблонов
+        public static string TemplatesDir()
+        {
+            return InfoTaskDir() + @"Templates\";
+        }
+        
         //Возвращает путь к каталогу проекта в LocalData
         public static string LocalDataProjectDir(string project) //Код проекта
         {

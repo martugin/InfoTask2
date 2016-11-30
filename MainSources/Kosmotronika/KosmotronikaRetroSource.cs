@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using BaseLibrary;
 using ProvidersLibrary;
 
@@ -32,6 +33,18 @@ namespace Provider
         protected override string CheckSettings(DicS<string> inf)
         {
             return !inf["RetroServerName"].IsEmpty() ? "" : "Не задано имя Ретро-сервера";
+        }
+
+        protected override int PartSize 
+        {
+            get
+            {
+                double len = PeriodEnd.Subtract(PeriodBegin).TotalHours;
+                int res = 3000;
+                if (len > 0.0001) res = Math.Min(3000, Convert.ToInt32(2500 / len));
+                if (res == 0) res = 1;
+                return res;    
+            }
         }
     }
 }

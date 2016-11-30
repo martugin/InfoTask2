@@ -9,40 +9,37 @@ namespace Generator
     {
         public TablGenerator(Logger logger, //Логгер
                                          TablsList dataTabls, //Таблицы с данными для генерации
-                                         string file, //Файл шаблона генерации
-                                         string tabl, //Главная таблица шаблона генерации, можно запрос
-                                         string tablIdField, //Имя поля Id главной таблицы
-                                         string tablRuleField, //Имя поля правила генерации главной таблицы
-                                         string tablErrField, //Имя поля для записи ошибок генерации в главной таблице
-                                         string subTabl = null, //Подчиненная таблицы шаблона генерации, можно запрос
-                                         string subParentIdField = null, //Имя поля Id из главной таблицы в подчиненной таблице
-                                         string subRuleField = null, //Имя поля правила генерации подчиненной таблицы
-                                         string subErrField = null) //Имя поля для записи ошибок генерации в подчиненной таблице
+                                         string templateFile, //Файл шаблона генерации
+                                         GenTemplateTable table, //Главная таблица шаблона генерации
+                                         GenTemplateTable subTable = null) //Подчиненная таблица шаблона генерации
         {
+            GenErrorsCount = 0;
             Logger = logger;
             AddEvent("Загрузка списка функций");
             FunsChecker = new FunsChecker(FunsCheckType.Gen);
             Functions = new FunctionsGen();
-
+            
             DataTabls = dataTabls;
             try
             {
-                bool hasSub = subTabl != null;
-                AddEvent("Загрузка таблиц шаблона генерации", file + ", " + tabl);
-                using (var rec = new RecDao(file, "SELECT * FROM " + tabl + " ORDER BY " + tablIdField))
-                    using (var subRec = !hasSub ? null : new RecDao(rec.DaoDb, "SELECT * FROM " + subTabl + " ORDER BY " + subParentIdField))
+                bool hasSub = subTable != null;
+                AddEvent("Загрузка таблиц шаблона генерации", templateFile + ", " + table.Name);
+                
+                using (var rec = new RecDao(templateFile, table.QueryString))
+                    using (var subRec = !hasSub ? null : new RecDao(rec.DaoDb, subTable.QueryString))
                     {
-                        if (hasSub) subRec.MoveFirst();
+                        if (hasSub && !subRec.EOF) subRec.MoveFirst();
                         while (rec.Read())
                         {
-                            var row = new RowGen(this, dataTabls, rec, tablIdField, tablRuleField, tablErrField, subRec, subParentIdField, subRuleField, subErrField);
+                            var row = new RowGen(this, dataTabls, table, rec, subTable, subRec);
+                            GenErrorsCount += row.Keeper.Errors.Count;
                             _rowsGen.Add(row.Id, row);
                         }
                     }
             }
             catch (Exception ex)
             {
-                AddError("Ошибка при загрузке шаблона генерации", ex, file);
+                AddError("Ошибка при загрузке шаблона генерации", ex, templateFile);
             }
         }
 
@@ -54,7 +51,10 @@ namespace Generator
         internal TablsList DataTabls { get; private set; }
         //Ряды таблицы с шаблоном генерации
         private readonly DicI<RowGen> _rowsGen = new DicI<RowGen>();
-        
+
+        //Количество ошибок при последней проверке шаблона генерации
+        public int GenErrorsCount { get; private set; }
+
         //Сгенерировать 
         public void Generate(string makedFile, //Файл сгенерированных таблиц
                                        string makedTabl, //Главная сгенерированная таблица
@@ -63,15 +63,22 @@ namespace Generator
             try
             {
                 AddEvent("Открытие рекордсетов для генерации");
-                using (var rec = new RecDao(makedFile, makedTabl))
-                    using (var subRec = makedSubTabl == null ? null : new RecDao(rec.DaoDb, makedSubTabl))
-                        foreach (var row in _rowsGen.Values)
-                            if (row.Keeper.Errors.Count == 0)
-                            {
-                                if (!row.RuleString.IsEmpty() )
-                                    AddEvent("Генерация данных по шаблону", row.RuleString);
-                                row.Generate(DataTabls, rec, subRec);
-                            }
+                using (var db = new DaoDb(makedFile))
+                {
+                    if (makedSubTabl != null)
+                        db.Execute("DELETE * FROM " + makedSubTabl);
+                    db.Execute("DELETE * FROM " + makedTabl);
+                    using (var rec = new RecDao(db, makedTabl))
+                        using (var subRec = makedSubTabl == null ? null : new RecDao(db, makedSubTabl))
+                            foreach (var row in _rowsGen.Values)
+                                if (row.Keeper.Errors.Count == 0)
+                                {
+                                    if (!row.RuleString.IsEmpty())
+                                        AddEvent("Генерация данных по шаблону", row.RuleString);
+                                    row.Generate(DataTabls, rec, subRec);
+                                }    
+                }
+                
             }
             catch (Exception ex)
             {

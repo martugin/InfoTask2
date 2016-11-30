@@ -10,25 +10,19 @@ namespace ProvidersLibraryTest
     [TestClass]
     public class CloneSourceTest
     {
-        private void CopyFile(string fileName)
+        private SourceConnect MakeCloneConnect(string prefix)
         {
-            TestLib.CopyFile(@"ProvidersLibrary\TestClone\" + fileName);
-        }
-        private readonly string _dir = TestLib.TestRunDir + @"ProvidersLibrary\TestClone\";
-        
-        private SourceConnect MakeCloneConnect()
-        {
-            CopyFile("Clone.accdb");
+            TestLib.CopyDir(@"ProvidersLibrary", "TestClone", "Clone" + prefix);
             var factory = new ProvidersFactory();
             var connect = factory.CreateConnect(ProviderType.Source, "TestSource", "Clones", new Logger());
-            connect.JoinProviders(factory.CreateProvider("CloneSource", "CloneDir=" + _dir));
+            connect.JoinProviders(factory.CreateProvider("CloneSource", "CloneDir=" + TestLib.TestRunDir + @"ProvidersLibrary\Clone" + prefix));
             return (SourceConnect)connect;
         }
 
         [TestMethod]
         public void CloneProps()
         {
-            var connect = MakeCloneConnect();
+            var connect = MakeCloneConnect("Props");
             var source = (CloneSource)connect.Provider;
             Assert.IsNotNull(connect);
             Assert.AreEqual(ProviderType.Source, connect.Type);
@@ -40,7 +34,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(0, connect.CalcSignals.Count);
             Assert.AreEqual(0, connect.Signals.Count);
             
-            Assert.AreEqual(_dir + "Clone.accdb", source.CloneFile);
+            Assert.AreEqual(TestLib.TestRunDir + @"ProvidersLibrary\CloneProps\Clone.accdb", source.CloneFile);
             Assert.AreEqual("Источник: TestSource", connect.Context);
             Assert.AreEqual(source, connect.Provider);
             Assert.IsTrue(source.Connect());
@@ -52,7 +46,7 @@ namespace ProvidersLibraryTest
         [TestMethod]
         public void FullRead()
         {
-            var connect = MakeCloneConnect();
+            var connect = MakeCloneConnect("Read");
             var sig = connect.AddInitialSignal("Ob.SigB", "Ob", DataType.Boolean, "", true);
             Assert.AreEqual(DataType.Boolean, sig.DataType);
             Assert.AreEqual(connect, sig.Connect);

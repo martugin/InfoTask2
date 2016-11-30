@@ -21,7 +21,7 @@ namespace Generator
         private readonly Var _var;
 
         //Получение типа данных
-        public DataType Check(TablStruct tabl)
+        public DataType Check(ITablStruct tabl)
         {
             if (_var == null) return DataType.Error;
             return _var.DataType;
@@ -58,7 +58,7 @@ namespace Generator
          private readonly INodeExpr _nodeMean;
 
          //Проверка корректности выражений генерации
-         public void Check(TablStruct tabl)
+         public void Check(ITablStruct tabl)
          {
              _var.DataType = _var.DataType.Add(_nodeMean.Check(tabl));
          }

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Antlr4.Runtime;
+using BaseLibrary;
 
 namespace CommonTypes
 {
@@ -34,7 +35,9 @@ namespace CommonTypes
         //Строка с результатами парсинга для тестов
         public string ToTestString()
         {
-            return (ResultTree == null ? "" : ResultTree.ToTestString()) + (_keeper.ErrMess == "" ? "" : (" " + _keeper.ErrMess));
+            string s = ResultTree == null ? "" : ResultTree.ToTestString();
+            if (!s.IsEmpty() && !_keeper.ErrMess.IsEmpty()) s += " ";
+            return s + _keeper.ErrMess;
         }
 
         //Создать лексер

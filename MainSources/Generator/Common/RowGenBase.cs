@@ -9,28 +9,25 @@ namespace Generator
     internal class RowGenBase
     {
         public RowGenBase(TablGenerator generator, //Ссылка на генератор
-                          RecDao rec, //Рекордсет таблицы шаблона генерации
-                          string idField, //Имя поля Id таблицы или ParentId подтаблицы
-                          string ruleField, //Имя поля с условием генерации
-                          string errField, //Имя поля ошибок генерации
-                          bool isSubTabl) //Генерация  
+                          GenTemplateTable table, //Описание полей таблицы-шаблона
+                          RecDao rec) //Рекордсет таблицы шаблона генерации
         {
-            IdField = idField;
-            ErrField = errField;
+            Table = table;
             Keeper = new GenKeeper(generator);
 
-            RuleString = rec.GetString(ruleField);
+            RuleString = rec.GetString(Table.RuleField);
             if (!RuleString.IsEmpty())
             {
-                var parse = isSubTabl ? new SubRuleParsing(Keeper, ruleField, RuleString) : new RuleParsing(Keeper, ruleField, RuleString);
+                var parse = Table.IsSub  
+                        ? new SubRuleParsing(Keeper, Table.RuleField, RuleString) 
+                        : new RuleParsing(Keeper, Table.RuleField, RuleString);
                 Rule = parse.ResultTree;
             }
 
-            var special = new HashSet<string> { idField, ruleField, errField };
             foreach (Field field in rec.Recordset.Fields)
             {
                 var name = field.Name;
-                if (!special.Contains(name) && !rec.IsNull(name))
+                if (!Table.IsSpecial(name) && !rec.IsNull(name))
                 {
                     var dataType = field.Type.ToDataType();
                     if (dataType != DataType.String)
@@ -38,7 +35,7 @@ namespace Generator
                     else
                     {
                         string s = rec.GetString(name);
-                        if (Rule == null || !s.Contains("["))
+                        if (!s.Contains("["))
                             Fields.Add(name, new NodeGenConst(null, s));
                         else
                         {
@@ -51,24 +48,21 @@ namespace Generator
             }
         }
 
-        //Условие генерации
-        public string RuleString { get; private set; }
-        protected INode Rule { get; private set; }
-
-        //Имя поля ошибки генерации
-        protected string ErrField { get; private set; }
+        //Описание полей таблицы
+        public GenTemplateTable Table { get; private set; }
         //Накопитель ошибок
         public GenKeeper Keeper { get; private set; }
-        
-        //Имя поля Id таблицы, или ParentId подтаблицы шаблона
-        public string IdField { get; private set; }
+
+        //Условие генерации
+        public string RuleString { get; private set; }
+        internal INode Rule { get; private set; }
         
         //Словарь остальных полей таблицы шаблонов
-        private readonly DicS<INodeExpr> _fields = new DicS<INodeExpr>();
-        protected DicS<INodeExpr> Fields { get { return _fields; } }
+        private readonly Dictionary<string, INodeExpr> _fields = new Dictionary<string, INodeExpr>();
+        protected Dictionary<string, INodeExpr> Fields { get { return _fields; } }
 
         //Сгенерировать значения полей по ряду таблицы
-        protected void GenerateFields(SubRows row, RecDao rec)
+        internal void GenerateFields(SubRows row, RecDao rec)
         {
             foreach (var field in Fields.Keys)
                 if (rec.ContainsField(field))

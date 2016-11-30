@@ -22,6 +22,11 @@ namespace CommonTypes
         public DicS<ParsingError> Errors { get { return _errors; } }
 
         //Добавить ошибку в список
+        public void AddError(string errMess, string lexeme, int line, int pos, IToken token = null)
+        {
+            if (!Errors.ContainsKey(FieldName))
+                Errors.Add(FieldName, new ParsingError(FieldName, errMess, lexeme, line, pos, token));
+        }
         public void AddError(string errMess, IToken token)
         {
             if (!Errors.ContainsKey(FieldName))
@@ -32,11 +37,6 @@ namespace CommonTypes
             if (terminal == null)
                 AddError(errMess, (IToken)null);
             else AddError(errMess, terminal.Symbol);
-        }
-        public void AddError(string errMess, string lexeme, int line, int pos, IToken token = null)
-        {
-            if (!Errors.ContainsKey(FieldName))
-                Errors.Add(FieldName, new ParsingError(FieldName, errMess, lexeme, line, pos, token));
         }
 
         //Накапливаемое сообщение об ошибке

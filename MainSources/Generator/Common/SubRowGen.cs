@@ -7,29 +7,19 @@ namespace Generator
     internal class SubRowGen : RowGenBase
     {
         public SubRowGen(TablGenerator generator, //Ссылка на генератор
-                         TablStruct tabl, //Таблица - шаблон генерации
-                         RecDao rec, string idField, string ruleField, string errField) 
-            : base(generator, rec, idField, ruleField, errField, true)
+                         TablsList dataTabls, //Исходные таблицы для генерации
+                         ITablStruct dataTabl, //Таблица - шаблон генерации
+                         GenTemplateTable table, //Поля таблицы - шаблона генерации   
+                         RecDao rec) //Рекордсет таблицы результатов
+            : base(generator, table, rec)
         {
-            ParentId = rec.GetInt(idField);
-            var subTabl = ((NodeRSubTabl)Rule).Check(tabl);
-            foreach (INodeExpr expr in Fields.Values)
-                expr.Check(subTabl);    
-            rec.Put(errField, Keeper.ErrMess); 
-        }
-
-        //ParentId ряда подтаблицы шаблона
-        public int ParentId { get; private set; }
-        
-        //Сгенерировать таблицу по данному ряду
-        public void Generate(int parentId, //Id сгенерированного ряда родителя
-                             SubRows row, //Текущий исходный ряд в процессе генерации по ряду родителя
-                             RecDao subrec) //Рекордсет генерируемой подтаблицы
-        {
-            subrec.AddNew();
-            subrec.Put(IdField, parentId);
-            GenerateFields(row, subrec);
-            subrec.Update();
+            var subTabl = Rule == null ? dataTabl : ((INodeRTabl)Rule).Check(dataTabls, dataTabl);
+            foreach (var key in Fields.Keys)
+            {
+                Keeper.SetFieldName(key);
+                Fields[key].Check(subTabl);
+            }        
+            rec.Put(table.ErrField, Keeper.ErrMess); 
         }
     }
 }
