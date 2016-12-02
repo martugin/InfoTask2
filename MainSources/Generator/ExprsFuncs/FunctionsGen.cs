@@ -13,7 +13,7 @@ namespace Generator
         //Условие для фильтрации списка функций
         protected override string FunsWhereCondition
         {
-            get { return "(Functions.NotLoadCalc = False) AND (Functions.LoadGen = True)"; }
+            get { return "(Functions.IsGen = True)"; }
         }
 
         //Создание функции

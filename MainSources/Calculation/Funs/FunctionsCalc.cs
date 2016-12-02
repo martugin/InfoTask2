@@ -9,7 +9,7 @@ namespace Calculation
         //Условие для фильтрации списка функций
         protected override string FunsWhereCondition
         {
-            get { return "Functions.NotLoadCalc = False"; }
+            get { return "Functions.IsCalc = True"; }
         }
 
         //Создание функций разных типов
