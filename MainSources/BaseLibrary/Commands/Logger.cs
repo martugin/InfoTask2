@@ -62,7 +62,7 @@ namespace BaseLibrary
                 if (_historyFile != null)
                 {
                     if (_historyTemplate != null && DaoDb.FromTemplate(_historyTemplate, _historyFile, ReplaceByTemplate.IfNewVersion, true))
-                            _reasonUpdate = "Новая версия файла истории";
+                        _reasonUpdate = "Новая версия файла истории";
                     OpenHistoryRecs();
                 }
             }

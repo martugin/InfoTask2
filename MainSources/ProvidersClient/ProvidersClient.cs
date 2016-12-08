@@ -1,4 +1,5 @@
 ﻿using System;
+using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
@@ -18,8 +19,12 @@ namespace ComClients
         public void Close()
         {
             GC.Collect();
+            IsClosed = true;
         }
 
+        //Клиент уже был закрыт
+        protected bool IsClosed { get; private set; }
+        
         //Фабрика провайдеров
         private ProvidersFactory _factory;
         protected ProvidersFactory Factory 

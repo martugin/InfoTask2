@@ -58,6 +58,8 @@
     <Compile Include="Commands\CommandLogBase.cs" />
     <Compile Include="Commands\CommandsEnums.cs" />
     <Compile Include="Commands\CommandSubLog.cs" />
+    <Compile Include="Logger\CommandCollect.cs" />
+    <Compile Include="Logger\CommDanger.cs" />
     <Compile Include="Commands\ErrorCommand.cs" />
     <Compile Include="Commands\ExternalLogger.cs" />
     <Compile Include="Commands\IContextable.cs" />
@@ -76,6 +78,13 @@
     <Compile Include="Databases\SqlServer\SqlDb.cs" />
     <Compile Include="Databases\SqlServer\SqlProps.cs" />
     <Compile Include="Databases\Access\SysTabl.cs" />
+    <Compile Include="Logger\BreakException.cs" />
+    <Compile Include="Logger\Comm.cs" />
+    <Compile Include="Logger\CommLog.cs" />
+    <Compile Include="Logger\CommProgress.cs" />
+    <Compile Include="Logger\HistoryAccess.cs" />
+    <Compile Include="Logger\IHistory.cs" />
+    <Compile Include="Logger\Logg.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Values\TimeInterval.cs" />
     <Compile Include="Values\TimeUnit.cs" />

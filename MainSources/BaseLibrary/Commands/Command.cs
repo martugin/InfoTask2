@@ -40,12 +40,12 @@ namespace BaseLibrary
         //Контекст выполнения 
         internal string Context { get; private set; }
 
-        //Признаки разных типов комманды
+        //Признаки разных типов команды
         internal protected bool IsProgress { get; private set; }
         internal protected bool IsCollect { get; private set; }
         internal protected bool IsDanger { get; private set; }
 
-        //Добавить в комманду ошибку error, isRepeated - ошибка произошла в повторяемой операции
+        //Добавить в команду ошибку error, isRepeated - ошибка произошла в повторяемой операции
         public virtual void AddError(ErrorCommand error, bool isRepeated)
         {
             ChangeQuality(error, isRepeated);
@@ -62,7 +62,7 @@ namespace BaseLibrary
             }
         }
 
-        //Изменить ошибочнось комманды
+        //Изменить ошибочность команды
         protected void ChangeQuality(ErrorCommand error, bool isRepeated)
         {
             CommandQuality q = error.Quality;
@@ -70,7 +70,7 @@ namespace BaseLibrary
             if (Quality < q) Quality = q;
         }
 
-        //Ошибочность комманды
+        //Ошибочность команды
         private CommandQuality _quality = CommandQuality.Success;
         public CommandQuality Quality
         {
