@@ -6,6 +6,10 @@ namespace BaseLibrary
     //Логгер
     public class Logg
     {
+        public Logg(IHistory history)
+        {
+            History = history;
+        }
 
         //Ссылка на историю
         internal IHistory History { get; set; }
@@ -13,16 +17,38 @@ namespace BaseLibrary
         //Текущие команды разных типов
         internal Comm Command { get; set; }
         internal CommLog CommandLog { get; set; }
-        internal CommLog CommandSubLog { get; set; }
+        internal CommSuperLog CommandSuperLog { get; set; }
         internal CommProgress CommandProgress { get; set; }
         internal CommCollect CommandCollect { get; set; }
         //Стек опаных команд
         private readonly Stack<CommDanger> _commandsDanger = new Stack<CommDanger>();
         public Stack<CommDanger> CommandsDanger { get { return _commandsDanger; } }
-    
-        //Проценты для старта комманд, если они явно не зананы
-        private double StartProcent { get { return Command == null ? 0 : Command.Procent; } }
-        private double FinishProcent { get { return Command == null ? 100 : Command.Procent; } }
+
+        //Пришла команда Break
+        private bool _wasBreaked;
+        internal bool WasBreaked 
+        { 
+            get { lock (_breakLocker) return _wasBreaked;}
+            private set { lock (_breakLocker) _wasBreaked = value; } 
+        }
+
+        //Прервать выполнение
+        public void Break()
+        {
+            WasBreaked = true;
+        }
+
+        //Вызвать BreakException
+        internal protected void MakeBreak()
+        {
+            if (WasBreaked)
+            {
+                WasBreaked = false;
+                throw new BreakException();
+            }
+        }
+
+        private readonly object _breakLocker = new object();
 
         //Запуск простой комманды
         public Comm Start(double startProcent, double finishProcent)
@@ -31,17 +57,7 @@ namespace BaseLibrary
         }
         public Comm Start()
         {
-            return Start(StartProcent, FinishProcent);
-        }
-        public Comm Start(Action action, double startProcent, double finishProcent)
-        {
-            var c = Start(startProcent, finishProcent);
-            action();
-            return c.Finish();
-        }
-        public Comm Start(Action action)
-        {
-            return Start(action, StartProcent, FinishProcent);
+            return Start(0, 100);
         }
         
         //Запуск команды логирования
@@ -49,59 +65,31 @@ namespace BaseLibrary
         {
             FinishCommand(CommandLog);
             Command = CommandLog = new CommLog(this, Command, startProcent, finishProcent, name, context, pars);
-            if (History != null) History.WriteStart(CommandLog);
             return CommandLog;
         }
         public CommLog StartLog(string name, string context = "", string pars = "")
         {
-            FinishCommand(CommandLog);
-            return StartLog(StartProcent, FinishProcent, name, context, pars);
+            return StartLog(0, 100, name, context, pars);
         }
-        public CommLog StartLog(Action action, double startProcent, double finishProcent, string name, string context = "", string pars = "")
+        
+        //Запуск команды логирования в SuperHistory
+        public CommSuperLog StartSuperLog(double startProcent, double finishProcent, DateTime begin, DateTime end, string mode, string name, string pars = "")
         {
-            var c = StartLog(startProcent, finishProcent, name, context, pars);
-            try { action(); }
-            catch (BreakException) { throw;}
-            catch (Exception ex)
-            {
-                AddError("Ошибка при выполнении комманды " + name, ex, pars, context);
-            }
-            return (CommLog)c.Finish();
+            FinishCommand(CommandSuperLog);
+            Command = CommandSuperLog = new CommSuperLog(this, Command, startProcent, finishProcent, begin, end, mode, name, pars);
+            return CommandSuperLog;
         }
-        public CommLog StartLog(Action action, string name, string context = "", string pars = "")
+        public CommSuperLog StartSuperLog(DateTime begin, DateTime end, string mode, string name, string pars = "")
         {
-            FinishCommand(CommandLog);
-            return StartLog(action, StartProcent, FinishProcent, name, context, pars);
+            return StartSuperLog(0, 100, begin, end, mode, name, pars);
         }
-
-        //Запуск команды логирования в SubHistory
-        public CommLog StartSubLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
+        public CommSuperLog StartSuperLog(double startProcent, double finishProcent, string name, string pars = "")
         {
-            FinishCommand(CommandSubLog);
-            Command = CommandSubLog = new CommLog(this, Command, startProcent, finishProcent, name, context, pars);
-            if (History != null) History.WriteStartSub(CommandSubLog);
-            return CommandSubLog;
+            return StartSuperLog(startProcent, finishProcent, Different.MinDate, Different.MinDate, "", name, pars);
         }
-        public CommLog StartSubLog(string name, string context = "", string pars = "")
+        public CommSuperLog StartSuperLog( string name, string pars = "")
         {
-            FinishCommand(CommandSubLog);
-            return StartSubLog(StartProcent, FinishProcent, name, pars);
-        }
-        public CommLog StartSubLog(Action action, double startProcent, double finishProcent, string name, string pars = "")
-        {
-            var c = StartSubLog(startProcent, finishProcent, name, pars);
-            try { action(); }
-            catch (BreakException) { throw; }
-            catch (Exception ex)
-            {
-                AddError("Ошибка при выполнении комманды " + name, ex, pars);
-            }
-            return (CommLog)c.Finish();
-        }
-        public CommLog StartSubLog(Action action, string name, string pars = "")
-        {
-            FinishCommand(CommandSubLog);
-            return StartSubLog(action, StartProcent, FinishProcent, name, pars);
+            return StartSuperLog(0, 100, name, pars);
         }
 
         //Запуск команды, отображающей индикатор
@@ -111,48 +99,27 @@ namespace BaseLibrary
             Command = CommandProgress = new CommProgress(this, Command, text);
             return CommandProgress;
         }
-        public CommProgress StartProgress(Action action, string text)
-        {
-            var c = StartProgress(text);
-            action();
-            return (CommProgress)c.Finish();
-        }
 
         //Запуск внешней команды от клиента, колекционирущей ошибки
-        public CommCollect StartCollect(Action action, double startProcent, double finishProcent)
+        public CommCollect StartCollect()
         {
             FinishCommand(CommandCollect);
-            Command = CommandCollect = new CommCollect(this, Command, startProcent, finishProcent);
-            try { action(); }
-            catch (Exception ex)
-            {
-                CommandCollect.AddError(new ErrorCommand("Ошибка", ex));
-            }
+            Command = CommandCollect = new CommCollect(this, Command);
             return CommandCollect;
-        }
-        public CommCollect StartCollect(Action action)
-        {
-            FinishCommand(CommandCollect);
-            return StartCollect(action, StartProcent, FinishProcent);
         }
 
         //Завершить указанную команду и всех детей
-        internal void FinishCommand(Comm command, 
-                                                  bool isBreaked = false) //Комманда была прервана
+        internal void FinishCommand(Comm command) 
         {
+            MakeBreak();
             if (command == null) return;
-            Comm c = Command;
-            while (c != command)
-            {
-                c.Finish(isBreaked);
-                c = c.Parent;
-            }
-            c.Finish(isBreaked);
+            command.Finish();
         }
 
         //Добавляет событие в историю
         public void AddEvent(string description, string pars = "")
         {
+            MakeBreak();
             if (History != null) 
                 History.WriteEvent(description, pars);
         }
@@ -170,11 +137,9 @@ namespace BaseLibrary
         //Добавляет ошибку в комманду, лог и отображение, err - ошибка, 
         private void AddError(ErrorCommand err)
         {
-            if (History != null)
-                History.WriteError(err);
+            MakeBreak();
             if (Command != null)
-                Command.AddQuality(err.Quality);
-            //ToDo Danger и LogErrors
+                Command.AddError(err);
         }
 
         //text - текст ошибки, ex - исключение, par - праметры ошибки
@@ -197,7 +162,12 @@ namespace BaseLibrary
         public double Procent
         {
             get { return Command == null ? 0 : Command.Procent; }
-            set { if (Command != null) Command.Procent = value; }
+            set
+            {
+                MakeBreak();
+                if (Command != null) 
+                    Command.Procent = value;
+            }
         }
     }
 }

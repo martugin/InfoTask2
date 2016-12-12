@@ -3,9 +3,9 @@
 namespace BaseLibrary
 {
     //Базовый класс для команд записи в лог
-    public class CommLog : Comm
+    public class CommLogBase : Comm
     {
-        public CommLog(Logg logger, Comm parent, double startProcent, double finishProcent, string name, string context, string pars) 
+        internal protected CommLogBase(Logg logger, Comm parent, double startProcent, double finishProcent, string name, string pars) 
             : base(logger, parent, startProcent, finishProcent)
         {
             StartTime = DateTime.Now;
@@ -13,12 +13,13 @@ namespace BaseLibrary
             Params = pars;
         }
 
+        //Ссылка на историю
+        protected IHistory History { get { return Logger == null ? null : Logger.History; }}
+
         //Имя комманды
-        internal string Name { get; private set; }
+        internal protected string Name { get; private set; }
         //Параметры комманды
-        internal string Params { get; private set; }
-        //Контекст выполнения 
-        internal string Context { get; private set; }
+        internal protected string Params { get; private set; }
 
         //Время запуска комманды
         internal DateTime StartTime { get; private set; }
@@ -27,27 +28,84 @@ namespace BaseLibrary
         {
             get { return Math.Round(DateTime.Now.Subtract(StartTime).TotalSeconds, 2); }
         }
+    }
 
-        //Строка для записи в лог состояния комманды
-        internal string Status
+    //-------------------------------------------------------------------------------------------------------------------
+
+    //Команда для записи в History
+    public class CommLog : CommLogBase
+    {
+        internal protected CommLog(Logg logger, Comm parent, double startProcent, double finishProcent, string name, string context, string pars) 
+            : base(logger, parent, startProcent, finishProcent, name, pars)
         {
-            get
+            Context = context;
+            if (History != null)
+                History.WriteStart(this);
+        }
+     
+        //Контекст выполнения 
+        internal protected string Context { get; private set; }
+
+        //Добавить ошибку 
+        public override void AddError(ErrorCommand err)
+        {
+            if (History != null) 
+                History.WriteError(err);
+            base.AddError(err);
+        }
+
+        //Запуск операции, обрамляемой данной командой
+        public override Comm Run(Action action)
+        {
+            try
             {
-                if (IsBreaked) return "Прервано";
-                if (!IsFinished) return "Запущено";
-                return Quality.ToRussian();
+                action();
             }
+            catch (BreakException) { throw;}
+            catch (Exception ex)
+            {
+                AddError(new ErrorCommand("Ошибка при обработке команды " + Name, ex));
+            }
+            return Finish();
         }
 
         //Завершение команды
-        public override Comm Finish(bool isBreaked = false)
+        protected override void FinishCommand(bool isBreaked)
         {
-            base.Finish(isBreaked);
-            if (Logger.CommandLog == this)
-                Logger.History.WriteFinish(this);
-            if (Logger.CommandSubLog == this)
-                Logger.History.WriteFinishSub(this);
-            return this;
+            base.FinishCommand(isBreaked);
+            if (History != null) 
+                History.WriteFinish(this);
+            Logger.CommandLog = null;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------------
+
+    //Команда для записи в SuperHistory
+    public class CommSuperLog : CommLogBase
+    {
+        internal protected CommSuperLog(Logg logger, Comm parent, double startProcent, double finishProcent, DateTime begin, DateTime end, string mode, string name, string pars)
+            : base(logger, parent, startProcent, finishProcent, name, pars)
+        {
+            BeginPeriod = begin;
+            EndPeriod = end;
+            ModePeriod = mode;
+            if (History != null)
+                History.WriteStartSuper(this);
+        }
+        
+        //Период обработки
+        public DateTime BeginPeriod { get; private set; }
+        public DateTime EndPeriod { get; private set; }
+        //Режим выполнения
+        public string ModePeriod { get; private set; }
+
+        //Завершение команды
+        protected override void FinishCommand(bool isBreaked)
+        {
+            base.FinishCommand(isBreaked);
+            if (History != null)
+                History.WriteFinishSuper(this);
         }
     }
 }

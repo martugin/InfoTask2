@@ -6,7 +6,7 @@ namespace BaseLibrary
     //История в файле Access
     public class HistoryAccess : IHistory
     {
-        //Задание файла истории historyFile и файла его шаблона historyTemplate, открытие истории, useSubHistory - использовать SubHistory
+        //Задание файла истории
         public HistoryAccess(string historyFile, //файл истории
                                         string historyTemplate, //шаблон для файла истории
                                         bool useSubHistory = false, //использовать SubHistory
@@ -143,12 +143,12 @@ namespace BaseLibrary
             UpdateHistory(true);
         }
 
-        public void WriteStartSub(CommLog command)
+        public void WriteStartSuper(CommLog command)
         {
             throw new System.NotImplementedException();
         }
 
-        public void WriteFinishSub(CommLog command, string results = null)
+        public void WriteFinishSuper(CommLog command, string results = null)
         {
             throw new System.NotImplementedException();
         }

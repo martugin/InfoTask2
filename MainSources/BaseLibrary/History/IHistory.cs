@@ -4,11 +4,11 @@
     public interface IHistory
     {
         //Начало выполнения надкомманды
-        void WriteStartSub(CommLog command);
+        void WriteStartSuper(CommSuperLog command);
         //Начало выполнения комманды
         void WriteStart(CommLog command);
         //Конец выполнения надкомманды
-        void WriteFinishSub(CommLog command, string results = null);
+        void WriteFinishSuper(CommSuperLog command, string results = null);
         //Конец выполнения комманды
         void WriteFinish(CommLog command, string results = null);
 

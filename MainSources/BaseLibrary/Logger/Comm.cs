@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace BaseLibrary
 {
     //Простая комманда
@@ -21,19 +23,22 @@ namespace BaseLibrary
         //Качество команды
         private CommandQuality _quality = CommandQuality.Success;
         public CommandQuality Quality { get { lock (_qualityLock) return _quality; }}
+        //Команда с ошибкой
+        public bool IsError { get { return Quality == CommandQuality.Error; } }
+        //Команда совсем без ошибки
+        public bool IsSuccess { get { return Quality == CommandQuality.Success; } }
 
-        //Добавить ошибочность команды
-        public CommandQuality AddQuality(CommandQuality quality)
+        //Добавить ошибку
+        public virtual void AddError(ErrorCommand err)
         {
             lock (_qualityLock)
-                if (_quality < quality) 
-                    _quality = quality;
+                if (_quality < err.Quality)
+                    _quality = err.Quality;
             if (Parent != null)
-                Parent.AddQuality(quality);
-            return _quality;
+                Parent.AddError(err);
         }
-        
-        //Величина
+
+        //Относительный процент индикатора
         private double _procent;
         public virtual double Procent
         {
@@ -48,7 +53,7 @@ namespace BaseLibrary
                 }
             }
         }
-        //Каким значениям родителя соответствует 0% и 100% счетчика
+        //Каким значениям родителя соответствует 0% и 100% счетчика процентов
         private readonly double _startProcent;
         private readonly double _finishProcent;
 
@@ -61,14 +66,44 @@ namespace BaseLibrary
         //Комманда была прервана
         public bool IsBreaked { get; private set; }
 
+        //Строка для записи состояния комманды
+        internal protected string Status
+        {
+            get
+            {
+                if (IsBreaked) return "Прервано";
+                if (!IsFinished) return "Запущено";
+                return Quality.ToRussian();
+            }
+        }
+
+        //Запуск операции, обрамляемой данной командой
+        public virtual Comm Run(Action action)
+        {
+            action();
+            return Finish();
+        }
+
+        //Завершает комманду вместе со всеми детьми
+        public Comm Finish(bool isBreaked = false)
+        {
+            var c = Logger.Command;
+            while (c != this)
+            {
+                c.FinishCommand(isBreaked);
+                c = c.Parent;
+            }
+            FinishCommand(isBreaked);
+            return this;
+        }
+
         //Завершает комманду и ее же возвращает
-        public virtual Comm Finish(bool isBreaked = false) //Комманда была прервана
+        protected virtual void FinishCommand(bool isBreaked) //Комманда была прервана
         {
             Procent = 100;
             IsFinished = true;
             IsBreaked = isBreaked;
             Logger.Command = Logger.Command.Parent;
-            return this;
         }
     }
 }

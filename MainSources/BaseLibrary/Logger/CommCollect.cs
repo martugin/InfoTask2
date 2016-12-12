@@ -5,23 +5,43 @@ using System.Text;
 
 namespace BaseLibrary
 {
-    //Кооманда, обрамляющая вызов клиентских операций
+    //Кооманда, обрамляющая вызов клиентских операций или запись в ErrorsList
     public class CommCollect : Comm
     {
-        public CommCollect(Logg logger, Comm parent, double startProcent, double finishProcent) 
-            : base(logger, parent, startProcent, finishProcent) { }
+        public CommCollect(Logg logger, Comm parent) 
+            : base(logger, parent, 0, 100) { }
 
         //Список ошибок 
         private readonly List<ErrorCommand> _errors = new List<ErrorCommand>();
 
         //Добавить ошибку
-        public virtual void AddError(ErrorCommand error)
+        public override void AddError(ErrorCommand err)
         {
+            //ToDo запись в ErrorsList
             bool isFound = false;
-            foreach (var err in _errors)
-                if (err.EqualsTo(error))
+            foreach (var e in _errors)
+                if (e.EqualsTo(err))
                     isFound = true;
-            if (!isFound) _errors.Add(error);
+            if (!isFound) _errors.Add(err);
+            base.AddError(err);
+        }
+
+        //Запуск операции, обрамляемой данной командой
+        public override Comm Run(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (BreakException)
+            {
+                return Finish(true);
+            }
+            catch (Exception ex)
+            {
+                AddError(new ErrorCommand("Ошибка", ex));
+            }
+            return Finish();
         }
 
         //Совокупное сообщение об ошибках
