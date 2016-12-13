@@ -27,31 +27,43 @@ namespace BaseLibrary
         }
 
         //Запуск операции, обрамляемой данной командой
-        public override Comm Run(Action action)
+        public override Comm Run(Func<string> func)
         {
+            string res = "";
             try
             {
-                action();
+                res = func();
             }
             catch (BreakException)
             {
-                return Finish(true);
+                return Break();
             }
             catch (Exception ex)
             {
                 AddError(new ErrorCommand("Ошибка", ex));
             }
-            return Finish();
+            return Finish(res);
         }
+
+        protected override void FinishCommand(string results, bool isBreaked)
+        {
+            _results = results;
+            base.FinishCommand(results, isBreaked);
+            Logger.CommandCollect = null;
+        }
+
+        //Результаты выполнения операции
+        private string _results;
 
         //Совокупное сообщение об ошибках
         public string ErrorMessage(bool addContext = true, //добавлять контекст ошибки
                                                  bool addParams = true, //добавлять параметры
                                                  bool addErrType = true) //добавлять подписи Ошибка или Предупреждение
         {
-            if (_errors == null || _errors.Count == 0) return "";
+            if (_errors == null || _errors.Count == 0) return _results;
 
             var sb = new StringBuilder();
+            if (!_results.IsEmpty()) sb.Append(_results).Append(Environment.NewLine);
             bool isFirst = true;
             foreach (var e in _errors.Where(e => e.Quality == CommandQuality.Error))
             {

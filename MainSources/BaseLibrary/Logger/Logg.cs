@@ -24,6 +24,55 @@ namespace BaseLibrary
         private readonly Stack<CommDanger> _commandsDanger = new Stack<CommDanger>();
         public Stack<CommDanger> CommandsDanger { get { return _commandsDanger; } }
 
+        //Процент индикатора
+        private double _tabloProcent;
+        public double TabloProcent
+        {
+            get { lock (_tabloLocker) return _tabloProcent; } 
+            internal set
+            {
+                lock (_tabloLocker)
+                {
+                    if (_tabloProcent == value) return;
+                    _tabloProcent = value;
+                }
+                //ToDo событие
+            }
+        }
+        //Отображать индикатор на табло
+        private bool _showProcent;
+        public bool ShowProcent
+        {
+            get { lock (_tabloLocker) return _showProcent; }
+            internal set
+            {
+                lock (_tabloLocker)
+                {
+                    if (_showProcent == value) return;
+                    _showProcent = value;
+                }
+                //ToDo событие
+            }
+        }
+        
+        //3 уровня текста на форме индикатора
+        private readonly string[] _tabloText = new string[3];
+        public string TabloText(int number)
+        {
+            lock (_tabloLocker)
+                return _tabloText[number];
+        }
+        public void SetTabloText(int number, string text)
+        {
+            lock (_tabloLocker)
+                _tabloText[number] = text;
+            //ToDo событие
+        }
+
+        //Объекты блокировки
+        private readonly object _tabloLocker = new object();
+        private readonly object _breakLocker = new object();
+        
         //Пришла команда Break
         private bool _wasBreaked;
         internal bool WasBreaked 
@@ -47,8 +96,6 @@ namespace BaseLibrary
                 throw new BreakException();
             }
         }
-
-        private readonly object _breakLocker = new object();
 
         //Запуск простой комманды
         public Comm Start(double startProcent, double finishProcent)
@@ -100,7 +147,7 @@ namespace BaseLibrary
             return CommandProgress;
         }
 
-        //Запуск внешней команды от клиента, колекционирущей ошибки
+        //Запуск команды, колекционирущей ошибки
         public CommCollect StartCollect()
         {
             FinishCommand(CommandCollect);
@@ -109,7 +156,7 @@ namespace BaseLibrary
         }
 
         //Завершить указанную команду и всех детей
-        internal void FinishCommand(Comm command) 
+        protected void FinishCommand(Comm command) 
         {
             MakeBreak();
             if (command == null) return;
@@ -151,7 +198,7 @@ namespace BaseLibrary
         }
 
         //text - текст ошибки, ex - исключение, par - праметры ошибки
-        public void AddWarning(string text, Exception ex = null, string pars = "", string context = "")
+        public void AddWarning(string text, Exception ex = null, string pars = "", string context = null)
         {
             string cx = context ?? (CommandLog == null ? "" : CommandLog.Context);
             var err = new ErrorCommand(text, ex, pars, cx, CommandQuality.Warning);

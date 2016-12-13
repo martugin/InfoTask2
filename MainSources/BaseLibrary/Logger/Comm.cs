@@ -42,15 +42,12 @@ namespace BaseLibrary
         private double _procent;
         public virtual double Procent
         {
-            get { lock (_procentLock) return _procent; }
+            get { return _procent; }
             set
             {
-                lock (_procentLock)
-                {
-                    _procent = value;
-                    if (Parent != null)
-                        Parent.Procent = _startProcent + value * (_finishProcent - _startProcent) / 100;
-                }
+                _procent = value;
+                if (Parent != null)
+                    Parent.Procent = _startProcent + value * (_finishProcent - _startProcent) / 100;
             }
         }
         //Каким значениям родителя соответствует 0% и 100% счетчика процентов
@@ -59,7 +56,6 @@ namespace BaseLibrary
 
         //Объекты для блокировки качества и процентов потоком
         private readonly object _qualityLock = new object();
-        private readonly object _procentLock = new object();
 
         //Команда завершена
         public bool IsFinished { get; private set; }
@@ -78,27 +74,42 @@ namespace BaseLibrary
         }
 
         //Запуск операции, обрамляемой данной командой
-        public virtual Comm Run(Action action)
+        public virtual Comm Run(Func<string> func) //Возвращает описание результатов операции
         {
-            action();
-            return Finish();
+            return Finish(func());
+        }
+        public Comm Run(Action action)
+        {
+            return Run(() => { action(); return ""; });
+        }
+
+        //Завершить команду
+        public Comm Finish(string results = "")
+        {
+            FinishOrBreak(results, false);
+        }
+
+        //Прервать команду
+        public Comm Break()
+        {
+            return FinishOrBreak(null, true);
         }
 
         //Завершает комманду вместе со всеми детьми
-        public Comm Finish(bool isBreaked = false)
+        private Comm FinishOrBreak(string results, bool isBreaked)
         {
             var c = Logger.Command;
             while (c != this)
             {
-                c.FinishCommand(isBreaked);
+                c.FinishCommand(null, isBreaked);
                 c = c.Parent;
             }
-            FinishCommand(isBreaked);
+            FinishCommand(results, isBreaked);
             return this;
         }
 
         //Завершает комманду и ее же возвращает
-        protected virtual void FinishCommand(bool isBreaked) //Комманда была прервана
+        protected virtual void FinishCommand(string results, bool isBreaked) //Комманда была прервана
         {
             Procent = 100;
             IsFinished = true;

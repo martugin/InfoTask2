@@ -20,11 +20,13 @@ namespace BaseLibrary
                 _useErrorsList = useErrorsList;
                 if (_historyFile != null)
                 {
-                    if (_historyTemplate != null && DaoDb.FromTemplate(_historyTemplate, _historyFile, ReplaceByTemplate.IfNewVersion, true))
+                    if (_historyTemplate != null &&
+                        DaoDb.FromTemplate(_historyTemplate, _historyFile, ReplaceByTemplate.IfNewVersion, true))
                         _reasonUpdate = "Новая версия файла истории";
                     OpenHistoryRecs();
                 }
             }
+            catch (OutOfMemoryException) { }
             catch (Exception ex)
             {
                 AddErrorAboutHistory(ex);
@@ -88,6 +90,7 @@ namespace BaseLibrary
                     if (openAfterUpdate) OpenHistoryRecs();
                 }
             }
+            catch(OutOfMemoryException) { }
             catch (Exception ex)
             {
                 AddErrorAboutHistory(ex);
@@ -106,11 +109,12 @@ namespace BaseLibrary
             {
                 try
                 {
-                    var commLog = new CommLog(new Logg(), null, 0, 0, "Создание нового файла истории", "", _reasonUpdate);
+                    var commLog = new CommLog(new Logg(this), null, 0, 0, "Создание нового файла истории", "", _reasonUpdate);
                     WriteStart(commLog);
-                    WriteFinish(commLog);
+                    WriteFinish(commLog, "");
                     _reasonUpdate = null;
                 }
+                catch (OutOfMemoryException) { }
                 catch (Exception ex)
                 {
                     AddErrorAboutHistory(ex);
@@ -143,14 +147,14 @@ namespace BaseLibrary
             UpdateHistory(true);
         }
 
-        public void WriteStartSuper(CommLog command)
+        public void WriteStartSuper(CommSuperLog command)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public void WriteFinishSuper(CommLog command, string results = null)
+        public void WriteFinishSuper(CommSuperLog command, string results = null)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void WriteStart(CommLog command)
@@ -170,14 +174,14 @@ namespace BaseLibrary
             });
         }
         
-        public void WriteFinish(CommLog command, string results = null)
+        public void WriteFinish(CommLog command, string results)
         {
             LogEventTime = DateTime.Now;
             RunHistoryOperation(History, () =>
             {
                 History.MoveLast();
                 History.Put("Status", CommandLog.Status);
-                History.Put("Params", new[] { CommandLog.Params, results }.ToPropertyString());
+                History.Put("Results", results);
                 History.Put("ProcessLength", CommandLog.FromStart);
                 _historyId = 0;
             });

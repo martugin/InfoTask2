@@ -8,9 +8,9 @@
         //Начало выполнения комманды
         void WriteStart(CommLog command);
         //Конец выполнения надкомманды
-        void WriteFinishSuper(CommSuperLog command, string results = null);
+        void WriteFinishSuper(CommSuperLog command, string results);
         //Конец выполнения комманды
-        void WriteFinish(CommLog command, string results = null);
+        void WriteFinish(CommLog command, string results);
 
         //Записать событие
         void WriteEvent(string description, string pars);

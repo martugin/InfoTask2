@@ -39,6 +39,7 @@ namespace BaseLibrary
             : base(logger, parent, startProcent, finishProcent, name, pars)
         {
             Context = context;
+            Logger.SetTabloText(1, name + (context.IsEmpty() ? "" : (" (" + context + ")")));
             if (History != null)
                 History.WriteStart(this);
         }
@@ -55,26 +56,28 @@ namespace BaseLibrary
         }
 
         //Запуск операции, обрамляемой данной командой
-        public override Comm Run(Action action)
+        public override Comm Run(Func<string> func)
         {
+            string res = "";
             try
             {
-                action();
+                res = func();
             }
-            catch (BreakException) { throw;}
+            catch (BreakException) { throw; }
             catch (Exception ex)
             {
                 AddError(new ErrorCommand("Ошибка при обработке команды " + Name, ex));
             }
-            return Finish();
+            return Finish(res);
         }
 
         //Завершение команды
-        protected override void FinishCommand(bool isBreaked)
+        protected override void FinishCommand(string results, bool isBreaked)
         {
-            base.FinishCommand(isBreaked);
+            base.FinishCommand(results, isBreaked);
+            Logger.SetTabloText(1, "");
             if (History != null) 
-                History.WriteFinish(this);
+                History.WriteFinish(this, results);
             Logger.CommandLog = null;
         }
     }
@@ -101,11 +104,11 @@ namespace BaseLibrary
         public string ModePeriod { get; private set; }
 
         //Завершение команды
-        protected override void FinishCommand(bool isBreaked)
+        protected override void FinishCommand(string results, bool isBreaked)
         {
-            base.FinishCommand(isBreaked);
+            base.FinishCommand(results, isBreaked);
             if (History != null)
-                History.WriteFinishSuper(this);
+                History.WriteFinishSuper(this, results);
         }
     }
 }
