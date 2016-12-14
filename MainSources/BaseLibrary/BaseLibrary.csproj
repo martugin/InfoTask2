@@ -81,9 +81,10 @@
     <Compile Include="Logger\BreakException.cs" />
     <Compile Include="Logger\Comm.cs" />
     <Compile Include="Logger\CommLog.cs" />
-    <Compile Include="Logger\CommProgress.cs" />
     <Compile Include="History\HistoryAccess.cs" />
     <Compile Include="History\IHistory.cs" />
+    <Compile Include="Logger\CommLogBase.cs" />
+    <Compile Include="Logger\CommProgress.cs" />
     <Compile Include="Logger\Logg.cs" />
     <Compile Include="Logger\LoggerTimed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

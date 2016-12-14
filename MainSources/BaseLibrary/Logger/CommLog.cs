@@ -2,36 +2,6 @@
 
 namespace BaseLibrary
 {
-    //Базовый класс для команд записи в лог
-    public class CommLogBase : Comm
-    {
-        internal protected CommLogBase(Logg logger, Comm parent, double startProcent, double finishProcent, string name, string pars) 
-            : base(logger, parent, startProcent, finishProcent)
-        {
-            StartTime = DateTime.Now;
-            Name = name;
-            Params = pars;
-        }
-
-        //Ссылка на историю
-        protected IHistory History { get { return Logger == null ? null : Logger.History; }}
-
-        //Имя комманды
-        internal protected string Name { get; private set; }
-        //Параметры комманды
-        internal protected string Params { get; private set; }
-
-        //Время запуска комманды
-        internal DateTime StartTime { get; private set; }
-        //Разность времени между сейчас и стартом комманды
-        internal double FromStart
-        {
-            get { return Math.Round(DateTime.Now.Subtract(StartTime).TotalSeconds, 2); }
-        }
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------
-
     //Команда для записи в History
     public class CommLog : CommLogBase
     {
@@ -72,43 +42,13 @@ namespace BaseLibrary
         }
 
         //Завершение команды
-        protected override void FinishCommand(string results, bool isBreaked)
+        internal protected override void FinishCommand(string results, bool isBreaked)
         {
             base.FinishCommand(results, isBreaked);
-            Logger.SetTabloText(1, "");
-            if (History != null) 
+            if (History != null)
                 History.WriteFinish(this, results);
+            Logger.SetTabloText(1, "");
             Logger.CommandLog = null;
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------------
-
-    //Команда для записи в SuperHistory
-    public class CommSuperLog : CommLogBase
-    {
-        internal protected CommSuperLog(Logg logger, Comm parent, double startProcent, double finishProcent, DateTime begin, DateTime end, string mode, string name, string pars)
-            : base(logger, parent, startProcent, finishProcent, name, pars)
-        {
-            BeginPeriod = begin;
-            EndPeriod = end;
-            ModePeriod = mode;
-            if (History != null)
-                History.WriteStartSuper(this);
-        }
-        
-        //Период обработки
-        public DateTime BeginPeriod { get; private set; }
-        public DateTime EndPeriod { get; private set; }
-        //Режим выполнения
-        public string ModePeriod { get; private set; }
-
-        //Завершение команды
-        protected override void FinishCommand(string results, bool isBreaked)
-        {
-            base.FinishCommand(results, isBreaked);
-            if (History != null)
-                History.WriteFinishSuper(this, results);
         }
     }
 }

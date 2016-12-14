@@ -22,7 +22,7 @@ namespace BaseLibrary
 
         //Качество команды
         private CommandQuality _quality = CommandQuality.Success;
-        public CommandQuality Quality { get { lock (_qualityLock) return _quality; }}
+        public CommandQuality Quality { get { lock (_qualityLock) return _quality; } }
         //Команда с ошибкой
         public bool IsError { get { return Quality == CommandQuality.Error; } }
         //Команда совсем без ошибки
@@ -31,11 +31,15 @@ namespace BaseLibrary
         //Добавить ошибку
         public virtual void AddError(ErrorCommand err)
         {
-            lock (_qualityLock)
-                if (_quality < err.Quality)
-                    _quality = err.Quality;
+            AddQuality(err.Quality);
             if (Parent != null)
                 Parent.AddError(err);
+        }
+        protected void AddQuality(CommandQuality quality)
+        {
+            lock (_qualityLock)
+                if (_quality < quality)
+                    _quality = quality;
         }
 
         //Относительный процент индикатора
@@ -86,30 +90,16 @@ namespace BaseLibrary
         //Завершить команду
         public Comm Finish(string results = "")
         {
-            FinishOrBreak(results, false);
-        }
-
-        //Прервать команду
-        public Comm Break()
-        {
-            return FinishOrBreak(null, true);
-        }
-
-        //Завершает комманду вместе со всеми детьми
-        private Comm FinishOrBreak(string results, bool isBreaked)
-        {
-            var c = Logger.Command;
-            while (c != this)
-            {
-                c.FinishCommand(null, isBreaked);
-                c = c.Parent;
-            }
-            FinishCommand(results, isBreaked);
+            while (Logger.Command != this)
+                Logger.Command.FinishCommand(null, false);
+            FinishCommand(results, false);
+            Logger.MakeBreak();
             return this;
         }
 
-        //Завершает комманду и ее же возвращает
-        protected virtual void FinishCommand(string results, bool isBreaked) //Комманда была прервана
+        //Завершает комманду
+        internal protected virtual void FinishCommand(string results, //Строка с описанием результатов команды
+                                                                            bool isBreaked) //Комманда была прервана
         {
             Procent = 100;
             IsFinished = true;

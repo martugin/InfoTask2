@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace BaseLibrary
 {
     //Логгер
     public class Logg
     {
-        public Logg(IHistory history)
+        public Logg(IHistory history, LoggerDangerness dangerness)
         {
             History = history;
+            Dangerness = dangerness;
         }
 
         //Ссылка на историю
@@ -17,12 +17,12 @@ namespace BaseLibrary
         //Текущие команды разных типов
         internal Comm Command { get; set; }
         internal CommLog CommandLog { get; set; }
-        internal CommSuperLog CommandSuperLog { get; set; }
         internal CommProgress CommandProgress { get; set; }
+        internal CommProgressText CommandProgressText { get; set; }
         internal CommCollect CommandCollect { get; set; }
-        //Стек опаных команд
-        private readonly Stack<CommDanger> _commandsDanger = new Stack<CommDanger>();
-        public Stack<CommDanger> CommandsDanger { get { return _commandsDanger; } }
+
+         //Уровень важности безошибочности по отношению к быстроте
+        public LoggerDangerness Dangerness { get; private set; }
 
         //Процент индикатора
         private double _tabloProcent;
@@ -56,6 +56,9 @@ namespace BaseLibrary
         }
         
         //3 уровня текста на форме индикатора
+        //Текст нулевого уровня задается в CommandProgress
+        //Текст первого уровня задается в CommandLog
+        //Текст второго уровня задается в CommandProgressText
         private readonly string[] _tabloText = new string[3];
         public string TabloText(int number)
         {
@@ -78,7 +81,7 @@ namespace BaseLibrary
         internal bool WasBreaked 
         { 
             get { lock (_breakLocker) return _wasBreaked;}
-            private set { lock (_breakLocker) _wasBreaked = value; } 
+            set { lock (_breakLocker) _wasBreaked = value; } 
         }
 
         //Прервать выполнение
@@ -91,10 +94,7 @@ namespace BaseLibrary
         internal protected void MakeBreak()
         {
             if (WasBreaked)
-            {
-                WasBreaked = false;
                 throw new BreakException();
-            }
         }
 
         //Запуск простой комманды
@@ -119,32 +119,20 @@ namespace BaseLibrary
             return StartLog(0, 100, name, context, pars);
         }
         
-        //Запуск команды логирования в SuperHistory
-        public CommSuperLog StartSuperLog(double startProcent, double finishProcent, DateTime begin, DateTime end, string mode, string name, string pars = "")
-        {
-            FinishCommand(CommandSuperLog);
-            Command = CommandSuperLog = new CommSuperLog(this, Command, startProcent, finishProcent, begin, end, mode, name, pars);
-            return CommandSuperLog;
-        }
-        public CommSuperLog StartSuperLog(DateTime begin, DateTime end, string mode, string name, string pars = "")
-        {
-            return StartSuperLog(0, 100, begin, end, mode, name, pars);
-        }
-        public CommSuperLog StartSuperLog(double startProcent, double finishProcent, string name, string pars = "")
-        {
-            return StartSuperLog(startProcent, finishProcent, Different.MinDate, Different.MinDate, "", name, pars);
-        }
-        public CommSuperLog StartSuperLog( string name, string pars = "")
-        {
-            return StartSuperLog(0, 100, name, pars);
-        }
-
-        //Запуск команды, отображающей индикатор
-        public CommProgress StartProgress(string text)
+        //Запуск команды логирования в SuperHistory и отображения индикатора
+        public CommProgress StartProgress(string text, string name, string pars = "")
         {
             FinishCommand(CommandProgress);
-            Command = CommandProgress = new CommProgress(this, Command, text);
+            Command = CommandProgress = new CommProgress(this, Command, text, name, pars);
             return CommandProgress;
+        }
+
+        //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
+        public CommProgressText StartProgressText(double startProcent, double finishProcent, string text)
+        {
+            FinishCommand(CommandProgressText);
+            Command = CommandProgressText = new CommProgressText(this, Command, startProcent, finishProcent, text);
+            return CommandProgressText;
         }
 
         //Запуск команды, колекционирущей ошибки
