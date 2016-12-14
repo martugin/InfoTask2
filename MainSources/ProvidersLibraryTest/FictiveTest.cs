@@ -11,15 +11,15 @@ namespace ProvidersLibraryTest
     [TestClass]
     public class FictiveTest
     {
-        private SourceConnect MakeFictiveConnect(bool makeReserve = false)
+        private SourceConnect MakeFictiveConnect(string prefix, bool makeReserve = false)
         {
             var factory = new ProvidersFactory();
             var connect = (SourceConnect)factory.CreateConnect(ProviderType.Source, "TestSource", "Fictive", new Logger());
-            TestLib.CopyFile(@"ProvidersLibrary\Fictive.accdb");
-            var source = (FictiveSource)factory.CreateProvider("FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"ProvidersLibrary\Fictive.accdb");
+            TestLib.CopyFile("ProvidersLibrary", "Fictive.accdb", "Fictive" + prefix + ".accdb");
+            var source = (FictiveSource)factory.CreateProvider("FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"ProvidersLibrary\Fictive" + prefix + ".accdb");
             FictiveSource source2 = null;
             if (makeReserve)
-                source2 = (FictiveSource)factory.CreateProvider("FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"ProvidersLibrary\Fictive.accdb");
+                source2 = (FictiveSource)factory.CreateProvider("FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"ProvidersLibrary\Fictive" + prefix + ".accdb");
             connect.JoinProviders(source, source2);
             return connect;
         }
@@ -33,7 +33,7 @@ namespace ProvidersLibraryTest
         [TestMethod]
         public void Signals()
         {
-            var connect = MakeFictiveConnect();
+            var connect = MakeFictiveConnect("Signals");
             var source = (FictiveSource)connect.Provider;
             Assert.AreEqual("TestSource", connect.Name);
             Assert.AreEqual("Fictive", connect.Complect);
@@ -147,7 +147,7 @@ namespace ProvidersLibraryTest
         [TestMethod]
         public void ReadByParts()
         {
-            var connect = MakeFictiveConnect();
+            var connect = MakeFictiveConnect("ByParts");
             var sig1 = connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real", true);
             var sig2 = connect.AddInitialSignal("Ob2.BoolSignal", "Ob2", DataType.Boolean, "Table=MomValues;NumObject=2;Signal=Bool", true);
             var sig3 = connect.AddInitialSignal("Ob3.IntSignal", "Ob3", DataType.Integer, "Table=MomValues;NumObject=3;Signal=Int", true);
@@ -395,7 +395,7 @@ namespace ProvidersLibraryTest
         [TestMethod]
         public void ReadCut()
         {
-            var connect = MakeFictiveConnect();
+            var connect = MakeFictiveConnect("Cut");
             var source = (FictiveSource)connect.Provider;
             var sigR = (UniformSignal)connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real", true);
             var sigS = (UniformSignal)connect.AddInitialSignal("Ob2.StringSignal", "Ob2", DataType.String, "Table=MomValues;NumObject=2;Signal=String", true);
@@ -701,7 +701,7 @@ namespace ProvidersLibraryTest
         [TestMethod]
         public void Recursive()
         {
-            var connect = MakeFictiveConnect();
+            var connect = MakeFictiveConnect("Recursive");
             var sigR = (UniformSignal)connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real", true);
             var sigI = (UniformSignal)connect.AddInitialSignal("Ob2.IntSignal", "Ob2", DataType.Integer, "Table=MomValues;NumObject=2;Signal=Int;IsErrorObject=True", true);
             Assert.AreEqual(2, connect.Signals.Count);

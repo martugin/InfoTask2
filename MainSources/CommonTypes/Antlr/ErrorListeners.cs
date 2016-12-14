@@ -26,9 +26,9 @@ namespace CommonTypes
             if (lexer.Token != null)
             {
                 var t = lexer.Token;
-                _keeper.AddError(mess, t.Text + last, t.Line, t.Column, t);
+                _keeper.AddError(mess, t.Text.Trim() + last, t.Line, t.Column, t);
             }
-            else _keeper.AddError(mess, lexer.Text + last, line, charPositionInLine);
+            else _keeper.AddError(mess, lexer.Text.Trim() + last, line, charPositionInLine);
         }
     }
 

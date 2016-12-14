@@ -8,26 +8,30 @@ namespace BaseLibraryTest
     [TestClass]
     public class RecDaoTest
     {
-        //Файлы используемых баз данных
-        private readonly string _file = TestLib.TestRunDir + @"BaseLibrary\DbDao.accdb";
         //Открытие тестовых баз с копированием 
-        private DaoDb CopyDb() 
+        private DaoDb CopyDb(string prefix)
         {
-            return new DaoDb(TestLib.CopyFile(@"BaseLibrary\DbDao.accdb"));
+            return new DaoDb(TestLib.CopyFile("BaseLibrary", "DbDao.accdb", "Rec" + prefix + ".accdb"));
+        }
+        //Путь к файлу
+        private string File(string prefix)
+        {
+            return TestLib.TestRunDir + @"BaseLibrary\Rec" + prefix + ".accdb";
         }
 
         [TestMethod]
         public void Rec()
         {
-            var db = CopyDb();
+            var db = CopyDb("");
+            var file = File("");
             var rec = new RecDao(db, "Tabl");
             Assert.IsNotNull(rec.DaoDb);
-            Assert.AreEqual(_file, rec.DaoDb.File);
+            Assert.AreEqual(file, rec.DaoDb.File);
             Assert.AreEqual(7, rec.FieldsCount);
             Assert.IsTrue(rec.ContainsField("IntField"));
             Assert.IsTrue(rec.ContainsField("RealField"));
             Assert.IsTrue(rec.ContainsField("StringField1"));
-            Assert.IsTrue(rec.ContainsField("Id"));
+            Assert.IsTrue(rec.ContainsField("id"));
 
             Assert.AreEqual(5, rec.RecordCount);
             Assert.IsTrue(rec.HasRows);
@@ -51,7 +55,7 @@ namespace BaseLibraryTest
 
             rec = new RecDao(db, "EmptyTabl");
             Assert.IsNotNull(rec.DaoDb);
-            Assert.AreEqual(_file, rec.DaoDb.File);
+            Assert.AreEqual(file, rec.DaoDb.File);
             Assert.AreEqual(1, rec.FieldsCount);
             Assert.IsTrue(rec.ContainsField("StringField"));
 
@@ -71,7 +75,7 @@ namespace BaseLibraryTest
 
             rec = new RecDao(db, "SELECT Tabl.IntField, Tabl.RealField, SubTabl.StringSubField FROM Tabl INNER JOIN SubTabl ON Tabl.Id = SubTabl.ParentId");
             Assert.IsNotNull(rec.DaoDb);
-            Assert.AreEqual(_file, rec.DaoDb.File);
+            Assert.AreEqual(file, rec.DaoDb.File);
             Assert.AreEqual(3, rec.FieldsCount);
             Assert.IsTrue(rec.ContainsField("IntField"));
             Assert.IsTrue(rec.ContainsField("RealField"));
@@ -103,19 +107,19 @@ namespace BaseLibraryTest
         [TestMethod]
         public void RecRead()
         {
-            using (var rec = new RecDao(CopyDb(), "Tabl"))
+            using (var rec = new RecDao(CopyDb("Read"), "Tabl"))
             {
                 Assert.IsNotNull(rec.DaoDb);
-                Assert.AreEqual(_file, rec.DaoDb.File);
+                Assert.AreEqual(File("Read"), rec.DaoDb.File);
                 
                 Assert.IsTrue(rec.GetBool("BoolField"));
                 Assert.AreEqual(true, rec.GetBoolNull("BoolField"));
                 Assert.AreEqual(1, rec.GetInt("Id"));
                 Assert.AreEqual(1, rec.GetIntNull("Id"));
-                Assert.AreEqual(10, rec.GetInt("IntField"));
+                Assert.AreEqual(10, rec.GetInt("intField"));
                 Assert.AreEqual(10, rec.GetIntNull("IntField"));
                 Assert.AreEqual(1.5, rec.GetDouble("RealField"));
-                Assert.AreEqual(1.5, rec.GetDoubleNull("RealField"));
+                Assert.AreEqual(1.5, rec.GetDoubleNull("REALFIELD"));
                 Assert.AreEqual("Большой текст 1", rec.GetString("StringField1"));
                 Assert.AreEqual("Text", rec.GetString("StringField2"));
                 Assert.AreEqual(new DateTime(2016, 7, 1), rec.GetTime("TimeField"));
@@ -178,7 +182,7 @@ namespace BaseLibraryTest
                 Assert.AreEqual(1, (int)rec.Recordset.Fields["Id"].Value);
             }
 
-            using (var rec = new RecDao(_file,
+            using (var rec = new RecDao(File("Read"),
                 "SELECT Tabl.Id, Tabl.IntField AS IntF, Tabl.RealField, SubTabl.StringSubField AS StringF " +
                 "FROM Tabl LEFT JOIN SubTabl ON Tabl.Id = SubTabl.ParentId ORDER BY Tabl.Id, SubTabl.StringSubField;"))
             {
@@ -254,7 +258,7 @@ namespace BaseLibraryTest
         [TestMethod]
         public void RecWrite()
         {
-            using (var rec = new RecDao(CopyDb(), "Tabl"))
+            using (var rec = new RecDao(CopyDb("Write"), "Tabl"))
             {
                 rec.Read();
                 rec.Put("IntField", 11);

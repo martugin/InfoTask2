@@ -156,28 +156,6 @@ namespace BaseLibrary
             MessageBox.Show(message, caption, MessageBoxButtons.OK, icon);
         }
 
-        //Выводит сообщение об ошибке 
-        public static string MessageError(this Exception ex, //Исключение, вызвашее ошибку
-                                                           string message = null, //Текст сообщения
-                                                           string caption = "InfoTask", //Заголовок окна сообщения
-                                                           MessageBoxIcon icon = MessageBoxIcon.Error) //Иконка
-        {
-            var sb = new StringBuilder();
-            sb.Append(message.IsEmpty() ? "" : (message + Environment.NewLine))
-              .Append(ex.Source)
-              .Append(Environment.NewLine)
-              .Append(ex.Data)
-              .Append(Environment.NewLine)
-              .Append(ex.GetType())
-              .Append(Environment.NewLine)
-              .Append(ex.Message)
-              .Append(Environment.NewLine)
-              .Append(ex.StackTrace);
-            var mess = sb.ToString();
-            MessageBox.Show(mess, caption, MessageBoxButtons.OK, icon);
-            return mess;
-        }
-
         //Выводит сообщение об ошибке
         public static string MessageError(string message, //Текст сообщения
                                                            string caption = "InfoTask", //Заголовок окна сообщения
@@ -191,6 +169,32 @@ namespace BaseLibrary
         public static bool MessageQuestion(string message, string caption = "InfoTask")
         {
             return MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
+        //Возвращает строку - сообщение об ошибке
+        public static string MessageString(this Exception ex, string message = null)
+        {
+            var sb = new StringBuilder();
+            sb.Append(message.IsEmpty() ? "" : (message + Environment.NewLine))
+              .Append(ex.GetType())
+              .Append(Environment.NewLine)
+              .Append(ex.Message)
+              .Append(Environment.NewLine)
+              .Append(ex.StackTrace)
+              .Append(Environment.NewLine)
+              .Append(ex.Data);
+            return sb.ToString();
+        }
+
+        //Выводит сообщение об ошибке 
+        public static string MessageError(this Exception ex, //Исключение, вызвашее ошибку
+                                                           string message = null, //Текст сообщения
+                                                           string caption = "InfoTask", //Заголовок окна сообщения
+                                                           MessageBoxIcon icon = MessageBoxIcon.Error) //Иконка
+        {
+            var mess = ex.MessageString(message);
+            MessageBox.Show(mess, caption, MessageBoxButtons.OK, icon);
+            return mess;
         }
 
         //Заменяет в регулярном выражении все символы на коды, чтобы избежать символов типа . или \
@@ -262,6 +266,18 @@ namespace BaseLibrary
             {
                 MessageError("Не удалось открыть файл " + file + ". Возможно, на компьютере не установлено приложение для просмотра файлов типа " + fi.Extension);
             }
+        }
+
+        //Копирование каталога, файлы заменяются на новые
+        public static void CopyDir(string fromDir, string toDir)
+        {
+            var d = new DirectoryInfo(fromDir);
+            if (Directory.Exists(toDir) != true)
+                Directory.CreateDirectory(toDir);
+            foreach (DirectoryInfo dir in d.GetDirectories())
+                CopyDir(dir.FullName, toDir + "\\" + dir.Name);
+            foreach (string file in Directory.GetFiles(fromDir))
+                File.Copy(file, toDir + "\\" + file.Substring(file.LastIndexOf('\\') + 1), true);
         }
 
         //Заполняет значение контрола pick, по значению поля text

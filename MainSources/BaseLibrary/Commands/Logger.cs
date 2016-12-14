@@ -62,7 +62,7 @@ namespace BaseLibrary
                 if (_historyFile != null)
                 {
                     if (_historyTemplate != null && DaoDb.FromTemplate(_historyTemplate, _historyFile, ReplaceByTemplate.IfNewVersion, true))
-                            _reasonUpdate = "Новая версия файла истории";
+                        _reasonUpdate = "Новая версия файла истории";
                     OpenHistoryRecs();
                 }
             }
@@ -160,7 +160,7 @@ namespace BaseLibrary
         //Вызывается, если при работе с историей произошла ошибка
         private void AddErrorAboutHistory(Exception ex)
         {
-            _reasonUpdate = "Ошибка при работе с файлом истории." + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace;
+            _reasonUpdate = ex.MessageString("Ошибка при работе с файлом истории");
             UpdateHistory(true);
         }
         #endregion

@@ -22,14 +22,14 @@ namespace Generator
         private readonly INodeExpr _expr;
 
         //Получение типа данных
-        public DataType Check(TablStruct tabl)
+        public DataType Check(ITablStruct tabl)
         {
-            if (tabl.Parent == null)
-            {
+            if (tabl is RowGroupStruct)
+                AddError("Переход к надтаблице недопустим для сгруппированных строк");
+            else if (tabl.Parent == null)
                 AddError("Недопустимый переход к надтаблице");
-                return DataType.Error;
-            }
-            return _expr.Check(tabl.Parent);
+            else return _expr.Check(tabl.Parent);
+            return DataType.Error;
         }
 
         //Вычисление значения
@@ -60,9 +60,11 @@ namespace Generator
         private readonly INodeVoid _prog;
 
         //Проверка корректности выражений генерации
-        public void Check(TablStruct tabl)
+        public void Check(ITablStruct tabl)
         {
-            if (tabl.Parent == null)
+            if (tabl is RowGroupStruct)
+                AddError("Переход к надтаблице недопустим для сгруппированных строк");
+            else if (tabl.Parent == null)
                 AddError("Недопустимый переход к надтаблице");
             else _prog.Check(tabl.Parent);
         }

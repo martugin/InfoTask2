@@ -20,7 +20,7 @@ namespace CommonTypes
             using (var db = new DaoDb(DifferentIt.InfoTaskDir() + @"General\General.accdb"))
             {
                 var funsId = new DicI<FunCompile>();
-                var where = " WHERE (Functions.NotLoadCompile = False)" + (isGenerate ? "AND (Functions.LoadGen = True) " : " ");
+                var where = " WHERE (Functions.IsCompile = True)" + (isGenerate ? "AND (Functions.IsGen = True) " : " ");
                 using (var rec = new ReaderAdo(db, "SELECT * FROM Functions" + where))
                     while (rec.Read())
                     {

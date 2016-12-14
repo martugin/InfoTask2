@@ -1,25 +1,30 @@
 ﻿using System;
-using ProvidersLibrary;
+using BaseLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace ComClients
 {
     //Клиент работы с провайдерами, вызываемый из внешних приложений через COM
     public class ProvidersClient : LoggerClient
     {
-        //Инициалоизация
+        //Инициализация
         public void Initialize(string application, //Код приложения
                                         string project) //Код проекта
         {
-            Logger.OpenHistory(DifferentIt.LocalDataProjectDir(project) + @"History\" + application + @"\History.accdb");
+            Logger.OpenHistory(DifferentIt.LocalDataProjectDir(project) + @"History\" + application + @"\History.accdb", DifferentIt.TemplatesDir() + @"LocalData\History\History.accdb");
         }
 
         //Закрытие клиента
         public void Close()
         {
             GC.Collect();
+            IsClosed = true;
         }
 
+        //Клиент уже был закрыт
+        protected bool IsClosed { get; private set; }
+        
         //Фабрика провайдеров
         private ProvidersFactory _factory;
         protected ProvidersFactory Factory 

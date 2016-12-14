@@ -19,6 +19,7 @@
           <Grafics.accdb>Файл графиков, шаблон Projects\Module\Grafic.accdb (порожденный) </Grafics.accdb>
           <Compilled.accdb>Файл результатов и ошибок генерации и компиляции, шаблон Projects\Module\Compiled.accdb (порожденный) </Compilled.accdb>
           <Tables.accdb>Файл таблиц пользовательских, шаблон Projects\Module\Tables.accdb (исходный) </Tables.accdb>
+          <UsedSignals>Файл со списком используемых сигналов</UsedSignals>
         </_КодМодуля>
       </Modules>
       <SignalsHandInput>

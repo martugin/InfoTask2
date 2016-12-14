@@ -15,16 +15,16 @@ namespace Generator
         public NodeGenConst(ITerminalNode terminal, string s) : base(terminal, s) { }
         public NodeGenConst(ITerminalNode terminal, DataType dtype, string s) : base(terminal, dtype, s) { }
 
+        //Получение типа данных
+        public DataType Check(ITablStruct tabl)
+        {
+            return DataType;
+        }
+
         //Вычисление значения
         public IMean Generate(SubRows row)
         {
             return Mean;
-        }
-
-        //Получение типа данных
-        public DataType Check(TablStruct tabl)
-        {
-            return DataType;
         }
     }
 }

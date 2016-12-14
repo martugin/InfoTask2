@@ -91,14 +91,7 @@ namespace Provider
         internal bool IsAnalog { get; private set; }
 
         //Определяет размер блока для считывания, исходя из длины периода
-        private int PartSize()
-        {
-            double len = PeriodEnd.Subtract(PeriodBegin).TotalHours;
-            int res = 3000;
-            if (len > 0.0001) res = Math.Min(3000, Convert.ToInt32(2500 / len));
-            if (res == 0) res = 1;
-            return res;
-        }
+        protected abstract int PartSize { get; }
 
         //Запрос значений по одному блоку сигналов
         protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
@@ -157,12 +150,12 @@ namespace Provider
             var vc = new ValuesCount();
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                vc += ReadByParts(_analogs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
+                vc += ReadByParts(_analogs.Values, PartSize, PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
             if (vc.IsFail) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), 100))
-                vc += ReadByParts(_outs.Values, PartSize(), PeriodBegin, PeriodEnd, true, "Срез данных по выходам");
+                vc += ReadByParts(_outs.Values, PartSize, PeriodBegin, PeriodEnd, true, "Срез данных по выходам");
             return vc;
         }
 
@@ -172,12 +165,12 @@ namespace Provider
             var vc = new ValuesCount();
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                vc += ReadByParts(_analogs.Values, PartSize(), "Изменения значений по аналоговым сигналам");
+                vc += ReadByParts(_analogs.Values, PartSize, "Изменения значений по аналоговым сигналам");
             if (vc.IsFail) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), OutsProcent()))
-                vc += ReadByParts(_outs.Values, PartSize(), "Изменения значений по выходам");
+                vc += ReadByParts(_outs.Values, PartSize, "Изменения значений по выходам");
             if (vc.IsFail) return vc;
 
             using (Start(OutsProcent(), 100))

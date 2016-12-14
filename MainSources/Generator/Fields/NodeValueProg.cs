@@ -21,7 +21,7 @@ namespace Generator
         private readonly INodeVoid[] _voidParts;
 
         //Проверка корректности выражений генерации
-        public void Check(TablStruct tabl)
+        public void Check(ITablStruct tabl)
         {
             foreach (var part in _voidParts)
                 part.Check(tabl);
@@ -58,7 +58,7 @@ namespace Generator
         protected override string NodeType { get { return "ValueProg"; } }
 
         //Проверка корректности выражений генерации, определение типа данных выражения
-        public DataType Check(TablStruct tabl)
+        public DataType Check(ITablStruct tabl)
         {
             _voidProg.Check(tabl);
             return _expr.Check(tabl);

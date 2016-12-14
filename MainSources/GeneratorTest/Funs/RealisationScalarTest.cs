@@ -436,6 +436,9 @@ namespace CommonTypesTest
             Assert.AreEqual(7, Calc(funs, "StrRegFind_ss", DataType.Integer, s1, s6).Integer);
 
             Assert.AreEqual("123AA34 ", Calc(funs, "StrRegReplace_sss", DataType.String, s2, s8, s6).String);
+
+            Assert.AreEqual("AbAb_AA", Calc(funs, "ToIdent_s", DataType.String, s1).String);
+            Assert.AreEqual("A__", Calc(funs, "ToIdent_s", DataType.String, s8).String);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using BaseLibrary;
 
 namespace CommonTypes
@@ -46,7 +45,7 @@ namespace CommonTypes
         //Запись в строку
         public override string ToString()
         {
-            return ErrMess + (Lexeme.IsEmpty() ? "" : (", '" + Lexeme + "'")) + " (" + FieldName + ", строка: " + Line + ", позиция: " + (Pos + 1) + ")";
+            return ErrMess + (Lexeme.IsEmpty() ? "" : (", '" + Lexeme.Trim() + "'")) + (FieldName.IsEmpty() ? "" : (" (" +FieldName + ", строка: " + Line + ", позиция: " + (Pos + 1) + ")"));
         }
     }
 }
