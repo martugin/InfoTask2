@@ -36,7 +36,11 @@ namespace BaseLibrary
             }
             catch (BreakException)
             {
-                return Break();
+                while (Logger.Command != this)
+                    Logger.Command.FinishCommand(null, true);
+                FinishCommand(null, true);
+                Logger.WasBreaked = false;
+                return this;
             }
             catch (Exception ex)
             {
@@ -45,7 +49,8 @@ namespace BaseLibrary
             return Finish(res);
         }
 
-        protected override void FinishCommand(string results, bool isBreaked)
+        //Завершение команды
+        internal protected override void FinishCommand(string results, bool isBreaked)
         {
             _results = results;
             base.FinishCommand(results, isBreaked);

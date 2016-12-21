@@ -147,12 +147,12 @@ namespace BaseLibrary
             UpdateHistory(true);
         }
 
-        public void WriteStartSuper(CommSuperLog command)
+        public void WriteStartSuper(CommProgress command)
         {
             throw new NotImplementedException();
         }
 
-        public void WriteFinishSuper(CommSuperLog command, string results = null)
+        public void WriteFinishSuper(CommProgress command, string results = null)
         {
             throw new NotImplementedException();
         }

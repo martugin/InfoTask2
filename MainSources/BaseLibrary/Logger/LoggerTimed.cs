@@ -36,5 +36,13 @@ namespace BaseLibrary
 
         //Режим (Выравнивание, Синхроннный, Разовый и т.п.)
         public string ModePeriod { get; protected set; }
+
+        //Запуск команды логирования в SuperHistory и отображения индикатора
+        public CommProgress StartProgress(DateTime begin, DateTime end, string mode, string name, string pars = "")
+        {
+            FinishCommand(CommandProgress);
+            Command = CommandProgress = new CommProgress(this, Command, begin, end, mode, name, pars);
+            return CommandProgress;
+        }
     }
 }
