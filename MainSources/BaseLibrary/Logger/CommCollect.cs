@@ -8,8 +8,17 @@ namespace BaseLibrary
     //Кооманда, обрамляющая вызов клиентских операций или запись в ErrorsList
     public class CommCollect : Comm
     {
-        public CommCollect(Logg logger, Comm parent) 
-            : base(logger, parent, 0, 100) { }
+        public CommCollect(Logg logger, Comm parent, bool isWriteHistory, bool isCollect)
+            : base(logger, parent, 0, 100)
+        {
+            _isWriteHistory = isWriteHistory;
+            _isCollect = isCollect;
+        }
+
+        //Записывать ошибки в ErrorsList
+        private readonly bool _isWriteHistory;
+        //Формировать общую ошибку
+        private readonly bool _isCollect;
 
         //Список ошибок 
         private readonly List<ErrorCommand> _errors = new List<ErrorCommand>();
@@ -17,12 +26,16 @@ namespace BaseLibrary
         //Добавить ошибку
         public override void AddError(ErrorCommand err)
         {
-            //ToDo запись в ErrorsList
-            bool isFound = false;
-            foreach (var e in _errors)
-                if (e.EqualsTo(err))
-                    isFound = true;
-            if (!isFound) _errors.Add(err);
+            if (_isWriteHistory && Logger.History != null)
+                Logger.History.WriteErrorToList(err);
+            if (_isCollect)
+            {
+                bool isFound = false;
+                foreach (var e in _errors)
+                    if (e.EqualsTo(err))
+                        isFound = true;
+                if (!isFound) _errors.Add(err);
+            }
             base.AddError(err);
         }
 
@@ -65,7 +78,7 @@ namespace BaseLibrary
                                                  bool addParams = true, //добавлять параметры
                                                  bool addErrType = true) //добавлять подписи Ошибка или Предупреждение
         {
-            if (_errors == null || _errors.Count == 0) return _results;
+            if (!_isCollect || _errors == null || _errors.Count == 0) return _results;
 
             var sb = new StringBuilder();
             if (!_results.IsEmpty()) sb.Append(_results).Append(Environment.NewLine);

@@ -3,6 +3,9 @@
     //Интерфейс для записи в историю
     public interface IHistory
     {
+        //Ссылка на логгер
+        Logg Logger { get; }
+
         //Начало выполнения надкомманды
         void WriteStartSuper(CommProgress command);
         //Начало выполнения комманды

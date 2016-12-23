@@ -14,7 +14,7 @@ namespace BaseLibrary
         }
 
         //Ссылка на историю
-        protected IHistory History { get { return Logger == null ? null : Logger.History; }}
+        protected IHistory History { get { return Logger.History; }}
 
         //Имя комманды
         internal protected string Name { get; private set; }

@@ -99,5 +99,17 @@ namespace BaseLibrary
             catch { }
             return list;
         }
+
+        //Создать таблицу в базе данных на основе шаблона, если такой еще нет 
+        public static void CreateTable(SqlProps props, //Свойства базы данных
+                                                     string templateTable, //Имя таблицы - шаблона
+                                                     string createdTable) //Имя создаваемой таблицы
+        {
+            var con = Connect(props);
+            if (DBNull.Value.Equals(new SqlCommand("SELECT object_id('" + createdTable + "')", con).ExecuteScalar()))
+                new SqlCommand("SELECT * INTO " + createdTable + " FROM " + templateTable, con).ExecuteNonQuery();
+            try { con.Close(); }
+            catch { }
+        }
     }
 }

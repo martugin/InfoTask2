@@ -93,7 +93,7 @@ namespace BaseLibrary
             while (Logger.Command != this)
                 Logger.Command.FinishCommand(null, false);
             FinishCommand(results, false);
-            Logger.MakeBreak();
+            Logger.CheckBreak();
             return this;
         }
 

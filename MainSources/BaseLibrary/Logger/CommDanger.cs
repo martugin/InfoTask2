@@ -51,7 +51,7 @@ namespace BaseLibrary
         {
             for (int i = 1; i <= _repetitions; i++)
             {
-                Logger.MakeBreak();
+                Logger.CheckBreak();
                 _errors.Clear();
                 if (!_useThread) //однопоточный вариант
                 {
@@ -72,25 +72,25 @@ namespace BaseLibrary
                                 Thread.Sleep(50);
                             if (!t.IsCompleted) 
                                 t.Dispose();
-                            Logger.MakeBreak();
+                            Logger.CheckBreak();
                             return this;
                         }
                     }
-                    Logger.MakeBreak();
+                    Logger.CheckBreak();
                     if (t.Result) return Finish();
                 }
 
                 if (i == _repetitions) return Finish();
                 Parent.AddError(new ErrorCommand("Повтор операции", null, _errMess, "", CommandQuality.Repeat));
                 
-                Logger.MakeBreak();
+                Logger.CheckBreak();
                 if (_errWaiting != 0)
                 {
                     int n = 0;
                     while ((n += 50) < _errWaiting)
                     {
                         Thread.Sleep(Math.Min(50, _errWaiting));
-                        Logger.MakeBreak();
+                        Logger.CheckBreak();
                     }
                 }
 
@@ -112,7 +112,7 @@ namespace BaseLibrary
             catch (Exception ex)
             {
                 Logger.AddError(_errMess, ex);
-                Logger.MakeBreak();
+                Logger.CheckBreak();
                 while (Logger.Command != this)
                     Logger.Command.Finish();
                 return false;

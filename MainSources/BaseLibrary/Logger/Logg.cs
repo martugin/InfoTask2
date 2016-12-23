@@ -54,7 +54,7 @@ namespace BaseLibrary
             }
         }
         
-        //3 уровня текста на форме индикатора
+        //Три уровня текста на форме индикатора
         //Текст нулевого уровня задается в CommandProgress
         //Текст первого уровня задается в CommandLog
         //Текст второго уровня задается в CommandProgressText
@@ -90,7 +90,7 @@ namespace BaseLibrary
         }
 
         //Вызвать BreakException
-        internal protected void MakeBreak()
+        internal protected void CheckBreak()
         {
             if (WasBreaked)
                 throw new BreakException();
@@ -135,17 +135,18 @@ namespace BaseLibrary
         }
 
         //Запуск команды, колекционирущей ошибки
-        public CommCollect StartCollect()
+        public CommCollect StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
+                                                         bool isCollect) //Формировать общую ошибку
         {
             FinishCommand(CommandCollect);
-            Command = CommandCollect = new CommCollect(this, Command);
+            Command = CommandCollect = new CommCollect(this, Command, isWriteHistory, isCollect);
             return CommandCollect;
         }
 
         //Завершить указанную команду и всех детей
         protected void FinishCommand(Comm command) 
         {
-            MakeBreak();
+            CheckBreak();
             if (command == null) return;
             command.Finish();
         }
@@ -153,7 +154,7 @@ namespace BaseLibrary
         //Добавляет событие в историю
         public void AddEvent(string description, string pars = "")
         {
-            MakeBreak();
+            CheckBreak();
             if (History != null) 
                 History.WriteEvent(description, pars);
         }
@@ -171,7 +172,7 @@ namespace BaseLibrary
         //Добавляет ошибку в комманду, лог и отображение, err - ошибка, 
         private void AddError(ErrorCommand err)
         {
-            MakeBreak();
+            CheckBreak();
             if (Command != null)
                 Command.AddError(err);
         }
@@ -198,7 +199,7 @@ namespace BaseLibrary
             get { return Command == null ? 0 : Command.Procent; }
             set
             {
-                MakeBreak();
+                CheckBreak();
                 if (Command != null) 
                     Command.Procent = value;
             }
