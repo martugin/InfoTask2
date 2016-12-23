@@ -5,14 +5,13 @@ namespace BaseLibrary
     //Логгер
     public class Logg
     {
-        public Logg(IHistory history, LoggerDangerness dangerness)
+        public Logg(LoggerDangerness dangerness)
         {
-            History = history;
             Dangerness = dangerness;
         }
 
         //Ссылка на историю
-        internal IHistory History { get; set; }
+        public IHistory History { get; set; }
         
         //Текущие команды разных типов
         internal Comm Command { get; set; }

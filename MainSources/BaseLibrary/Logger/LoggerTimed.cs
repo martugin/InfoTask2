@@ -5,8 +5,8 @@ namespace BaseLibrary
     //Логгер с понятием период обработки
     public abstract class LoggerTimed : Logg
     {
-        protected LoggerTimed(IHistory history) 
-            : base(history) { }
+        protected LoggerTimed(LoggerDangerness dangerness) 
+            : base(dangerness) { }
         
         //Начало и конец текущего периода обработки
         private DateTime _beginPeriod;

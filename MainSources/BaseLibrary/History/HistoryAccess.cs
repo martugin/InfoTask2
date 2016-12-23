@@ -7,13 +7,15 @@ namespace BaseLibrary
     public class HistoryAccess : IHistory
     {
         //Задание файла истории
-        public HistoryAccess(string historyFile, //файл истории
+        public HistoryAccess(Logg logger, //Ссылка на логгер
+                                        string historyFile, //файл истории
                                         string historyTemplate, //шаблон для файла истории
                                         bool useSubHistory = false, //использовать SubHistory
                                         bool useErrorsList = true) //использовать ErrorsList
         {
             try
             {
+                Logger = logger;
                 _historyFile = historyFile;
                 _historyTemplate = historyTemplate;
                 _useSubHistory = useSubHistory;
@@ -54,6 +56,8 @@ namespace BaseLibrary
         //Рекордсет с таблицей ErrorsList
         protected RecDao ErrorsRec { get; set; }
 
+        //Логгер
+        internal Logg Logger { get; private set; }
         //Текущие команды записи в History и SubHistory
         internal CommLog CommandLog { get; set; }
         internal CommLog CommandSub { get; set; }
@@ -109,7 +113,7 @@ namespace BaseLibrary
             {
                 try
                 {
-                    var commLog = new CommLog(new Logg(this), null, 0, 0, "Создание нового файла истории", "", _reasonUpdate);
+                    var commLog = new CommLog(Logger, null, 0, 0, "Создание нового файла истории", "", _reasonUpdate);
                     WriteStart(commLog);
                     WriteFinish(commLog, "");
                     _reasonUpdate = null;

@@ -1,5 +1,5 @@
 ﻿using System;
-using BaseLibrary;
+using System.Threading;
 using CommonTypes;
 using ProvidersLibrary;
 
@@ -18,6 +18,9 @@ namespace ComClients
         //Закрытие клиента
         public void Close()
         {
+            try { Logger.CloseHistory();}
+            catch {}
+            Thread.Sleep(100);
             GC.Collect();
             IsClosed = true;
         }
