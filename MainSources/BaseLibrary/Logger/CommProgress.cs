@@ -50,6 +50,7 @@ namespace BaseLibrary
                 History.WriteFinishSuper(this, results);
             Logger.SetTabloText(0, "");
             Logger.ShowProcent = false;
+            Logger.CommandProgress = null;
         }
     }
 
@@ -68,6 +69,7 @@ namespace BaseLibrary
         {
             Logger.SetTabloText(2, "");
             base.FinishCommand(results, isBreaked);
+            Logger.CommandProgressText = null;
         }
     }
 }

@@ -105,7 +105,14 @@ namespace BaseLibrary
         {
             return Start(0, 100);
         }
-        
+        //Завершение простоя команды
+        public Comm Finish()
+        {
+            var c = Command;
+            FinishCommand(c);
+            return c;
+        }
+
         //Запуск команды логирования
         public CommLog StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
         {
@@ -117,13 +124,27 @@ namespace BaseLibrary
         {
             return StartLog(0, 100, name, context, pars);
         }
-        
+        //Завершение команды логирования
+        public CommLog FinishLog(string results = "")
+        {
+            var c = CommandLog;
+            FinishCommand(c, results);
+            return c;
+        }
+
         //Запуск команды логирования в SuperHistory и отображения индикатора
         public CommProgress StartProgress(string text, string name, string pars = "")
         {
             FinishCommand(CommandProgress);
             Command = CommandProgress = new CommProgress(this, Command, text, name, pars);
             return CommandProgress;
+        }
+        //Завершение команды логирования в SuperHistory
+        public CommProgress FinishProgress()
+        {
+            var c = CommandProgress;
+            FinishCommand(c);
+            return c;
         }
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
@@ -132,6 +153,13 @@ namespace BaseLibrary
             FinishCommand(CommandProgressText);
             Command = CommandProgressText = new CommProgressText(this, Command, startProcent, finishProcent, text);
             return CommandProgressText;
+        }
+        //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
+        public CommProgressText StartProgressText()
+        {
+            var c = CommandProgressText;
+            FinishCommand(c);
+            return c;
         }
 
         //Запуск команды, колекционирущей ошибки
@@ -142,13 +170,20 @@ namespace BaseLibrary
             Command = CommandCollect = new CommCollect(this, Command, isWriteHistory, isCollect);
             return CommandCollect;
         }
+        //Завершение команды, колекционирущей ошибки
+        public CommCollect FinishCollect()
+        {
+            var c = CommandCollect;
+            FinishCommand(c);
+            return c;
+        }
 
         //Завершить указанную команду и всех детей
-        protected void FinishCommand(Comm command) 
+        protected void FinishCommand(Comm command, string results = "") 
         {
             CheckBreak();
             if (command == null) return;
-            command.Finish();
+            command.Finish(results);
         }
 
         //Добавляет событие в историю

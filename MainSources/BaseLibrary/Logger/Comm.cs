@@ -13,6 +13,7 @@ namespace BaseLibrary
             Parent = parent;
             _startProcent = startProcent;
             _finishProcent = finishProcent;
+            Procent = 0;
         }
 
         //Указатель на родителя
