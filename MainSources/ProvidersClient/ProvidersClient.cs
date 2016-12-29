@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using CommonTypes;
 using ProvidersLibrary;
 
@@ -17,9 +18,16 @@ namespace ComClients
         //Закрытие клиента
         public void Close()
         {
+            try { Logger.CloseHistory();}
+            catch {}
+            Thread.Sleep(100);
             GC.Collect();
+            IsClosed = true;
         }
 
+        //Клиент уже был закрыт
+        protected bool IsClosed { get; private set; }
+        
         //Фабрика провайдеров
         private ProvidersFactory _factory;
         protected ProvidersFactory Factory 

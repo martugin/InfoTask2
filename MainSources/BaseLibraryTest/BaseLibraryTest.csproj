@@ -58,6 +58,8 @@
     <Compile Include="Databases\ReaderAdoTest.cs" />
     <Compile Include="Databases\RecDaoTest.cs" />
     <Compile Include="Databases\SysTablTest.cs" />
+    <Compile Include="Logger\LogTest.cs" />
+    <Compile Include="Logger\TestHistory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Collections\DicITest.cs" />
     <Compile Include="TestLib.cs" />
@@ -68,9 +70,7 @@
       <Name>BaseLibrary</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

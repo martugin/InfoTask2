@@ -60,6 +60,8 @@ namespace Generator
          //Проверка корректности выражений генерации
          public void Check(ITablStruct tabl)
          {
+             if (tabl.Fields.ContainsKey(_var.Name))
+                AddError("Имя переменной не должно совпадать с именем поля таблицы");
              _var.DataType = _var.DataType.Add(_nodeMean.Check(tabl));
          }
 
