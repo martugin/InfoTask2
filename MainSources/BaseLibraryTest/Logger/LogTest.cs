@@ -291,14 +291,84 @@ namespace BaseLibrary
             Assert.AreEqual("Ошибка", Errors[2].Status);
             Assert.AreEqual(CommandQuality.Error, CommandCollect.Quality);
 
+            try { Command = CommandCollect.Parent.Parent;}
+            catch (Exception ex)
+            {
+                AddError("Err3", ex, "Err3Pars");
+                Assert.AreEqual(2, Logs[1].Events.Count);
+                Assert.AreEqual("Err3", Logs[1].Events[1].Description);
+                Assert.IsTrue(Logs[1].Events[1].Params.StartsWith("Err3Pars;" + Environment.NewLine + "Object reference not set to an instance of an object"));
+            }
+
+            Assert.AreEqual(2, Logs[1].Events.Count);
+            Assert.AreEqual(4, Errors.Count);
+            Assert.AreEqual(beg, Errors[3].BeginPeriod);
+            Assert.AreEqual(en, Errors[3].EndPeriod);
+            Assert.AreEqual("Source2", Errors[3].Context);
+            Assert.AreEqual("Err3", Errors[3].Description);
+            Assert.AreEqual("Log1", Errors[3].Command);
+            Assert.AreEqual("Err3Pars", Errors[3].Params);
+            Assert.AreEqual("Ошибка", Errors[3].Status);
+            Assert.AreEqual(CommandQuality.Error, CommandCollect.Quality);
+
             FinishProgress();
             Assert.AreEqual(1, Supers.Count);
             Assert.IsNull(CommandProgress);
             Assert.AreEqual(CommandQuality.Error, CommandCollect.Quality);
 
-            FinishCollect();
+            var c = FinishCollect();
             Assert.IsNull(CommandCollect);
             Assert.IsNull(Command);
+            Assert.AreEqual(CommandQuality.Error, c.Quality);
+            Assert.AreEqual("Ошибка: Err2; Source2; Err2Pars" + Environment.NewLine +
+                                     "Ошибка: Err3; Source2; Err3Pars" + Environment.NewLine +
+                                     "Предупреждение: War0; Source; War0Pars" + Environment.NewLine + 
+                                     "Предупреждение: War1; Source; War1Pars", c.ErrorMessage());
+            Assert.AreEqual("Err2; Err2Pars" + Environment.NewLine +
+                                     "Err3; Err3Pars" + Environment.NewLine +
+                                     "War0; War0Pars" + Environment.NewLine +
+                                     "War1; War1Pars", c.ErrorMessage(false, true, false));
+            Assert.AreEqual("Ошибка: Err2" + Environment.NewLine +
+                                     "Ошибка: Err3" + Environment.NewLine +
+                                     "Предупреждение: War0" + Environment.NewLine +
+                                     "Предупреждение: War1", c.ErrorMessage(false, false));
+        }
+
+        [TestMethod]
+        public void BreakEx()
+        {
+            RunHistory();
+            var c = (CommCollect)StartCollect(false, true).Run(() =>
+                {
+                    WasBreaked = true;
+                    StartLog("aa");
+                });
+            Assert.IsTrue(c.IsBreaked);
+            Assert.IsTrue(c.IsFinished);
+            Assert.AreEqual(CommandQuality.Success, c.Quality);
+            Assert.AreEqual("Прервано", c.Status);
+            Assert.AreEqual(0, Logs.Count);
+            Assert.AreEqual("", c.ErrorMessage());
+
+            c = (CommCollect)StartCollect(false, true).Run(() =>
+                {
+                     StartProgress("Progress", "Progress");
+                    StartLog("Log");
+                    AddEvent("Event");
+                    WasBreaked = true;
+                    AddError("Error");
+                });
+            Assert.AreEqual(1, Logs.Count);
+            Assert.AreEqual(1, Logs[0].Events.Count);
+            Assert.AreEqual("Event", Logs[0].Events[0].Description);
+            Assert.AreEqual("Прервано", Logs[0].Status);
+
+            Assert.IsTrue(c.IsBreaked);
+            Assert.IsTrue(c.IsFinished);
+            Assert.AreEqual(CommandQuality.Success, c.Quality);
+            Assert.AreEqual("Прервано", c.Status);
+            Assert.AreEqual("", c.ErrorMessage());
+
         }
     }
 }

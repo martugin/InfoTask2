@@ -78,7 +78,7 @@ namespace BaseLibrary
                                                  bool addParams = true, //добавлять параметры
                                                  bool addErrType = true) //добавлять подписи Ошибка или Предупреждение
         {
-            if (!_isCollect || _errors == null || _errors.Count == 0) return _results;
+            if (!_isCollect || _errors == null || _errors.Count == 0) return _results ?? "";
 
             var sb = new StringBuilder();
             if (!_results.IsEmpty()) sb.Append(_results).Append(Environment.NewLine);

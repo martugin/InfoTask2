@@ -142,7 +142,7 @@ namespace BaseLibrary
                 var ev = new TestEvent();
                 CommandLog.Events.Add(ev);
                 ev.Description = error.Text;
-                ev.Params = error.Params;
+                ev.Params = error.ToLog();
                 ev.Time = DateTime.Now;
                 ev.FromStart = Logger.CommandLog.FromStart;
                 ev.Status = error.Quality.ToRussian();

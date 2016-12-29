@@ -81,6 +81,7 @@ namespace BaseLibrary
         //Запуск операции, обрамляемой данной командой
         public virtual Comm Run(Func<string> func) //Возвращает описание результатов операции
         {
+            if (IsFinished) return this;
             return Finish(func());
         }
         public Comm Run(Action action)
