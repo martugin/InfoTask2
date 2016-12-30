@@ -58,7 +58,7 @@ namespace BaseLibrary
         //Текст нулевого уровня задается в CommandProgress
         //Текст первого уровня задается в CommandLog
         //Текст второго уровня задается в CommandProgressText
-        private readonly string[] _tabloText = new string[3];
+        private readonly string[] _tabloText = new [] {"", "", ""};
         public string TabloText(int number)
         {
             lock (_tabloLocker)

@@ -12,6 +12,13 @@ namespace BaseLibrary
             BeginPeriod = begin;
             EndPeriod = end;
             ModePeriod = mode;
+            var logg = Logger as LoggerTimed;
+            if (logg != null)
+            {
+                logg.BeginPeriod = begin;
+                logg.EndPeriod = end;
+                logg.ModePeriod = mode;    
+            }
             Initialize();
         }
         //Конструктор с указанием текста 0-го уровня формы индикатора
