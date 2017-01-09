@@ -5,14 +5,13 @@ namespace BaseLibrary
     //Логгер
     public class Logg
     {
-        public Logg(IHistory history, LoggerDangerness dangerness)
+        public Logg(LoggerDangerness dangerness)
         {
-            History = history;
             Dangerness = dangerness;
         }
 
         //Ссылка на историю
-        internal IHistory History { get; set; }
+        public IHistory History { get; set; }
         
         //Текущие команды разных типов
         internal Comm Command { get; set; }
@@ -55,11 +54,11 @@ namespace BaseLibrary
             }
         }
         
-        //3 уровня текста на форме индикатора
+        //Три уровня текста на форме индикатора
         //Текст нулевого уровня задается в CommandProgress
         //Текст первого уровня задается в CommandLog
         //Текст второго уровня задается в CommandProgressText
-        private readonly string[] _tabloText = new string[3];
+        private readonly string[] _tabloText = new [] {"", "", ""};
         public string TabloText(int number)
         {
             lock (_tabloLocker)
@@ -91,7 +90,7 @@ namespace BaseLibrary
         }
 
         //Вызвать BreakException
-        internal protected void MakeBreak()
+        internal protected void CheckBreak()
         {
             if (WasBreaked)
                 throw new BreakException();
@@ -106,7 +105,14 @@ namespace BaseLibrary
         {
             return Start(0, 100);
         }
-        
+        //Завершение простоя команды
+        public Comm Finish()
+        {
+            var c = Command;
+            FinishCommand(c);
+            return c;
+        }
+
         //Запуск команды логирования
         public CommLog StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
         {
@@ -118,13 +124,27 @@ namespace BaseLibrary
         {
             return StartLog(0, 100, name, context, pars);
         }
-        
+        //Завершение команды логирования
+        public CommLog FinishLog(string results = "")
+        {
+            var c = CommandLog;
+            FinishCommand(c, results);
+            return c;
+        }
+
         //Запуск команды логирования в SuperHistory и отображения индикатора
         public CommProgress StartProgress(string text, string name, string pars = "")
         {
             FinishCommand(CommandProgress);
             Command = CommandProgress = new CommProgress(this, Command, text, name, pars);
             return CommandProgress;
+        }
+        //Завершение команды логирования в SuperHistory
+        public CommProgress FinishProgress()
+        {
+            var c = CommandProgress;
+            FinishCommand(c);
+            return c;
         }
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
@@ -134,27 +154,42 @@ namespace BaseLibrary
             Command = CommandProgressText = new CommProgressText(this, Command, startProcent, finishProcent, text);
             return CommandProgressText;
         }
+        //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
+        public CommProgressText StartProgressText()
+        {
+            var c = CommandProgressText;
+            FinishCommand(c);
+            return c;
+        }
 
         //Запуск команды, колекционирущей ошибки
-        public CommCollect StartCollect()
+        public CommCollect StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
+                                                         bool isCollect) //Формировать общую ошибку
         {
             FinishCommand(CommandCollect);
-            Command = CommandCollect = new CommCollect(this, Command);
+            Command = CommandCollect = new CommCollect(this, Command, isWriteHistory, isCollect);
             return CommandCollect;
+        }
+        //Завершение команды, колекционирущей ошибки
+        public CommCollect FinishCollect()
+        {
+            var c = CommandCollect;
+            FinishCommand(c);
+            return c;
         }
 
         //Завершить указанную команду и всех детей
-        protected void FinishCommand(Comm command) 
+        protected void FinishCommand(Comm command, string results = "") 
         {
-            MakeBreak();
+            CheckBreak();
             if (command == null) return;
-            command.Finish();
+            command.Finish(results);
         }
 
         //Добавляет событие в историю
         public void AddEvent(string description, string pars = "")
         {
-            MakeBreak();
+            CheckBreak();
             if (History != null) 
                 History.WriteEvent(description, pars);
         }
@@ -172,7 +207,7 @@ namespace BaseLibrary
         //Добавляет ошибку в комманду, лог и отображение, err - ошибка, 
         private void AddError(ErrorCommand err)
         {
-            MakeBreak();
+            CheckBreak();
             if (Command != null)
                 Command.AddError(err);
         }
@@ -199,7 +234,7 @@ namespace BaseLibrary
             get { return Command == null ? 0 : Command.Procent; }
             set
             {
-                MakeBreak();
+                CheckBreak();
                 if (Command != null) 
                     Command.Procent = value;
             }

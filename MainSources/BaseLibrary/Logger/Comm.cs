@@ -13,6 +13,7 @@ namespace BaseLibrary
             Parent = parent;
             _startProcent = startProcent;
             _finishProcent = finishProcent;
+            Procent = 0;
         }
 
         //Указатель на родителя
@@ -80,6 +81,7 @@ namespace BaseLibrary
         //Запуск операции, обрамляемой данной командой
         public virtual Comm Run(Func<string> func) //Возвращает описание результатов операции
         {
+            if (IsFinished) return this;
             return Finish(func());
         }
         public Comm Run(Action action)
@@ -93,7 +95,7 @@ namespace BaseLibrary
             while (Logger.Command != this)
                 Logger.Command.FinishCommand(null, false);
             FinishCommand(results, false);
-            Logger.MakeBreak();
+            Logger.CheckBreak();
             return this;
         }
 

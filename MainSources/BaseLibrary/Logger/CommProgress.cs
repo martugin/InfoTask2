@@ -12,6 +12,13 @@ namespace BaseLibrary
             BeginPeriod = begin;
             EndPeriod = end;
             ModePeriod = mode;
+            var logg = Logger as LoggerTimed;
+            if (logg != null)
+            {
+                logg.BeginPeriod = begin;
+                logg.EndPeriod = end;
+                logg.ModePeriod = mode;    
+            }
             Initialize();
         }
         //Конструктор с указанием текста 0-го уровня формы индикатора
@@ -50,11 +57,11 @@ namespace BaseLibrary
                 History.WriteFinishSuper(this, results);
             Logger.SetTabloText(0, "");
             Logger.ShowProcent = false;
+            Logger.CommandProgress = null;
         }
     }
 
     //--------------------------------------------------------------------------------------
-
     //Команда для отображения текста 2-го уровня на форме индикатора
     public class CommProgressText : Comm
     {
@@ -69,6 +76,7 @@ namespace BaseLibrary
         {
             Logger.SetTabloText(2, "");
             base.FinishCommand(results, isBreaked);
+            Logger.CommandProgressText = null;
         }
     }
 }
