@@ -431,5 +431,156 @@ namespace BaseLibrary
             Assert.AreEqual("Прервано", c.Status);
             Assert.AreEqual("", c.ErrorMessage());
         }
+
+        [TestMethod]
+        public void CommDanger()
+        {
+            RunHistory();
+            var c = RunDanger(3, 2, LoggerDangerness.Single, false, true);
+            Assert.AreEqual(9, Logs[0].Events.Count);
+            Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Repeat, c.Quality);
+
+            c = RunDanger(3, 0, LoggerDangerness.Single, false, true);
+            Assert.AreEqual(1, Logs[1].Events.Count);
+            Assert.AreEqual("", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Success, c.Quality);
+
+            c = RunDanger(3, 3, LoggerDangerness.Single, false, true);
+            Assert.AreEqual(10, Logs[2].Events.Count);
+            Assert.AreEqual("Ошибка: Исключение" + Environment.NewLine + "Предупреждение: Повтор операции", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Error, c.Quality);
+
+            c = RunDanger(3, 2, LoggerDangerness.Single, true, true);
+            Assert.AreEqual(9, Logs[3].Events.Count);
+            Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Repeat, c.Quality);
+
+            c = RunDanger(3, 3, LoggerDangerness.Periodic, false, true);
+            Assert.AreEqual(2, Logs[4].Events.Count);
+            Assert.AreEqual("Ошибка: Исключение", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Error, c.Quality);
+
+            c = RunDanger(7, 5, LoggerDangerness.RealTime, false, true);
+            Assert.AreEqual(21, Logs[5].Events.Count);
+            Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Repeat, c.Quality);
+
+            c = RunDanger(2, 1, LoggerDangerness.Single, false, true);
+            Assert.AreEqual(5, Logs[6].Events.Count);
+            Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Repeat, c.Quality);
+
+            c = RunDanger(3, 2, LoggerDangerness.Single, false, false);
+            Assert.AreEqual(9, Logs[7].Events.Count);
+            Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Repeat, c.Quality);
+
+            c = RunDanger(3, 3, LoggerDangerness.Single, false, false);
+            Assert.AreEqual(10, Logs[8].Events.Count);
+            Assert.AreEqual("Ошибка: Ошибка" + Environment.NewLine + "Предупреждение: Повтор операции", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Error, c.Quality);
+        }
+
+        private CommCollect RunDanger(int reps, int repserr, LoggerDangerness dangerness, bool useThread, bool useException)
+        {
+            StartCollect(false, true);
+            StartLog("Log");
+            int num = Logs.Count - 1;
+            Assert.AreEqual(0, Logs[num].Events.Count);
+            int i = 0;
+            StartDanger(reps, dangerness, "Исключение", "Повтор операции", useThread).Run(() =>
+            {
+                Assert.AreEqual(i * 4, Logs[num].Events.Count);
+                AddEvent("Попытка");
+                Assert.AreEqual(i * 4 + 1, Logs[num].Events.Count);
+                if (i++ < repserr)
+                {
+                    if (useException) throw new Exception("Err");
+                    AddError("Ошибка");
+                }
+            }, () =>
+            {
+                Assert.AreEqual(i * 4 - 1, Logs[num].Events.Count);
+                AddEvent("Повтор");
+                Assert.AreEqual(i * 4, Logs[num].Events.Count);
+            });
+            return FinishCollect();
+        }
+
+        [TestMethod]
+        public void CommDangerComplex()
+        {
+            RunHistory();
+            StartCollect(false, true);
+            StartLog("Log");
+            Assert.AreEqual(0, Logs[0].Events.Count);
+            int i = 0;
+            var cden = StartDanger(3, LoggerDangerness.Single, "Исключение", "Повтор операции", true);
+            cden.Run(() =>
+            {
+                Assert.AreEqual(i * 4, Logs[0].Events.Count);
+                Assert.AreSame(cden, Command);
+                AddEvent("Попытка");
+                var com = Start();
+                Assert.AreSame(com, Command);
+                Assert.AreEqual(i * 4 + 1, Logs[0].Events.Count);
+                if (i++ < 2) throw new Exception("Err");
+            }, () =>
+            {
+                Assert.AreEqual(i * 4 - 1, Logs[0].Events.Count);
+                AddEvent("Повтор");
+                Assert.AreEqual(i * 4, Logs[0].Events.Count);
+            });
+            Assert.AreSame(CommandLog, Command);
+            var c = FinishCollect();
+            Assert.AreEqual(9, Logs[0].Events.Count);
+            Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Repeat, c.Quality);
+
+            StartCollect(false, true);
+            StartLog("Log");
+            Assert.AreEqual(0, Logs[1].Events.Count);
+            int k = 0, n = 0;
+            StartDanger(3, LoggerDangerness.Single, "Исключение", "Повтор операции").Run(() =>
+                StartDanger(3, LoggerDangerness.Single, "Исключение", "Повтор операции").Run(() =>
+                {
+                    Assert.AreEqual(k*4 - n, Logs[1].Events.Count);
+                    AddEvent("Попытка");
+                    Assert.AreEqual(k*4 + 1 - n, Logs[1].Events.Count);
+                    if (k++ < 5) throw new Exception("Err");
+                }, () => 
+                {
+                    Assert.AreEqual(k*4 - 1 - n, Logs[1].Events.Count);
+                    AddEvent("Повтор");
+                    Assert.AreEqual(k*4 - n, Logs[1].Events.Count);
+                }), () => n++);
+            c = FinishCollect();
+            Assert.AreEqual(20, Logs[1].Events.Count);
+            Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Repeat, c.Quality);
+
+            StartCollect(false, true);
+            StartLog("Log");
+            Assert.AreEqual(0, Logs[2].Events.Count);
+            k = 0; n = 0;
+            StartDanger(2, LoggerDangerness.Single, "Исключение", "Повтор операции").Run(() =>
+                StartDanger(2, LoggerDangerness.Single, "Исключение", "Повтор операции").Run(() =>
+                {
+                    Assert.AreEqual(k * 4 - n, Logs[2].Events.Count);
+                    AddEvent("Попытка");
+                    Assert.AreEqual(k * 4 + 1 - n, Logs[2].Events.Count);
+                    if (k++ < 7) AddError("Ошибка");
+                }, () =>
+                {
+                    Assert.AreEqual(k * 4 - 1 - n, Logs[2].Events.Count);
+                    AddEvent("Повтор");
+                    Assert.AreEqual(k * 4 - n, Logs[2].Events.Count);
+                }), () => n++);
+            c = FinishCollect();
+            Assert.AreEqual(13, Logs[2].Events.Count);
+            Assert.AreEqual("Ошибка: Ошибка" + Environment.NewLine + "Предупреждение: Повтор операции", c.ErrorMessage(false, false));
+            Assert.AreEqual(CommandQuality.Error, c.Quality);
+        }
     }
 }

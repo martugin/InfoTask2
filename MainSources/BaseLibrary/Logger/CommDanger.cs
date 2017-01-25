@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,17 +8,18 @@ namespace BaseLibrary
     public class CommDanger : Comm
     {
         internal CommDanger(Logg logger, Comm parent, double startProcent, double finishProcent, 
-                                        int repetions,
+                                        int repetitions,
                                         LoggerDangerness dangerness, //Минимальная LoggerDangerness, начиная с которой выполняется более одного повторения операции
+                                        string errMess, string repeatMess,
                                         bool useThread = false, 
-                                        int errWaiting = 0, 
-                                        string errMess = "Не удалось выполнить опасную операцию")
+                                        int errWaiting = 0)
             : base(logger, parent, startProcent, finishProcent)
         {
-            _repetitions = Logger.Dangerness >= dangerness ? repetions : 1;
+            _repetitions = Logger.Dangerness >= dangerness ? repetitions : 1;
             _useThread = useThread;
             _errWaiting = errWaiting;
             _errMess = errMess;
+            _repeatMess = repeatMess;
         }
 
         //Cколько раз повторять, если не удалась (вместе с первым)
@@ -28,17 +28,24 @@ namespace BaseLibrary
         private readonly bool _useThread;
         //Cколько мс ждать при ошибке
         private readonly int _errWaiting;
-        //Сообщение об ошибке 
+        //Сообщения об ошибке и о повторе
         private readonly string _errMess; 
+        private readonly string _repeatMess; 
 
-        //Список ошибок
-        private readonly List<ErrorCommand> _errors = new List<ErrorCommand>();
-        
+        //При повторении операции случилась ошибка
+        private bool _isError;
+        //Идет последнее повторении операции
+        private bool _lastRepeat;
+
         //Добавить ошибку 
         public override void AddError(ErrorCommand err)
         {
-            _errors.Add(err);
-            AddQuality(err.Quality);
+            _isError |= err.Quality == CommandQuality.Error;
+            AddQuality(_lastRepeat ? err.Quality : CommandQuality.Repeat);
+            if (_lastRepeat)
+                Parent.AddError(err);
+            else if (Logger.History != null)
+                Logger.History.WriteError(err);
         }
 
         //Запуск операции, обрамляемой данной командой
@@ -52,7 +59,8 @@ namespace BaseLibrary
             for (int i = 1; i <= _repetitions; i++)
             {
                 Logger.CheckBreak();
-                _errors.Clear();
+                _lastRepeat = i == _repetitions;
+                _isError = false;
                 if (!_useThread) //однопоточный вариант
                 {
                     if (RunAction(action)) 
@@ -81,9 +89,11 @@ namespace BaseLibrary
                 }
 
                 if (i == _repetitions) return Finish();
-                Parent.AddError(new ErrorCommand("Повтор операции", null, _errMess, "", CommandQuality.Repeat));
-                
+                Parent.AddError(new ErrorCommand(_repeatMess, null, "" , "", CommandQuality.Repeat));
                 Logger.CheckBreak();
+                while (Logger.Command != this)
+                    Logger.Finish();
+
                 if (_errWaiting != 0)
                 {
                     int n = 0;
@@ -94,6 +104,7 @@ namespace BaseLibrary
                     }
                 }
 
+                _isError = false;
                 if (erorrAction != null && !RunAction(erorrAction))
                     return Finish();
             }
@@ -106,7 +117,7 @@ namespace BaseLibrary
             try
             {
                 action();
-                return _errors.Count == 0;
+                return !_isError;
             }
             catch (BreakException) { throw; }
             catch (Exception ex)
@@ -117,14 +128,6 @@ namespace BaseLibrary
                     Logger.Command.Finish();
                 return false;
             }
-        }
-
-        //Завершает комманду
-        internal protected override void FinishCommand(string results, bool isBreaked)
-        {
-            base.FinishCommand(results, isBreaked);
-            foreach (var err in _errors)
-                Parent.AddError(err);
         }
     }
 }

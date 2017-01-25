@@ -178,6 +178,23 @@ namespace BaseLibrary
             return c;
         }
 
+        //Запуск команды, обрамляющей опасную операцию
+        public CommDanger StartDanger(double startProcent, double finishProcent, 
+                                        int repetitions, //Cколько раз повторять, если не удалась (вместе с первым)
+                                        LoggerDangerness dangerness, //Минимальная LoggerDangerness, начиная с которой выполняется более одного повторения операции
+                                        string errMess, //Сообщение об ошибке 
+                                        string repeatMess, //Сообщение о повторе
+                                        bool useThread = false, //Запускать опасную операцию в другом потоке, чтобы была возможность ее жестко прервать
+                                        int errWaiting = 0)  //Cколько мс ждать при ошибке
+        {
+            Command = new CommDanger(this, Command, startProcent, finishProcent, repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
+            return (CommDanger) Command;
+        }
+        public CommDanger StartDanger(int repetitions, LoggerDangerness dangerness, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
+        {
+            return StartDanger(0, 100, repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
+        }
+
         //Завершить указанную команду и всех детей
         protected void FinishCommand(Comm command, string results = "") 
         {
