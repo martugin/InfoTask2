@@ -12,7 +12,7 @@ namespace ComClients
         public void Initialize(string application, //Код приложения
                                         string project) //Код проекта
         {
-            Logger.OpenHistory(DifferentIt.LocalDataProjectDir(project) + @"History\" + application + @"\History.accdb", DifferentIt.TemplatesDir() + @"LocalData\History\History.accdb");
+            Logger.OpenHistory(DifferentIt.LocalDataProjectDir(project) + @"History\" + application + @"\History.accdb", DifferentIt.TemplatesDir + @"LocalData\History\History.accdb");
         }
 
         //Закрытие клиента

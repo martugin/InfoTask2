@@ -22,6 +22,11 @@
 
         //Записать ошибку в список ошибок
         void WriteErrorToList(ErrorCommand error);
+        //Очистить список ошибок
+        void ClearErrorsList();
+
+        //Сохранение старого файла истории и добавление нового, при достижении размера или при ошибке
+        void UpdateHistory();
 
         //Закрыть файл истории
         void Close();

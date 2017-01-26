@@ -166,6 +166,13 @@ namespace BaseLibrary
             }
         }
 
+        public void ClearErrorsList()
+        {
+            Errors.Clear();
+        }
+
+        public void UpdateHistory() { }
+
         public void Close() { }
     }
 }

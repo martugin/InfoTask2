@@ -9,17 +9,13 @@ namespace BaseLibrary
         //Задание файла истории
         public HistoryAccess(Logg logger, //Ссылка на логгер
                                         string historyFile, //файл истории
-                                        string historyTemplate, //шаблон для файла истории
-                                        bool useSubHistory = false, //использовать SubHistory
-                                        bool useErrorsList = true) //использовать ErrorsList
+                                        string historyTemplate) //шаблон для файла истории
         {
             try
             {
                 Logger = logger;
                 _historyFile = historyFile;
                 _historyTemplate = historyTemplate;
-                _useSubHistory = useSubHistory;
-                _useErrorsList = useErrorsList;
                 if (_historyFile != null)
                 {
                     if (_historyTemplate != null &&
@@ -42,10 +38,6 @@ namespace BaseLibrary
         protected DaoDb HistoryDb;
         //Строка с причиной создания нового файла истории
         private string _reasonUpdate;
-        //Использовать SubHistory
-        private readonly bool _useSubHistory;
-        //Использовать ErrorsList
-        private readonly bool _useErrorsList;
 
         //Рекордсет с таблицей SubHistory
         private RecDao _subHistory;
@@ -75,7 +67,7 @@ namespace BaseLibrary
         }
         
         //Сохранение старого файла истории и добавление нового
-        public void UpdateHistory(bool openAfterUpdate)
+        public void UpdateHistory()
         {
             try
             {
@@ -91,7 +83,7 @@ namespace BaseLibrary
                     Thread.Sleep(1500);
                     DaoDb.FromTemplate(_historyTemplate, _historyFile, ReplaceByTemplate.Always, true);
                     Thread.Sleep(1500);
-                    if (openAfterUpdate) OpenHistoryRecs();
+                    OpenHistoryRecs();
                 }
             }
             catch(OutOfMemoryException) { }
@@ -105,10 +97,10 @@ namespace BaseLibrary
         private void OpenHistoryRecs()
         {
             HistoryDb = new DaoDb(_historyFile);
+            _subHistory = new RecDao(HistoryDb, "SubHistory");
             _history = new RecDao(HistoryDb, "History");
             _superHistory = new RecDao(HistoryDb, "SuperHistory");
-            if (_useSubHistory) _subHistory = new RecDao(HistoryDb, "SubHistory");
-            if (_useErrorsList) _errorsRec = new RecDao(HistoryDb, "ErrorsList");
+            _errorsRec = new RecDao(HistoryDb, "ErrorsList");
             if (_reasonUpdate != null)
             {
                 try
@@ -148,7 +140,7 @@ namespace BaseLibrary
         private void AddErrorAboutHistory(Exception ex)
         {
             _reasonUpdate = ex.MessageString("Ошибка при работе с файлом истории");
-            UpdateHistory(true);
+            UpdateHistory();
         }
 
         public void WriteStartSuper(CommProgress command)
@@ -156,8 +148,8 @@ namespace BaseLibrary
             RunHistoryOperation(_superHistory, () =>
             {
                 _superHistory.AddNew();
-                _superHistory.Put("Command", CommandProgress.Name);
-                _superHistory.Put("Params", CommandProgress.Params);
+                _superHistory.Put("Command", command.Name);
+                _superHistory.Put("Params", command.Params);
                 if (Logger is LoggerTimed)
                 {
                     var logger = (LoggerTimed) Logger;
@@ -165,9 +157,9 @@ namespace BaseLibrary
                     _superHistory.Put("EndPeriod", logger.EndPeriod);
                     _superHistory.Put("ModePeriod", logger.ModePeriod);    
                 }
-                _superHistory.Put("Status", CommandProgress.Status);
-                _superHistory.Put("Time", CommandProgress.StartTime);
-                _superHistoryId = _history.GetInt("HistoryId");
+                _superHistory.Put("Status", command.Status);
+                _superHistory.Put("Time", command.StartTime);
+                _superHistoryId = _superHistory.GetInt("SuperHistoryId");
             });
         }
 
@@ -175,10 +167,10 @@ namespace BaseLibrary
         {
             RunHistoryOperation(_superHistory, () =>
             {
-                _superHistory.AddNew();
-                _superHistory.Put("Status", CommandProgress.Status);
+                _superHistory.MoveLast();
+                _superHistory.Put("Status", command.Status);
                 _superHistory.Put("Results", results);
-                _superHistory.Put("ProcessLength", CommandProgress.FromStart);
+                _superHistory.Put("ProcessLength", command.FromStart);
                 _superHistoryId = 0;
             });
         }
@@ -191,11 +183,11 @@ namespace BaseLibrary
                 _history.AddNew();
                 if (CommandProgress != null)
                     _history.Put("SuperHistoryId", _superHistoryId);
-                _history.Put("Command", CommandLog.Name);
-                _history.Put("Params", CommandLog.Params);
-                _history.Put("Status", CommandLog.Status);
-                _history.Put("Time", CommandLog.StartTime);
-                _history.Put("Context", CommandLog.Context, true);
+                _history.Put("Command", command.Name);
+                _history.Put("Params", command.Params);
+                _history.Put("Status", command.Status);
+                _history.Put("Time", command.StartTime);
+                _history.Put("Context", command.Context, true);
                 _historyId = _history.GetInt("HistoryId");
             });
         }
@@ -206,23 +198,23 @@ namespace BaseLibrary
             RunHistoryOperation(_history, () =>
             {
                 _history.MoveLast();
-                _history.Put("Status", CommandLog.Status);
+                _history.Put("Status", command.Status);
                 _history.Put("Results", results);
-                _history.Put("ProcessLength", CommandLog.FromStart);
+                _history.Put("ProcessLength", command.FromStart);
                 _historyId = 0;
             });
         }
 
         public void WriteEvent(string description, string pars)
         {
-            RunHistoryOperation(_superHistory, () =>
+            RunHistoryOperation(_subHistory, () =>
             {
-                _superHistory.AddNew();
-                _superHistory.Put("Description", description);
-                _superHistory.Put("Params", pars);
-                _superHistory.Put("Time", DateTime.Now);
-                _superHistory.Put("HistoryId", _historyId);
-                _superHistory.Put("FromStart", FromEvent);
+                _subHistory.AddNew();
+                _subHistory.Put("Description", description);
+                _subHistory.Put("Params", pars);
+                _subHistory.Put("Time", DateTime.Now);
+                _subHistory.Put("HistoryId", _historyId);
+                _subHistory.Put("FromStart", FromEvent);
                 LogEventTime = DateTime.Now;
             });
         }
@@ -231,14 +223,14 @@ namespace BaseLibrary
         {
             RunHistoryOperation(_superHistory, () =>
             {
-                _superHistory.AddNew();
-                if (CommandLog != null) _superHistory.Put("HistoryId", _historyId);
-                _superHistory.Put("Description", error.Text);
-                _superHistory.Put("Params", error.ToLog());
-                _superHistory.Put("Time", DateTime.Now);
+                _subHistory.AddNew();
+                if (CommandLog != null) _subHistory.Put("HistoryId", _historyId);
+                _subHistory.Put("Description", error.Text);
+                _subHistory.Put("Params", error.ToLog());
+                _subHistory.Put("Time", DateTime.Now);
                 if (CommandLog != null)
-                    _superHistory.Put("FromStart", FromEvent);
-                _superHistory.Put("Status", error.Quality.ToRussian());
+                    _subHistory.Put("FromStart", FromEvent);
+                _subHistory.Put("Status", error.Quality.ToRussian());
             });
         }
 
@@ -262,6 +254,11 @@ namespace BaseLibrary
                     _errorsRec.Put("EndPeriod", CommandProgress.EndPeriod);
                 }
             });
+        }
+
+        public void ClearErrorsList()
+        {
+            HistoryDb.Execute("DELEETE * FROM ErrorsList");
         }
 
         //Закрывает историю

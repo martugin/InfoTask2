@@ -15,11 +15,17 @@ namespace CommonTypes
         }
         
         //Каталог шаблонов
-        public static string TemplatesDir()
+        public static string TemplatesDir
         {
-            return InfoTaskDir() + @"Templates\";
+            get { return InfoTaskDir() + @"Templates\"; }
         }
-        
+
+        //Путь к шаблону файла истории
+        public static string HistoryTemplateFile
+        {
+            get { return TemplatesDir + @"LocalData\History\History.accdb"; }
+        }
+
         //Возвращает путь к каталогу проекта в LocalData
         public static string LocalDataProjectDir(string project) //Код проекта
         {
