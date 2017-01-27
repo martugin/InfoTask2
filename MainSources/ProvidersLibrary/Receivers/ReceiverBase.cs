@@ -1,4 +1,5 @@
 ﻿using System;
+using BaseLibrary;
 
 namespace ProvidersLibrary
 {
@@ -26,7 +27,8 @@ namespace ProvidersLibrary
                         ob.AddSignal(sig);
                     }
                     Procent = 30;
-                    Danger(PrepareReceiver, 2, 0, "Ошибка при подготовке приемника", Reconnect);
+                    StartDanger(30, 100, 2, LoggerDangerness.Single, "Ошибка при подготовке приемника", "Повторная подготовка приемника")
+                        .Run(PrepareReceiver, () => Reconnect());
                 }
             }
             catch (Exception ex)

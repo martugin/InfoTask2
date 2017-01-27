@@ -65,7 +65,7 @@ namespace BaseLibrary
             Assert.AreEqual("ErrorPars", Logs[0].Events[2].Params);
             Assert.AreEqual("Ошибка", Logs[0].Events[2].Status);
 
-            Comm c = FinishLog("Results");
+            Command c = FinishLog("Results");
             Assert.IsTrue(c.IsFinished);
             Assert.IsNull(CommandLog);
             Assert.IsNull(Command);
@@ -396,7 +396,7 @@ namespace BaseLibrary
         public void BreakEx()
         {
             RunHistory();
-            var c = (CommCollect)StartCollect(false, true).Run(() =>
+            var c = (CommandCollect)StartCollect(false, true).Run(() =>
                 {
                     WasBreaked = true;
                     StartLog("aa");
@@ -408,7 +408,7 @@ namespace BaseLibrary
             Assert.AreEqual(0, Logs.Count);
             Assert.AreEqual("", c.ErrorMessage());
 
-            c = (CommCollect)StartCollect(false, true).Run(() =>
+            c = (CommandCollect)StartCollect(false, true).Run(() =>
                 {
                     StartProgress("Progress", "Progress");
                     Assert.AreEqual("Progress", TabloText(0));
@@ -482,7 +482,7 @@ namespace BaseLibrary
             Assert.AreEqual(CommandQuality.Error, c.Quality);
         }
 
-        private CommCollect RunDanger(int reps, int repserr, LoggerDangerness dangerness, bool useThread, bool useException)
+        private CommandCollect RunDanger(int reps, int repserr, LoggerDangerness dangerness, bool useThread, bool useException)
         {
             StartCollect(false, true);
             StartLog("Log");

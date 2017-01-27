@@ -6,9 +6,9 @@ using System.Text;
 namespace BaseLibrary
 {
     //Кооманда, обрамляющая вызов клиентских операций или запись в ErrorsList
-    public class CommCollect : Comm
+    public class CommandCollect : Command
     {
-        public CommCollect(Logg logger, Comm parent, bool isWriteHistory, bool isCollect)
+        public CommandCollect(Logger logger, Command parent, bool isWriteHistory, bool isCollect)
             : base(logger, parent, 0, 100)
         {
             _isWriteHistory = isWriteHistory;
@@ -40,7 +40,7 @@ namespace BaseLibrary
         }
 
         //Запуск операции, обрамляемой данной командой
-        public override Comm Run(Func<string> func)
+        public override Command Run(Func<string> func)
         {
             string res = "";
             try

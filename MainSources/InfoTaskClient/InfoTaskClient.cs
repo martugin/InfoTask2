@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using BaseLibrary;
 using CommonTypes;
 using Generator;

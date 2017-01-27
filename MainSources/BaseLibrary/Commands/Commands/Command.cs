@@ -1,13 +1,12 @@
-﻿
-using System;
+﻿using System;
 
 namespace BaseLibrary
 {
     //Простая комманда
-    public class Comm
+    public class Command : IDisposable
     {
         //Создание новой комманды 
-        internal Comm(Logg logger, Comm parent, double startProcent, double finishProcent)
+        internal Command(Logger logger, Command parent, double startProcent, double finishProcent)
         {
             Logger = logger;
             Parent = parent;
@@ -17,9 +16,9 @@ namespace BaseLibrary
         }
 
         //Указатель на родителя
-        internal protected Comm Parent { get; private set; }
+        internal protected Command Parent { get; private set; }
         //Указатель на Logger
-        internal protected Logg Logger { get; private set; }
+        internal protected Logger Logger { get; private set; }
 
         //Качество команды
         private CommandQuality _quality = CommandQuality.Success;
@@ -79,18 +78,18 @@ namespace BaseLibrary
         }
 
         //Запуск операции, обрамляемой данной командой
-        public virtual Comm Run(Func<string> func) //Возвращает описание результатов операции
+        public virtual Command Run(Func<string> func) //Возвращает описание результатов операции
         {
             if (IsFinished) return this;
             return Finish(func());
         }
-        public Comm Run(Action action)
+        public Command Run(Action action)
         {
             return Run(() => { action(); return ""; });
         }
 
         //Завершить команду
-        public Comm Finish(string results = "")
+        public Command Finish(string results = "")
         {
             while (Logger.Command != this)
                 Logger.Command.FinishCommand(null, false);
@@ -107,6 +106,13 @@ namespace BaseLibrary
             IsFinished = true;
             IsBreaked = isBreaked;
             Logger.Command = Logger.Command.Parent;
+        }
+
+        //Очистка ресурсов
+        public void Dispose()
+        {
+            try { Finish(); }
+            catch {}
         }
     }
 }

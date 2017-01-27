@@ -98,6 +98,13 @@ namespace Provider
             return factory;
         }
 
+        //Преводит дату в формат для запросов Simatic
+        private static string DateToSimatic(DateTime d)
+        {
+            DateTime dd = d.ToUniversalTime();
+            return "'" + dd.Year + "-" + dd.Month + "-" + dd.Day + " " + dd.Hour + ":" + dd.Minute + ":" + dd.Second + "." + dd.Millisecond + "'";
+        }
+
         //Запрос значений из архива по списку сигналов и интервалу
         protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
         {
@@ -111,8 +118,8 @@ namespace Provider
                     sb.Append(";").Append(((ObjectSimatic) part[i]).Id);
                 sb.Append(";-2)");
             }
-            sb.Append(", ").Append(beg.ToSimaticString());
-            sb.Append(", ").Append(en.ToSimaticString());
+            sb.Append(", ").Append(DateToSimatic(beg));
+            sb.Append(", ").Append(DateToSimatic(en));
             
             AddEvent("Запрос значений из архива", part.Count + " тегов");
             return new ReaderAdo(Connection, sb.ToString());

@@ -3,9 +3,9 @@
 namespace BaseLibrary
 {
     //Базовый класс для команд записи в лог
-    public class CommLogBase : Comm
+    public class CommandLogBase : Command
     {
-        internal protected CommLogBase(Logg logger, Comm parent, double startProcent, double finishProcent, string name, string pars) 
+        internal protected CommandLogBase(Logger logger, Command parent, double startProcent, double finishProcent, string name, string pars) 
             : base(logger, parent, startProcent, finishProcent)
         {
             StartTime = DateTime.Now;

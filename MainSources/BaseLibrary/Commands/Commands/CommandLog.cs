@@ -3,9 +3,9 @@
 namespace BaseLibrary
 {
     //Команда для записи в History
-    public class CommLog : CommLogBase
+    public class CommandLog : CommandLogBase
     {
-        internal protected CommLog(Logg logger, Comm parent, double startProcent, double finishProcent, string name, string context, string pars) 
+        internal protected CommandLog(Logger logger, Command parent, double startProcent, double finishProcent, string name, string context, string pars) 
             : base(logger, parent, startProcent, finishProcent, name, pars)
         {
             Context = context;
@@ -26,7 +26,7 @@ namespace BaseLibrary
         }
 
         //Запуск операции, обрамляемой данной командой
-        public override Comm Run(Func<string> func)
+        public override Command Run(Func<string> func)
         {
             string res = "";
             try

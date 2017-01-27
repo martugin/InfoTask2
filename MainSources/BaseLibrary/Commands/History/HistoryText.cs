@@ -8,13 +8,15 @@ namespace BaseLibrary
     public class HistoryText : IHistory
     {
         //Задание файла истории
-        public HistoryText(Logg logger, //Ссылка на логгер
-                                     string historyFile) //файл истории
+        public HistoryText(Logger logger, //Ссылка на логгер
+                                     string historyFile, //Файл истории
+                                     bool useSuperHistory) //Разрешить команды уровня Progress
         {
             try
             {
                 Logger = logger;
                 _file = historyFile;
+                _shift = useSuperHistory ? "    " : "";
                 OpenHistory();
             }
             catch (OutOfMemoryException) { }
@@ -25,9 +27,11 @@ namespace BaseLibrary
         }
         
         //Логгер
-        public Logg Logger { get; private set; }
+        public Logger Logger { get; private set; }
         //Файл истории
         private readonly string _file;
+        //Если команды уровня Progress разрешены, то сдвиг на 4 пробела
+        private readonly string _shift;
         //Потоки записи истории и ошибок
         private StreamWriter _writer;
         private StreamWriter _errWriter;
@@ -59,7 +63,7 @@ namespace BaseLibrary
             {
                 try
                 {
-                    var commLog = new CommLog(Logger, null, 0, 0, "Создание нового файла истории", "", _reasonUpdate);
+                    var commLog = new CommandLog(Logger, null, 0, 0, "Создание нового файла истории", "", _reasonUpdate);
                     WriteStart(commLog);
                     WriteFinish(commLog, "");
                     _reasonUpdate = null;
@@ -108,7 +112,7 @@ namespace BaseLibrary
             }
         }
 
-        public void WriteStartSuper(CommProgress command)
+        public void WriteStartSuper(CommandProgress command)
         {
             _writer.Write(command.Name + ", ");
             if (Logger is LoggerTimed)
@@ -119,15 +123,15 @@ namespace BaseLibrary
             _writer.WriteLine(command.StartTime);
         }
 
-        public void WriteFinishSuper(CommProgress command, string results)
+        public void WriteFinishSuper(CommandProgress command, string results)
         {
             _writer.WriteLine(@"\" + command.Name + ", " + command.Status + ", Длительность: " + command.FromStart + (results.IsEmpty() ? "" : (", " + results)));
         }
         
-        public void WriteStart(CommLog command)
+        public void WriteStart(CommandLog command)
         {
             LogEventTime = DateTime.Now;
-            _writer.Write("    " + command.Name);
+            _writer.Write(_shift + command.Name);
             if (!command.Context.IsEmpty())
                 _writer.Write(", Контекст: " + command.Context);
             if (!command.Params.IsEmpty())
@@ -135,25 +139,25 @@ namespace BaseLibrary
             _writer.WriteLine(", " + command.StartTime);
         }
 
-        public void WriteFinish(CommLog command, string results)
+        public void WriteFinish(CommandLog command, string results)
         {
             LogEventTime = DateTime.Now;
-            _writer.WriteLine(@"    \" + command.Name + ", " + command.Status + ", Длительность: " + command.FromStart + (results.IsEmpty() ? "" : (", " + results)));
+            _writer.WriteLine(_shift + @"\" + command.Name + ", " + command.Status + ", Длительность: " + command.FromStart + (results.IsEmpty() ? "" : (", " + results)));
         }
 
         public void WriteEvent(string description, string pars)
         {
-            _writer.Write("        " + description + ", От предыдущего: " + FromEvent);
+            _writer.Write(_shift + "    " + description + ", От предыдущего: " + FromEvent);
             if (!pars.IsEmpty()) _writer.Write(", " + pars);
             _writer.WriteLine(", " + DateTime.Now);
         }
 
         public void WriteError(ErrorCommand error)
         {
-            _writer.Write("        " + error.Text + ", " + error.Quality.ToRussian());
+            _writer.Write(_shift + "    " + error.Text + ", " + error.Quality.ToRussian());
             if (Logger.CommandLog != null)
                 _writer.Write(", От предыдущего: " + FromEvent);
-            _writer.WriteLine(", " + error.ToLog().Replace(Environment.NewLine, Environment.NewLine + "        ") + ", " + DateTime.Now);
+            _writer.WriteLine(", " + error.ToLog().Replace(Environment.NewLine, Environment.NewLine + _shift + "    ") + ", " + DateTime.Now);
         }
 
         public void WriteErrorToList(ErrorCommand error)

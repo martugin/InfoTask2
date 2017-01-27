@@ -3,9 +3,9 @@
 namespace BaseLibrary
 {
     //Логгер
-    public class Logg
+    public class Logger
     {
-        public Logg(LoggerDangerness dangerness)
+        public Logger(LoggerDangerness dangerness = LoggerDangerness.Single)
         {
             Dangerness = dangerness;
         }
@@ -14,11 +14,14 @@ namespace BaseLibrary
         public IHistory History { get; set; }
         
         //Текущие команды разных типов
-        internal Comm Command { get; set; }
-        internal CommLog CommandLog { get; set; }
-        internal CommProgress CommandProgress { get; set; }
-        internal CommProgressText CommandProgressText { get; set; }
-        internal CommCollect CommandCollect { get; set; }
+        internal Command Command { get; set; }
+        internal CommandLog CommandLog { get; set; }
+        internal CommandProgress CommandProgress { get; set; }
+        internal CommandProgressText CommandProgressText { get; set; }
+        internal CommandCollect CommandCollect { get; set; }
+        internal CommandKeep CommandKeep { get; set; }
+        //Накопленная ошибка
+        public string KeepedError { get { return CommandKeep.ErrorMessage; } }
 
          //Уровень важности безошибочности по отношению к быстроте
         public LoggerDangerness Dangerness { get; private set; }
@@ -97,89 +100,97 @@ namespace BaseLibrary
         }
 
         //Запуск простой комманды
-        public Comm Start(double startProcent, double finishProcent)
+        public Command Start(double startProcent, double finishProcent)
         {
-            return Command = new Comm(this, Command, startProcent, finishProcent);
+            return Command = new Command(this, Command, startProcent, finishProcent);
         }
-        public Comm Start()
+        public Command Start()
         {
             return Start(0, 100);
         }
-        //Завершение простоя команды
-        public Comm Finish()
+        //Завершение простой команды
+        public Command Finish(string results = "")
         {
-            var c = Command;
-            FinishCommand(c);
-            return c;
+            if (Command == CommandLog)
+                return FinishLog(results);
+            return FinishCommand(Command);
         }
 
         //Запуск команды логирования
-        public CommLog StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
+        public CommandLog StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
         {
             FinishCommand(CommandLog);
-            Command = CommandLog = new CommLog(this, Command, startProcent, finishProcent, name, context, pars);
+            Command = CommandLog = new CommandLog(this, Command, startProcent, finishProcent, name, context, pars);
             return CommandLog;
         }
-        public CommLog StartLog(string name, string context = "", string pars = "")
+        public CommandLog StartLog(string name, string context = "", string pars = "")
         {
             return StartLog(0, 100, name, context, pars);
         }
         //Завершение команды логирования
-        public CommLog FinishLog(string results = "")
+        public CommandLog FinishLog(string results = "")
         {
-            var c = CommandLog;
-            FinishCommand(c, results);
-            return c;
+            return (CommandLog)FinishCommand(CommandLog, results);
         }
 
         //Запуск команды логирования в SuperHistory и отображения индикатора
-        public CommProgress StartProgress(string text, string name, string pars = "")
+        public CommandProgress StartProgress(string text, string name, string pars = "")
         {
             FinishCommand(CommandProgress);
-            Command = CommandProgress = new CommProgress(this, Command, text, name, pars);
+            Command = CommandProgress = new CommandProgress(this, Command, text, name, pars);
             return CommandProgress;
         }
         //Завершение команды логирования в SuperHistory
-        public CommProgress FinishProgress()
+        public CommandProgress FinishProgress()
         {
-            var c = CommandProgress;
-            FinishCommand(c);
-            return c;
+            return (CommandProgress)FinishCommand(CommandProgress);
         }
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommProgressText StartProgressText(double startProcent, double finishProcent, string text)
+        public CommandProgressText StartProgressText(double startProcent, double finishProcent, string text)
         {
             FinishCommand(CommandProgressText);
-            Command = CommandProgressText = new CommProgressText(this, Command, startProcent, finishProcent, text);
+            Command = CommandProgressText = new CommandProgressText(this, Command, startProcent, finishProcent, text);
             return CommandProgressText;
         }
         //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommProgressText StartProgressText()
+        public CommandProgressText StartProgressText()
         {
-            var c = CommandProgressText;
-            FinishCommand(c);
-            return c;
+            return (CommandProgressText)FinishCommand(CommandProgressText);
         }
 
         //Запуск команды, колекционирущей ошибки
-        public CommCollect StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
+        public CommandCollect StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
                                                          bool isCollect) //Формировать общую ошибку
         {
             FinishCommand(CommandCollect);
-            Command = CommandCollect = new CommCollect(this, Command, isWriteHistory, isCollect);
+            Command = CommandCollect = new CommandCollect(this, Command, isWriteHistory, isCollect);
             return CommandCollect;
         }
         //Завершение команды, колекционирущей ошибки
-        public CommCollect FinishCollect()
+        public CommandCollect FinishCollect()
         {
-            var c = CommandCollect;
-            FinishCommand(c);
-            return c;
+            return (CommandCollect)FinishCommand(CommandCollect);
         }
 
+        //Запуск команды, которая копит ошибки, но не выдает из во вне
+        public CommandKeep StartKeep(double startProcent, double finishProcent)
+        {
+            FinishCommand(CommandKeep);
+            Command = CommandKeep = new CommandKeep(this, Command, startProcent, finishProcent);
+            return CommandKeep;
+        }
+        public CommandKeep StartKeep()
+        {
+            return StartKeep(0, 100);
+        }
+        public CommandKeep FinishKeep()
+        {
+            return (CommandKeep)FinishCommand(CommandKeep);
+        }
+        
         //Запуск команды, обрамляющей опасную операцию
-        public CommDanger StartDanger(double startProcent, double finishProcent, 
+        public CommandDanger StartDanger(double startProcent, double finishProcent, 
                                         int repetitions, //Cколько раз повторять, если не удалась (вместе с первым)
                                         LoggerDangerness dangerness, //Минимальная LoggerDangerness, начиная с которой выполняется более одного повторения операции
                                         string errMess, //Сообщение об ошибке 
@@ -187,20 +198,20 @@ namespace BaseLibrary
                                         bool useThread = false, //Запускать опасную операцию в другом потоке, чтобы была возможность ее жестко прервать
                                         int errWaiting = 0)  //Cколько мс ждать при ошибке
         {
-            Command = new CommDanger(this, Command, startProcent, finishProcent, repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
-            return (CommDanger) Command;
+            Command = new CommandDanger(this, Command, startProcent, finishProcent, repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
+            return (CommandDanger) Command;
         }
-        public CommDanger StartDanger(int repetitions, LoggerDangerness dangerness, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
+        public CommandDanger StartDanger(int repetitions, LoggerDangerness dangerness, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
         {
             return StartDanger(0, 100, repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
         }
 
         //Завершить указанную команду и всех детей
-        protected void FinishCommand(Comm command, string results = "") 
+        protected Command FinishCommand(Command command, string results = "") 
         {
             CheckBreak();
-            if (command == null) return;
-            command.Finish(results);
+            if (command != null) command.Finish(results);
+            return command;
         }
 
         //Добавляет событие в историю

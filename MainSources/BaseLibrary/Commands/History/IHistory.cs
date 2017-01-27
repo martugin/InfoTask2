@@ -4,16 +4,16 @@
     public interface IHistory
     {
         //Ссылка на логгер
-        Logg Logger { get; }
+        Logger Logger { get; }
 
         //Начало выполнения надкомманды
-        void WriteStartSuper(CommProgress command);
+        void WriteStartSuper(CommandProgress command);
         //Начало выполнения комманды
-        void WriteStart(CommLog command);
+        void WriteStart(CommandLog command);
         //Конец выполнения надкомманды
-        void WriteFinishSuper(CommProgress command, string results);
+        void WriteFinishSuper(CommandProgress command, string results);
         //Конец выполнения комманды
-        void WriteFinish(CommLog command, string results);
+        void WriteFinish(CommandLog command, string results);
 
         //Записать событие
         void WriteEvent(string description, string pars);

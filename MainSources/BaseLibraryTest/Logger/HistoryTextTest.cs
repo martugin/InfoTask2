@@ -20,7 +20,7 @@ namespace BaseLibrary
                  new FileInfo(file).Delete();
                  new FileInfo(efile).Delete();
              }
-             History = new HistoryText(this, file);
+             History = new HistoryText(this, file, true);
          }
 
          [TestMethod]

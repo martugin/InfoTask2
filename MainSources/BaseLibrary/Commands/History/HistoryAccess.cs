@@ -7,7 +7,7 @@ namespace BaseLibrary
     public class HistoryAccess : IHistory
     {
         //Задание файла истории
-        public HistoryAccess(Logg logger, //Ссылка на логгер
+        public HistoryAccess(Logger logger, //ссылка на логгер
                                         string historyFile, //файл истории
                                         string historyTemplate) //шаблон для файла истории
         {
@@ -49,10 +49,10 @@ namespace BaseLibrary
         private RecDao _errorsRec;
 
         //Логгер
-        public Logg Logger { get; private set; }
+        public Logger Logger { get; private set; }
         //Текущие команды записи в History и SubHistory
-        internal CommLog CommandLog { get { return Logger.CommandLog; } }
-        internal CommProgress CommandProgress { get { return Logger.CommandProgress; } }
+        internal CommandLog CommandLog { get { return Logger.CommandLog; } }
+        internal CommandProgress CommandProgress { get { return Logger.CommandProgress; } }
         
         //Текущие Id истории
         private int _historyId;
@@ -105,7 +105,7 @@ namespace BaseLibrary
             {
                 try
                 {
-                    var commLog = new CommLog(Logger, null, 0, 0, "Создание нового файла истории", "", _reasonUpdate);
+                    var commLog = new CommandLog(Logger, null, 0, 0, "Создание нового файла истории", "", _reasonUpdate);
                     WriteStart(commLog);
                     WriteFinish(commLog, "");
                     _reasonUpdate = null;
@@ -143,7 +143,7 @@ namespace BaseLibrary
             UpdateHistory();
         }
 
-        public void WriteStartSuper(CommProgress command)
+        public void WriteStartSuper(CommandProgress command)
         {
             RunHistoryOperation(_superHistory, () =>
             {
@@ -163,7 +163,7 @@ namespace BaseLibrary
             });
         }
 
-        public void WriteFinishSuper(CommProgress command, string results = null)
+        public void WriteFinishSuper(CommandProgress command, string results = null)
         {
             RunHistoryOperation(_superHistory, () =>
             {
@@ -175,7 +175,7 @@ namespace BaseLibrary
             });
         }
 
-        public void WriteStart(CommLog command)
+        public void WriteStart(CommandLog command)
         {
             LogEventTime = DateTime.Now;
             RunHistoryOperation(_history, () =>
@@ -192,7 +192,7 @@ namespace BaseLibrary
             });
         }
         
-        public void WriteFinish(CommLog command, string results)
+        public void WriteFinish(CommandLog command, string results)
         {
             LogEventTime = DateTime.Now;
             RunHistoryOperation(_history, () =>

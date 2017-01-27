@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 namespace BaseLibrary
 {
     //Команда, обрамляющая опасную операцию
-    public class CommDanger : Comm
+    public class CommandDanger : Command
     {
-        internal CommDanger(Logg logger, Comm parent, double startProcent, double finishProcent, 
+        internal CommandDanger(Logger logger, Command parent, double startProcent, double finishProcent, 
                                         int repetitions,
                                         LoggerDangerness dangerness, //Минимальная LoggerDangerness, начиная с которой выполняется более одного повторения операции
                                         string errMess, string repeatMess,
@@ -49,12 +49,17 @@ namespace BaseLibrary
         }
 
         //Запуск операции, обрамляемой данной командой
-        public override Comm Run(Func<string> func)
+        public override Command Run(Func<string> func)
         {
-            return Run(() => func(), null);
+            return Run(() => func(), (Func<bool>) null);
         }
-        public Comm Run(Action action, //операция
-                                 Action erorrAction) //операция, выполняемя между повторами, возвращает true при успешном завершении
+        public Command Run(Action action, Action erorrAction)
+        {
+            return Run(action, () => { erorrAction(); return true; });
+        }
+
+        public Command Run(Action action, //операция
+                                 Func<bool> erorrAction) //операция, выполняемя между повторами, возвращает true при успешном завершении
         {
             for (int i = 1; i <= _repetitions; i++)
             {
@@ -63,12 +68,12 @@ namespace BaseLibrary
                 _isError = false;
                 if (!_useThread) //однопоточный вариант
                 {
-                    if (RunAction(action)) 
+                    if (RunAction(() => { action(); return true; })) 
                         return Finish();
                 }
                 else //многопоточный
                 {
-                    var t = new Task<bool>(() => RunAction(action));
+                    var t = new Task<bool>(() => RunAction(() => { action(); return true; }));
                     t.Start();
                     while (!t.IsCompleted)
                     {
@@ -112,12 +117,11 @@ namespace BaseLibrary
         }
 
         //Запуск действия
-        private bool RunAction(Action action)
+        private bool RunAction(Func<bool> action)
         {
             try
             {
-                action();
-                return !_isError;
+                return action() && !_isError;
             }
             catch (BreakException) { throw; }
             catch (Exception ex)

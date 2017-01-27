@@ -3,7 +3,7 @@
 namespace BaseLibrary
 {
     //Логгер с понятием период обработки
-    public abstract class LoggerTimed : Logg
+    public abstract class LoggerTimed : Logger
     {
         protected LoggerTimed(LoggerDangerness dangerness) 
             : base(dangerness) { }
@@ -48,10 +48,10 @@ namespace BaseLibrary
         }
 
         //Запуск команды логирования в SuperHistory и отображения индикатора
-        public CommProgress StartProgress(DateTime begin, DateTime end, string mode, string name, string pars = "")
+        public CommandProgress StartProgress(DateTime begin, DateTime end, string mode, string name, string pars = "")
         {
             FinishCommand(CommandProgress);
-            Command = CommandProgress = new CommProgress(this, Command, begin, end, mode, name, pars);
+            Command = CommandProgress = new CommandProgress(this, Command, begin, end, mode, name, pars);
             return CommandProgress;
         }
     }

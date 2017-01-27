@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
@@ -57,11 +58,12 @@ namespace Provider
         //Добавить объект в провайдер
         protected override SourceObject AddObject(InitialSignal sig)
         {
-            if (sig.Inf.Get("ObjectType") == "ALARM")
+            var obType = sig.Inf.Get("ObjectType");
+            if (obType == "ALARM")
                 return _alarmObject ?? (_alarmObject = new ObjectOvationMsg(this, "ALARM"));
-            if (sig.Inf.Get("ObjectType") == "SOE")
+            if (obType == "SOE")
                 return _soeObject ?? (_soeObject = new ObjectOvationMsg(this, "SOE"));
-            if (sig.Inf.Get("ObjectType") == "TEXT")
+            if (obType == "TEXT")
                 return _textObject ?? (_textObject = new ObjectOvationMsg(this, "TEXT"));
 
             int id = sig.Inf.GetInt("Id");
@@ -132,10 +134,18 @@ namespace Provider
             return new ReaderAdo(Connection, "select * from MSG_TEXT_HIST" + TimeCondition(beg, en));
         }
 
+        //Преводит дату в формат для запросов Ovation Historian
+        private static string DateToOvation(DateTime d)
+        {
+            DateTime dd = d.ToUniversalTime();
+            CultureInfo ci = CultureInfo.CreateSpecificCulture("en-US");
+            return "#" + dd.ToString("MM/dd/yyyy HH:mm:ss.fff", ci) + "#";
+        }
+
         //Строка с условием по времнеи для запросов
         private string TimeCondition(DateTime beg, DateTime en)
         {
-            return " (TIMESTAMP >= " + beg.ToOvationString() + ") and (TIMESTAMP <= " + en.ToOvationString() + ") order by TIMESTAMP, TIME_NSEC";
+            return " (TIMESTAMP >= " + DateToOvation(beg) + ") and (TIMESTAMP <= " + DateToOvation(en) + ") order by TIMESTAMP, TIME_NSEC";
         }
 
        //Чтение среза
