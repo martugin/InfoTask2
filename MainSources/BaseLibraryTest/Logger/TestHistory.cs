@@ -63,13 +63,13 @@ namespace BaseLibrary
     //Тестовая история
     internal class TestHistory : IHistory
     {
-        public TestHistory(Logg logger)
+        public TestHistory(Logger logger)
         {
             Logger = logger;
         }
 
         //Ссылка на логгер
-        public Logg Logger { get; private set; }
+        public Logger Logger { get; private set; }
 
         //Списки команд Super и Log
         internal List<TestCommandSuper> Supers = new List<TestCommandSuper>();
@@ -80,7 +80,7 @@ namespace BaseLibrary
         internal TestCommandSuper CommandSuper { get; private set; }
         internal TestCommandLog CommandLog { get; private set; }
 
-        public void WriteStartSuper(CommProgress command)
+        public void WriteStartSuper(CommandProgress command)
         {
             CommandSuper = new TestCommandSuper();
             Supers.Add(CommandSuper);
@@ -93,7 +93,7 @@ namespace BaseLibrary
             CommandSuper.Time = command.StartTime;
         }
 
-        public void WriteStart(CommLog command)
+        public void WriteStart(CommandLog command)
         {
             CommandLog = new TestCommandLog();
             Logs.Add(CommandLog);
@@ -105,7 +105,7 @@ namespace BaseLibrary
             CommandLog.Context = command.Context;
         }
 
-        public void WriteFinishSuper(CommProgress command, string results)
+        public void WriteFinishSuper(CommandProgress command, string results)
         {
             CommandSuper.ProcessLength = command.FromStart;
             CommandSuper.Results = results;
@@ -113,7 +113,7 @@ namespace BaseLibrary
             CommandSuper = null;
         }
 
-        public void WriteFinish(CommLog command, string results)
+        public void WriteFinish(CommandLog command, string results)
         {
             CommandLog.ProcessLength = command.FromStart;
             CommandLog.Results = results;
@@ -165,6 +165,13 @@ namespace BaseLibrary
                 err.EndPeriod = Logger.CommandProgress.EndPeriod;
             }
         }
+
+        public void ClearErrorsList()
+        {
+            Errors.Clear();
+        }
+
+        public void UpdateHistory() { }
 
         public void Close() { }
     }

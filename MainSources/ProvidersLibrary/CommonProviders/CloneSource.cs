@@ -88,6 +88,7 @@ namespace ProvidersLibrary
         //Создание фабрики ошибок
         protected override IErrMomFactory MakeErrFactory()
         {
+            AddEvent("Создание фабрики ошибок");
             var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
             using (var rec = new RecDao(CloneFile, "MomentErrors"))
                 while (rec.Read())
@@ -103,6 +104,7 @@ namespace ProvidersLibrary
         //Отметка в клоне считывемых сигналов, получение Id сигналов
         protected override void PrepareSource()
         {
+            AddEvent("Отметка в клоне считывемых сигналов");
             using (var rec = new RecDao(CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
                 while (rec.Read())
                 {

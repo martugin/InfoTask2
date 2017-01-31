@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
@@ -12,13 +13,13 @@ namespace ComClients
         public void Initialize(string application, //Код приложения
                                         string project) //Код проекта
         {
-            Logger.OpenHistory(DifferentIt.LocalDataProjectDir(project) + @"History\" + application + @"\History.accdb", DifferentIt.TemplatesDir() + @"LocalData\History\History.accdb");
+            Logger.History = new HistoryAccess(Logger, DifferentIt.LocalDataProjectDir(project) + @"History\" + application + @"\History.accdb", DifferentIt.HistoryTemplateFile);
         }
 
         //Закрытие клиента
         public void Close()
         {
-            try { Logger.CloseHistory();}
+            try { Logger.History.Close();}
             catch {}
             Thread.Sleep(100);
             GC.Collect();

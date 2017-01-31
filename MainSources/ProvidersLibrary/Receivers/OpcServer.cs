@@ -175,24 +175,23 @@ namespace ProvidersLibrary
         //Запись значений
         internal protected override void WriteValues()
         {
-            Danger(TryWriteValues, 2, 500, "Ошибка записи значений в OPC-сервер");
-        }
-        private void TryWriteValues()
-        {
             if (_items.Count > 0)
-            {
-                int m = _itemsList == null ? 0 : _itemsList.Length;//Количество корректно добавленых точек + 1
-                Array serverHandles = new int[m];
-                Array valuesArr = new object[m];
-                Array errorsArr = new object[m];
-                for (int i = 1; i < m; i++)
-                {
-                    var item = _itemsList[i];
-                    serverHandles.SetValue(item.ServerHandler, i);
-                    valuesArr.SetValue(item.ValueSignal.Value.Object, i);
-                }
-                _group.SyncWrite(m - 1, ref serverHandles, ref valuesArr, out errorsArr);
-            }
+                StartDanger(2, LoggerDangerness.Single, "Ошибка записи значений в OPC-сервер", "Повторная запись в OPC-сервер", true, 500)
+                    .Run(() =>
+                        {
+                            int m = _itemsList == null ? 0 : _itemsList.Length;
+                                //Количество корректно добавленых точек + 1
+                            Array serverHandles = new int[m];
+                            Array valuesArr = new object[m];
+                            Array errorsArr = new object[m];
+                            for (int i = 1; i < m; i++)
+                            {
+                                var item = _itemsList[i];
+                                serverHandles.SetValue(item.ServerHandler, i);
+                                valuesArr.SetValue(item.ValueSignal.Value.Object, i);
+                            }
+                            _group.SyncWrite(m - 1, ref serverHandles, ref valuesArr, out errorsArr);
+                        });
         }
     }
 }

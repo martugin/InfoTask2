@@ -45,21 +45,6 @@ namespace BaseLibrary
             return "convert(datetime, '" + d.Year + "-" + d.Month + "-" + d.Day + " " + d.Hour + ":" + d.Minute + ":" + d.Second + "." + d.Millisecond + "', 21)";
         }
 
-        //Преводит дату в формат для запросов Simatic
-        public static string ToSimaticString(this DateTime d)
-        {
-            DateTime dd = d.ToUniversalTime();
-            return "'" + dd.Year + "-" + dd.Month + "-" + dd.Day + " " + dd.Hour + ":" + dd.Minute + ":" + dd.Second + "." + dd.Millisecond + "'";
-        }
-
-        //Преводит дату в формат для запросов Ovation Historian
-        public static string ToOvationString(this DateTime d)
-        {
-            DateTime dd = d.ToUniversalTime();
-            CultureInfo ci = CultureInfo.CreateSpecificCulture("en-US");
-            return "#" + dd.ToString("MM/dd/yyyy HH:mm:ss.fff", ci) + "#";
-        }
-
         //Переводит время в строку с милисекундами
         public static string ToStringWithMs(this DateTime t)
         {

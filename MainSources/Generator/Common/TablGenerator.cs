@@ -5,7 +5,7 @@ using CommonTypes;
 namespace Generator
 {
     //Генератор
-    public class TablGenerator : ExternalLogger
+    public class TablGenerator : ExternalLogg
     {
         public TablGenerator(Logger logger, //Логгер
                                          TablsList dataTabls, //Таблицы с данными для генерации
@@ -22,9 +22,8 @@ namespace Generator
             DataTabls = dataTabls;
             try
             {
-                bool hasSub = subTable != null;
                 AddEvent("Загрузка таблиц шаблона генерации", templateFile + ", " + table.Name);
-                
+                bool hasSub = subTable != null;
                 using (var rec = new RecDao(templateFile, table.QueryString))
                     using (var subRec = !hasSub ? null : new RecDao(rec.DaoDb, subTable.QueryString))
                     {

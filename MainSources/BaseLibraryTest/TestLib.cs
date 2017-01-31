@@ -54,22 +54,30 @@ namespace BaseLibraryTest
         }
 
         //Сравнение двух таблиц на полное совпадение, 
-        public static bool CompareTables(DaoDb db1, DaoDb db2, string tableName1, string idField1 = "Id", string tableName2 = null, string idField2 = "Id")
+        public static bool CompareTables(DaoDb db1, DaoDb db2, string tableName1, string idField = "Id", string tableName2 = null, params string[] exeptionFields)
         {
-            using (var rec1 = new RecDao(db1, "SELECT * FROM " + tableName1 + " ORDER BY " + idField1))
-                using (var rec2 = new RecDao(db2, "SELECT * FROM " + (tableName2 ?? tableName1) + " ORDER BY " + (tableName2 != null ? idField2 : idField1)))
+            var exFields = new SetS();
+            foreach (var f in exeptionFields)
+                exFields.Add(f);
+            using (var rec1 = new RecDao(db1, "SELECT * FROM " + tableName1 + " ORDER BY " + idField))
+                using (var rec2 = new RecDao(db2, "SELECT * FROM " + (tableName2 ?? tableName1) + " ORDER BY " + idField))
                 {
                     rec1.Read();
                     while (rec2.Read())
                     {
                         Assert.AreEqual(rec1.EOF, rec2.EOF);
                         foreach (var k in rec1.Fileds.Keys)
-                            Assert.AreEqual(rec1.Recordset.Fields[k].Value, rec2.Recordset.Fields[k].Value);
+                            if (!exFields.Contains(k))
+                                Assert.AreEqual(rec1.Recordset.Fields[k].Value, rec2.Recordset.Fields[k].Value);
                         rec1.Read();
                     }
                     Assert.AreEqual(rec1.EOF, rec2.EOF);
                 }
             return true;
+        }
+        public static bool CompareTables(string file1, string file2, string tableName1, string idField = "Id", string tableName2 = null, params string[] exeptionFields)
+        {
+            return CompareTables(new DaoDb(file1), new DaoDb(file2), tableName1, idField, tableName2, exeptionFields);
         }
     }
 }

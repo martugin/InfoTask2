@@ -6,7 +6,7 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Один провайдер
-    public abstract class ProviderBase : ExternalLogger, IDisposable
+    public abstract class ProviderBase : ExternalLogg, IDisposable
     {
         //Ссылка на соединение
         public ProviderConnect ProviderConnect { get; set; }
@@ -65,17 +65,17 @@ namespace ProvidersLibrary
                 Thread.Sleep(300);
                 Procent = 70;
 
-                try 
-                { 
+                try
+                {
                     if (ConnectProvider())
-                        return _isConnected = true;     
+                        return _isConnected = true;
                 }
                 catch (Exception ex)
                 {
                     AddError("Ошибка соединения с провайдером", ex);
                 }
                 Procent = 90;
-                Disconnect();    
+                Disconnect();
             }
             return false;
         }
@@ -101,8 +101,10 @@ namespace ProvidersLibrary
                     Procent = 30;
                 }
                 if (!Connect()) return false;
-                Procent = 70;
-                if (!(this is SourceBase) || !((SourceBase) this).GetTime().IsDefault)
+                if (!(this is SourceBase)) return true;
+
+                AddEvent("Получение времени источника", 70);
+                if (!((SourceBase)this).GetTime().IsDefault)
                     return true;
             }
             return false;

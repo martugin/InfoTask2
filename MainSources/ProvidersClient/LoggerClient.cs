@@ -35,19 +35,26 @@ namespace ComClients
             Logger.AddError(text, null, par);
         }
 
-        //Запуск комманды для записи в History
-        public void StartLog(string name,  //Имя комманды
+        //Запуск команды для записи в History
+        public void StartLog(string name,  //Имя команды
                                        string pars = "",  //Дополнительная информация
                                        string context = "") //Контекст выполнения команды
         {
-            Logger.StartLog(name, pars, CommandFlags.Simple, context);
+            Logger.StartLog(name, pars, context);
         }
 
-        //Запуск комманды для записи в SubHistory
-        public void StartSubLog(string name,  //Имя комманды
-                                             string pars = "")  //Дополнительная информация
+        //Запуск команды для записи в SuperHistory
+        public void StartProgress(string name,  //Имя команды
+                                               string pars = "",  //Дополнительная информация
+                                               string text = "") //Текст для отображения на индикаторе
         {
-            Logger.StartSubLog(name, pars);
+            Logger.StartProgress(text, name, pars);
+        }
+        public void StartProgress(string name,  //Имя команды
+                                               string pars,  //Дополнительная информация
+                                               DateTime beg, DateTime en) //Период расчета
+        {
+            ((LoggerTimed)Logger).StartProgress(beg, en, name, pars);
         }
 
         //Завершение комманды
@@ -59,18 +66,7 @@ namespace ComClients
         //Запускает команду и возвращает строку с сообщением ошибки или ""
         protected string RunClientCommand(Action action, string errMess = "Ошибка выполнения команды")
         {
-            using (Logger.Start(CommandFlags.Collect))
-            {
-                try
-                {
-                    action();
-                }
-                catch (Exception ex)
-                {
-                    Logger.AddError(errMess, ex);
-                }
-                return Logger.Command.ErrorMessage();
-            }
+            return ((CommandCollect)Logger.StartCollect(false, true).Run(action)).ErrorMessage(true, false);
         }
     }
 }

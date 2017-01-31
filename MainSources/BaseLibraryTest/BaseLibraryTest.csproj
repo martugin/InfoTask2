@@ -58,6 +58,8 @@
     <Compile Include="Databases\ReaderAdoTest.cs" />
     <Compile Include="Databases\RecDaoTest.cs" />
     <Compile Include="Databases\SysTablTest.cs" />
+    <Compile Include="Logger\HistoryTest.cs" />
+    <Compile Include="Logger\HistoryTextTest.cs" />
     <Compile Include="Logger\LogTest.cs" />
     <Compile Include="Logger\TestHistory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,6 +70,10 @@
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
       <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
       <Name>BaseLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
+      <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
+      <Name>CommonTypes</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

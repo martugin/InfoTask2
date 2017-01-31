@@ -48,6 +48,7 @@ namespace ProvidersLibrary
             {
                 using (Start())
                 {
+                    AddEvent("Подготовка источника");
                     ClearObjects();
                     foreach (var sig in SourceConnect.InitialSignals.Values)
                     {
@@ -55,8 +56,8 @@ namespace ProvidersLibrary
                         ob.Context = sig.CodeObject;
                         ob.AddSignal(sig);
                     }
-                    Procent = 30;
-                    Danger(PrepareSource, 2, 0, "Ошибка при подготовке источника", Reconnect);
+                    StartDanger(30, 100, 2, LoggerDangerness.Single, "Ошибка при подготовке источника", "Повтор подготовки источника")
+                        .Run(() => PrepareSource(), () => Reconnect());
                     if (ErrPool == null)
                         ErrPool = new ErrMomPool(MakeErrFactory());
                 }

@@ -90,6 +90,7 @@ namespace ProvidersLibrary
                 {
                     PeriodBegin = periodBegin;
                     PeriodEnd = periodEnd;
+                    AddEvent("Очистка значений сигналов");
                     foreach (var sig in _signals.Values)
                         sig.ClearMoments(PeriodBegin != PrevPeriodEnd);
                     using (Start(5, 80))
@@ -101,6 +102,7 @@ namespace ProvidersLibrary
                     if (!ChangeProvider()) return valuesCount;
                     using (Start(80, 100))
                     {
+                        AddEvent("Очистка значений сигналов");
                         foreach (var sig in _signals.Values)
                             sig.ClearMoments(true);
                         return GetValues();
@@ -132,6 +134,7 @@ namespace ProvidersLibrary
                 //Чтение среза
                 using (Start(0, PeriodBegin < PeriodEnd ? 30 : 100))
                 {
+                    AddEvent("Чтение среза значений");
                     vcount += Source.ReadCut();
                     Procent = 90;
                     foreach (var sig in InitialSignals.Values)
@@ -146,6 +149,7 @@ namespace ProvidersLibrary
                 if (PeriodBegin < PeriodEnd)
                     using (Start(Procent, 90))
                     {
+                        AddEvent("Чтение изменений значений");
                         var changes = Source.ReadChanges();
                         Procent = 90;
                         foreach (var sig in InitialSignals.Values)
@@ -159,6 +163,7 @@ namespace ProvidersLibrary
                 //Вычисление значений расчетных сигналов
                 if (CalcSignals.Count > 0)
                 {
+                    AddEvent("Вычисление значений расчетных сигналов");
                     int calc = 0;
                     foreach (var sig in CalcSignals.Values)
                     {
@@ -228,6 +233,7 @@ namespace ProvidersLibrary
         //Чтение Id сигналов клона
         private void ReadCloneSignalsId(DaoDb cloneDb)
         {
+            AddEvent("Чтение Id сигналов клона");
             using (var rec = new RecDao(cloneDb, "Signals"))
                 while (rec.Read())
                 {
@@ -240,6 +246,7 @@ namespace ProvidersLibrary
         //Запись в клон списка описаний ошибок
         private void WriteMomentErrors(DaoDb cloneDb)
         {
+            AddEvent("Запись описаний ошибок");
             using (var rec = new RecDao(cloneDb, "MomentErrors"))
                 foreach (var ed in Source.ErrPool.UsedErrorDescrs)
                     ed.ToRecordset(rec);
