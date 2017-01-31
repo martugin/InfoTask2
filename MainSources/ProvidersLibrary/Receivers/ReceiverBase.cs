@@ -29,7 +29,7 @@ namespace ProvidersLibrary
                     }
                     Procent = 30;
                     StartDanger(30, 100, 2, LoggerDangerness.Single, "Ошибка при подготовке приемника", "Повторная подготовка приемника")
-                        .Run(PrepareReceiver, () => Reconnect());
+                        .Run(() => PrepareReceiver(), () => Reconnect());
                 }
             }
             catch (Exception ex)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BaseLibrary
@@ -421,7 +422,7 @@ namespace BaseLibrary
             Assert.AreEqual("", TabloText(0));
             Assert.AreEqual("", TabloText(1));
             Assert.AreEqual(1, Logs.Count);
-            Assert.AreEqual(1, Logs[0].Events.Count);
+            Assert.AreEqual(2, Logs[0].Events.Count);
             Assert.AreEqual("Event", Logs[0].Events[0].Description);
             Assert.AreEqual("Прервано", Logs[0].Status);
 
@@ -581,6 +582,24 @@ namespace BaseLibrary
             Assert.AreEqual(13, Logs[2].Events.Count);
             Assert.AreEqual("Ошибка: Ошибка" + Environment.NewLine + "Предупреждение: Повтор операции", c.ErrorMessage(false, false));
             Assert.AreEqual(CommandQuality.Error, c.Quality);
+
+            StartCollect(false, true).Run(() =>
+                {
+                    StartLog("Log");
+                    Assert.AreEqual(0, Logs[3].Events.Count);
+                    var cd = StartDanger(2, LoggerDangerness.Single, "Исключение", "Повтор операции").Run(() =>
+                        {
+                            AddEvent("Событие");
+                            Break();
+                            Thread.Sleep(6000);
+                            AddEvent("Событие");
+                        });
+                    Assert.IsTrue(cd.IsBreaked);
+                    Assert.AreEqual(CommandQuality.Success, cd.Quality);
+                });
+            Assert.AreEqual(2, Logs[3].Events.Count);
+            Assert.AreEqual("Событие", Logs[3].Events[0].Description);
+            Assert.AreEqual("Прерывание команды", Logs[3].Events[1].Description);
         }
     }
 }

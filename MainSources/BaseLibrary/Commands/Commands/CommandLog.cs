@@ -46,7 +46,10 @@ namespace BaseLibrary
         {
             base.FinishCommand(results, isBreaked);
             if (History != null)
+            {
+                if (isBreaked) History.WriteEvent("Прерывание команды", null);
                 History.WriteFinish(this, results);
+            }
             Logger.SetTabloText(1, "");
             Logger.CommandLog = null;
         }

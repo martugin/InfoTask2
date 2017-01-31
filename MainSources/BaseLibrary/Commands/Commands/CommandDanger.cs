@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace BaseLibrary
 {
@@ -33,14 +32,14 @@ namespace BaseLibrary
         private readonly string _repeatMess; 
 
         //При повторении операции случилась ошибка
-        private bool _isError;
+        private bool _isCorrect;
         //Идет последнее повторении операции
         private bool _lastRepeat;
 
         //Добавить ошибку 
         public override void AddError(ErrorCommand err)
         {
-            _isError |= err.Quality == CommandQuality.Error;
+            _isCorrect &= err.Quality != CommandQuality.Error;
             AddQuality(_lastRepeat ? err.Quality : CommandQuality.Repeat);
             if (_lastRepeat)
                 Parent.AddError(err);
@@ -57,40 +56,50 @@ namespace BaseLibrary
         {
             return Run(action, () => { erorrAction(); return true; });
         }
-
-        public Command Run(Action action, //операция
-                                 Func<bool> erorrAction) //операция, выполняемя между повторами, возвращает true при успешном завершении
+        public Command Run(Action action, Func<bool> erorrAction)
+        {
+            return Run(() => { action(); return true; }, erorrAction);
+        }
+        public Command Run(Func<bool> action, Action erorrAction)
+        {
+            return Run(action, () => { erorrAction(); return true; });
+        }
+        public Command Run(Func<bool> action, //операция
+                                       Func<bool> erorrAction) //операция, выполняемя между повторами, возвращает true при успешном завершении
         {
             for (int i = 1; i <= _repetitions; i++)
             {
                 Logger.CheckBreak();
                 _lastRepeat = i == _repetitions;
-                _isError = false;
+                _isCorrect = true;
                 if (!_useThread) //однопоточный вариант
                 {
-                    if (RunAction(() => { action(); return true; })) 
+                    if (RunAction(action)) 
                         return Finish();
                 }
                 else //многопоточный
                 {
-                    var t = new Task<bool>(() => RunAction(() => { action(); return true; }));
-                    t.Start();
-                    while (!t.IsCompleted)
+                    var thread = new Thread(() => RunAction(action));
+                    thread.Start();
+                    while (thread.ThreadState == ThreadState.Running)
                     {
                         Thread.Sleep(50);
                         if (Logger.WasBreaked)
                         {
                             int n = 0;
-                            while (!t.IsCompleted && (n += 50) < 2000)
+                            while (thread.ThreadState == ThreadState.Running && (n += 50) < 2000)
                                 Thread.Sleep(50);
-                            if (!t.IsCompleted) 
-                                t.Dispose();
+                            if (thread.ThreadState == ThreadState.Running)
+                            {
+                                thread.Abort();
+                                Thread.Sleep(100);
+                            }
                             Logger.CheckBreak();
                             return this;
                         }
                     }
                     Logger.CheckBreak();
-                    if (t.Result) return Finish();
+                    if (_isCorrect) return Finish();
                 }
 
                 if (i == _repetitions) return Finish();
@@ -109,7 +118,7 @@ namespace BaseLibrary
                     }
                 }
 
-                _isError = false;
+                _isCorrect = true;
                 if (erorrAction != null && !RunAction(erorrAction))
                     return Finish();
             }
@@ -117,11 +126,17 @@ namespace BaseLibrary
         }
 
         //Запуск действия
+        private bool RunAction(Action action)
+        {
+            return RunAction(() => { action(); return true; });
+        }
         private bool RunAction(Func<bool> action)
         {
             try
             {
-                return action() && !_isError;
+                bool b = action(); //Если опустить присвоение, то не работает
+                _isCorrect &= b;
+                return _isCorrect;
             }
             catch (BreakException) { throw; }
             catch (Exception ex)
@@ -130,7 +145,7 @@ namespace BaseLibrary
                 Logger.CheckBreak();
                 while (Logger.Command != this)
                     Logger.Command.Finish();
-                return false;
+                return _isCorrect = false;
             }
         }
     }

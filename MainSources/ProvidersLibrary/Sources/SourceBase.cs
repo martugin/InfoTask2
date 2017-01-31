@@ -57,7 +57,7 @@ namespace ProvidersLibrary
                         ob.AddSignal(sig);
                     }
                     StartDanger(30, 100, 2, LoggerDangerness.Single, "Ошибка при подготовке источника", "Повтор подготовки источника")
-                        .Run(PrepareSource, () => Reconnect());
+                        .Run(() => PrepareSource(), () => Reconnect());
                     if (ErrPool == null)
                         ErrPool = new ErrMomPool(MakeErrFactory());
                 }
