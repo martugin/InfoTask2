@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using BaseLibrary;
 
 namespace ProvidersLibrary
 {
@@ -34,7 +33,7 @@ namespace ProvidersLibrary
                     int errCount = 0, consErrCount = 0;
                     double d = 70.0 / parts.Count;
                     for (int i = 0; i < parts.Count; i++)
-                        using (StartDanger(Procent, Procent + d))
+                        using (StartKeep(Procent, Procent + d))
                         {
                             var vc = new ValuesCount();
                             try { vc += readPartFun(parts[i], beg, en, isCut); }
@@ -99,6 +98,7 @@ namespace ProvidersLibrary
                                                                           bool isCut, //Выполняется считываение среза
                                                                           out int n) //Общее количество считываемых объектов  
         {
+            AddEvent("Разбиение списка объектов на блоки");
             n = 0;
             var parts = new List<List<SourceObject>>();
             int i = 0;

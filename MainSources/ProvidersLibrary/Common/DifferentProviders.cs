@@ -1,5 +1,17 @@
 ﻿namespace ProvidersLibrary
 {
+    //Тип провайдера
+    public enum ProviderType
+    {
+        Source,
+        Receiver,
+        HandInput,
+        Archive,
+        Error
+    }
+
+    //---------------------------------------------------------------------------------------------------------------------------
+    
     //Общие функции для InfoTask и конвертеры 
     public static class DifferentProviders
     {

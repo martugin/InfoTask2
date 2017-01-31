@@ -245,6 +245,6 @@
       <!--Основная структура файлов как у обычного модуля-->
       <!--Шаблон: Projects\Module-->
     </SignalsModule>
-    <Values.accdb>Файл значений клона, шаблон Providers\Clone.accdb</Values.accdb>
+    <Clone.accdb>Файл значений клона, шаблон Providers\Clone.accdb</Clone.accdb>
   </Клон>
 </ФайловаяМодель>

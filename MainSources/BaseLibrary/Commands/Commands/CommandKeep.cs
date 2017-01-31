@@ -28,5 +28,12 @@ namespace BaseLibrary
         {
             get { return _errors.Aggregate("", (current, err) => current + err.ToString()); }
         }
+
+        //Завершение команды
+        internal protected override void FinishCommand(string results, bool isBreaked)
+        {
+            base.FinishCommand(results, isBreaked);
+            Logger.CommandKeep = null;
+        }
     }
 }

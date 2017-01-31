@@ -19,6 +19,7 @@ namespace ProvidersLibrary
             {
                 using (Start())
                 {
+                    AddEvent("Подготовка приемника");
                     ClearObjects();
                     foreach (var sig in ReceiverConnect.Signals.Values)
                     {

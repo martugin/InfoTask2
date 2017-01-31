@@ -101,8 +101,10 @@ namespace ProvidersLibrary
                     Procent = 30;
                 }
                 if (!Connect()) return false;
-                Procent = 70;
-                if (!(this is SourceBase) || !((SourceBase)this).GetTime().IsDefault)
+                if (!(this is SourceBase)) return true;
+
+                AddEvent("Получение времени источника", 70);
+                if (!((SourceBase)this).GetTime().IsDefault)
                     return true;
             }
             return false;

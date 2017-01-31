@@ -76,8 +76,11 @@ namespace ProvidersLibrary
                     _isPrepared = true;
                 }
                 using (Start(0, PeriodBegin < PeriodEnd ? 30 : 100))
+                {
+                    AddEvent("Запись значений в приемник");
                     Receiver.WriteValues();
-                AddEvent("Значения записаны в приемник");
+                    AddEvent("Значения записаны в приемник");
+                }
                 return true;
             }
             catch (Exception ex)

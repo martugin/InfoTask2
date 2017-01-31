@@ -48,6 +48,7 @@ namespace ProvidersLibrary
             {
                 using (Start())
                 {
+                    AddEvent("Подготовка источника");
                     ClearObjects();
                     foreach (var sig in SourceConnect.InitialSignals.Values)
                     {
