@@ -77,10 +77,6 @@
       <Project>{841ADF86-BCE5-40F7-B55F-C082B5A5CD98}</Project>
       <Name>InfoTaskClient</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProvidersClient\ProvidersClient.csproj">
-      <Project>{ACF537D6-F53B-48D7-99AD-BE01CDED91DB}</Project>
-      <Name>ProvidersClient</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -26,34 +26,47 @@ namespace BaseLibrary
          //Уровень важности безошибочности по отношению к быстроте
         public LoggerDangerness Dangerness { get; private set; }
 
+        //Событие отображения индикатора
+        public event EventHandler<ShowIndicatorEventArgs> ShowIndicator;
+        //Событие скрытия индикатора
+        public event EventHandler<EventArgs> HideIndicator;
+        //Событие изменения уровня индикатора
+        public event EventHandler<ChangeProcentEventArgs> ChangeProcent;
+        //Событие изменения текста на табло
+        public event EventHandler<ChangeTabloTextEventArgs> ChangeTabloText;
+
+        //Аргументы события изменения текста табло
+        protected readonly ChangeTabloTextEventArgs TabloArgs = new ChangeTabloTextEventArgs();
+        
+        //Отображать индикатор на табло
+        private bool _indicatorVisible;
+        public bool IndicatorVisible
+        {
+            get { lock (_tabloLocker) return _indicatorVisible; }
+            internal set
+            {
+                lock (_tabloLocker)
+                {
+                    if (_indicatorVisible == value) return;
+                    _indicatorVisible = value;
+                    if (ShowIndicator != null) ShowIndicator(this, new ShowIndicatorEventArgs(value));
+                }
+            }
+        }
+
         //Процент индикатора
         private double _tabloProcent;
         public double TabloProcent
         {
-            get { lock (_tabloLocker) return _tabloProcent; } 
+            get { lock (_tabloLocker) return _tabloProcent; }
             internal set
             {
                 lock (_tabloLocker)
                 {
                     if (_tabloProcent == value) return;
                     _tabloProcent = value;
+                    if (ChangeProcent != null) ChangeProcent(this, new ChangeProcentEventArgs(value));
                 }
-                //ToDo событие
-            }
-        }
-        //Отображать индикатор на табло
-        private bool _showProcent;
-        public bool ShowProcent
-        {
-            get { lock (_tabloLocker) return _showProcent; }
-            internal set
-            {
-                lock (_tabloLocker)
-                {
-                    if (_showProcent == value) return;
-                    _showProcent = value;
-                }
-                //ToDo событие
             }
         }
         
@@ -61,17 +74,19 @@ namespace BaseLibrary
         //Текст нулевого уровня задается в CommandProgress
         //Текст первого уровня задается в CommandLog
         //Текст второго уровня задается в CommandProgressText
-        private readonly string[] _tabloText = new [] {"", "", ""};
         public string TabloText(int number)
         {
             lock (_tabloLocker)
-                return _tabloText[number];
+                return TabloArgs.TabloText[number];
         }
         public void SetTabloText(int number, string text)
         {
             lock (_tabloLocker)
-                _tabloText[number] = text;
-            //ToDo событие
+            {
+                if (TabloArgs.TabloText[number] == text) return;
+                TabloArgs.TabloText[number] = text;
+                if (ChangeTabloText != null) ChangeTabloText(this, TabloArgs);
+            }
         }
 
         //Объекты блокировки
@@ -161,7 +176,7 @@ namespace BaseLibrary
 
         //Запуск команды, колекционирущей ошибки
         public CommandCollect StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
-                                                         bool isCollect) //Формировать общую ошибку
+                                                              bool isCollect) //Формировать общую ошибку
         {
             FinishCommand(CommandCollect);
             Command = CommandCollect = new CommandCollect(this, Command, isWriteHistory, isCollect);

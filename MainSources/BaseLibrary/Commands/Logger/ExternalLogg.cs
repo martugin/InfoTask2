@@ -25,8 +25,8 @@ namespace BaseLibrary
         }
         public bool ShowProcent
         {
-            get { return Logger.ShowProcent; }
-            set { Logger.ShowProcent = value; }
+            get { return Logger.ShowIndicator; }
+            set { Logger.ShowIndicator = value; }
         }
 
         public string TabloText(int number)

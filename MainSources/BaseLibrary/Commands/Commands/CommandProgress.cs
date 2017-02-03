@@ -14,11 +14,7 @@ namespace BaseLibrary
             ModePeriod = mode;
             var logg = Logger as LoggerTimed;
             if (logg != null)
-            {
-                logg.BeginPeriod = begin;
-                logg.EndPeriod = end;
-                logg.ModePeriod = mode;    
-            }
+                logg.SetPeriod(begin, end, mode);
             Initialize();
         }
         //Конструктор с указанием текста 0-го уровня формы индикатора
@@ -30,7 +26,7 @@ namespace BaseLibrary
         }
         private void Initialize()
         {
-            Logger.ShowProcent = true;
+            Logger.ShowIndicator = true;
             Logger.TabloProcent = 0;
             if (History != null)
                 History.WriteStartSuper(this);
@@ -56,7 +52,7 @@ namespace BaseLibrary
             if (History != null)
                 History.WriteFinishSuper(this, results);
             Logger.SetTabloText(0, "");
-            Logger.ShowProcent = false;
+            Logger.ShowIndicator = false;
             Logger.CommandProgress = null;
         }
     }
