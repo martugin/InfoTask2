@@ -1,4 +1,4 @@
-﻿namespace InfoTaskClient
+﻿namespace ComClients
 {
     partial class IndicatorFormTexted
     {
@@ -28,18 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.Procent = new System.Windows.Forms.ProgressBar();
             this.Text0 = new System.Windows.Forms.Label();
             this.Text1 = new System.Windows.Forms.Label();
             this.Text2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // progressBar1
+            // Procent
             // 
-            this.progressBar1.Location = new System.Drawing.Point(2, 23);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(340, 23);
-            this.progressBar1.TabIndex = 0;
+            this.Procent.Location = new System.Drawing.Point(2, 23);
+            this.Procent.Name = "Procent";
+            this.Procent.Size = new System.Drawing.Size(340, 23);
+            this.Procent.TabIndex = 0;
             // 
             // Text0
             // 
@@ -79,7 +79,7 @@
             this.Controls.Add(this.Text2);
             this.Controls.Add(this.Text1);
             this.Controls.Add(this.Text0);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.Procent);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "IndicatorFormTexted";
             this.Text = "InfoTask";
@@ -90,9 +90,9 @@
 
         #endregion
 
-        private System.Windows.Forms.ProgressBar progressBar1;
-        public System.Windows.Forms.Label Text0;
-        public System.Windows.Forms.Label Text1;
-        public System.Windows.Forms.Label Text2;
+        internal System.Windows.Forms.Label Text0;
+        internal System.Windows.Forms.ProgressBar Procent;
+        internal System.Windows.Forms.Label Text1;
+        internal System.Windows.Forms.Label Text2;
     }
 }

@@ -18,31 +18,34 @@ namespace BaseLibrary
         //Контекст
         public virtual string Context { get { return ""; } }
 
+        //Процент индикатора
         public double TabloProcent
         {
             get { return Logger.TabloProcent; }
             set { Logger.TabloProcent = value; }
         }
-        public bool ShowProcent
-        {
-            get { return Logger.ShowIndicator; }
-            set { Logger.ShowIndicator = value; }
-        }
 
+        //Три уровня текста на форме индикатора
         public string TabloText(int number)
         {
             return Logger.TabloText(number);
         }
-
         public void SetTabloText(int number, string text)
         {
             Logger.SetTabloText(number, text);
         }
 
+        //Период обработки
+        public DateTime BeginPeriod { get { return Logger.BeginPeriod; } }
+        public DateTime EndPeriod { get { return Logger.EndPeriod; } }
+        public string ModePeriod { get { return Logger.ModePeriod; } }
+
+        //Прервать выполнение
         public void Break()
         {
             Logger.Break();
         }
+        //Вызвать BreakException
         internal protected void CheckBreak()
         {
             Logger.CheckBreak();
@@ -79,9 +82,13 @@ namespace BaseLibrary
         }
 
         //Запуск команды логирования в SuperHistory и отображения индикатора
-        public CommandProgress StartProgress(string text, string name, string pars = "")
+        public CommandProgress StartProgress(string text, string name, string pars = "", DateTime? endTime = null)
         {
-            return Logger.StartProgress(text, name, pars);
+            return Logger.StartProgress(text, name, pars, endTime);
+        }
+        public CommandProgress StartProgress(DateTime begin, DateTime end, string mode, string name, string pars = "", DateTime? endTime = null)
+        {
+            return Logger.StartProgress(begin, end, mode, name, pars, endTime);
         }
         //Завершение команды логирования в SuperHistory
         public CommandProgress FinishProgress()

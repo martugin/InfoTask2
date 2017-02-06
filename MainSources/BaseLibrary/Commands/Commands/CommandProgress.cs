@@ -6,27 +6,28 @@ namespace BaseLibrary
     public class CommandProgress : CommandLogBase
     {
         //Конструктор с указанием периода обработки
-        internal protected CommandProgress(Logger logger, Command parent, DateTime begin, DateTime end, string mode, string name, string pars)
+        internal protected CommandProgress(Logger logger, Command parent, DateTime begin, DateTime end, string mode, string name, string pars, DateTime? endTime)
             : base(logger, parent, 0, 100, name, pars)
         {
+            Logger.CallShowIndicatorTimed();
             BeginPeriod = begin;
             EndPeriod = end;
             ModePeriod = mode;
-            var logg = Logger as LoggerTimed;
-            if (logg != null)
-                logg.SetPeriod(begin, end, mode);
-            Initialize();
+            Logger.SetPeriod(begin, end, mode);
+            Initialize(endTime);
         }
         //Конструктор с указанием текста 0-го уровня формы индикатора
-        internal protected CommandProgress(Logger logger, Command parent, string text, string name, string pars)
+        internal protected CommandProgress(Logger logger, Command parent, string text, string name, string pars, DateTime? endTime)
             : base(logger, parent, 0, 100, name, pars)
         {
+            Logger.CallShowIndicatorTexted();
             Logger.SetTabloText(0, text);
-            Initialize();
+            Initialize(endTime);
         }
-        private void Initialize()
+        private void Initialize(DateTime? endTime)//Если не null, то время конца обратного отсчета
         {
-            Logger.ShowIndicator = true;
+            if (endTime != null)
+                Logger.CallSetProcentTimed((DateTime)endTime);
             Logger.TabloProcent = 0;
             if (History != null)
                 History.WriteStartSuper(this);
@@ -52,7 +53,7 @@ namespace BaseLibrary
             if (History != null)
                 History.WriteFinishSuper(this, results);
             Logger.SetTabloText(0, "");
-            Logger.ShowIndicator = false;
+            Logger.CallHideIndicator();
             Logger.CommandProgress = null;
         }
     }

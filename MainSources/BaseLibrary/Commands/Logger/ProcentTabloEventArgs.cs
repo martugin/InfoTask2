@@ -4,28 +4,6 @@ namespace BaseLibrary
 {
     //Аргументы разных событий индикатора и табло
 
-    //Показать индикатор
-    public class ShowIndicatorEventArgs : EventArgs
-    {
-        public ShowIndicatorEventArgs(bool isTimed)
-        {
-            IsTimed = isTimed;
-        }
-        //Использовать индикатор со временем
-        public bool IsTimed { get; private set; }
-    }
-
-    //Изменить уровень индикатора
-    public class ChangeProcentEventArgs : EventArgs
-    {
-        public ChangeProcentEventArgs(double procent)
-        {
-            Procent = procent;
-        }
-        //Процент индикатора
-        public double Procent { get; private set; }
-    }
-
     //Изменить текст на табло (текст любого уровня)
     public class ChangeTabloTextEventArgs : EventArgs
     {
@@ -49,5 +27,27 @@ namespace BaseLibrary
         public DateTime EndPeriod { get; set; }
         //Режим выполнения
         public string ModePeriod { get; set; }
+    }
+
+    //Изменить уровень индикатора
+    public class ChangeProcentEventArgs : EventArgs
+    {
+        public ChangeProcentEventArgs(double procent)
+        {
+            Procent = procent;
+        }
+        //Процент индикатора
+        public double Procent { get; private set; }
+    }
+
+    //Включить режим отображения обратного отсчета времени
+    public class SetProcentTimedEventArgs : EventArgs
+    {
+        public SetProcentTimedEventArgs(DateTime endTime)
+        {
+            EndTime = endTime;
+        }
+        //Время, оконачания индикатора
+        public DateTime EndTime { get; private set; }
     }
 }

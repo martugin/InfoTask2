@@ -1,4 +1,4 @@
-﻿namespace InfoTaskClient
+﻿namespace ComClients
 {
     partial class IndicatorFormTimed
     {
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.Procent = new System.Windows.Forms.ProgressBar();
             this.PeriodEnd = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.PeriodBegin = new System.Windows.Forms.Label();
@@ -37,12 +37,12 @@
             this.Text2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // progressBar1
+            // Procent
             // 
-            this.progressBar1.Location = new System.Drawing.Point(2, 23);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(340, 23);
-            this.progressBar1.TabIndex = 0;
+            this.Procent.Location = new System.Drawing.Point(2, 23);
+            this.Procent.Name = "Procent";
+            this.Procent.Size = new System.Drawing.Size(340, 23);
+            this.Procent.TabIndex = 0;
             // 
             // PeriodEnd
             // 
@@ -116,7 +116,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.PeriodBegin);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.Procent);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "IndicatorFormTimed";
             this.Text = "InfoTask";
@@ -128,12 +128,12 @@
 
         #endregion
 
-        private System.Windows.Forms.ProgressBar progressBar1;
-        public System.Windows.Forms.Label PeriodEnd;
         private System.Windows.Forms.Label label2;
-        public System.Windows.Forms.Label PeriodBegin;
         private System.Windows.Forms.Label label1;
-        public System.Windows.Forms.Label Text1;
-        public System.Windows.Forms.Label Text2;
+        internal System.Windows.Forms.ProgressBar Procent;
+        internal System.Windows.Forms.Label PeriodEnd;
+        internal System.Windows.Forms.Label PeriodBegin;
+        internal System.Windows.Forms.Label Text1;
+        internal System.Windows.Forms.Label Text2;
     }
 }

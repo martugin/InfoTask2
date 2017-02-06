@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace BaseLibrary
 {
     [TestClass]
-    public class HistoryTest :  LoggerTimed
+    public class HistoryTest :  Logger
     {
         public HistoryTest() : base(LoggerDangerness.Single) { }
 

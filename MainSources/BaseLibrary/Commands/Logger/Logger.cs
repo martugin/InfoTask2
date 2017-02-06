@@ -26,32 +26,61 @@ namespace BaseLibrary
          //Уровень важности безошибочности по отношению к быстроте
         public LoggerDangerness Dangerness { get; private set; }
 
-        //Событие отображения индикатора
-        public event EventHandler<ShowIndicatorEventArgs> ShowIndicator;
+        //События отображения индикатора
+        public event EventHandler<EventArgs> ShowIndicatorTexted;
+        public event EventHandler<EventArgs> ShowIndicatorTimed;
         //Событие скрытия индикатора
         public event EventHandler<EventArgs> HideIndicator;
-        //Событие изменения уровня индикатора
-        public event EventHandler<ChangeProcentEventArgs> ChangeProcent;
         //Событие изменения текста на табло
         public event EventHandler<ChangeTabloTextEventArgs> ChangeTabloText;
+        //Событие обновления периода для индикатора
+        public event EventHandler<ChangePeriodEventArgs> ChangePeriod;
+        //События установки и снятия режима индикатора с обратным отсчетом времени
+        public event EventHandler<SetProcentTimedEventArgs> SetProcentTimed;
+        public event EventHandler<EventArgs> SetProcentUsual;
+        //Событие изменения уровня индикатора
+        public event EventHandler<ChangeProcentEventArgs> ChangeProcent;
 
         //Аргументы события изменения текста табло
         protected readonly ChangeTabloTextEventArgs TabloArgs = new ChangeTabloTextEventArgs();
-        
-        //Отображать индикатор на табло
-        private bool _indicatorVisible;
-        public bool IndicatorVisible
+
+        //Вызов событий отображения индикаторов
+        internal void CallShowIndicatorTexted()
         {
-            get { lock (_tabloLocker) return _indicatorVisible; }
-            internal set
+            lock (_tabloLocker)
             {
-                lock (_tabloLocker)
-                {
-                    if (_indicatorVisible == value) return;
-                    _indicatorVisible = value;
-                    if (ShowIndicator != null) ShowIndicator(this, new ShowIndicatorEventArgs(value));
-                }
+                if (ShowIndicatorTexted != null)
+                    ShowIndicatorTexted(this, new EventArgs());        
             }
+            
+        }
+        internal void CallShowIndicatorTimed()
+        {
+            lock (_tabloLocker)
+            {
+                if (ShowIndicatorTimed != null)
+                    ShowIndicatorTimed(this, new EventArgs());
+            }
+        }
+        internal void CallHideIndicator()
+        {
+            lock (_tabloLocker)
+            {
+                if (HideIndicator != null)
+                    HideIndicator(this, new EventArgs());    
+            } 
+        }
+
+        //Включение и отключение индикатора с режимом отсчета обратного времени
+        internal void CallSetProcentTimed(DateTime endTime)
+        {
+            if (SetProcentTimed != null)
+                SetProcentTimed(this, new SetProcentTimedEventArgs(endTime));
+        }
+        internal void CallSetProcentUsual()
+        {
+            if (SetProcentUsual != null)
+                SetProcentUsual(this, new EventArgs());
         }
 
         //Процент индикатора
@@ -89,6 +118,38 @@ namespace BaseLibrary
             }
         }
 
+        //Задать период обработки
+        internal protected void SetPeriod(DateTime begin, DateTime end, string mode = "")
+        {
+            lock (_tabloLocker)
+            {
+                _beginPeriod = begin;
+                _endPeriod = end;
+                _modePeriod = mode;
+                if (ChangePeriod != null)
+                    ChangePeriod(this, new ChangePeriodEventArgs(begin, end, mode));
+            }
+        }
+
+        //Начало и конец текущего периода обработки
+        private DateTime _beginPeriod = Different.MinDate;
+        public DateTime BeginPeriod
+        {
+            get { lock (_tabloLocker) return _beginPeriod; }
+        }
+        private DateTime _endPeriod = Different.MinDate;
+        public DateTime EndPeriod
+        {
+            get { lock (_tabloLocker) return _endPeriod; }
+        }
+
+        //Режим (Выравнивание, Синхроннный, Разовый и т.п.)
+        private string _modePeriod;
+        public string ModePeriod
+        {
+            get { lock (_tabloLocker) return _modePeriod; }
+        }
+        
         //Объекты блокировки
         private readonly object _tabloLocker = new object();
         private readonly object _breakLocker = new object();
@@ -138,7 +199,7 @@ namespace BaseLibrary
             Command = CommandLog = new CommandLog(this, Command, startProcent, finishProcent, name, context, pars);
             return CommandLog;
         }
-        public CommandLog StartLog(string name, string context = "", string pars = "")
+        public CommandLog StartLog(string name, string context = "", string pars = "", DateTime? endTime = null)
         {
             return StartLog(0, 100, name, context, pars);
         }
@@ -149,12 +210,27 @@ namespace BaseLibrary
         }
 
         //Запуск команды логирования в SuperHistory и отображения индикатора
-        public CommandProgress StartProgress(string text, string name, string pars = "")
+        public CommandProgress StartProgress(string text, //Текст 0-го уровня для формы индикатора
+                                                                  string name, //Имя комманды
+                                                                  string pars = "", //Параметры команды
+                                                                  DateTime? endTime = null) //Если не null, то время конца обратного отсчета
         {
             FinishCommand(CommandProgress);
-            Command = CommandProgress = new CommandProgress(this, Command, text, name, pars);
+            Command = CommandProgress = new CommandProgress(this, Command, text, name, pars, endTime);
             return CommandProgress;
         }
+        //С указанием периода обработки
+        public CommandProgress StartProgress(DateTime begin, DateTime end, //Период обработки
+                                                                  string mode, //Режим обработки
+                                                                  string name, //Имя комманды
+                                                                  string pars = "", //Параметры команды
+                                                                  DateTime? endTime = null) //Если не null, то время конца обратного отсчета
+        {
+            FinishCommand(CommandProgress);
+            Command = CommandProgress = new CommandProgress(this, Command, begin, end, mode, name, pars, endTime);
+            return CommandProgress;
+        }
+
         //Завершение команды логирования в SuperHistory
         public CommandProgress FinishProgress()
         {
