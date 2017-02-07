@@ -102,9 +102,9 @@ namespace BaseLibrary
             return Logger.StartProgressText(startProcent, finishProcent, text);
         }
         //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommandProgressText StartProgressText()
+        public CommandProgressText StartProgressText(string text)
         {
-            return Logger.StartProgressText();
+            return Logger.StartProgressText(text);
         }
 
         //Запуск команды, колекционирущей ошибки

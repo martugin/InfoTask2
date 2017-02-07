@@ -48,27 +48,22 @@ namespace BaseLibrary
         internal void CallShowIndicatorTexted()
         {
             lock (_tabloLocker)
-            {
                 if (ShowIndicatorTexted != null)
                     ShowIndicatorTexted(this, new EventArgs());        
-            }
             
         }
         internal void CallShowIndicatorTimed()
         {
             lock (_tabloLocker)
-            {
                 if (ShowIndicatorTimed != null)
                     ShowIndicatorTimed(this, new EventArgs());
-            }
+            
         }
         internal void CallHideIndicator()
         {
             lock (_tabloLocker)
-            {
                 if (HideIndicator != null)
                     HideIndicator(this, new EventArgs());    
-            } 
         }
 
         //Включение и отключение индикатора с режимом отсчета обратного времени
@@ -94,7 +89,8 @@ namespace BaseLibrary
                 {
                     if (_tabloProcent == value) return;
                     _tabloProcent = value;
-                    if (ChangeProcent != null) ChangeProcent(this, new ChangeProcentEventArgs(value));
+                    if (ChangeProcent != null)
+                        ChangeProcent(this, new ChangeProcentEventArgs(value));
                 }
             }
         }
@@ -244,8 +240,12 @@ namespace BaseLibrary
             Command = CommandProgressText = new CommandProgressText(this, Command, startProcent, finishProcent, text);
             return CommandProgressText;
         }
+        public CommandProgressText StartProgressText(string text)
+        {
+            return StartProgressText(0, 100, text);
+        }
         //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommandProgressText StartProgressText()
+        public CommandProgressText FinishProgressText()
         {
             return (CommandProgressText)FinishCommand(CommandProgressText);
         }

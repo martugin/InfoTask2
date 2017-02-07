@@ -28,7 +28,12 @@ namespace Experiments
             {
                 MessageBox.Show(c.Name + ", " + c.Attribute("DllFile").Value);
             }
-            
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var client = new TestInfoTaskClient();
+            client.Run();
         }
     }
 }

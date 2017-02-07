@@ -53,6 +53,7 @@
     <Compile Include="Collections\DicS.cs" />
     <Compile Include="Collections\IDicForRead.cs" />
     <Compile Include="Collections\SetS.cs" />
+    <Compile Include="Commands\Commands\CommandProgressText.cs" />
     <Compile Include="Commands\Commands\CommandsEnums.cs" />
     <Compile Include="Commands\Commands\CommandKeep.cs" />
     <Compile Include="Commands\Logger\ProcentTabloEventArgs.cs" />
