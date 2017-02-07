@@ -73,21 +73,21 @@ namespace Provider
         }
 
         //Словари сигналов, ключи полные коды и Id
-        private readonly DicI<ObjectSimatic> _objectsId = new DicI<ObjectSimatic>();
+        private readonly DicI<OutSimatic> _outsId = new DicI<OutSimatic>();
 
         //Добавить объект в провайдер
-        protected override SourceObject AddObject(InitialSignal sig)
+        protected override SourceOut AddOut(InitialSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
-            if (!_objectsId.ContainsKey(id))
-                return _objectsId.Add(id, new ObjectSimatic(this, sig.Inf["Archive"], sig.Inf["Tag"], id));
-            return _objectsId[id];
+            if (!_outsId.ContainsKey(id))
+                return _outsId.Add(id, new OutSimatic(this, sig.Inf["Archive"], sig.Inf["Tag"], id));
+            return _outsId[id];
         }
         
         //Очистка списка сигналов
-        protected override void ClearObjects()
+        protected override void ClearOuts()
         {
-            _objectsId.Clear();
+            _outsId.Clear();
         }
 
         //Создание фабрики ошибок
@@ -105,17 +105,17 @@ namespace Provider
             return "'" + dd.Year + "-" + dd.Month + "-" + dd.Day + " " + dd.Hour + ":" + dd.Minute + ":" + dd.Second + "." + dd.Millisecond + "'";
         }
 
-        //Запрос значений из архива по списку сигналов и интервалу
-        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        //Запрос значений из архива по списку выходов и интервалу
+        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("TAG:R, ");
             if (part.Count == 1)
-                sb.Append(((ObjectSimatic)part[0]).Id);
+                sb.Append(((OutSimatic)part[0]).Id);
             else
             {
-                sb.Append("(").Append(((ObjectSimatic) part[0]).Id);
+                sb.Append("(").Append(((OutSimatic) part[0]).Id);
                 for (int i = 1; i < part.Count; i++)
-                    sb.Append(";").Append(((ObjectSimatic) part[i]).Id);
+                    sb.Append(";").Append(((OutSimatic) part[i]).Id);
                 sb.Append(";-2)");
             }
             sb.Append(", ").Append(DateToSimatic(beg));
@@ -125,21 +125,21 @@ namespace Provider
             return new ReaderAdo(Connection, sb.ToString());
         }
 
-        //Определение текущего считываемого объекта
-        protected override SourceObject DefineObject(IRecordRead rec)
+        //Определение текущего считываемого выхода
+        protected override SourceOut DefineOut(IRecordRead rec)
         {
-            return _objectsId[rec.GetInt(0)];
+            return _outsId[rec.GetInt(0)];
         }
         
         //Чтение среза
         protected override ValuesCount ReadCut()
         {
-            return ReadByParts(_objectsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
+            return ReadByParts(_outsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
         }
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadByParts(_objectsId.Values, 500);
+            return ReadByParts(_outsId.Values, 500);
         }
     }
 }

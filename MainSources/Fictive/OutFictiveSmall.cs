@@ -4,9 +4,9 @@ using ProvidersLibrary;
 namespace Fictive
 {
     //Объект таблицы Values2
-    internal class ObjectFictiveSmall : SourceObject
+    internal class OutFictiveSmall : SourceOut
     {
-        internal ObjectFictiveSmall(SourceBase source) 
+        internal OutFictiveSmall(SourceBase source) 
             : base(source) { }
 
         //Второй сигнал

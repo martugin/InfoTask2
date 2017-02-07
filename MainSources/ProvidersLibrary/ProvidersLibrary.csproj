@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonProviders\CloneObject.cs" />
+    <Compile Include="CommonProviders\CloneOut.cs" />
     <Compile Include="Common\DifferentProviders.cs" />
     <Compile Include="Common\ProviderConfig.cs" />
     <Compile Include="Common\ProvidersFactory.cs" />
@@ -77,7 +77,7 @@
     <Compile Include="SourcesSignals\CalcSignal.cs" />
     <Compile Include="SourcesSignals\InitialSignal.cs" />
     <Compile Include="Providers\ProviderSignal.cs" />
-    <Compile Include="SourcesSignals\SourceObject.cs" />
+    <Compile Include="SourcesSignals\SourceOut.cs" />
     <Compile Include="Receivers\ReceiverSignal.cs" />
     <Compile Include="SourcesSignals\UniformSignal.cs" />
     <Compile Include="SourcesSignals\SourceSignal.cs" />

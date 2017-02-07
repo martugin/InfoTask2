@@ -5,10 +5,10 @@ using CommonTypes;
 
 namespace ProvidersLibrary
 {
-    //Один сигнал для чтения по блокам
-    public abstract class SourceObject : IContextable
+    //Один выход для чтения по блокам
+    public abstract class SourceOut : IContextable
     {
-        protected SourceObject(SourceBase source)
+        protected SourceOut(SourceBase source)
         {
             Source = source;
         }

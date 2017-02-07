@@ -6,24 +6,24 @@ namespace ProvidersLibrary
     //Базовый класс для всех сигналов источников и приемников
     public abstract class ProviderSignal 
     {
-        protected ProviderSignal(string code, string codeObject)
+        protected ProviderSignal(string code, string codeOut)
         {
             Code = code;
-            CodeObject = codeObject;
+            CodeOuts = codeOut;
         }
 
-        protected ProviderSignal(string code, string codeObject, DataType dataType, string signalInf)
+        protected ProviderSignal(string code, string codeOut, DataType dataType, string signalInf)
         {
             Code = code;
-            CodeObject = codeObject;
+            CodeOuts = codeOut;
             DataType = dataType;
             Inf = signalInf.ToPropertyDicS();
         }
 
         //Полный код сигнала
         public string Code { get; private set; }
-        //Код объекта
-        public string CodeObject { get; private set; }
+        //Код объекта + InfOut
+        public string CodeOuts { get; private set; }
 
         //Тип данных 
         public DataType DataType { get; protected set; }

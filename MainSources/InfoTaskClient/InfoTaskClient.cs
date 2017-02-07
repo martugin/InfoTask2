@@ -10,14 +10,6 @@ namespace ComClients
     //Клиент работы с функциями InfoTask, написанными на C#, вызываемыми из внешних приложений через COM
     public class InfoTaskClient : LoggerClient
     {
-        //Код приложения
-        protected string AppCode { get; private set; }
-        //Код проекта
-        protected string Project { get; private set; }
-
-        //Клиент уже был закрыт
-        protected bool IsClosed { get; private set; }
-
         //Инициализация
         public void Initialize(string appCode, //Код приложения
                                         string project) //Код проекта
@@ -36,29 +28,13 @@ namespace ComClients
             GC.Collect();
             IsClosed = true;
         }
-        
-        //Фабрика провайдеров
-        private ProvidersFactory _factory;
-        protected ProvidersFactory Factory
-        {
-            get { return _factory ?? (_factory = new ProvidersFactory()); }
-        }
 
-        //Создание соединения-источника
-        public SourConnect CreateSourConnect(string name, string complect)
-        {
-            return new SourConnect(
-                (SourceConnect)Factory.CreateConnect(ProviderType.Source, name, complect, Logger),
-                Factory);
-        }
-
-        //Создание соединения-приемника
-        public ReceivConnect CreateReceivConnect(string name, string complect)
-        {
-            return new ReceivConnect(
-                (ReceiverConnect)Factory.CreateConnect(ProviderType.Receiver, name, complect, Logger),
-                Factory);
-        }
+        //Код приложения
+        protected string AppCode { get; private set; }
+        //Код проекта
+        protected string Project { get; private set; }
+        //Клиент уже был закрыт
+        protected bool IsClosed { get; private set; }
 
         //Генерация параметров
         public string GenerateParams(string moduleDir)
@@ -92,5 +68,29 @@ namespace ComClients
                 }
             }
         }
+
+        //Создание соединения-источника
+        public SourConnect CreateSourConnect(string name, string complect)
+        {
+            return new SourConnect(
+                (SourceConnect)Factory.CreateConnect(ProviderType.Source, name, complect, Logger),
+                Factory);
+        }
+
+        //Создание соединения-приемника
+        public ReceivConnect CreateReceivConnect(string name, string complect)
+        {
+            return new ReceivConnect(
+                (ReceiverConnect)Factory.CreateConnect(ProviderType.Receiver, name, complect, Logger),
+                Factory);
+        }
+
+        //Фабрика провайдеров
+        private ProvidersFactory _factory;
+        protected ProvidersFactory Factory
+        {
+            get { return _factory ?? (_factory = new ProvidersFactory()); }
+        }
+
     }
 }

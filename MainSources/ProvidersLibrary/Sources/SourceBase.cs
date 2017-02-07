@@ -49,11 +49,11 @@ namespace ProvidersLibrary
                 using (Start())
                 {
                     AddEvent("Подготовка источника");
-                    ClearObjects();
+                    ClearOuts();
                     foreach (var sig in SourceConnect.InitialSignals.Values)
                     {
-                        var ob = AddObject(sig);
-                        ob.Context = sig.CodeObject;
+                        var ob = AddOut(sig);
+                        ob.Context = sig.CodeOuts;
                         ob.AddSignal(sig);
                     }
                     StartDanger(30, 100, 2, LoggerDangerness.Single, "Ошибка при подготовке источника", "Повтор подготовки источника")
@@ -69,9 +69,9 @@ namespace ProvidersLibrary
         }
 
         //Очистка списков объектов
-        protected abstract void ClearObjects();
+        protected abstract void ClearOuts();
         //Добавить объект содержащий заданный сигнал
-        protected abstract SourceObject AddObject(InitialSignal sig);
+        protected abstract SourceOut AddOut(InitialSignal sig);
         //Подготовка источника
         protected virtual void PrepareSource() {}
         

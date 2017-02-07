@@ -4,9 +4,9 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Объект для клона, содержит один сигнал
-    internal class CloneObject : SourceObject
+    internal class CloneOut : SourceOut
     {
-        internal CloneObject(SourceBase source) : base(source) { }
+        internal CloneOut(SourceBase source) : base(source) { }
 
         //Чтение одного значения из рекордсета клона
         internal protected override int ReadMoments(IRecordRead rec)

@@ -39,12 +39,12 @@ namespace ComClients
 
         //Добавить исходный сигнал
         public SourSignal AddInitialSignal(string fullCode, //Полный код сигнала
-                                                               string codeObject, //Код объекта
-                                                               string dataType, //Тип данных
-                                                               string signalInf, //Настройки сигнала
-                                                               bool needCut) //Нужно считывать срез значений
+                                                             string codeOut, //Код выхода
+                                                             string dataType, //Тип данных
+                                                             string signalInf, //Настройки сигнала
+                                                             bool needCut) //Нужно считывать срез значений
         {
-            return new SourSignal(Connect.AddInitialSignal(fullCode, codeObject, dataType.ToDataType(), signalInf, needCut));
+            return new SourSignal(Connect.AddInitialSignal(fullCode, codeOut, dataType.ToDataType(), signalInf, needCut));
         }
 
         //Добавить исходный сигнал

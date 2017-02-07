@@ -29,20 +29,20 @@ namespace Fictive
         }
 
         //Словарь объектов, ключи - номера
-        private readonly DicI<ObjectFictive> _objects = new DicI<ObjectFictive>();
-        internal DicI<ObjectFictive> Objects { get { return _objects; } }
+        private readonly DicI<OutFictive> _objects = new DicI<OutFictive>();
+        internal DicI<OutFictive> Objects { get { return _objects; } }
 
         //Добавить объект в провайдер
-        protected override SourceObject AddObject(InitialSignal sig)
+        protected override SourceOut AddOut(InitialSignal sig)
         {
             var num = sig.Inf.GetInt("NumObject");
             if (!_objects.ContainsKey(num))
-                return _objects.Add(num, new ObjectFictive(this, sig.Inf.GetInt("ValuesInterval")));
+                return _objects.Add(num, new OutFictive(this, sig.Inf.GetInt("ValuesInterval")));
             return _objects[num];
         }
 
         //Очистка списков объектов
-        protected override void ClearObjects()
+        protected override void ClearOuts()
         {
             _objects.Clear();
         }

@@ -3,10 +3,10 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    //Один объект (дисктретная, аналоговая или упакованная точка)
-    internal class ObjectMir : SourceObject
+    //Один выход (дисктретная, аналоговая или упакованная точка)
+    internal class OutMir : SourceOut
     {
-        internal ObjectMir(SourceBase source) : base(source) { }
+        internal OutMir(SourceBase source) : base(source) { }
 
         //Cигналы Unit и Indcation
         internal InitialSignal UnitSignal { get; set; }
@@ -14,7 +14,7 @@ namespace Provider
         //Id для получения значений из IZM_TII
         internal int IdChannel { get; set; }
 
-        //Добавить к объекту сигнал, если такого еще не было
+        //Добавить к выходу сигнал, если такого еще не было
         protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
             if (sig.Inf.Get("ValueType") == "Indication")
@@ -22,7 +22,7 @@ namespace Provider
             return UnitSignal = UnitSignal ?? sig;
         }
         
-        //Чтение значений по одному объекту из рекордсета источника и добавление их в список или клон
+        //Чтение значений по одному выходу из рекордсета источника и добавление их в список или клон
         //Возвращает количество сформированных значений
         protected override int ReadMoments(IRecordRead rec)
         {

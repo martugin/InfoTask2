@@ -39,44 +39,44 @@ namespace Provider
             }
         }
         
-        //Словарь объектов. Один элемент словаря - один выход
-        private readonly Dictionary<ObjectIndex, ObjectKosm> _outs = new Dictionary<ObjectIndex, ObjectKosm>();
-        //Словарь аналоговых объектов
-        private readonly Dictionary<ObjectIndex, ObjectKosm> _analogs = new Dictionary<ObjectIndex, ObjectKosm>();
-        //Объект действий оператора
-        private ObjectKosmOperator _operatorObject;
+        //Словарь выходов. Один элемент словаря - один выход
+        private readonly Dictionary<OutIndex, OutKosm> _outs = new Dictionary<OutIndex, OutKosm>();
+        //Словарь аналоговых выходов
+        private readonly Dictionary<OutIndex, OutKosm> _analogs = new Dictionary<OutIndex, OutKosm>();
+        //Выход действий оператора
+        private OutKosmOperator _operatorOut;
 
         //Очистка списка сигналов
-        protected override void ClearObjects()
+        protected override void ClearOuts()
         {
             _outs.Clear();
             _analogs.Clear();
-            _operatorObject = null;
+            _operatorOut = null;
         }
 
         //Добавляет один сигнал в список
-        protected override SourceObject AddObject(InitialSignal sig)
+        protected override SourceOut AddOut(InitialSignal sig)
         {
             if (sig.Inf.Get("ObjectType") == "Operator")
-                return _operatorObject ?? (_operatorObject = new ObjectKosmOperator(this));
+                return _operatorOut ?? (_operatorOut = new OutKosmOperator(this));
             
-            var ind = new ObjectIndex
+            var ind = new OutIndex
             {
                 Sn = sig.Inf.GetInt("SysNum"),
                 NumType = sig.Inf.GetInt("NumType"),
                 Appartment = sig.Inf.GetInt("Appartment"),
                 Out = sig.Inf.GetInt("NumOut")
             };
-            ObjectKosm obj;
+            OutKosm obj;
             if (ind.Out == 1 && (ind.NumType == 1 || ind.NumType == 3 || ind.NumType == 32))
             {
                 if (_analogs.ContainsKey(ind)) obj = _analogs[ind];
-                else _analogs.Add(ind, obj = new ObjectKosm(this, ind));
+                else _analogs.Add(ind, obj = new OutKosm(this, ind));
             }
             else
             {
                 if (_outs.ContainsKey(ind)) obj = _outs[ind];
-                else _outs.Add(ind, obj = new ObjectKosm(this, ind));
+                else _outs.Add(ind, obj = new OutKosm(this, ind));
             }
             return obj;
         }
@@ -93,13 +93,13 @@ namespace Provider
         //Определяет размер блока для считывания, исходя из длины периода
         protected abstract int PartSize { get; }
 
-        //Запрос значений по одному блоку сигналов
-        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        //Запрос значений по одному блоку выходов
+        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var nums = new ushort[part.Count, IsAnalog ? 3 : 4];
             for (int i = 0; i < part.Count; i++)
             {
-                var ob = (ObjectKosm)part[i];
+                var ob = (OutKosm)part[i];
                 nums[i, 0] = (ushort)ob.Sn;
                 nums[i, 1] = (ushort)ob.NumType;
                 nums[i, 2] = (ushort)ob.Appartment;
@@ -118,11 +118,11 @@ namespace Provider
             return rec;
         }
 
-        //Определение текущего считываемого объекта
-        protected override SourceObject DefineObject(IRecordRead rec)
+        //Определение текущего считываемого выхода
+        protected override SourceOut DefineOut(IRecordRead rec)
         {
             int dn = this is KosmotronikaRetroSource ? 1 : 0;
-            var ind = new ObjectIndex
+            var ind = new OutIndex
             {
                 Sn = rec.GetInt(0),
                 NumType = rec.GetInt(1),
@@ -137,7 +137,7 @@ namespace Provider
         }
 
         //Запрос значений действий оператора
-        protected IRecordRead QueryValuesOperator(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryValuesOperator(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var parBeginTime = new OleDbParameter("BeginTime", OleDbType.DBTimeStamp) { Value = beg };
             var parEndTime = new OleDbParameter("EndTime", OleDbType.DBTimeStamp) { Value = en };
@@ -174,19 +174,19 @@ namespace Provider
             if (vc.IsFail) return vc;
 
             using (Start(OutsProcent(), 100))
-                vc += ReadOneObject(_operatorObject, QueryValuesOperator);
+                vc += ReadOneOut(_operatorOut, QueryValuesOperator);
             return vc;
         }
 
         private double AnalogsProcent()
         {
-            int op = _operatorObject == null ? 0 : 1;
+            int op = _operatorOut == null ? 0 : 1;
             if (_outs.Count + _analogs.Count + op == 0) return 0;
             return _analogs.Count * 100.0 / (_outs.Count + _analogs.Count + op);
         }
         private double OutsProcent()
         {
-            int op = _operatorObject == null ? 0 : 1;
+            int op = _operatorOut == null ? 0 : 1;
             if (_outs.Count + _analogs.Count + op == 0) return 0;
             return (_analogs.Count + _outs.Count) * 100.0 / (_outs.Count + _analogs.Count + op);
         }

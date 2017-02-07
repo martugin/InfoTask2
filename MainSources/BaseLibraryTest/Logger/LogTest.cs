@@ -194,7 +194,7 @@ namespace BaseLibrary
             Assert.AreEqual(20, Procent);
             Assert.AreEqual(20, Command.Procent);
 
-            Assert.AreEqual("", TabloText(2));
+            Assert.IsNull(TabloText(2));
             StartProgressText(20, 30, "Text3").Run(() =>
                 {
                     Assert.AreEqual(30, CommandProgress.Procent);
@@ -281,7 +281,7 @@ namespace BaseLibrary
             Assert.AreSame(Command, CommandCollect);
             Assert.AreEqual(0, Logs.Count);
             Assert.AreEqual(0, Supers.Count);
-            Assert.AreEqual("", TabloText(1));
+            Assert.IsNull(TabloText(1));
 
             var beg = new DateTime(2017, 1, 1);
             var en = new DateTime(2017, 1, 2);

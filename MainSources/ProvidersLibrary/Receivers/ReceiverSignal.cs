@@ -5,8 +5,8 @@ namespace ProvidersLibrary
     //Сигнал приемника
     public class ReceiverSignal : ProviderSignal
     {
-        public ReceiverSignal(ReceiverConnect connect, string code, string codeObject, DataType dataType, string signalInf)
-            : base(code, codeObject, dataType, signalInf)
+        public ReceiverSignal(ReceiverConnect connect, string code, string codeOut, DataType dataType, string signalInf)
+            : base(code, codeOut, dataType, signalInf)
         {
             Connect = connect;
         }

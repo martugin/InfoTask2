@@ -5,12 +5,12 @@ using ProvidersLibrary;
 
 namespace Logika
 {
-    internal class ObjectProlog : SourceObject
+    internal class OutProlog : SourceOut
     {
-        internal ObjectProlog(SourceBase source) 
+        internal OutProlog(SourceBase source) 
             : base(source) { }
 
-        //Словарь сигналов объекта
+        //Словарь сигналов выхода
         private readonly Dictionary<string, InitialSignal> _signals = new Dictionary<string, InitialSignal>();
 
         //Сигнал только добавляется в Signals

@@ -27,11 +27,11 @@ namespace ComClients
 
         //Добавить сигнал
         public ReceivSignal AddSignal(string fullCode, //Полный код сигнала
-                                                      string codeObject, //Код объекта
+                                                      string codeOut, //Код выхода
                                                       string dataType, //Тип данных
                                                       string signalInf) //Настройки сигнала
         {
-            return new ReceivSignal(Connect.AddSignal(fullCode, codeObject, dataType.ToDataType(), signalInf));
+            return new ReceivSignal(Connect.AddSignal(fullCode, codeOut, dataType.ToDataType(), signalInf));
         }
 
         //Запись значений в приемник

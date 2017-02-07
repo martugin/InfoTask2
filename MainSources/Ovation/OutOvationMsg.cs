@@ -4,15 +4,15 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    internal class ObjectOvationMsg : SourceObject
+    internal class OutOvationMsg : SourceOut
     {
-        internal ObjectOvationMsg(SourceBase source, string objectType) : base(source)
+        internal OutOvationMsg(SourceBase source, string objectType) : base(source)
         {
-            ObjectType = objectType;
+            OutType = objectType;
         }
 
-        //Тип объекта (ALARM, SOE, TEXT)
-        internal string ObjectType { get; private set; }
+        //Тип выхода (ALARM, SOE, TEXT)
+        internal string OutType { get; private set; }
 
         //Флажки сообщений
         internal InitialSignal MsgFlagsSignal { get; private set; }
@@ -34,7 +34,7 @@ namespace Provider
         internal InitialSignal Info1Signal { get; private set; }
         internal InitialSignal Info2Signal { get; private set; }
 
-        //Добавить к объекту сигнал, если такого еще не было
+        //Добавить к выходу сигнал, если такого еще не было
         protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
             if (sig.Inf["Prop"] == "MSG_FLAGS")
@@ -60,7 +60,7 @@ namespace Provider
             return null;
         }
 
-        //Чтение значений по одному объекту из рекордсета источника и добавление их в список или клон
+        //Чтение значений по одному выходу из рекордсета источника и добавление их в список или клон
         //Возвращает количество сформированных значений
         protected override int ReadMoments(IRecordRead rec)
         {
@@ -74,7 +74,7 @@ namespace Provider
             nwrite += AddMomString(PrimTextSignal, time, rec, "PRIM_TEXT");
             nwrite += AddMomString(SuppTextSignal, time, rec, "SUPP_TEXT");
             if (Info1Signal != null)
-                nwrite += AddMom(Info1Signal, time, rec.GetString(ObjectType == "TEXT" ? "SUPP_INFO1" : ObjectType + "_INFO1"));
+                nwrite += AddMom(Info1Signal, time, rec.GetString(OutType == "TEXT" ? "SUPP_INFO1" : OutType + "_INFO1"));
             nwrite += AddMomString(Info2Signal, time, rec, "SUPP_INFO2"); 
             return nwrite;
         }

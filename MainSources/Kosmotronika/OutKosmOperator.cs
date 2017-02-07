@@ -4,10 +4,10 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    //Объект для считывания действий оператора Космотроники
-    internal class ObjectKosmOperator : SourceObject
+    //Выход для считывания действий оператора Космотроники
+    internal class OutKosmOperator : SourceOut
     {
-        internal ObjectKosmOperator(SourceBase source) : base(source) { }
+        internal OutKosmOperator(SourceBase source) : base(source) { }
 
         //Сигналы (поля таблицы действий оператора)
         //Номер рабочей станции
@@ -53,7 +53,7 @@ namespace Provider
             return null;
         }
 
-        //Чтение значений по одному объекту из рекордсета источника
+        //Чтение значений по одному выходу из рекордсета источника
         protected override int ReadMoments(IRecordRead rec)
         {
             int dn = Source is KosmotronikaRetroSource ? 1 : 0;
