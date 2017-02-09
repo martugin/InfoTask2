@@ -1,0 +1,54 @@
+Пример ииспользования события C# в Access
+
+В свойствах проекта-библиотеки в C# нужно установить галочки
+	Приоложение \ Сведения о сборке \ Сделать сборку видимой для COM
+	Построение \ Регистрация для COM-взаимодействия
+	
+//Текст класса и его интерфейсов в C#
+
+[InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+public interface IItClient
+{
+	void TestBreak();
+}
+
+[InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+public interface IItClientEvents
+{
+	[DispId(1)]
+	void Breaked();
+}
+
+[ClassInterface(ClassInterfaceType.None),
+ComSourceInterfaces(typeof(IItClientEvents))]
+public class ItClient : IItClient
+{
+	public delegate void ItDel();
+	public event ItDel Breaked;
+
+	public void TestBreak()
+	{
+		if (Breaked != null)
+			Breaked();
+	}
+}
+
+В базе Access нужно в VBA установить ссылку на файл tlb библиотеки, сделанной в C# и обработанной через RegAsm
+
+'В Access создается класс LoggerIT со следующим содержимым
+
+Public WithEvents ItCl As ItClient
+
+Public Sub Raise()
+  ItCl.TestBreak
+End Sub
+
+Public Sub ItCl_Breaked()
+  MsgBox "Break"
+End Sub
+
+'Текст программы по вызывающей кнопке
+Dim lo As LoggerIT
+Set lo = New LoggerIT
+Set lo.ItCl = New ItClient
+lo.Raise

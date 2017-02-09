@@ -12,11 +12,28 @@ namespace ComClients
         protected LoggerClient()
         {
             Logger = new Logger();
-            SubscribeIndicatorEvents();
+            SubscribeEvents();
+        }
+
+        //Закрытие клиента
+        public void Close()
+        {
+            try
+            {
+                if (Logger.History != null)
+                    Logger.History.Close();
+                UnsubscribeEvents();
+            }
+            catch { }
+            Thread.Sleep(100);
+            GC.Collect();
+            IsClosed = true;
         }
 
         //Логгер
         protected Logger Logger { get; private set; }
+        //Клиент уже был закрыт
+        protected bool IsClosed { get; private set; }
 
         //Добавить событие в историю
         public void AddEvent(string text, //Описание
@@ -96,7 +113,7 @@ namespace ComClients
         //Работа с формой индикатора
         #region
         //Подписка на события индикатора
-        private void SubscribeIndicatorEvents()
+        private void SubscribeEvents()
         {
             Logger.ShowIndicatorTexted += OnShowIndicatorTexted;
             Logger.ShowIndicatorTimed += OnShowIndicatorTimed;
@@ -104,6 +121,20 @@ namespace ComClients
             Logger.ChangeProcent += OnChangeProcent;
             Logger.ChangeTabloText += OnChangeTabloText;
             Logger.ChangePeriod += OnChangePeriod;
+
+            Logger.ExecutionFinished += OnExecutionFinished;
+        }
+
+        private void UnsubscribeEvents()
+        {
+            Logger.ShowIndicatorTexted -= OnShowIndicatorTexted;
+            Logger.ShowIndicatorTimed -= OnShowIndicatorTimed;
+            Logger.HideIndicator -= OnHideIndicator;
+            Logger.ChangeProcent -= OnChangeProcent;
+            Logger.ChangeTabloText -= OnChangeTabloText;
+            Logger.ChangePeriod -= OnChangePeriod;
+
+            Logger.ExecutionFinished -= OnExecutionFinished;
         }
 
         //Вызов обновлений формы
@@ -185,6 +216,55 @@ namespace ComClients
                     _formTimed.PeriodEnd.Text = e.EndPeriod.ToString();
                 });
         }
+
         #endregion
+
+        //Событие, сообщающее внешнему приложению, что выполнение было прервано
+        public delegate void EvDelegate();
+        public event EvDelegate Finished;
+
+        //Прервать выполнение
+        public void Break()
+        {
+            Logger.Break();
+        }
+
+        //Обработка события прерывания
+        private void OnExecutionFinished(object sender, EventArgs e)
+        {
+            if (Finished != null) Finished();
+        }
+
+        public void TestMethod()
+        {
+            var t = new Thread((StartProcess));
+            t.Start();
+        }
+
+        private void StartProcess()
+        {
+            Logger.StartCollect(false, false).Run(() =>
+            {
+                StartProgress("P", "P", "Процесс");
+                StartLog(0, 30, "11111111");
+                Thread.Sleep(1000);
+                SetProcent(33);
+                Thread.Sleep(1000);
+                SetProcent(67);
+                Thread.Sleep(1000);
+                StartLog(30, 70, "22222222");
+                Thread.Sleep(1000);
+                SetProcent(33);
+                Thread.Sleep(1000);
+                SetProcent(67);
+                Thread.Sleep(1000);
+                StartLog(70, 100, "33333333");
+                Thread.Sleep(1000);
+                SetProcent(33);
+                Thread.Sleep(1000);
+                SetProcent(67);
+                Thread.Sleep(1000);
+            });
+        }
     }
 }

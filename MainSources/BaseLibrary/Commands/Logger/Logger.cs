@@ -44,6 +44,16 @@ namespace BaseLibrary
         //Аргументы события изменения текста табло
         protected readonly ChangeTabloTextEventArgs TabloArgs = new ChangeTabloTextEventArgs();
 
+        //Событие прерывания выполнения
+        public event EventHandler<EventArgs> ExecutionFinished;
+
+        //Вызов события прерывания
+        internal void CallExecutionFinished()
+        {
+            if (ExecutionFinished != null)
+                ExecutionFinished(this, new EventArgs());
+        }
+
         //Вызов событий отображения индикаторов
         internal void CallShowIndicatorTexted()
         {
@@ -161,7 +171,8 @@ namespace BaseLibrary
         //Прервать выполнение
         public void Break()
         {
-            WasBreaked = true;
+            if (CommandCollect != null)
+                WasBreaked = true;
         }
 
         //Вызвать BreakException

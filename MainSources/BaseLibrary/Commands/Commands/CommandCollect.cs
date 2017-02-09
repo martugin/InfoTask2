@@ -52,6 +52,7 @@ namespace BaseLibrary
                 while (Logger.Command != this)
                     Logger.Command.FinishCommand(null, true);
                 FinishCommand(null, true);
+                Logger.CallExecutionFinished();
                 Logger.WasBreaked = false;
                 return this;
             }

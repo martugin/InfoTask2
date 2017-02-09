@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading;
+using System.Runtime.InteropServices;
 using BaseLibrary;
 using CommonTypes;
 using Generator;
@@ -7,8 +7,25 @@ using ProvidersLibrary;
 
 namespace ComClients
 {
+    //Интерфейс
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    public interface IItClient
+    {
+        void TestMethod();
+        void Break();
+    }
+    //Интерфейс событий
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    public interface IItClientEvents
+    {
+        [DispId(1)]
+        void Finished();
+    }
+
     //Клиент работы с функциями InfoTask, написанными на C#, вызываемыми из внешних приложений через COM
-    public class InfoTaskClient : LoggerClient
+    [ClassInterface(ClassInterfaceType.None),
+    ComSourceInterfaces(typeof(IItClientEvents))]
+    public class ItClient : LoggerClient , IItClient
     {
         //Инициализация
         public void Initialize(string appCode, //Код приложения
@@ -19,23 +36,11 @@ namespace ComClients
             Logger.History = new HistoryAccess(Logger, DifferentIt.LocalDataProjectDir(project) + @"History\" + appCode + @"\History.accdb", DifferentIt.HistoryTemplateFile);
         }
         
-        //Закрытие клиента
-        public void Close()
-        {
-            try { Logger.History.Close(); }
-            catch { }
-            Thread.Sleep(100);
-            GC.Collect();
-            IsClosed = true;
-        }
-
         //Код приложения
         protected string AppCode { get; private set; }
         //Код проекта
         protected string Project { get; private set; }
-        //Клиент уже был закрыт
-        protected bool IsClosed { get; private set; }
-
+        
         //Генерация параметров
         public string GenerateParams(string moduleDir)
         {
@@ -91,6 +96,5 @@ namespace ComClients
         {
             get { return _factory ?? (_factory = new ProvidersFactory()); }
         }
-
     }
 }

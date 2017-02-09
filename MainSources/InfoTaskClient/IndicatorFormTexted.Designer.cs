@@ -49,6 +49,7 @@
             this.Text0.Name = "Text0";
             this.Text0.Size = new System.Drawing.Size(342, 16);
             this.Text0.TabIndex = 6;
+            this.Text0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Text1
             // 
