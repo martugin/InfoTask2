@@ -31,7 +31,7 @@ namespace ComClients
         }
 
         //Логгер
-        protected Logger Logger { get; private set; }
+        internal protected Logger Logger { get; private set; }
         //Клиент уже был закрыт
         protected bool IsClosed { get; private set; }
 

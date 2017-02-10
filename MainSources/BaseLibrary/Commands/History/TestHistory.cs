@@ -61,7 +61,7 @@ namespace BaseLibrary
 
     //-------------------------------------------------------------------------------------------------------
     //Тестовая история
-    internal class TestHistory : IHistory
+    public class TestHistory : IHistory
     {
         public TestHistory(Logger logger)
         {

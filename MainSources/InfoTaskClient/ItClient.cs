@@ -11,6 +11,7 @@ namespace ComClients
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
     public interface IItClient
     {
+
         void TestMethod();
         void Break();
     }
@@ -36,6 +37,14 @@ namespace ComClients
             Logger.History = new HistoryAccess(Logger, DifferentIt.LocalDataProjectDir(project) + @"History\" + appCode + @"\History.accdb", DifferentIt.HistoryTemplateFile);
         }
         
+        //Инициализация для запуска в тестах
+        internal void InitializeTest()
+        {
+            AppCode = "Test";
+            Project = "TestProject";
+            Logger.History = new TestHistory(Logger);
+        }
+
         //Код приложения
         protected string AppCode { get; private set; }
         //Код проекта
