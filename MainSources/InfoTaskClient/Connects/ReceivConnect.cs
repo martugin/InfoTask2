@@ -35,13 +35,13 @@ namespace ComClients
         }
 
         //Запись значений в приемник
-        public string WriteValues(DateTime periodBegin, DateTime periodEnd)
+        public void WriteValues(DateTime periodBegin, DateTime periodEnd)
         {
-            return RunClientCommand(() => Connect.WriteValues(periodBegin, periodEnd));
+            RunLongCommand(() => Connect.WriteValues(periodBegin, periodEnd));
         }
-        public string WriteValues()
+        public void WriteValues()
         {
-            return RunClientCommand(() => Connect.WriteValues());
+            RunLongCommand(() => Connect.WriteValues());
         }
     }
 }

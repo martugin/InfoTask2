@@ -1,9 +1,9 @@
 ﻿namespace BaseLibrary
 {
     //Команда для отображения текста 2-го уровня на форме индикатора
-    public class CommandProgressText : Command
+    public class CommandIndicatorText : Command
     {
-        internal CommandProgressText(Logger logger, Command parent, double startProcent, double finishProcent, string text)
+        internal CommandIndicatorText(Logger logger, Command parent, double startProcent, double finishProcent, string text)
             : base(logger, parent, startProcent, finishProcent)
         {
             Logger.SetTabloText(2, text);
@@ -11,11 +11,11 @@
         }
 
         //Завершение команды
-        internal protected override void FinishCommand(string results, bool isBreaked)
+        internal protected override void FinishCommand(bool isBreaked)
         {
             Logger.SetTabloText(2, "");
-            base.FinishCommand(results, isBreaked);
-            Logger.CommandProgressText = null;
+            base.FinishCommand(isBreaked);
+            Logger.CommandIndicatorText = null;
         }
     }
 }

@@ -39,19 +39,25 @@ namespace BaseLibrary
             base.AddError(err);
         }
 
-        //Запуск операции, обрамляемой данной командой
-        public override Command Run(Func<string> func)
+        public override Command Run(Action action)
         {
-            string res = "";
+            return Run(action, null);
+        }
+
+        //Запуск операции, обрамляемой данной командой
+        public Command Run(Action action,
+                                      Action finishAction) //Действие, выполняемое при завершении команды
+        {
             try
             {
-                res = func();
+                action();
             }
             catch (BreakException)
             {
+                if (finishAction != null) finishAction();
                 while (Logger.Command != this)
-                    Logger.Command.FinishCommand(null, true);
-                FinishCommand(null, true);
+                    Logger.Command.FinishCommand(true);
+                FinishCommand(true);
                 Logger.CallExecutionFinished();
                 Logger.WasBreaked = false;
                 return this;
@@ -60,29 +66,26 @@ namespace BaseLibrary
             {
                 AddError(new ErrorCommand("Ошибка", ex));
             }
-            return Finish(res);
+            if (finishAction != null) finishAction();
+            return Finish();
         }
 
         //Завершение команды
-        internal protected override void FinishCommand(string results, bool isBreaked)
+        internal protected override void FinishCommand(bool isBreaked)
         {
-            _results = results;
-            base.FinishCommand(results, isBreaked);
+            Logger.ErrorMessage = ErrorMessage();
+            base.FinishCommand(isBreaked);
             Logger.CommandCollect = null;
         }
-
-        //Результаты выполнения операции
-        private string _results;
 
         //Совокупное сообщение об ошибках
         public string ErrorMessage(bool addContext = true, //добавлять контекст ошибки
                                                  bool addParams = true, //добавлять параметры
                                                  bool addErrType = true) //добавлять подписи Ошибка или Предупреждение
         {
-            if (!_isCollect || _errors == null || _errors.Count == 0) return _results ?? "";
+            if (!_isCollect || _errors == null || _errors.Count == 0) return "";
 
             var sb = new StringBuilder();
-            if (!_results.IsEmpty()) sb.Append(_results).Append(Environment.NewLine);
             bool isFirst = true;
             foreach (var e in _errors.Where(e => e.Quality == CommandQuality.Error))
             {

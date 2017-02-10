@@ -30,9 +30,9 @@ namespace BaseLibrary
         }
 
         //Завершение команды
-        internal protected override void FinishCommand(string results, bool isBreaked)
+        internal protected override void FinishCommand(bool isBreaked)
         {
-            base.FinishCommand(results, isBreaked);
+            base.FinishCommand(isBreaked);
             Logger.CommandKeep = null;
         }
     }

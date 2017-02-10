@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using BaseLibrary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BaseLibrary
+namespace BaseLibraryTest
 {
     [TestClass]
     public class LogTest : Logger
@@ -118,7 +119,7 @@ namespace BaseLibrary
             Assert.AreEqual("Par1", Logs[1].Params);
             Assert.AreEqual("Source", Logs[1].Context);
             Assert.AreEqual("Ошибка", Logs[1].Status);
-            Assert.AreEqual("", Logs[1].Results);
+            Assert.IsNull(Logs[1].Results);
             Assert.AreEqual(2, Logs[1].Events.Count);
 
             StartLog("Op2", "Source", "Par2");
@@ -146,8 +147,7 @@ namespace BaseLibrary
                     Assert.AreEqual("Event", Logs[3].Events[0].Description);
                     Assert.AreEqual("EventPar", Logs[3].Events[0].Params);
                     Assert.AreEqual(null, Logs[3].Events[0].Status);
-
-                    return "Res";
+                    SetLogResults("Res");
                 });
             Assert.IsTrue(c.IsFinished);
             Assert.AreEqual("", TabloText(1));
@@ -195,7 +195,7 @@ namespace BaseLibrary
             Assert.AreEqual(20, Command.Procent);
 
             Assert.IsNull(TabloText(2));
-            StartProgressText(20, 30, "Text3").Run(() =>
+            StartIndicatorText(20, 30, "Text3").Run(() =>
                 {
                     Assert.AreEqual(30, CommandProgress.Procent);
                     Assert.AreEqual(30, TabloProcent);
@@ -257,7 +257,7 @@ namespace BaseLibrary
             Assert.AreEqual(2, Supers[0].Logs.Count);
             Assert.AreEqual(CommandQuality.Error, CommandProgress.Quality);
 
-            StartProgressText(20, 30, "Text3_1");
+            StartIndicatorText(20, 30, "Text3_1");
             Assert.AreEqual("Процесс", TabloText(0));
             Assert.AreEqual("", TabloText(1));
             Assert.AreEqual("Text3_1", TabloText(2));
@@ -375,7 +375,10 @@ namespace BaseLibrary
             Assert.IsNull(CommandProgress);
             Assert.AreEqual(CommandQuality.Error, CommandCollect.Quality);
 
+            SetCollectResults("CollectResults");
+
             var c = FinishCollect();
+            Assert.AreEqual(CommandResults, "CollectResults");
             Assert.IsNull(CommandCollect);
             Assert.IsNull(Command);
             Assert.AreEqual(CommandQuality.Error, c.Quality);
@@ -383,14 +386,17 @@ namespace BaseLibrary
                                      "Ошибка: Err3; Source2; Err3Pars" + Environment.NewLine +
                                      "Предупреждение: War0; Source; War0Pars" + Environment.NewLine + 
                                      "Предупреждение: War1; Source; War1Pars", c.ErrorMessage());
+            Assert.AreEqual(ErrorMessage, c.ErrorMessage());
             Assert.AreEqual("Err2; Err2Pars" + Environment.NewLine +
                                      "Err3; Err3Pars" + Environment.NewLine +
                                      "War0; War0Pars" + Environment.NewLine +
                                      "War1; War1Pars", c.ErrorMessage(false, true, false));
+            Assert.AreEqual(ErrorMessage, c.ErrorMessage());
             Assert.AreEqual("Ошибка: Err2" + Environment.NewLine +
                                      "Ошибка: Err3" + Environment.NewLine +
                                      "Предупреждение: War0" + Environment.NewLine +
                                      "Предупреждение: War1", c.ErrorMessage(false, false));
+            Assert.AreEqual(ErrorMessage, c.ErrorMessage());
         }
 
         [TestMethod]

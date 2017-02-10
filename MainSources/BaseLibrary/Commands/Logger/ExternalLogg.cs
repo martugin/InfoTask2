@@ -97,14 +97,14 @@ namespace BaseLibrary
         }
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommandProgressText StartProgressText(double startProcent, double finishProcent, string text)
+        public CommandIndicatorText StartProgressText(double startProcent, double finishProcent, string text)
         {
-            return Logger.StartProgressText(startProcent, finishProcent, text);
+            return Logger.StartIndicatorText(startProcent, finishProcent, text);
         }
         //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommandProgressText StartProgressText(string text)
+        public CommandIndicatorText StartProgressText(string text)
         {
-            return Logger.StartProgressText(text);
+            return Logger.StartIndicatorText(text);
         }
 
         //Запуск команды, колекционирущей ошибки

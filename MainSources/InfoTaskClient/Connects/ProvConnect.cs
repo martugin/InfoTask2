@@ -24,14 +24,14 @@ namespace ComClients
         public string Complect { get { return ProviderConnect.Complect; } }
 
         //Присвоение основного и резервного провайдера 
-        public string JoinProviders(string mainCode, string mainInf, string reserveCode = null, string reserveInf = null)
+        public void JoinProviders(string mainCode, string mainInf, string reserveCode = null, string reserveInf = null)
         {
-            return RunClientCommand(() =>
+            RunShortCommand(() =>
                 {
                     var main = Factory.CreateProvider(mainCode, mainInf);
                     var reserve = reserveCode == null ? null : Factory.CreateProvider(reserveCode, reserveInf);
                     ProviderConnect.JoinProviders(main, reserve);
-                }, "Ошибка присоединения провайдера");
+                });
         }
     }
 }

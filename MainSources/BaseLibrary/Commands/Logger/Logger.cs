@@ -17,7 +17,7 @@ namespace BaseLibrary
         internal Command Command { get; set; }
         internal CommandLog CommandLog { get; set; }
         internal CommandProgress CommandProgress { get; set; }
-        internal CommandProgressText CommandProgressText { get; set; }
+        internal CommandIndicatorText CommandIndicatorText { get; set; }
         internal CommandCollect CommandCollect { get; set; }
         internal CommandKeep CommandKeep { get; set; }
         //Накопленная ошибка
@@ -211,9 +211,16 @@ namespace BaseLibrary
             return StartLog(0, 100, name, context, pars);
         }
         //Завершение команды логирования
-        public CommandLog FinishLog(string results = "")
+        public CommandLog FinishLog(string results = null)
         {
-            return (CommandLog)FinishCommand(CommandLog, results);
+            if (!results.IsEmpty()) CommandLog.Results = results;
+            return (CommandLog)FinishCommand(CommandLog);
+        }
+        //Присвоить результаты в команду логирования
+        public void SetLogResults(string results)
+        {
+            if (CommandLog != null)
+                CommandLog.Results = results;
         }
 
         //Запуск команды логирования в SuperHistory и отображения индикатора
@@ -245,20 +252,20 @@ namespace BaseLibrary
         }
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommandProgressText StartProgressText(double startProcent, double finishProcent, string text)
+        public CommandIndicatorText StartIndicatorText(double startProcent, double finishProcent, string text)
         {
-            FinishCommand(CommandProgressText);
-            Command = CommandProgressText = new CommandProgressText(this, Command, startProcent, finishProcent, text);
-            return CommandProgressText;
+            FinishCommand(CommandIndicatorText);
+            Command = CommandIndicatorText = new CommandIndicatorText(this, Command, startProcent, finishProcent, text);
+            return CommandIndicatorText;
         }
-        public CommandProgressText StartProgressText(string text)
+        public CommandIndicatorText StartIndicatorText(string text)
         {
-            return StartProgressText(0, 100, text);
+            return StartIndicatorText(0, 100, text);
         }
         //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommandProgressText FinishProgressText()
+        public CommandIndicatorText FinishProgressText()
         {
-            return (CommandProgressText)FinishCommand(CommandProgressText);
+            return (CommandIndicatorText)FinishCommand(CommandIndicatorText);
         }
 
         //Запуск команды, колекционирущей ошибки
@@ -266,15 +273,27 @@ namespace BaseLibrary
                                                               bool isCollect) //Формировать общую ошибку
         {
             FinishCommand(CommandCollect);
+            CommandResults = null;
             Command = CommandCollect = new CommandCollect(this, Command, isWriteHistory, isCollect);
             return CommandCollect;
         }
         //Завершение команды, колекционирущей ошибки
-        public CommandCollect FinishCollect()
+        public CommandCollect FinishCollect(string results = null)
         {
+            if (results != null) CommandResults = results;
             return (CommandCollect)FinishCommand(CommandCollect);
         }
-
+        //Присвоить результат команды Collect
+        public void SetCollectResults(string results)
+        {
+            CommandResults = results;
+        }
+        
+        //Итоговое сообщение об ошибке
+        public string ErrorMessage { get; internal set; }
+        //Результат выполнения комманды Collect
+        public string CommandResults { get; internal set; }
+        
         //Запуск команды, которая копит ошибки, но не выдает из во вне
         public CommandKeep StartKeep(double startProcent, double finishProcent)
         {
@@ -309,10 +328,10 @@ namespace BaseLibrary
         }
 
         //Завершить указанную команду и всех детей
-        protected Command FinishCommand(Command command, string results = "") 
+        protected Command FinishCommand(Command command) 
         {
             CheckBreak();
-            if (command != null) command.Finish(results);
+            if (command != null) command.Finish();
             return command;
         }
 

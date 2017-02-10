@@ -21,9 +21,9 @@ namespace ComClients
         protected override ProviderType Type { get { return ProviderType.Source;}}
 
         //Получение диапазона времени источника
-        public string GetTime()
+        public void GetTime()
         {
-            return RunClientCommand(() => {_interval = Connect.GetTime();});
+            RunShortCommand(() => {_interval = Connect.GetTime();});
         }
         private TimeInterval _interval;
 
@@ -55,19 +55,19 @@ namespace ComClients
         {
             return new SourSignal(Connect.AddCalcSignal(fullCode, codeObject, initialSignal, formula));
         }
-
+        
         //Чтение значений из источника
-        public string GetValues(DateTime periodBegin, DateTime periodEnd)
+        public void GetValues(DateTime periodBegin, DateTime periodEnd)
         {
-            return RunClientCommand(() => Connect.GetValues(periodBegin, periodEnd));
+            RunLongCommand(() => Connect.GetValues(periodBegin, periodEnd));
         }
 
         //Создание клона источника
-        public string MakeClone(DateTime periodBegin, //Начало периода клона
-                                             DateTime periodEnd, //Конец периода клона
-                                             string cloneDir) //Каталог клона
+        public void MakeClone(DateTime periodBegin, //Начало периода клона
+                                          DateTime periodEnd, //Конец периода клона
+                                          string cloneDir) //Каталог клона
         {
-            return RunClientCommand(() => Connect.MakeClone(periodBegin, periodEnd, cloneDir));
+            RunLongCommand(() => Connect.MakeClone(periodBegin, periodEnd, cloneDir));
         }
     }
 }

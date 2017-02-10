@@ -47,11 +47,11 @@ namespace BaseLibrary
         }
 
         //Завершение команды
-        internal protected override void FinishCommand(string results, bool isBreaked)
+        internal protected override void FinishCommand(bool isBreaked)
         {
-            base.FinishCommand(results, isBreaked);
+            base.FinishCommand(isBreaked);
             if (History != null)
-                History.WriteFinishSuper(this, results);
+                History.WriteFinishSuper(this, null);
             Logger.SetTabloText(0, "");
             Logger.CallHideIndicator();
             Logger.CommandProgress = null;

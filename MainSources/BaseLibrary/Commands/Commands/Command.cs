@@ -78,29 +78,25 @@ namespace BaseLibrary
         }
 
         //Запуск операции, обрамляемой данной командой
-        public virtual Command Run(Func<string> func) //Возвращает описание результатов операции
+        public virtual Command Run(Action action) //Возвращает описание результатов операции
         {
             if (IsFinished) return this;
-            return Finish(func());
+            action();
+            return Finish();
         }
-        public Command Run(Action action)
-        {
-            return Run(() => { action(); return ""; });
-        }
-
+        
         //Завершить команду
-        public Command Finish(string results = "")
+        public Command Finish()
         {
             while (Logger.Command != this)
-                Logger.Command.FinishCommand(null, false);
-            FinishCommand(results, false);
+                Logger.Command.FinishCommand(false);
+            FinishCommand(false);
             Logger.CheckBreak();
             return this;
         }
 
         //Завершает комманду
-        internal protected virtual void FinishCommand(string results, //Строка с описанием результатов команды
-                                                                            bool isBreaked) //Комманда была прервана
+        internal protected virtual void FinishCommand(bool isBreaked) //Комманда была прервана
         {
             Procent = 100;
             IsFinished = true;

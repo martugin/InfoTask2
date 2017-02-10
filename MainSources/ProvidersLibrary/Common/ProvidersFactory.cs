@@ -40,7 +40,7 @@ namespace ProvidersLibrary
         //Создание соединения
         public ProviderConnect CreateConnect(ProviderType type, //Тип провайдера
                                                                  string name, //Имя соединения
-                                                                 string complect, //Комплест
+                                                                 string complect, //Комплект
                                                                  Logger logger) //Логгер (поток)
         {
             switch (type)
