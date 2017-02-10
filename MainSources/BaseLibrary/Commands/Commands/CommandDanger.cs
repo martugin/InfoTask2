@@ -48,9 +48,9 @@ namespace BaseLibrary
         }
 
         //Запуск операции, обрамляемой данной командой
-        public override Command Run(Func<string> func)
+        public override Command Run(Action action)
         {
-            return Run(() => func(), (Func<bool>) null);
+            return Run(action, (Func<bool>) null);
         }
         public Command Run(Action action, Action erorrAction)
         {
@@ -126,10 +126,6 @@ namespace BaseLibrary
         }
 
         //Запуск действия
-        private bool RunAction(Action action)
-        {
-            return RunAction(() => { action(); return true; });
-        }
         private bool RunAction(Func<bool> action)
         {
             try

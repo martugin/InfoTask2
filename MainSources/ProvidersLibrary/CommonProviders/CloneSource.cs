@@ -66,19 +66,19 @@ namespace ProvidersLibrary
         }
 
         //Словари объектов, каждый содержит один сигнал, ключи - SignalId в клоне и коды
-        private readonly DicI<CloneObject> _objectsId = new DicI<CloneObject>();
-        private readonly DicS<CloneObject> _objects = new DicS<CloneObject>();
+        private readonly DicI<CloneOut> _objectsId = new DicI<CloneOut>();
+        private readonly DicS<CloneOut> _objects = new DicS<CloneOut>();
         //Список объектов
-        private readonly List<SourceObject> _objectsList = new List<SourceObject>();
+        private readonly List<SourceOut> _objectsList = new List<SourceOut>();
 
         //Добавляет объект, содержащий один сигнал
-        protected override SourceObject AddObject(InitialSignal sig)
+        protected override SourceOut AddOut(InitialSignal sig)
         {
-            return _objects.Add(sig.Code, new CloneObject(this));
+            return _objects.Add(sig.Code, new CloneOut(this));
         }
 
         //Очистка списка объектов
-        protected override void ClearObjects()
+        protected override void ClearOuts()
         {
             _objectsId.Clear();
             _objects.Clear();
@@ -125,7 +125,7 @@ namespace ProvidersLibrary
         private bool _isStrTable;
 
         //Запрос значений из клона
-        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             string table = "Moment" + (_isStrTable ? "Str" : "") + "Values" + (isCut ? "Cut" : "");
             string timeField = (isCut ? "Cut" : "") + "Time";
@@ -134,7 +134,7 @@ namespace ProvidersLibrary
         }
 
         //Определение объекта строки значений
-        protected override SourceObject DefineObject(IRecordRead rec)
+        protected override SourceOut DefineOut(IRecordRead rec)
         {
             return _objectsId[rec.GetInt("SignalId")];
         }

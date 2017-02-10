@@ -115,11 +115,8 @@ namespace BaseLibrary
         public void WriteStartSuper(CommandProgress command)
         {
             _writer.Write(command.Name + ", ");
-            if (Logger is LoggerTimed)
-            {
-                var logger = (LoggerTimed)Logger;
-                _writer.Write("Период: " + logger.BeginPeriod + " - " + logger.EndPeriod + ", " + logger.ModePeriod + ", ");
-            }
+            if (Logger.BeginPeriod != Different.MinDate)
+                _writer.Write("Период: " + Logger.BeginPeriod + " - " + Logger.EndPeriod + ", " + Logger.ModePeriod + ", ");
             _writer.WriteLine(command.StartTime);
         }
 
@@ -165,7 +162,7 @@ namespace BaseLibrary
             _errWriter.WriteLine(error.Text + ", " + error.Quality.ToRussian() + ", " + DateTime.Now);
             if (!error.Params.IsEmpty() || error.Exeption != null) 
                 _errWriter.WriteLine(error.ToLog());
-            if (Logger is LoggerTimed && Logger.CommandProgress != null)
+            if (Logger.CommandProgress != null && Logger.BeginPeriod != Different.MinDate)
                 _errWriter.WriteLine(Logger.CommandProgress.BeginPeriod + " - " + Logger.CommandProgress.EndPeriod + "  ");
             if (Logger.CommandLog != null)
                 _errWriter.WriteLine(Logger.CommandLog.Name + ", " + Logger.CommandLog.Context);

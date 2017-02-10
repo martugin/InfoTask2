@@ -8,8 +8,8 @@ namespace ProvidersLibrary
     //Используется для событий, сигнализации, действий оператора и т.д.
     public class InitialSignal : SourceSignal
     {
-        public InitialSignal(SourceConnect connect, string code, string codeObject, DataType dataType, string signalInf)
-            : base(connect, code, codeObject, dataType, signalInf)
+        public InitialSignal(SourceConnect connect, string code, string codeOut, DataType dataType, string signalInf)
+            : base(connect, code, codeOut, dataType, signalInf)
         {
             BufMom = new MomEdit(dataType);
         }

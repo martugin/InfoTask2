@@ -1,12 +1,12 @@
 ﻿using System;
-using BaseLibraryTest;
+using BaseLibrary;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BaseLibrary
+namespace BaseLibraryTest
 {
     [TestClass]
-    public class HistoryTest :  LoggerTimed
+    public class HistoryTest :  Logger
     {
         public HistoryTest() : base(LoggerDangerness.Single) { }
 
@@ -73,6 +73,7 @@ namespace BaseLibrary
                             AddEvent("Event021");
                             AddEvent("Event022");
                             AddError("Error023");
+                            SetLogResults("Res");
                         });
                 });
             History.Close();

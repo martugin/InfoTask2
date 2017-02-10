@@ -11,7 +11,8 @@
     <RootNamespace>Experiments</RootNamespace>
     <AssemblyName>Experiments</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -74,7 +75,9 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -86,6 +89,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BaseLibraryTest\BaseLibraryTest.csproj">
+      <Project>{D7B4D56D-F810-4AEB-ABE2-359327730790}</Project>
+      <Name>BaseLibraryTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
       <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
       <Name>BaseLibrary</Name>
@@ -101,6 +108,10 @@
     <ProjectReference Include="..\Generator\Generator.csproj">
       <Project>{267562A7-4B4A-4B81-B417-33C57CD869FE}</Project>
       <Name>Generator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InfoTaskClient\InfoTaskClient.csproj">
+      <Project>{841ADF86-BCE5-40F7-B55F-C082B5A5CD98}</Project>
+      <Name>InfoTaskClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProvidersLibrary\ProvidersLibrary.csproj">
       <Project>{819FEFDE-4840-45CD-BF58-B528821E3098}</Project>

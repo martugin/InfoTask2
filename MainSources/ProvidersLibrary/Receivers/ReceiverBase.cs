@@ -24,7 +24,7 @@ namespace ProvidersLibrary
                     foreach (var sig in ReceiverConnect.Signals.Values)
                     {
                         var ob = AddObject(sig);
-                        ob.Context = sig.CodeObject;
+                        ob.Context = sig.CodeOuts;
                         ob.AddSignal(sig);
                     }
                     Procent = 30;

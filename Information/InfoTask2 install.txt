@@ -1,0 +1,7 @@
+Для установки InfoTask2 нужно:
+- Создать на компьютере папку InfoTask2 (обычно C:\InfoTask2 или InfoTask2\Debug), это будет каталог инсталляции
+- Скопировать в эту папку все содержимое папки InfoTask\Release
+- В реестре создать узел:
+ для 64-битных систем: HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\InfoTask
+ для 32-битных систем: HKEY_LOCAL_MACHINE\SOFTWARE\InfoTask
+- В этом узле создать свойство InfoTask2Path и записать в него путь к каталогу инсталяции

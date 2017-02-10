@@ -53,8 +53,11 @@
     <Compile Include="Collections\DicS.cs" />
     <Compile Include="Collections\IDicForRead.cs" />
     <Compile Include="Collections\SetS.cs" />
+    <Compile Include="Commands\Commands\CommandIndicatorText.cs" />
     <Compile Include="Commands\Commands\CommandsEnums.cs" />
     <Compile Include="Commands\Commands\CommandKeep.cs" />
+    <Compile Include="Commands\History\TestHistory.cs" />
+    <Compile Include="Commands\Logger\ProcentTabloEventArgs.cs" />
     <Compile Include="Databases\SqlServer\InserterSql.cs" />
     <Compile Include="Commands\History\HistoryText.cs" />
     <Compile Include="Commands\Commands\CommandCollect.cs" />
@@ -84,7 +87,6 @@
     <Compile Include="Commands\Commands\CommandLogBase.cs" />
     <Compile Include="Commands\Commands\CommandProgress.cs" />
     <Compile Include="Commands\Logger\Logger.cs" />
-    <Compile Include="Commands\Logger\LoggerTimed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Values\TimeInterval.cs" />
     <Compile Include="Values\TimeUnit.cs" />

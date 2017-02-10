@@ -17,7 +17,7 @@ namespace BaseLibrary
         internal Command Command { get; set; }
         internal CommandLog CommandLog { get; set; }
         internal CommandProgress CommandProgress { get; set; }
-        internal CommandProgressText CommandProgressText { get; set; }
+        internal CommandIndicatorText CommandIndicatorText { get; set; }
         internal CommandCollect CommandCollect { get; set; }
         internal CommandKeep CommandKeep { get; set; }
         //Накопленная ошибка
@@ -26,34 +26,82 @@ namespace BaseLibrary
          //Уровень важности безошибочности по отношению к быстроте
         public LoggerDangerness Dangerness { get; private set; }
 
+        //События отображения индикатора
+        public event EventHandler<EventArgs> ShowIndicatorTexted;
+        public event EventHandler<EventArgs> ShowIndicatorTimed;
+        //Событие скрытия индикатора
+        public event EventHandler<EventArgs> HideIndicator;
+        //Событие изменения текста на табло
+        public event EventHandler<ChangeTabloTextEventArgs> ChangeTabloText;
+        //Событие обновления периода для индикатора
+        public event EventHandler<ChangePeriodEventArgs> ChangePeriod;
+        //События установки и снятия режима индикатора с обратным отсчетом времени
+        public event EventHandler<SetProcentTimedEventArgs> SetProcentTimed;
+        public event EventHandler<EventArgs> SetProcentUsual;
+        //Событие изменения уровня индикатора
+        public event EventHandler<ChangeProcentEventArgs> ChangeProcent;
+
+        //Аргументы события изменения текста табло
+        protected readonly ChangeTabloTextEventArgs TabloArgs = new ChangeTabloTextEventArgs();
+
+        //Событие прерывания выполнения
+        public event EventHandler<EventArgs> ExecutionFinished;
+
+        //Вызов события прерывания
+        internal void CallExecutionFinished()
+        {
+            if (ExecutionFinished != null)
+                ExecutionFinished(this, new EventArgs());
+        }
+
+        //Вызов событий отображения индикаторов
+        internal void CallShowIndicatorTexted()
+        {
+            lock (_tabloLocker)
+                if (ShowIndicatorTexted != null)
+                    ShowIndicatorTexted(this, new EventArgs());        
+            
+        }
+        internal void CallShowIndicatorTimed()
+        {
+            lock (_tabloLocker)
+                if (ShowIndicatorTimed != null)
+                    ShowIndicatorTimed(this, new EventArgs());
+            
+        }
+        internal void CallHideIndicator()
+        {
+            lock (_tabloLocker)
+                if (HideIndicator != null)
+                    HideIndicator(this, new EventArgs());    
+        }
+
+        //Включение и отключение индикатора с режимом отсчета обратного времени
+        internal void CallSetProcentTimed(DateTime endTime)
+        {
+            if (SetProcentTimed != null)
+                SetProcentTimed(this, new SetProcentTimedEventArgs(endTime));
+        }
+        internal void CallSetProcentUsual()
+        {
+            if (SetProcentUsual != null)
+                SetProcentUsual(this, new EventArgs());
+        }
+
         //Процент индикатора
         private double _tabloProcent;
         public double TabloProcent
         {
-            get { lock (_tabloLocker) return _tabloProcent; } 
+            get { lock (_tabloLocker) return _tabloProcent; }
             internal set
             {
                 lock (_tabloLocker)
                 {
                     if (_tabloProcent == value) return;
                     _tabloProcent = value;
+                    if (ChangeProcent != null)
+                        ChangeProcent(this, new ChangeProcentEventArgs(value));
                 }
-                //ToDo событие
-            }
-        }
-        //Отображать индикатор на табло
-        private bool _showProcent;
-        public bool ShowProcent
-        {
-            get { lock (_tabloLocker) return _showProcent; }
-            internal set
-            {
-                lock (_tabloLocker)
-                {
-                    if (_showProcent == value) return;
-                    _showProcent = value;
-                }
-                //ToDo событие
             }
         }
         
@@ -61,19 +109,53 @@ namespace BaseLibrary
         //Текст нулевого уровня задается в CommandProgress
         //Текст первого уровня задается в CommandLog
         //Текст второго уровня задается в CommandProgressText
-        private readonly string[] _tabloText = new [] {"", "", ""};
         public string TabloText(int number)
         {
             lock (_tabloLocker)
-                return _tabloText[number];
+                return TabloArgs.TabloText[number];
         }
         public void SetTabloText(int number, string text)
         {
             lock (_tabloLocker)
-                _tabloText[number] = text;
-            //ToDo событие
+            {
+                if (TabloArgs.TabloText[number] == text) return;
+                TabloArgs.TabloText[number] = text;
+                if (ChangeTabloText != null) ChangeTabloText(this, TabloArgs);
+            }
         }
 
+        //Задать период обработки
+        internal protected void SetPeriod(DateTime begin, DateTime end, string mode = "")
+        {
+            lock (_tabloLocker)
+            {
+                _beginPeriod = begin;
+                _endPeriod = end;
+                _modePeriod = mode;
+                if (ChangePeriod != null)
+                    ChangePeriod(this, new ChangePeriodEventArgs(begin, end, mode));
+            }
+        }
+
+        //Начало и конец текущего периода обработки
+        private DateTime _beginPeriod = Different.MinDate;
+        public DateTime BeginPeriod
+        {
+            get { lock (_tabloLocker) return _beginPeriod; }
+        }
+        private DateTime _endPeriod = Different.MinDate;
+        public DateTime EndPeriod
+        {
+            get { lock (_tabloLocker) return _endPeriod; }
+        }
+
+        //Режим (Выравнивание, Синхроннный, Разовый и т.п.)
+        private string _modePeriod;
+        public string ModePeriod
+        {
+            get { lock (_tabloLocker) return _modePeriod; }
+        }
+        
         //Объекты блокировки
         private readonly object _tabloLocker = new object();
         private readonly object _breakLocker = new object();
@@ -89,7 +171,8 @@ namespace BaseLibrary
         //Прервать выполнение
         public void Break()
         {
-            WasBreaked = true;
+            if (CommandCollect != null)
+                WasBreaked = true;
         }
 
         //Вызвать BreakException
@@ -123,23 +206,45 @@ namespace BaseLibrary
             Command = CommandLog = new CommandLog(this, Command, startProcent, finishProcent, name, context, pars);
             return CommandLog;
         }
-        public CommandLog StartLog(string name, string context = "", string pars = "")
+        public CommandLog StartLog(string name, string context = "", string pars = "", DateTime? endTime = null)
         {
             return StartLog(0, 100, name, context, pars);
         }
         //Завершение команды логирования
-        public CommandLog FinishLog(string results = "")
+        public CommandLog FinishLog(string results = null)
         {
-            return (CommandLog)FinishCommand(CommandLog, results);
+            if (!results.IsEmpty()) CommandLog.Results = results;
+            return (CommandLog)FinishCommand(CommandLog);
+        }
+        //Присвоить результаты в команду логирования
+        public void SetLogResults(string results)
+        {
+            if (CommandLog != null)
+                CommandLog.Results = results;
         }
 
         //Запуск команды логирования в SuperHistory и отображения индикатора
-        public CommandProgress StartProgress(string text, string name, string pars = "")
+        public CommandProgress StartProgress(string text, //Текст 0-го уровня для формы индикатора
+                                                                  string name, //Имя комманды
+                                                                  string pars = "", //Параметры команды
+                                                                  DateTime? endTime = null) //Если не null, то время конца обратного отсчета
         {
             FinishCommand(CommandProgress);
-            Command = CommandProgress = new CommandProgress(this, Command, text, name, pars);
+            Command = CommandProgress = new CommandProgress(this, Command, text, name, pars, endTime);
             return CommandProgress;
         }
+        //С указанием периода обработки
+        public CommandProgress StartProgress(DateTime begin, DateTime end, //Период обработки
+                                                                  string mode, //Режим обработки
+                                                                  string name, //Имя комманды
+                                                                  string pars = "", //Параметры команды
+                                                                  DateTime? endTime = null) //Если не null, то время конца обратного отсчета
+        {
+            FinishCommand(CommandProgress);
+            Command = CommandProgress = new CommandProgress(this, Command, begin, end, mode, name, pars, endTime);
+            return CommandProgress;
+        }
+
         //Завершение команды логирования в SuperHistory
         public CommandProgress FinishProgress()
         {
@@ -147,32 +252,48 @@ namespace BaseLibrary
         }
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommandProgressText StartProgressText(double startProcent, double finishProcent, string text)
+        public CommandIndicatorText StartIndicatorText(double startProcent, double finishProcent, string text)
         {
-            FinishCommand(CommandProgressText);
-            Command = CommandProgressText = new CommandProgressText(this, Command, startProcent, finishProcent, text);
-            return CommandProgressText;
+            FinishCommand(CommandIndicatorText);
+            Command = CommandIndicatorText = new CommandIndicatorText(this, Command, startProcent, finishProcent, text);
+            return CommandIndicatorText;
+        }
+        public CommandIndicatorText StartIndicatorText(string text)
+        {
+            return StartIndicatorText(0, 100, text);
         }
         //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommandProgressText StartProgressText()
+        public CommandIndicatorText FinishProgressText()
         {
-            return (CommandProgressText)FinishCommand(CommandProgressText);
+            return (CommandIndicatorText)FinishCommand(CommandIndicatorText);
         }
 
         //Запуск команды, колекционирущей ошибки
         public CommandCollect StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
-                                                         bool isCollect) //Формировать общую ошибку
+                                                              bool isCollect) //Формировать общую ошибку
         {
             FinishCommand(CommandCollect);
+            CommandResults = null;
             Command = CommandCollect = new CommandCollect(this, Command, isWriteHistory, isCollect);
             return CommandCollect;
         }
         //Завершение команды, колекционирущей ошибки
-        public CommandCollect FinishCollect()
+        public CommandCollect FinishCollect(string results = null)
         {
+            if (results != null) CommandResults = results;
             return (CommandCollect)FinishCommand(CommandCollect);
         }
-
+        //Присвоить результат команды Collect
+        public void SetCollectResults(string results)
+        {
+            CommandResults = results;
+        }
+        
+        //Итоговое сообщение об ошибке
+        public string ErrorMessage { get; internal set; }
+        //Результат выполнения комманды Collect
+        public string CommandResults { get; internal set; }
+        
         //Запуск команды, которая копит ошибки, но не выдает из во вне
         public CommandKeep StartKeep(double startProcent, double finishProcent)
         {
@@ -207,10 +328,10 @@ namespace BaseLibrary
         }
 
         //Завершить указанную команду и всех детей
-        protected Command FinishCommand(Command command, string results = "") 
+        protected Command FinishCommand(Command command) 
         {
             CheckBreak();
-            if (command != null) command.Finish(results);
+            if (command != null) command.Finish();
             return command;
         }
 

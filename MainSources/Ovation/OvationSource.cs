@@ -49,36 +49,36 @@ namespace Provider
         }
 
         //Словарь объектов по Id в Historian
-        private readonly DicI<ObjectOvation> _objectsId = new DicI<ObjectOvation>();
+        private readonly DicI<OutOvation> _outsId = new DicI<OutOvation>();
         //Объекты сообщений
-        private ObjectOvationMsg _alarmObject;
-        private ObjectOvationMsg _soeObject;
-        private ObjectOvationMsg _textObject;
+        private OutOvationMsg _alarmOut;
+        private OutOvationMsg _soeOut;
+        private OutOvationMsg _textOut;
 
-        //Добавить объект в провайдер
-        protected override SourceObject AddObject(InitialSignal sig)
+        //Добавить выход в провайдер
+        protected override SourceOut AddOut(InitialSignal sig)
         {
             var obType = sig.Inf.Get("ObjectType");
             if (obType == "ALARM")
-                return _alarmObject ?? (_alarmObject = new ObjectOvationMsg(this, "ALARM"));
+                return _alarmOut ?? (_alarmOut = new OutOvationMsg(this, "ALARM"));
             if (obType == "SOE")
-                return _soeObject ?? (_soeObject = new ObjectOvationMsg(this, "SOE"));
+                return _soeOut ?? (_soeOut = new OutOvationMsg(this, "SOE"));
             if (obType == "TEXT")
-                return _textObject ?? (_textObject = new ObjectOvationMsg(this, "TEXT"));
+                return _textOut ?? (_textOut = new OutOvationMsg(this, "TEXT"));
 
             int id = sig.Inf.GetInt("Id");
-            if (!_objectsId.ContainsKey(id))
-                return _objectsId.Add(id, new ObjectOvation(this, id));
-            return _objectsId[id];
+            if (!_outsId.ContainsKey(id))
+                return _outsId.Add(id, new OutOvation(this, id));
+            return _outsId[id];
         }
 
-        //Удалить все сигналы
-        protected override void ClearObjects()
+        //Удалить все выходы
+        protected override void ClearOuts()
         {
-            _objectsId.Clear();
-            _alarmObject = null;
-            _soeObject = null;
-            _textObject = null;
+            _outsId.Clear();
+            _alarmOut = null;
+            _soeOut = null;
+            _textOut = null;
         }
 
         //Создание фабрики ошибок
@@ -93,12 +93,12 @@ namespace Provider
             return factory;
         }
 
-        //Запрос значений из Historian по списку сигналов и интервалу
-        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        //Запрос значений из Historian по списку выходов и интервалу
+        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("select ID, TIMESTAMP, TIME_NSEC, F_VALUE, RAW_VALUE, STS from PT_HF_HIST " + "where (");
             bool isFirst = true;
-            foreach (ObjectOvation ob in part)
+            foreach (OutOvation ob in part)
             {
                 if (!isFirst) sb.Append(" or ");
                 sb.Append("(ID=").Append(ob.Id).Append(")");
@@ -114,22 +114,22 @@ namespace Provider
             return rec;
         }
         
-        //Определение текущего считываемого объекта
-        protected override SourceObject DefineObject(IRecordRead rec)
+        //Определение текущего считываемого выхода
+        protected override SourceOut DefineOut(IRecordRead rec)
         {
-            return _objectsId[rec.GetInt("Id")];
+            return _outsId[rec.GetInt("Id")];
         }
 
         //Запросы значений по сигналам сообщений разного типа
-        protected IRecordRead QueryValuesAlarm(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryValuesAlarm(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             return new ReaderAdo(Connection, "select * from MSG_ALARM_HIST" + TimeCondition(beg, en));
         }
-        protected IRecordRead QueryValuesSoe(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryValuesSoe(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             return new ReaderAdo(Connection, "select * from MSG_SOE_HIST" + TimeCondition(beg, en));
         }
-        protected IRecordRead QueryValuesText(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryValuesText(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             return new ReaderAdo(Connection, "select * from MSG_TEXT_HIST" + TimeCondition(beg, en));
         }
@@ -142,7 +142,7 @@ namespace Provider
             return "#" + dd.ToString("MM/dd/yyyy HH:mm:ss.fff", ci) + "#";
         }
 
-        //Строка с условием по времнеи для запросов
+        //Строка с условием по времени для запросов
         private string TimeCondition(DateTime beg, DateTime en)
         {
             return " (TIMESTAMP >= " + DateToOvation(beg) + ") and (TIMESTAMP <= " + DateToOvation(en) + ") order by TIMESTAMP, TIME_NSEC";
@@ -153,10 +153,10 @@ namespace Provider
         {
             var vc = new ValuesCount();
             using (Start(0, 50)) //Срез по 4 минутам
-                vc += ReadByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
+                vc += ReadByParts(_outsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
             if (vc.IsFail) return vc;
             using (Start(50, 100)) //Срез по 61 минуте
-                vc += ReadByParts(_objectsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
+                vc += ReadByParts(_outsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
             return vc;
         }
 
@@ -165,14 +165,14 @@ namespace Provider
         {
             var vc = new ValuesCount();
             using (Start(0, 70))
-                vc += ReadByParts(_objectsId.Values, 200);
+                vc += ReadByParts(_outsId.Values, 200);
 
             using (Start(70, 80))
-                vc += ReadOneObject(_alarmObject, QueryValuesAlarm, "Чтение сигнализационных сообщений");
+                vc += ReadOneOut(_alarmOut, QueryValuesAlarm, "Чтение сигнализационных сообщений");
             using (Start(80, 90))
-                vc += ReadOneObject(_soeObject, QueryValuesSoe, "Чтение событий");
+                vc += ReadOneOut(_soeOut, QueryValuesSoe, "Чтение событий");
             using (Start(90, 100))
-                vc += ReadOneObject(_textObject, QueryValuesText, "Чтение текстовых сообщений");
+                vc += ReadOneOut(_textOut, QueryValuesText, "Чтение текстовых сообщений");
             return vc;
         }
     }

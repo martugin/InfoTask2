@@ -34,22 +34,22 @@ namespace Provider
             return new TimeInterval(mind, maxd);
         }
 
-        //Словарь объектов по TagName
-        private readonly Dictionary<string, ObjectWonderware> _objects = new Dictionary<string, ObjectWonderware>();
+        //Словарь выходов по TagName
+        private readonly Dictionary<string, OutWonderware> _outs = new Dictionary<string, OutWonderware>();
 
-        //Добавить объект в провайдер
-        protected override SourceObject AddObject(InitialSignal sig)
+        //Добавить выход в провайдер
+        protected override SourceOut AddOut(InitialSignal sig)
         {
             string tag = sig.Inf["TagName"];
-            if (!_objects.ContainsKey(tag))
-                _objects.Add(tag, new ObjectWonderware(this, tag));
-            return _objects[tag];
+            if (!_outs.ContainsKey(tag))
+                _outs.Add(tag, new OutWonderware(this, tag));
+            return _outs[tag];
         }
 
         //Очистка списка сигналов
-        protected override void ClearObjects()
+        protected override void ClearOuts()
         {
-            _objects.Clear();
+            _outs.Clear();
         }
 
         //Создание фабрики ошибок
@@ -81,13 +81,13 @@ namespace Provider
         }
 
         //Запрос значений по одному блоку сигналов
-        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("SELECT TagName, DateTime = convert(nvarchar, DateTime, 21), Value, vValue, Quality, QualityDetail FROM History WHERE  TagName IN (");
             for (var n = 0; n < part.Count; n++)
             {
                 if (n != 0) sb.Append(", ");
-                var ob = (ObjectWonderware)part[n];
+                var ob = (OutWonderware)part[n];
                 sb.Append("'").Append(ob.TagName).Append("'");
             }
             sb.Append(") AND wwRetrievalMode = 'Delta'");
@@ -100,18 +100,18 @@ namespace Provider
         }
 
         //Определение текущего считываемого объекта
-        protected override SourceObject DefineObject(IRecordRead rec)
+        protected override SourceOut DefineOut(IRecordRead rec)
         {
             string code = rec.GetString("TagName");
-            if (_objects.ContainsKey(code))
-                return _objects[code];
+            if (_outs.ContainsKey(code))
+                return _outs[code];
             return null;
         }
         
         //Чтение данных из Historian за период
         protected override ValuesCount ReadChanges()
         {
-            return ReadByParts(_objects.Values, 500);
+            return ReadByParts(_outs.Values, 500);
         }
     }
 }

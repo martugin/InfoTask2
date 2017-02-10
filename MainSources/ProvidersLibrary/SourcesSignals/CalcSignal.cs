@@ -8,8 +8,8 @@ namespace ProvidersLibrary
     //Расчетный сигнал
     public class CalcSignal : SourceSignal
     {
-        public CalcSignal(string code, string codeObject, InitialSignal initialSignal, string formula)
-            : base(initialSignal.Connect, code, codeObject)
+        public CalcSignal(string code, string codeOut, InitialSignal initialSignal, string formula)
+            : base(initialSignal.Connect, code, codeOut)
         {
             _initialSignal = initialSignal;
             ParseFormula(formula);

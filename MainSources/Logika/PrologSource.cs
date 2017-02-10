@@ -19,46 +19,46 @@ namespace Logika
             return DaoDb.Check(DbFile, new[] {"NODES", "ABONENTS"});
         }
 
-        //Словарь объектов, первый ключ - код таблицы, второй ключ - id объекта
-        private readonly DicS<DicI<ObjectProlog>> _objects = new DicS<DicI<ObjectProlog>>();
-        //Словарь объектов ключ - id объекта
-        private readonly DicI<ObjectProlog> _objectsId = new DicI<ObjectProlog>();
+        //Словарь выходов, первый ключ - код таблицы, второй ключ - id объекта
+        private readonly DicS<DicI<OutProlog>> _outs = new DicS<DicI<OutProlog>>();
+        //Словарь выходов ключ - id объекта
+        private readonly DicI<OutProlog> _outsId = new DicI<OutProlog>();
 
-        //Добавить объект в источник
-        protected override SourceObject AddObject(InitialSignal sig)
+        //Добавить выход в источник
+        protected override SourceOut AddOut(InitialSignal sig)
         {
             int id = sig.Inf.GetInt("NodeId");
-            if (_objectsId.ContainsKey(id))
-                return _objectsId[id];
+            if (_outsId.ContainsKey(id))
+                return _outsId[id];
             string tableName = sig.Inf["TableName"];
-            if (!_objects.ContainsKey(tableName))
-                _objects.Add(tableName, new DicI<ObjectProlog>());
-            var ob = new ObjectProlog(this);
-            _objects[tableName].Add(id, ob);
-            return _objectsId.Add(id, ob);
+            if (!_outs.ContainsKey(tableName))
+                _outs.Add(tableName, new DicI<OutProlog>());
+            var ob = new OutProlog(this);
+            _outs[tableName].Add(id, ob);
+            return _outsId.Add(id, ob);
         }
 
-        //Очистка списка объектов
-        protected override void ClearObjects()
+        //Очистка списка выходов
+        protected override void ClearOuts()
         {
-            _objects.Clear();
-            _objectsId.Clear();
+            _outs.Clear();
+            _outsId.Clear();
         }
 
         //Имя текущей считываемой таблицы
         private string _tableName;
 
         //Запрос значений
-        protected override IRecordRead QueryValues(IList<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             return new RecDao(DbFile, "SELECT * FROM " + _tableName + "_ARCHIVE " +
                                       "WHERE (TYPE = 1) AND (Время >= " + beg.ToAccessString() + ") AND (Время <= " + en.ToAccessString() + ")"); 
         }
 
-        //Определение текущего объекта
-        protected override SourceObject DefineObject(IRecordRead rec)
+        //Определение текущего выхода
+        protected override SourceOut DefineOut(IRecordRead rec)
         {
-            return _objectsId[rec.GetInt("PARENT_ID")];
+            return _outsId[rec.GetInt("PARENT_ID")];
         }
 
         //Чтение значений, срез считывается вместе с изменениями
@@ -67,7 +67,7 @@ namespace Logika
             var vc = new ValuesCount();
             DateTime beg = PeriodBegin.AddMinutes(-PeriodBegin.Minute).AddSeconds(-PeriodBegin.Second - 1);
             DateTime en = PeriodEnd.AddSeconds(1);
-            foreach (var tabl in _objects.Dic)
+            foreach (var tabl in _outs.Dic)
             {
                 _tableName = tabl.Key;
                 vc += ReadWhole(tabl.Value.Values, beg, en, false);

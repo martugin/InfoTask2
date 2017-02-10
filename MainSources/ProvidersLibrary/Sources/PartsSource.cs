@@ -7,11 +7,11 @@ namespace ProvidersLibrary
     public abstract class PartsSource : SourceBase
     {
         //Чтение значений по блокам объектов
-        protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, //список объектов
+        protected ValuesCount ReadByParts(IEnumerable<SourceOut> objects, //список объектов
                                                            int partSize, //Размер одного блока
                                                            DateTime beg, DateTime en, //Период считывания
                                                            bool isCut,  //Считывается срез
-                                                           Func<List<SourceObject>, DateTime, DateTime, bool, ValuesCount> readPartFun, //Функция чтения значений по одному блоку 
+                                                           Func<List<SourceOut>, DateTime, DateTime, bool, ValuesCount> readPartFun, //Функция чтения значений по одному блоку 
                                                            string msg = null) //Сообщение для истории о запуске чтения данных
         {
             using (Start())
@@ -86,44 +86,44 @@ namespace ProvidersLibrary
             }
         }
         //Чтение значений по блокам объектов без указания времени и признака среза
-        protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, int partSize,
-                                          Func<List<SourceObject>, DateTime, DateTime, bool, ValuesCount> readPartFun, string msg = null)
+        protected ValuesCount ReadByParts(IEnumerable<SourceOut> objects, int partSize,
+                                          Func<List<SourceOut>, DateTime, DateTime, bool, ValuesCount> readPartFun, string msg = null)
         {
             return ReadByParts(objects, partSize, PeriodBegin, PeriodEnd, false, readPartFun, msg);
         }
 
         //Разбиение списка объектов на блоки
-        private List<List<SourceObject>> MakeParts(IEnumerable<SourceObject> objects, //Список объектов
+        private List<List<SourceOut>> MakeParts(IEnumerable<SourceOut> objects, //Список объектов
                                                                           int partSize, //Размер одного блока
                                                                           bool isCut, //Выполняется считываение среза
                                                                           out int n) //Общее количество считываемых объектов  
         {
             AddEvent("Разбиение списка объектов на блоки");
             n = 0;
-            var parts = new List<List<SourceObject>>();
+            var parts = new List<List<SourceOut>>();
             int i = 0;
-            List<SourceObject> part = null;
+            List<SourceOut> part = null;
             foreach (var ob in objects)
                 if (!isCut || !ob.HasBegin)
                 {
                     n++;
                     if (i++ % partSize == 0)
-                        parts.Add(part = new List<SourceObject>());
+                        parts.Add(part = new List<SourceOut>());
                     part.Add(ob);
                 }
             return parts;
         }
 
         //Рекурсивное чтение значений по блоку
-        private ValuesCount ReadPartRecursive(List<SourceObject> part, //Блок сигналов 
+        private ValuesCount ReadPartRecursive(List<SourceOut> part, //Блок сигналов 
                                                                    DateTime beg, DateTime en, //Период считывания
                                                                    bool isCut, //Считывается срез 
-                                                                   Func<List<SourceObject>, DateTime, DateTime, bool, ValuesCount> readPartFun) //Функция чтения значений по одному блоку 
+                                                                   Func<List<SourceOut>, DateTime, DateTime, bool, ValuesCount> readPartFun) //Функция чтения значений по одному блоку 
         {
             int n = 0;
             int errCount = 0;
             var valuesCount = new ValuesCount();
-            var queue = new Queue<List<SourceObject>>();
+            var queue = new Queue<List<SourceOut>>();
             queue.Enqueue(part);
             while (queue.Count > 0)
                 using (StartKeep(n < 10 ? 10*n : 90, n < 9 ? 10*(n + 1) : 90))
@@ -170,7 +170,7 @@ namespace ProvidersLibrary
         }
 
          //Чтение значений по одному блоку списка объектов
-        protected abstract ValuesCount ReadPart(IList<SourceObject> part, //Блок объектов
+        protected abstract ValuesCount ReadPart(IList<SourceOut> part, //Блок объектов
                                                                       DateTime beg, DateTime en, //Период считывания
                                                                       bool isCut); //Считывается срез
     }

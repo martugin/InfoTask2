@@ -92,13 +92,14 @@
           <_КодМодуля_Archive.accdb>Результаты отладочного периодического расчета по модулю, шаблон Providers\CalcArchive.accdb</_КодМодуля_Archive.accdb>
         </Archives>
         <Comm>
-          <ClonesProperties.xml>Свойства формирования клонов</ClonesProperties.xml>
           <!--Файлы данных коммуникаторов (настройки, порожденный)-->
           <_КодИсточника>
             <!--Временные файлы коммуникатора источника-->
+            <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
           </_КодИсточника>
           <_КодПриемника>
             <!--Временные файлы коммуникатора приемника-->
+            <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
           </_КодПриемника>
         </Comm>
       </Constructor>
@@ -114,6 +115,13 @@
           <_КомМодуля_Ved.accdb>Файл сформированной ведомости Access, по целому набору</_КомМодуля_Ved.accdb>
           <_КомМодуля_КодЗадачи_Ved.accdb>Файл сформированной ведомости Access, по одной задаче</_КомМодуля_КодЗадачи_Ved.accdb>
         </Ved>
+        <Comm>
+          <!--Файлы данных коммуникаторов (настройки, порожденный)-->
+          <_КодИсточника>
+            <!--Временные файлы коммуникатора источника-->
+            <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
+          </_КодИсточника>
+        </Comm>
       </Analyzer>
       <Server>
         <!--Данные сервера-->
@@ -217,8 +225,28 @@
       </History>
       <Calibrator>
         <!--Локальные данные калибратора по одному проекту-->
+        <Comm>
+          <!--Файлы данных коммуникаторов (настройки, порожденный)-->
+          <_КодИсточника>
+            <!--Временные файлы коммуникатора источника-->
+            <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
+          </_КодИсточника>
+        </Comm>
       </Calibrator>
+      <Comm>
+        <!--Файлы данных коммуникаторов (настройки, порожденный)-->
+        <_КодИсточника>
+          <!--Временные файлы коммуникатора источника-->
+          <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
+        </_КодИсточника>
+        <_КодПриемника>
+          <!--Временные файлы коммуникатора приемника-->
+          <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
+        </_КодПриемника>
+      </Comm>
     </_КодПроекта>
+  </LocalData>
+  <SpecialProjects>
     <CommProject>
       <!--Проект коммуникатора-->
       <ProjectProperties.xml>Файл свойств проекта (исходный)</ProjectProperties.xml>
@@ -236,7 +264,7 @@
         <_КодСоединения.accdb>Файл списка сигналов одного приемника, шаблон Projects\Signals.accdb</_КодСоединения.accdb>
       </SignalsReceiver>
     </CommProject>
-  </LocalData>
+  </SpecialProjects>
   <Клон>
     <!--Структура каталога клона-->
     <Signals.accdb>Файл списка сигналов одного источника или приемника, шаблон Projects\Signals.accdb</Signals.accdb>

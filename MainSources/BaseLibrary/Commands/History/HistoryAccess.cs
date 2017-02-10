@@ -150,12 +150,11 @@ namespace BaseLibrary
                 _superHistory.AddNew();
                 _superHistory.Put("Command", command.Name);
                 _superHistory.Put("Params", command.Params);
-                if (Logger is LoggerTimed)
+                if (Logger.BeginPeriod != Different.MinDate)
                 {
-                    var logger = (LoggerTimed) Logger;
-                    _superHistory.Put("BeginPeriod", logger.BeginPeriod);
-                    _superHistory.Put("EndPeriod", logger.EndPeriod);
-                    _superHistory.Put("ModePeriod", logger.ModePeriod);    
+                    _superHistory.Put("BeginPeriod", Logger.BeginPeriod);
+                    _superHistory.Put("EndPeriod", Logger.EndPeriod);
+                    _superHistory.Put("ModePeriod", Logger.ModePeriod);    
                 }
                 _superHistory.Put("Status", command.Status);
                 _superHistory.Put("Time", command.StartTime);
@@ -248,7 +247,7 @@ namespace BaseLibrary
                     _errorsRec.Put("Command", CommandLog.Name);
                     _errorsRec.Put("Context", CommandLog.Context);
                 }
-                if (Logger is LoggerTimed && CommandProgress != null)
+                if (Logger.BeginPeriod != Different.MinDate && CommandProgress != null)
                 {
                     _errorsRec.Put("BeginPeriod", CommandProgress.BeginPeriod);
                     _errorsRec.Put("EndPeriod", CommandProgress.EndPeriod);

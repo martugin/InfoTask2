@@ -9,48 +9,48 @@ namespace ProvidersLibrary
     public abstract class AdoSource : PartsSource
     {
         //Чтение значений по блокам объектов
-        protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, //список объектов
+        protected ValuesCount ReadByParts(IEnumerable<SourceOut> objects, //список объектов
                                             int partSize, //Размер одного блока
                                             DateTime beg, DateTime en, //Период считывания
                                             bool isCut, //Считывается срез
-                                            Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, //Функция - запрос рекордсета по одному блоку, возвращает запрошенный рекорсет
-                                            Func<IRecordRead, SourceObject> defineObjectFun, //Функция - определение текущего считываемого объекта
+                                            Func<IList<SourceOut>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, //Функция - запрос рекордсета по одному блоку, возвращает запрошенный рекорсет
+                                            Func<IRecordRead, SourceOut> defineObjectFun, //Функция - определение текущего считываемого объекта
                                             string msg = null) //Сообщение для истории о запуске чтения данных
         {
             _queryValuesFun = queryValuesFun;
             _defineObjectFun = defineObjectFun;
             return ReadByParts(objects, partSize, beg, en, isCut, ReadPart, msg);
         }
-        protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, int partSize,
-                                          Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun,
-                                          Func<IRecordRead, SourceObject> defineObjectFun, string msg = null)
+        protected ValuesCount ReadByParts(IEnumerable<SourceOut> objects, int partSize,
+                                          Func<IList<SourceOut>, DateTime, DateTime, bool, IRecordRead> queryValuesFun,
+                                          Func<IRecordRead, SourceOut> defineObjectFun, string msg = null)
         {
             return ReadByParts(objects, partSize, PeriodBegin, PeriodEnd, false, queryValuesFun, defineObjectFun, msg);
         }
 
         //Чтение значений по блокам объектов c использованием стандартных функций
-        protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, int partSize,
+        protected ValuesCount ReadByParts(IEnumerable<SourceOut> objects, int partSize,
                                                                        DateTime beg, DateTime en, bool isCut, string msg = null)
         {
-            return ReadByParts(objects, partSize, beg, en, isCut, QueryValues, DefineObject, msg);
+            return ReadByParts(objects, partSize, beg, en, isCut, QueryValues, DefineOut, msg);
         }
-        protected ValuesCount ReadByParts(IEnumerable<SourceObject> objects, int partSize, string msg = null)
+        protected ValuesCount ReadByParts(IEnumerable<SourceOut> objects, int partSize, string msg = null)
         {
             return ReadByParts(objects, partSize, PeriodBegin, PeriodEnd, false, msg);
         }
 
         //Чтение всех значений одним блоком
-        protected ValuesCount ReadWhole(IEnumerable<SourceObject> part,
+        protected ValuesCount ReadWhole(IEnumerable<SourceOut> part,
                                           DateTime beg, DateTime en, //Период считывания
                                           bool isCut, //Считывается срез
-                                          Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, //Функция - запрос рекордсета по одному блоку, возвращает запрошенный рекорсет
-                                          Func<IRecordRead, SourceObject> defineObjectFun) //Функция - определение текущего считываемого объекта
+                                          Func<IList<SourceOut>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, //Функция - запрос рекордсета по одному блоку, возвращает запрошенный рекорсет
+                                          Func<IRecordRead, SourceOut> defineObjectFun) //Функция - определение текущего считываемого объекта
         {
             try
             {
                 _queryValuesFun = queryValuesFun;
                 _defineObjectFun = defineObjectFun;
-                var list = part is IList<SourceObject> ? (IList<SourceObject>)part : part.ToList();
+                var list = part is IList<SourceOut> ? (IList<SourceOut>)part : part.ToList();
                 return ReadPart(list, beg, en, isCut);
             }
             catch (Exception ex)
@@ -59,44 +59,44 @@ namespace ProvidersLibrary
                 return new ValuesCount();
             }
         }
-        protected ValuesCount ReadWhole(IEnumerable<SourceObject> part,
-                                                           Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun,
-                                                           Func<IRecordRead, SourceObject> defineObjectFun)
+        protected ValuesCount ReadWhole(IEnumerable<SourceOut> part,
+                                                           Func<IList<SourceOut>, DateTime, DateTime, bool, IRecordRead> queryValuesFun,
+                                                           Func<IRecordRead, SourceOut> defineObjectFun)
         {
             return ReadWhole(part, PeriodBegin, PeriodEnd, false, queryValuesFun, defineObjectFun);
         }
 
         //Чтение всех значений одним блоком c использованием стандартных функций
-        protected ValuesCount ReadWhole(IEnumerable<SourceObject> part, DateTime beg, DateTime en, bool isCut)
+        protected ValuesCount ReadWhole(IEnumerable<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
-            return ReadWhole(part, beg, en, isCut, QueryValues, DefineObject);
+            return ReadWhole(part, beg, en, isCut, QueryValues, DefineOut);
         }
-        protected ValuesCount ReadWhole(IEnumerable<SourceObject> part)
+        protected ValuesCount ReadWhole(IEnumerable<SourceOut> part)
         {
             return ReadWhole(part, PeriodBegin, PeriodEnd, false);
         }
 
         //Чтение значений по одному явно указанному объекту
-        protected ValuesCount ReadOneObject(SourceObject ob, DateTime beg, DateTime en, bool isCut,
-                                          Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, //Функция - запрос рекордсета 
+        protected ValuesCount ReadOneOut(SourceOut ob, DateTime beg, DateTime en, bool isCut,
+                                          Func<IList<SourceOut>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, //Функция - запрос рекордсета 
                                           string msg = null) //Сообщение для истории о запуске чтения данных
         {
             if (ob == null) return new ValuesCount();
             AddEvent(msg ?? "Чтение значений объекта " + ob.Context);
             return ReadWhole(new[] {ob}, beg, en, isCut, queryValuesFun, rec => ob);
         }
-        protected ValuesCount ReadOneObject(SourceObject ob, Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, string msg = null)
+        protected ValuesCount ReadOneOut(SourceOut ob, Func<IList<SourceOut>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, string msg = null)
         {
-            return ReadOneObject(ob, PeriodBegin, PeriodEnd, false, queryValuesFun, msg);
+            return ReadOneOut(ob, PeriodBegin, PeriodEnd, false, queryValuesFun, msg);
         }
         
 
         //Ссылки на используемые функции
-        private Func<IList<SourceObject>, DateTime, DateTime, bool, IRecordRead> _queryValuesFun;
-        private Func<IRecordRead, SourceObject> _defineObjectFun; 
+        private Func<IList<SourceOut>, DateTime, DateTime, bool, IRecordRead> _queryValuesFun;
+        private Func<IRecordRead, SourceOut> _defineObjectFun; 
         
         //Чтение значений по одному блоку списка объектов
-        protected override ValuesCount ReadPart(IList<SourceObject> part,
+        protected override ValuesCount ReadPart(IList<SourceOut> part,
                                                                       DateTime beg, DateTime en, //Период считывания
                                                                       bool isCut) //Считывается срез
         {
@@ -142,7 +142,7 @@ namespace ProvidersLibrary
             while (rec.Read())
             {
                 vc.ReadCount++;
-                SourceObject ob = null;
+                SourceOut ob = null;
                 try
                 {
                     ob = _defineObjectFun(rec);
@@ -160,11 +160,11 @@ namespace ProvidersLibrary
         }
         
         //Запрос рекордсета по одному блоку, возвращает запрошенный рекорсет, или null при неудаче
-        protected abstract IRecordRead QueryValues(IList<SourceObject> part, //список объектов
+        protected abstract IRecordRead QueryValues(IList<SourceOut> part, //список объектов
                                                             DateTime beg, DateTime en, //период считывания
                                                             bool isCut); //считывается срез
         
         //Определение текущего считываемого объекта
-        protected abstract SourceObject DefineObject(IRecordRead rec);
+        protected abstract SourceOut DefineOut(IRecordRead rec);
     }
 }

@@ -16,6 +16,8 @@ namespace BaseLibrary
      
         //Контекст выполнения 
         internal protected string Context { get; private set; }
+        //Результаты выполнения
+        internal string Results { get; set; }
 
         //Добавить ошибку 
         public override void AddError(ErrorCommand err)
@@ -26,29 +28,28 @@ namespace BaseLibrary
         }
 
         //Запуск операции, обрамляемой данной командой
-        public override Command Run(Func<string> func)
+        public override Command Run(Action action)
         {
-            string res = "";
             try
             {
-                res = func();
+                action();
             }
             catch (BreakException) { throw; }
             catch (Exception ex)
             {
                 AddError(new ErrorCommand("Ошибка при обработке команды " + Name, ex));
             }
-            return Finish(res);
+            return Finish();
         }
 
         //Завершение команды
-        internal protected override void FinishCommand(string results, bool isBreaked)
+        internal protected override void FinishCommand(bool isBreaked)
         {
-            base.FinishCommand(results, isBreaked);
+            base.FinishCommand(isBreaked);
             if (History != null)
             {
                 if (isBreaked) History.WriteEvent("Прерывание команды", null);
-                History.WriteFinish(this, results);
+                History.WriteFinish(this, Results);
             }
             Logger.SetTabloText(1, "");
             Logger.CommandLog = null;

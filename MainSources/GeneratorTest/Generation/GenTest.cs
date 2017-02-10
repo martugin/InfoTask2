@@ -64,7 +64,7 @@ namespace GeneratorTest
         {
             TestLib.CopyDir("Generator", "Module");
             
-            var client = new InfoTaskClient();
+            var client = new ItClient();
             string dir = TestLib.TestRunDir + @"Generator\Module\";
             client.GenerateParams(dir);
             

@@ -6,31 +6,28 @@ namespace BaseLibrary
     public class CommandProgress : CommandLogBase
     {
         //Конструктор с указанием периода обработки
-        internal protected CommandProgress(Logger logger, Command parent, DateTime begin, DateTime end, string mode, string name, string pars)
+        internal protected CommandProgress(Logger logger, Command parent, DateTime begin, DateTime end, string mode, string name, string pars, DateTime? endTime)
             : base(logger, parent, 0, 100, name, pars)
         {
+            Logger.CallShowIndicatorTimed();
             BeginPeriod = begin;
             EndPeriod = end;
             ModePeriod = mode;
-            var logg = Logger as LoggerTimed;
-            if (logg != null)
-            {
-                logg.BeginPeriod = begin;
-                logg.EndPeriod = end;
-                logg.ModePeriod = mode;    
-            }
-            Initialize();
+            Logger.SetPeriod(begin, end, mode);
+            Initialize(endTime);
         }
         //Конструктор с указанием текста 0-го уровня формы индикатора
-        internal protected CommandProgress(Logger logger, Command parent, string text, string name, string pars)
+        internal protected CommandProgress(Logger logger, Command parent, string text, string name, string pars, DateTime? endTime)
             : base(logger, parent, 0, 100, name, pars)
         {
+            Logger.CallShowIndicatorTexted();
             Logger.SetTabloText(0, text);
-            Initialize();
+            Initialize(endTime);
         }
-        private void Initialize()
+        private void Initialize(DateTime? endTime)//Если не null, то время конца обратного отсчета
         {
-            Logger.ShowProcent = true;
+            if (endTime != null)
+                Logger.CallSetProcentTimed((DateTime)endTime);
             Logger.TabloProcent = 0;
             if (History != null)
                 History.WriteStartSuper(this);
@@ -50,33 +47,14 @@ namespace BaseLibrary
         }
 
         //Завершение команды
-        internal protected override void FinishCommand(string results, bool isBreaked)
+        internal protected override void FinishCommand(bool isBreaked)
         {
-            base.FinishCommand(results, isBreaked);
+            base.FinishCommand(isBreaked);
             if (History != null)
-                History.WriteFinishSuper(this, results);
+                History.WriteFinishSuper(this, null);
             Logger.SetTabloText(0, "");
-            Logger.ShowProcent = false;
+            Logger.CallHideIndicator();
             Logger.CommandProgress = null;
-        }
-    }
-
-    //--------------------------------------------------------------------------------------
-    //Команда для отображения текста 2-го уровня на форме индикатора
-    public class CommandProgressText : Command
-    {
-        internal CommandProgressText(Logger logger, Command parent, double startProcent, double finishProcent, string text)
-            : base(logger, parent, startProcent, finishProcent)
-        {
-            Logger.SetTabloText(2, text);
-        }
-
-        //Завершение команды
-        internal protected override void FinishCommand(string results, bool isBreaked)
-        {
-            Logger.SetTabloText(2, "");
-            base.FinishCommand(results, isBreaked);
-            Logger.CommandProgressText = null;
         }
     }
 }
