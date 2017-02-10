@@ -245,26 +245,26 @@
         </_КодПриемника>
       </Comm>
     </_КодПроекта>
-    <SpecialProjects>
-      <CommProject>
-        <!--Проект коммуникатора-->
-        <ProjectProperties.xml>Файл свойств проекта (исходный)</ProjectProperties.xml>
-        <SignalsSource>
-          <!--Каталог списков сигналов источников (порожденный)-->
-          <_КодСоединения.accdb>Файл списка сигналов одного источника, шаблон Projects\Signals.accdb</_КодСоединения.accdb>
-          <_КодСоединенияModule>
-            <!--Библиотечный модуль расчетных сигналов источника-->
-            <!--Основная структура файлов как у обычного модуля-->
-            <!--Шаблон: Projects\Module-->
-          </_КодСоединенияModule>
-        </SignalsSource>
-        <SignalsReceiver>
-          <!--Каталог списков сигналов приемника (порожденный)-->
-          <_КодСоединения.accdb>Файл списка сигналов одного приемника, шаблон Projects\Signals.accdb</_КодСоединения.accdb>
-        </SignalsReceiver>
-      </CommProject>
-    </SpecialProjects>
   </LocalData>
+  <SpecialProjects>
+    <CommProject>
+      <!--Проект коммуникатора-->
+      <ProjectProperties.xml>Файл свойств проекта (исходный)</ProjectProperties.xml>
+      <SignalsSource>
+        <!--Каталог списков сигналов источников (порожденный)-->
+        <_КодСоединения.accdb>Файл списка сигналов одного источника, шаблон Projects\Signals.accdb</_КодСоединения.accdb>
+        <_КодСоединенияModule>
+          <!--Библиотечный модуль расчетных сигналов источника-->
+          <!--Основная структура файлов как у обычного модуля-->
+          <!--Шаблон: Projects\Module-->
+        </_КодСоединенияModule>
+      </SignalsSource>
+      <SignalsReceiver>
+        <!--Каталог списков сигналов приемника (порожденный)-->
+        <_КодСоединения.accdb>Файл списка сигналов одного приемника, шаблон Projects\Signals.accdb</_КодСоединения.accdb>
+      </SignalsReceiver>
+    </CommProject>
+  </SpecialProjects>
   <Клон>
     <!--Структура каталога клона-->
     <Signals.accdb>Файл списка сигналов одного источника или приемника, шаблон Projects\Signals.accdb</Signals.accdb>
