@@ -9,8 +9,6 @@ namespace BaseLibraryTest
     [TestClass]
     public class LogTest : Logger
     {
-        public LogTest() : base(LoggerDangerness.Single) { }
-
         private void RunHistory()
         {
             _history = new TestHistory(this);
@@ -165,7 +163,7 @@ namespace BaseLibraryTest
         public void CommProgress()
         {
             RunHistory();
-            StartProgress("Процесс", "Progress", "Pars");
+            StartProgress("Процесс", "Progress", "Pars", DateTime.Now.AddHours(1));
             Assert.IsNotNull(CommandProgress);
             Assert.AreSame(CommandProgress, Command);
             Assert.AreEqual(1, Supers.Count);
@@ -235,7 +233,7 @@ namespace BaseLibraryTest
             Assert.AreEqual(CommandQuality.Error, CommandLog.Quality);
             Assert.AreEqual(CommandQuality.Error, CommandProgress.Quality);
             
-            FinishLog();
+            Finish();
             Assert.AreEqual(60, CommandProgress.Procent);
             Assert.AreEqual(60, TabloProcent);
             Assert.AreEqual(80, Procent);
@@ -261,6 +259,7 @@ namespace BaseLibraryTest
             Assert.AreEqual("Процесс", TabloText(0));
             Assert.AreEqual("", TabloText(1));
             Assert.AreEqual("Text3_1", TabloText(2));
+            FinishIndicatorText();
 
             c = FinishProgress();
             Assert.AreEqual("", TabloText(0));
@@ -350,7 +349,8 @@ namespace BaseLibraryTest
                 AddError("Err3", ex, "Err3Pars");
                 Assert.AreEqual(2, Logs[1].Events.Count);
                 Assert.AreEqual("Err3", Logs[1].Events[1].Description);
-                Assert.IsTrue(Logs[1].Events[1].Params.StartsWith("Err3Pars;" + Environment.NewLine + "Object reference not set to an instance of an object"));
+                Assert.IsTrue(Logs[1].Events[1].Params.StartsWith("Err3Pars;" + Environment.NewLine + "Object reference not set to an instance of an object") ||
+                    Logs[1].Events[1].Params.StartsWith("Err3Pars;" + Environment.NewLine + "Ссылка на объект не указывает на экземпляр объекта"));
             }
 
             Assert.AreEqual(2, Logs[1].Events.Count);
@@ -375,10 +375,8 @@ namespace BaseLibraryTest
             Assert.IsNull(CommandProgress);
             Assert.AreEqual(CommandQuality.Error, CommandCollect.Quality);
 
-            SetCollectResults("CollectResults");
-
-            var c = FinishCollect();
-            Assert.AreEqual(CommandResults, "CollectResults");
+            var c = FinishCollect("Results");
+            Assert.AreEqual("Results", CommandResults);
             Assert.IsNull(CommandCollect);
             Assert.IsNull(Command);
             Assert.AreEqual(CommandQuality.Error, c.Quality);
@@ -407,7 +405,9 @@ namespace BaseLibraryTest
                 {
                     WasBreaked = true;
                     StartLog("aa");
-                });
+                },
+                () => { SetCollectResults("Good"); });
+            Assert.AreEqual("Good", CommandResults);
             Assert.IsTrue(c.IsBreaked);
             Assert.IsTrue(c.IsFinished);
             Assert.AreEqual(CommandQuality.Success, c.Quality);

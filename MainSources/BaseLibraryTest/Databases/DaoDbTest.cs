@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.IO;
 using System.Threading;
 using BaseLibrary;
@@ -25,6 +26,11 @@ namespace BaseLibraryTest
         [TestMethod]
         public void DaoDbTest()
         {
+            try { new DaoDb("hhh").ConnectDao(); }
+            catch (Exception ex) { Assert.AreEqual("Файл базы данных не найден", ex.Message); }
+            try { new DaoDb("hhh").ConnectAdo(); }
+            catch (Exception ex) { Assert.AreEqual("Файл базы данных не найден", ex.Message); }
+
             var db = CopyDb("Common");
             string file = File("Common");
             db.ConnectDao();
@@ -57,14 +63,31 @@ namespace BaseLibraryTest
 
             db.SetColumnBool("SubTabl", "BoolField");
             Assert.IsTrue(db.ColumnExists("SubTabl", "BoolField"));
+            db.SetColumnBool("SubTabl", "BoolField");
+            Assert.IsTrue(db.ColumnExists("SubTabl", "BoolField"));
+
             db.SetColumnLong("SubTabl", "IntSubField");
             Assert.IsTrue(db.ColumnExists("SubTabl", "IntSubField"));
+            db.SetColumnLong("SubTabl", "IntSubField");
+            Assert.IsTrue(db.ColumnExists("SubTabl", "IntSubField"));
+
             db.SetColumnDouble("SubTabl", "RealField", IndexModes.WithoutChange, 0);
             Assert.IsTrue(db.ColumnExists("SubTabl", "RealField"));
+            db.SetColumnDouble("SubTabl", "RealField", IndexModes.WithoutChange, 0);
+            Assert.IsTrue(db.ColumnExists("SubTabl", "RealField"));
+
             db.SetColumnString("SubTabl", "StringSubField", 30, IndexModes.EmptyIndex, "aaa", false, false);
             Assert.IsTrue(db.ColumnExists("SubTabl", "StringSubField"));
+            db.SetColumnString("SubTabl", "StringSubField", 50, IndexModes.EmptyIndex, "aaa", false, false);
+            Assert.IsTrue(db.ColumnExists("SubTabl", "StringSubField"));
+
             db.SetColumnMemo("SubTabl", "MemoField", "bbb");
             Assert.IsTrue(db.ColumnExists("SubTabl", "MemoField"));
+            db.SetColumnMemo("SubTabl", "MemoField", "bbb");
+            Assert.IsTrue(db.ColumnExists("SubTabl", "MemoField"));
+
+            db.SetColumnDateTime("SubTabl", "TimeField");
+            Assert.IsTrue(db.ColumnExists("SubTabl", "TimeField"));
             db.SetColumnDateTime("SubTabl", "TimeField");
             Assert.IsTrue(db.ColumnExists("SubTabl", "TimeField"));
 

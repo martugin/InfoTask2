@@ -26,6 +26,9 @@ namespace BaseLibraryTest
             dic.Add("b", "gghsdauh");
             Assert.AreEqual(2, dic.Count);
             Assert.AreEqual("sB", dic["B"]);
+            dic["b"] = "gg";
+            Assert.AreEqual(2, dic.Count);
+            Assert.AreEqual("gg", dic["B"]);
             dic.Add("c", "SC");
             Assert.IsTrue(dic.ContainsKey("C"));
             Assert.AreEqual(3, dic.Count);
@@ -40,6 +43,10 @@ namespace BaseLibraryTest
             Assert.IsFalse(dic.ContainsKey("c"));
             Assert.IsNull(dic["c"]);
             Assert.AreEqual("def", dic.Get("C", "def"));
+            Assert.IsFalse(dic.Remove("C"));
+            Assert.IsFalse(dic.ContainsKey("c"));
+            Assert.AreEqual("def", dic.Get("C", "def"));
+            Assert.IsFalse(dic.ContainsKey(null));
             dic.Clear();
             Assert.AreEqual(0, dic.Count);
             Assert.IsNull(dic["a"]);

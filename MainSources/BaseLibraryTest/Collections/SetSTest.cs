@@ -39,6 +39,7 @@ namespace BaseLibraryTest
              Assert.IsFalse(set.Contains("bb"));
              Assert.IsTrue(set.Contains("ccc"));
              Assert.AreEqual(2, set.Count);
+             Assert.IsFalse(set.Remove("bb"));
          }
     }
 }

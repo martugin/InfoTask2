@@ -1,15 +1,13 @@
 ﻿using System;
 using System.IO;
-using BaseLibraryTest;
+using BaseLibrary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BaseLibrary
+namespace BaseLibraryTest
 {
     [TestClass]
     public class HistoryTextTest : Logger
     {
-         public HistoryTextTest() : base(LoggerDangerness.Single) { }
-
          //Открытие файла истории
          private void OpenHistory(string fileName, bool replace)
          {

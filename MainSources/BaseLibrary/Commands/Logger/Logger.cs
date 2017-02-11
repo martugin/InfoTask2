@@ -189,7 +189,7 @@ namespace BaseLibrary
         }
         public Command Start()
         {
-            return Start(0, 100);
+            return Start(Procent, 100);
         }
         //Завершение простой команды
         public Command Finish(string results = "")
@@ -208,7 +208,7 @@ namespace BaseLibrary
         }
         public CommandLog StartLog(string name, string context = "", string pars = "", DateTime? endTime = null)
         {
-            return StartLog(0, 100, name, context, pars);
+            return StartLog(Procent, 100, name, context, pars);
         }
         //Завершение команды логирования
         public CommandLog FinishLog(string results = null)
@@ -260,10 +260,10 @@ namespace BaseLibrary
         }
         public CommandIndicatorText StartIndicatorText(string text)
         {
-            return StartIndicatorText(0, 100, text);
+            return StartIndicatorText(Procent, 100, text);
         }
         //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommandIndicatorText FinishProgressText()
+        public CommandIndicatorText FinishIndicatorText()
         {
             return (CommandIndicatorText)FinishCommand(CommandIndicatorText);
         }
@@ -303,7 +303,7 @@ namespace BaseLibrary
         }
         public CommandKeep StartKeep()
         {
-            return StartKeep(0, 100);
+            return StartKeep(Procent, 100);
         }
         public CommandKeep FinishKeep()
         {
@@ -324,7 +324,7 @@ namespace BaseLibrary
         }
         public CommandDanger StartDanger(int repetitions, LoggerDangerness dangerness, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
         {
-            return StartDanger(0, 100, repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
+            return StartDanger(Procent, 100, repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
         }
 
         //Завершить указанную команду и всех детей
