@@ -51,7 +51,7 @@ namespace InfoTaskClientTest
             });
         }
 
-        public void Run()
+        public void RunTestForm()
         {
             StartProgress("Process", "", new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
             StartLog(0, 20, "Command", "SSS");
@@ -171,6 +171,20 @@ namespace InfoTaskClientTest
             Finish();
             Finish();
             Finish();
+        }
+
+        public void RunBreak()
+        {
+            Logger.StartCollect(false, true).Run(() => 
+                Logger.StartProgress("T", "N", "P").Run(() => 
+                    Logger.StartLog(20, 60, "Log").Run(() =>
+                    {
+                        Logger.Procent = 50;
+                        Break();
+                        Thread.Sleep(1000);
+                        AddEvent("Text");
+                        Logger.Procent = 75;
+                    })));
         }
     }
 }

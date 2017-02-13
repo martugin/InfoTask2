@@ -35,7 +35,7 @@ namespace Experiments
         private void button1_Click(object sender, EventArgs e)
         {
             var client = new TestItClient(false);
-            client.Run();
+            client.RunTestForm();
         }
     }
 }

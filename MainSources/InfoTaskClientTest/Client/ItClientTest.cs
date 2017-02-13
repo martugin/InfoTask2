@@ -92,5 +92,27 @@ namespace InfoTaskClientTest
             ind.Compare(80, "Text0");
             ind.Compare(81, "Hide");
         }
+
+        [TestMethod]
+        public void RunBreak()
+        {
+            var it = new TestItClient(true);
+            it.RunBreak();
+            var ind = (TestIndicator)it.Indicator;
+            Assert.AreEqual(13, ind.Events.Count);
+            ind.Compare(0, "ShowTexted");
+            ind.Compare(1, "Text0", "T");
+            ind.Compare(2, "Text1", null);
+            ind.Compare(3, "Text2", null);
+            ind.Compare(4, "ProcessUsual");
+            ind.Compare(5, "Procent", "20");
+            ind.Compare(6, "Text1", "Log");
+            ind.Compare(7, "Procent", "40");
+            ind.Compare(8, "Procent", "60");
+            ind.Compare(9, "Text1");
+            ind.Compare(10, "Procent", "100");
+            ind.Compare(11, "Text0");
+            ind.Compare(12, "Hide");
+        }
     }
 }
