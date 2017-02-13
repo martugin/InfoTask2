@@ -109,6 +109,10 @@
       <Project>{267562A7-4B4A-4B81-B417-33C57CD869FE}</Project>
       <Name>Generator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InfoTaskClientTest\InfoTaskClientTest.csproj">
+      <Project>{2CDB0D40-5A76-4FE2-8FBA-25F8D3E481EB}</Project>
+      <Name>InfoTaskClientTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InfoTaskClient\InfoTaskClient.csproj">
       <Project>{841ADF86-BCE5-40F7-B55F-C082B5A5CD98}</Project>
       <Name>InfoTaskClient</Name>

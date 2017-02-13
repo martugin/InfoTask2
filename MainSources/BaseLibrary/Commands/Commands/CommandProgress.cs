@@ -27,7 +27,8 @@ namespace BaseLibrary
         private void Initialize(DateTime? endTime)//Если не null, то время конца обратного отсчета
         {
             if (endTime != null)
-                Logger.CallSetProcentTimed((DateTime)endTime);
+                Logger.CallSetProcentTimed((DateTime) endTime);
+            else Logger.CallSetProcentUsual();
             Logger.TabloProcent = 0;
             if (History != null)
                 History.WriteStartSuper(this);
