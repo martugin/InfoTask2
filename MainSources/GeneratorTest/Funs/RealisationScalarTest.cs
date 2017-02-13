@@ -3,7 +3,7 @@ using CommonTypes;
 using Generator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonTypesTest
+namespace GeneratorTest
 {
     [TestClass]
     public class RealisationScalarTest

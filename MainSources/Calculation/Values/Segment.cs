@@ -1,7 +1,8 @@
 ﻿using System;
 using BaseLibrary;
+using CommonTypes;
 
-namespace CommonTypes
+namespace Calculation
 {
     //Один интервал события
     public class Segment : TimeInterval
