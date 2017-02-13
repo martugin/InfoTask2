@@ -88,7 +88,7 @@ namespace BaseLibrary
             get
             {
                 if (Recordset.RecordCount == 0) return 0;
-                Recordset.MoveLast();
+                MoveLast();
                 return Recordset.RecordCount;
             }
         }

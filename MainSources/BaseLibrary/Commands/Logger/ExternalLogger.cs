@@ -3,10 +3,10 @@
 namespace BaseLibrary
 {
     //Класс для переопределения операций логгера
-    public abstract class ExternalLogg : IContextable
+    public abstract class ExternalLogger : IContextable
     {
-        protected ExternalLogg() { }
-        protected ExternalLogg(Logger logger)
+        protected ExternalLogger() { }
+        protected ExternalLogger(Logger logger)
         {
             Logger = logger;
         }
@@ -46,7 +46,7 @@ namespace BaseLibrary
             Logger.Break();
         }
         //Вызвать BreakException
-        internal protected void CheckBreak()
+        protected internal void CheckBreak()
         {
             Logger.CheckBreak();
         }

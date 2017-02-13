@@ -6,7 +6,7 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Один провайдер
-    public abstract class ProviderBase : ExternalLogg, IDisposable
+    public abstract class ProviderBase : ExternalLogger, IDisposable
     {
         //Ссылка на соединение
         public ProviderConnect ProviderConnect { get; set; }

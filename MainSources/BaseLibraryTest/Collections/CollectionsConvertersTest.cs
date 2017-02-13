@@ -48,7 +48,12 @@ namespace BaseLibraryTest
             Assert.AreEqual(10, dic.GetInt("PropI"));
             Assert.AreEqual(0, dic.GetInt("PropD"));
             Assert.AreEqual(20, dic.GetInt("Prop", 20));
-            Assert.IsTrue(dic.GetBool("PropB")); 
+            Assert.IsTrue(dic.GetBool("PropB"));
+
+            Dictionary<int, string> dici = new Dictionary<int, string> { {1, "s"}, {2, "t"}};
+            Assert.AreEqual("s", dici.Get(1));
+            Assert.AreEqual("def", dici.Get(3, "def"));
+            Assert.AreEqual(null, dici.Get(3));
 
             Dictionary<string, string> dict = null;
             Assert.IsNull(dict.Get("ddd"));
@@ -102,8 +107,6 @@ namespace BaseLibraryTest
             Assert.AreEqual(2, sset.Count);
         }
         
-
-
         [TestMethod]
         public void StringFromCollections()
         {

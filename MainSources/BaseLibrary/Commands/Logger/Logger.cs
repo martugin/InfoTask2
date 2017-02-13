@@ -294,7 +294,7 @@ namespace BaseLibrary
         //Результат выполнения комманды Collect
         public string CommandResults { get; internal set; }
         
-        //Запуск команды, которая копит ошибки, но не выдает из во вне
+        //Запуск команды, которая копит ошибки, но не выдает их во вне
         public CommandKeep StartKeep(double startProcent, double finishProcent)
         {
             FinishCommand(CommandKeep);

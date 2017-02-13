@@ -257,7 +257,7 @@ namespace BaseLibrary
 
         public void ClearErrorsList()
         {
-            HistoryDb.Execute("DELEETE * FROM ErrorsList");
+            HistoryDb.Execute("DELETE * FROM ErrorsList");
         }
 
         //Закрывает историю

@@ -16,9 +16,9 @@ namespace BaseLibrary
         }
 
         //Указатель на родителя
-        internal protected Command Parent { get; private set; }
+        protected internal Command Parent { get; private set; }
         //Указатель на Logger
-        internal protected Logger Logger { get; private set; }
+        protected internal Logger Logger { get; private set; }
 
         //Качество команды
         private CommandQuality _quality = CommandQuality.Success;
@@ -67,7 +67,7 @@ namespace BaseLibrary
         public bool IsBreaked { get; private set; }
 
         //Строка для записи состояния комманды
-        internal protected string Status
+        protected internal string Status
         {
             get
             {
@@ -96,7 +96,7 @@ namespace BaseLibrary
         }
 
         //Завершает комманду
-        internal protected virtual void FinishCommand(bool isBreaked) //Комманда была прервана
+        protected internal virtual void FinishCommand(bool isBreaked) //Комманда была прервана
         {
             Procent = 100;
             IsFinished = true;

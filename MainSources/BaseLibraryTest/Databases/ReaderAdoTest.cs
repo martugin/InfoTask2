@@ -92,6 +92,18 @@ namespace BaseLibraryTest
                 Assert.AreEqual(new DateTime(2016, 7, 1), rec.GetTime("TimeField"));
                 Assert.AreEqual(new DateTime(2016, 7, 1), rec.GetTimeNull("TimeField"));
 
+                Assert.AreEqual(1, rec.GetInt(0));
+                Assert.AreEqual(1, rec.GetIntNull(0));
+                Assert.AreEqual(10, rec.GetInt(1));
+                Assert.AreEqual(10, rec.GetIntNull(1));
+                Assert.AreEqual(1.5, rec.GetDouble(2));
+                Assert.AreEqual(1.5, rec.GetDoubleNull(2));
+                Assert.AreEqual("Большой текст 1", rec.GetString(3));
+                Assert.AreEqual("Text", rec.GetString(4));
+                Assert.AreEqual(true, rec.GetBool(5));
+                Assert.AreEqual(new DateTime(2016, 7, 1), rec.GetTime(6));
+                Assert.AreEqual(new DateTime(2016, 7, 1), rec.GetTimeNull(6));
+
                 Assert.IsTrue(rec.Read());
                 Assert.IsTrue(rec.Read());
                 Assert.IsFalse(rec.GetBool("BoolField"));
@@ -106,6 +118,19 @@ namespace BaseLibraryTest
                 Assert.AreEqual("null", rec.GetString("StringField2", "null"));
                 Assert.AreEqual(new DateTime(2016, 7, 2, 2, 3, 4), rec.GetTime("TimeField"));
                 Assert.AreEqual(new DateTime(2016, 7, 2, 2, 3, 4), rec.GetTimeNull("TimeField"));
+
+                Assert.AreEqual(2, rec.GetInt(0));
+                Assert.AreEqual(2, rec.GetIntNull(0));
+                Assert.AreEqual(20, rec.GetInt(1));
+                Assert.AreEqual(20, rec.GetIntNull(1));
+                Assert.AreEqual(0, rec.GetDouble(2));
+                Assert.AreEqual(null, rec.GetDoubleNull(2));
+                Assert.AreEqual("Большой текст 2", rec.GetString(3));
+                Assert.AreEqual("null", rec.GetString(4, "null"));
+                Assert.IsFalse(rec.GetBool(5));
+                Assert.AreEqual(false, rec.GetBoolNull(5));
+                Assert.AreEqual(new DateTime(2016, 7, 2, 2, 3, 4), rec.GetTime(6));
+                Assert.AreEqual(new DateTime(2016, 7, 2, 2, 3, 4), rec.GetTimeNull(6));
 
                 Assert.IsTrue(rec.Read());
                 Assert.IsTrue(rec.GetBool("BoolField"));
@@ -122,6 +147,21 @@ namespace BaseLibraryTest
                 Assert.AreEqual("Text3", rec.GetString("StringField2", "null"));
                 Assert.AreEqual(Different.MinDate, rec.GetTime("TimeField"));
                 Assert.AreEqual(null, rec.GetTimeNull("TimeField"));
+
+                Assert.AreEqual(3, rec.GetInt(0));
+                Assert.AreEqual(3, rec.GetIntNull(0));
+                Assert.AreEqual(0, rec.GetInt(1));
+                Assert.AreEqual(null, rec.GetIntNull(1));
+                Assert.IsTrue(rec.IsNull(1));
+                Assert.AreEqual(3.5, rec.GetDouble(2, 300));
+                Assert.AreEqual(3.5, rec.GetDoubleNull(2));
+                Assert.IsFalse(rec.IsNull(2));
+                Assert.AreEqual("Большой текст 3", rec.GetString(3));
+                Assert.AreEqual("Text3", rec.GetString(4, "null"));
+                Assert.IsTrue(rec.GetBool(5));
+                Assert.AreEqual(true, rec.GetBoolNull(5));
+                Assert.AreEqual(Different.MinDate, rec.GetTime(6));
+                Assert.AreEqual(null, rec.GetTimeNull(6));
 
                 Assert.IsTrue(rec.Read());
                 Assert.IsTrue(rec.Read());

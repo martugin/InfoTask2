@@ -4,7 +4,7 @@ using BaseLibrary;
 namespace ProvidersLibrary
 {
     //Соединение 
-    public abstract class ProviderConnect : ExternalLogg
+    public abstract class ProviderConnect : ExternalLogger
     {
         protected ProviderConnect(string name, string complect, Logger logger)
             : base(logger)

@@ -5,7 +5,7 @@ using CommonTypes;
 namespace Generator
 {
     //Генератор
-    public class TablGenerator : ExternalLogg
+    public class TablGenerator : ExternalLogger
     {
         public TablGenerator(Logger logger, //Логгер
                                          TablsList dataTabls, //Таблицы с данными для генерации

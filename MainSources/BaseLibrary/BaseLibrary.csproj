@@ -63,7 +63,7 @@
     <Compile Include="Commands\Commands\CommandCollect.cs" />
     <Compile Include="Commands\Commands\CommandDanger.cs" />
     <Compile Include="Commands\Logger\ErrorCommand.cs" />
-    <Compile Include="Commands\Logger\ExternalLogg.cs" />
+    <Compile Include="Commands\Logger\ExternalLogger.cs" />
     <Compile Include="Commands\Logger\IContextable.cs" />
     <Compile Include="Common\Crypting.cs" />
     <Compile Include="Common\DialogCommand.cs" />

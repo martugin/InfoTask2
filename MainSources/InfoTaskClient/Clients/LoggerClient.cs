@@ -8,7 +8,7 @@ namespace ComClients
     public abstract class LoggerClient
     {
         //Логгер
-        internal protected Logger Logger { get; protected set; }
+        protected internal Logger Logger { get; protected set; }
         
         //Добавить событие в историю
         public void AddEvent(string text, //Описание

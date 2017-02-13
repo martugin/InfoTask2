@@ -32,6 +32,7 @@ namespace BaseLibraryTest
             Assert.AreEqual(0, CommandLog.Procent);
             Assert.AreEqual(0, Command.Procent);
             Assert.AreEqual(CommandQuality.Success, CommandLog.Quality);
+            Assert.IsTrue(CommandLog.IsSuccess);
             Assert.IsFalse(CommandLog.IsFinished);
             Assert.AreEqual("Op0 (Source)", TabloText(1));
 
@@ -61,6 +62,7 @@ namespace BaseLibraryTest
             AddError("Error", null, "ErrorPars");
             Assert.AreEqual(3, Logs[0].Events.Count);
             Assert.AreEqual(CommandQuality.Error, CommandLog.Quality);
+            Assert.IsTrue(CommandLog.IsError);
             Assert.AreEqual("Error", Logs[0].Events[2].Description);
             Assert.AreEqual("ErrorPars", Logs[0].Events[2].Params);
             Assert.AreEqual("Ошибка", Logs[0].Events[2].Status);
@@ -275,6 +277,7 @@ namespace BaseLibraryTest
         public void CommCollect()
         {
             RunHistory();
+            History.ClearErrorsList(); 
             StartCollect(true, true);
             Assert.IsNotNull(CommandCollect);
             Assert.AreSame(Command, CommandCollect);
@@ -437,6 +440,21 @@ namespace BaseLibraryTest
             Assert.AreEqual(CommandQuality.Success, c.Quality);
             Assert.AreEqual("Прервано", c.Status);
             Assert.AreEqual("", c.ErrorMessage());
+
+            c = (CommandCollect)StartCollect(false, true).Run(
+                () =>
+                {
+                    StartLog("L");
+                    throw new Exception("Er");
+                },
+                () => { SetCollectResults("Bad"); });
+            Assert.AreEqual("Ошибка: Ошибка", ErrorMessage);
+            Assert.AreEqual("Bad", CommandResults);
+            Assert.IsTrue(c.IsFinished);
+            Assert.AreEqual(CommandQuality.Error, c.Quality);
+            Assert.AreEqual(2, Logs.Count);
+            Assert.AreEqual(0, Logs[1].Events.Count);
+            Assert.AreEqual("Ошибка: Ошибка", c.ErrorMessage());
         }
 
         [TestMethod]

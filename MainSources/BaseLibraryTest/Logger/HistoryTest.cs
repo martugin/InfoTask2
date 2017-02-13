@@ -26,6 +26,7 @@ namespace BaseLibraryTest
         public void Hist()
         {
             OpenHistory("History", true);
+            History.ClearErrorsList();
             StartCollect(true, false);
             StartProgress(new DateTime(2017, 1, 1), new DateTime(2017, 1, 2), "Синхронный", "SuperCommand1");
             StartLog("Command11", "Context1", "Pars11").Run(() =>

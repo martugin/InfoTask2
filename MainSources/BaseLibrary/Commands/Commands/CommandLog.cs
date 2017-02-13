@@ -5,7 +5,7 @@ namespace BaseLibrary
     //Команда для записи в History
     public class CommandLog : CommandLogBase
     {
-        internal protected CommandLog(Logger logger, Command parent, double startProcent, double finishProcent, string name, string context, string pars) 
+        protected internal CommandLog(Logger logger, Command parent, double startProcent, double finishProcent, string name, string context, string pars) 
             : base(logger, parent, startProcent, finishProcent, name, pars)
         {
             Context = context;
@@ -15,7 +15,7 @@ namespace BaseLibrary
         }
      
         //Контекст выполнения 
-        internal protected string Context { get; private set; }
+        protected internal string Context { get; private set; }
         //Результаты выполнения
         internal string Results { get; set; }
 
@@ -43,7 +43,7 @@ namespace BaseLibrary
         }
 
         //Завершение команды
-        internal protected override void FinishCommand(bool isBreaked)
+        protected internal override void FinishCommand(bool isBreaked)
         {
             base.FinishCommand(isBreaked);
             if (History != null)

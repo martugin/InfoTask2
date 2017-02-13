@@ -48,7 +48,7 @@ namespace BaseLibrary
         //Переводит время в строку с милисекундами
         public static string ToStringWithMs(this DateTime t)
         {
-            return t.ToString() + "," + (1000 + t.Millisecond).ToString().Substring(1);
+            return t + "," + (1000 + t.Millisecond).ToString().Substring(1);
         }
 
         //Сравнивает даты с точностью до секунды
