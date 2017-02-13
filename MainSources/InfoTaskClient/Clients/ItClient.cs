@@ -49,7 +49,7 @@ namespace ComClients
                            string text = ""); //Текст для отображения на индикаторе
         void StartProgress(string name, //Имя команды
                            string pars, //Дополнительная информация
-                           DateTime beg, DateTime en);//Преиод обработки
+                           DateTime beg, DateTime en, string mode = "");//Преиод обработки
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
         void StartIndicatorText(string text);

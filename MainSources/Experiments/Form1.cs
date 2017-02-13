@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using BaseLibrary;
 using ComClients;
 using CommonTypes;
+using InfoTaskClientTest;
 using Provider;
 using ProvidersLibrary;
 
@@ -33,7 +34,7 @@ namespace Experiments
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var client = new TestItClient();
+            var client = new TestItClient(false);
             client.Run();
         }
     }

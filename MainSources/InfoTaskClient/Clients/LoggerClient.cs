@@ -62,9 +62,9 @@ namespace ComClients
         }
         public void StartProgress(string name,  //Имя команды
                                                string pars,  //Дополнительная информация
-                                               DateTime beg, DateTime en) //Период расчета
+                                               DateTime beg, DateTime en, string mode = "") //Период расчета
         {
-            Logger.StartProgress(beg, en, name, pars);
+            Logger.StartProgress(beg, en, mode, name, pars);
         }
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня

@@ -105,7 +105,7 @@ namespace BaseLibrary
             {
                 try
                 {
-                    var commLog = new CommandLog(Logger, null, 0, 0, "Создание нового файла истории", "", _reasonUpdate);
+                    var commLog = new CommandLog(Logger, null, 0, 0, "Создание нового файла истории", "",  _reasonUpdate);
                     WriteStart(commLog);
                     WriteFinish(commLog, "");
                     _reasonUpdate = null;

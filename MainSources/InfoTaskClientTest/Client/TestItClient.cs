@@ -1,11 +1,24 @@
 ﻿using System;
 using System.Threading;
+using BaseLibrary;
+using ComClients;
 
-namespace ComClients
+namespace InfoTaskClientTest
 {
     //It клиент с добавкой тестовых методов
     public class TestItClient : ItClient
     {
+        public TestItClient(bool useTestIndicator)
+        {
+            if (useTestIndicator)
+            {
+                UnsubscribeEvents();
+                Indicator = new TestIndicator();
+                SubscribeEvents();    
+            }
+            Logger.History = new TestHistory(Logger);
+        }
+
         public void TestMethod()
         {
             var t = new Thread((StartProcess));
@@ -41,7 +54,7 @@ namespace ComClients
         public void Run()
         {
             StartProgress("Process", "", new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
-            StartLog(0, 20, "Command", "", "SSS");
+            StartLog(0, 20, "Command", "SSS");
             StartIndicatorText("Text");
             Thread.Sleep(1000);
             SetProcent(50);
@@ -51,13 +64,13 @@ namespace ComClients
             Thread.Sleep(1000);
             StartIndicatorText(50, 100, "More More");
             Thread.Sleep(1000);
-            StartLog(40, 70, "Third", "", "3");
+            StartLog(40, 70, "Third", "3");
             Thread.Sleep(1000);
             StartIndicatorText(30, 60, "ThirdText");
             Thread.Sleep(1000);
             StartIndicatorText(60, 100, "ThirdMore");
             Thread.Sleep(1000);
-            StartLog(70, 100, "Last", "Par", "UUU");
+            StartLog(70, 100, "Last", "UUU", "Par");
             Thread.Sleep(1000);
             SetProcent(40);
             Thread.Sleep(1000);
@@ -76,7 +89,7 @@ namespace ComClients
             Finish();
             Finish();
             StartProgress("Process", "", "Заголовок");
-            StartLog(0, 50, "Com", "P", "xxx");
+            StartLog(0, 50, "Com", "xxx", "P");
             StartIndicatorText(0, 50, "Text");
             Thread.Sleep(1000);
             SetProcent(50);
@@ -85,7 +98,7 @@ namespace ComClients
             Thread.Sleep(1000);
             SetProcent(50);
             Thread.Sleep(1000);
-            StartLog(50, 100, "Com", "P2", "yyy");
+            StartLog(50, 100, "Com", "yyy", "P2");
             StartIndicatorText(0, 50, "TextTextText");
             Thread.Sleep(1000);
             SetProcent(50);
@@ -94,6 +107,67 @@ namespace ComClients
             Thread.Sleep(1000);
             SetProcent(50);
             Thread.Sleep(1000);
+            Finish();
+            Finish();
+            Finish();
+        }
+
+        public void RunTestIndicator()
+        {
+            StartProgress("Process", "", new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
+            StartLog(0, 20, "Command", "SSS");
+            StartIndicatorText("Text");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            StartLog(20, 40, "Another");
+            StartIndicatorText(0, 50, "More");
+            Thread.Sleep(10);
+            StartIndicatorText(50, 100, "More More");
+            Thread.Sleep(10);
+            StartLog(40, 70, "Third", "3");
+            Thread.Sleep(10);
+            StartIndicatorText(30, 60, "ThirdText");
+            Thread.Sleep(10);
+            StartIndicatorText(60, 100, "ThirdMore");
+            Thread.Sleep(10);
+            StartLog(70, 100, "Last", "UUU", "Par");
+            Thread.Sleep(10);
+            SetProcent(40);
+            Thread.Sleep(10);
+            StartIndicatorText(70, 100, "Last");
+            Thread.Sleep(10);
+            Logger.StartProgress(new DateTime(2017, 1, 1, 11, 0, 0), new DateTime(2017, 1, 1, 12, 0, 0), "Mode", "Process", "", new DateTime(2017, 1, 1, 12, 0, 0));
+            StartLog("Log");
+            StartIndicatorText(0, 50, "ProgressText");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            StartIndicatorText(50, 100, "ProgressMore");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            Finish();
+            Finish();
+            StartProgress("Process", "", "Заголовок");
+            StartLog(0, 50, "Com", "xxx", "P");
+            StartIndicatorText(0, 50, "Text");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            StartIndicatorText(50, 100, "TextText");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            StartLog(50, 100, "Com", "yyy", "P2");
+            StartIndicatorText(0, 50, "TextTextText");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            StartIndicatorText(50, 100, "TextTextTextText");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
             Finish();
             Finish();
             Finish();
