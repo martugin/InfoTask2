@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="windows-1251"?>
-<!--Свойства модуля-->
-<ModuleProperties ModuleCode="Mod2" ModuleName="Модуль 2" Description="Описание модуля 2" ModuleType="Разовый">
-	<LinkedModules><Mod1/><Mod2/></LinkedModules>
-	<LinkedConnects/>
-</ModuleProperties>
