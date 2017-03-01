@@ -56,8 +56,7 @@ namespace ProvidersLibrary
         //Добавляет значение среза на начало периода в список или клон, возвращает 1, если срез был получен, иначе 0
         internal int MakeBegin()
         {
-            if (!HasBegin) return 0;
-            return PutMom(_beginMom);    
+            return HasBegin ? PutMom(_beginMom) : 0;
         }
 
         //Формирует значение на конец периода и дополняет значения в клоне до конца периода
@@ -67,8 +66,7 @@ namespace ProvidersLibrary
                 _beginMom.CopyAllFrom(_endMom);
             BufMom.CopyValueFrom(_endMom);
             BufMom.Time = Connect.PeriodEnd;
-            if (IdInClone == 0) return 0;
-            return PutClone(BufMom, false);
+            return IdInClone == 0 ? 0 : PutClone(BufMom, false);
         }
 
         //Запись значения в клон

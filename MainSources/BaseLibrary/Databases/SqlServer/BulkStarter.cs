@@ -13,7 +13,7 @@ namespace BaseLibrary
         }
 
         //Список строк значений, каджая строка - массив значений колонок
-        private readonly List<object[]> _table = new List<object[]>();
+        private readonly List<object[]> _table;
         //Текущая строка данных для добавления и чтения
         private object[] _row;
         //Номер текущей строки для чтения

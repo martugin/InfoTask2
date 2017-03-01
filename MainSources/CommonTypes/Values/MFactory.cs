@@ -144,7 +144,7 @@ namespace CommonTypes
         {
             var mom = CreateMom(dtype, time, err);
             mom.Boolean = b;
-            return (IMean) mom;
+            return mom;
         }
 
         public static IMean NewMom(DateTime time, int i, ErrMom err = null)
@@ -155,7 +155,7 @@ namespace CommonTypes
         {
             var mom = CreateMom(dtype, time, err);
             mom.Integer = i;
-            return (IMean)mom;
+            return mom;
         }
 
         public static IMean NewMom(DateTime time, double r, ErrMom err = null)
@@ -166,7 +166,7 @@ namespace CommonTypes
         {
             var mom = CreateMom(dtype, time, err);
             mom.Real = r;
-            return (IMean)mom;
+            return mom;
         }
 
         public static IMean NewMom(DateTime time, string s, ErrMom err = null)
@@ -177,7 +177,7 @@ namespace CommonTypes
         {
             var mom = CreateMom(dtype, time, err);
             mom.String = s;
-            return (IMean)mom;
+            return mom;
         }
 
         public static IMean NewMom(DateTime time, DateTime d, ErrMom err = null)
@@ -188,19 +188,19 @@ namespace CommonTypes
         {
             var mom = CreateMom(dtype, time, err);
             mom.Date = d;
-            return (IMean)mom;
+            return mom;
         }
 
         public static IMean NewMom(DataType dtype, DateTime time, object ob, ErrMom err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Object = ob;
-            return (IMean)mom;
+            return mom;
         }
 
         internal static IMean NewMom(DataType dtype, DateTime time, ErrMom err = null)
         {
-            return (IMean)CreateMom(dtype, time, err);
+            return CreateMom(dtype, time, err);
         }
 
         private static Mean CreateMom(DataType dtype, DateTime time, ErrMom err)

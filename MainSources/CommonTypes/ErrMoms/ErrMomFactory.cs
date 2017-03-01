@@ -34,9 +34,9 @@ namespace CommonTypes
         //Получить описание ошибки по ее номеру
         public ErrDescr GetDescr(int number)
         {
-            if (!_errDescrs.ContainsKey(number))
-                return new ErrDescr(number, UndefinedErrorText, ErrQuality.Error, ErrMomType);
-            return _errDescrs[number];
+            return _errDescrs.ContainsKey(number)
+                ? _errDescrs[number]
+                : new ErrDescr(number, UndefinedErrorText, ErrQuality.Error, ErrMomType);
         }
 
         //Словарь описаний ошибок, ключи - номера

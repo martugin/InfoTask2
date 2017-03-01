@@ -39,15 +39,13 @@ namespace BaseLibrary
             try
             {
                 var res = new Dictionary<string, string>();
-                if (!str.IsEmpty())
+                if (str.IsEmpty()) return res;
+                string[] st = str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var s in st)
                 {
-                    string[] st = str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var s in st)
-                    {
-                        int p = s.IndexOf("=", StringComparison.Ordinal);
-                        if (!res.ContainsKey(s.Substring(0, p)))
-                            res.Add(s.Substring(0, p), s.Substring(p + 1));
-                    }
+                    int p = s.IndexOf("=", StringComparison.Ordinal);
+                    if (!res.ContainsKey(s.Substring(0, p)))
+                        res.Add(s.Substring(0, p), s.Substring(p + 1));
                 }
                 return res;
             }
@@ -91,11 +89,9 @@ namespace BaseLibrary
             try
             {
                 var res = new List<string>();
-                if (!str.IsEmpty())
-                {
-                    string[] st = str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
-                    res.AddRange(st);
-                }
+                if (str.IsEmpty()) return res;
+                string[] st = str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+                res.AddRange(st);
                 return res;
             }
             catch { return new List<string>(); }
@@ -107,12 +103,10 @@ namespace BaseLibrary
             try
             {
                 var res = new SetS();
-                if (!str.IsEmpty())
-                {
-                    string[] st = str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var s in st)
-                        res.Add(s);
-                }
+                if (str.IsEmpty()) return res;
+                string[] st = str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var s in st)
+                    res.Add(s);
                 return res;
             }
             catch { return new SetS(); }
@@ -124,12 +118,10 @@ namespace BaseLibrary
             try
             {
                 var res = new HashSet<string>();
-                if (!str.IsEmpty())
-                {
-                    string[] st = str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var s in st)
-                        res.Add(s);
-                }
+                if (str.IsEmpty()) return res;
+                string[] st = str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var s in st)
+                    res.Add(s);
                 return res;
             }
             catch { return new HashSet<string>(); }
@@ -141,12 +133,10 @@ namespace BaseLibrary
             try
             {
                 var res = new SortedSet<string>();
-                if (!str.IsEmpty())
-                {
-                    string[] st = str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var s in st)
-                        res.Add(s);
-                }
+                if (str.IsEmpty()) return res;
+                string[] st = str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var s in st)
+                    res.Add(s);
                 return res;
             }
             catch { return new SortedSet<string>(); }

@@ -79,9 +79,9 @@ namespace Provider
         protected override SourceOut AddOut(InitialSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
-            if (!_outsId.ContainsKey(id))
-                return _outsId.Add(id, new OutSimatic(this, sig.Inf["Archive"], sig.Inf["Tag"], id));
-            return _outsId[id];
+            return _outsId.ContainsKey(id) 
+                ? _outsId[id] 
+                : _outsId.Add(id, new OutSimatic(this, sig.Inf["Archive"], sig.Inf["Tag"], id));
         }
         
         //Очистка списка сигналов

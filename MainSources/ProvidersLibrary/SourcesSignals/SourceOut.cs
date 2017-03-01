@@ -19,7 +19,7 @@ namespace ProvidersLibrary
         public string Context { get; internal set; }
 
         //Основной сигнал объекта
-        internal protected InitialSignal ValueSignal { get; set; }
+        protected internal InitialSignal ValueSignal { get; set; }
         //Список сигналов объекта
         private readonly HashSet<InitialSignal> _signals = new HashSet<InitialSignal>();
         protected HashSet<InitialSignal> Signals { get { return _signals; } }
@@ -139,7 +139,7 @@ namespace ProvidersLibrary
 
         //Добавление мгновенных значений во все сигналы объекта, используется только если источник - наследник AdoSource
         //Возвращает количество добавленных значений
-        internal protected virtual int ReadMoments(IRecordRead rec) //Рекордсет, из которого читаются значения
+        protected internal virtual int ReadMoments(IRecordRead rec) //Рекордсет, из которого читаются значения
         {
             return 0;
         }

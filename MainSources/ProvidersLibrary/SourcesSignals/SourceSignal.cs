@@ -18,7 +18,7 @@ namespace ProvidersLibrary
         }
 
         //Соединение
-        internal protected SourceConnect Connect { get; private set; }
+        protected internal SourceConnect Connect { get; private set; }
 
         //Возвращаемый список значений
         protected MomList MList { get; set; }

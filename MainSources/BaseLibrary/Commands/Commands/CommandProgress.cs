@@ -6,7 +6,7 @@ namespace BaseLibrary
     public class CommandProgress : CommandLogBase
     {
         //Конструктор с указанием периода обработки
-        internal protected CommandProgress(Logger logger, Command parent, DateTime begin, DateTime end, string mode, string name, string pars, DateTime? endTime)
+        protected internal CommandProgress(Logger logger, Command parent, DateTime begin, DateTime end, string mode, string name, string pars, DateTime? endTime)
             : base(logger, parent, 0, 100, name, pars)
         {
             Logger.CallShowIndicatorTimed();
@@ -17,7 +17,7 @@ namespace BaseLibrary
             Initialize(endTime);
         }
         //Конструктор с указанием текста 0-го уровня формы индикатора
-        internal protected CommandProgress(Logger logger, Command parent, string text, string name, string pars, DateTime? endTime)
+        protected internal CommandProgress(Logger logger, Command parent, string text, string name, string pars, DateTime? endTime)
             : base(logger, parent, 0, 100, name, pars)
         {
             Logger.CallShowIndicatorTexted();
@@ -48,7 +48,7 @@ namespace BaseLibrary
         }
 
         //Завершение команды
-        internal protected override void FinishCommand(bool isBreaked)
+        protected internal override void FinishCommand(bool isBreaked)
         {
             base.FinishCommand(isBreaked);
             if (History != null)

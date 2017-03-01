@@ -54,7 +54,7 @@ namespace ProvidersLibrary
         }
 
         //Проверка настроек
-        internal protected override string CheckSettings(DicS<string> inf)
+        protected internal override string CheckSettings(DicS<string> inf)
         {
             string err = "";
             if (inf["SQLServer"].IsEmpty()) err += "Не указано имя SQL-сервера" + Environment.NewLine;

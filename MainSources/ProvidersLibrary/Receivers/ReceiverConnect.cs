@@ -52,10 +52,9 @@ namespace ProvidersLibrary
                     if (WriteValuesReceiver()) return true;
 
                 _isPrepared = false;
-                if (ChangeProvider())
-                    using (Start(80, 100))
-                        return WriteValuesReceiver();
-                return false;    
+                if (!ChangeProvider()) return false;
+                using (Start(80, 100))
+                    return WriteValuesReceiver();
             }
         }
         public bool WriteValues()

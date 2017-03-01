@@ -25,8 +25,7 @@ namespace BaseLibrary
         //Получение элемента
         public T Get(int k)
         {
-            if (_dic.ContainsKey(k)) return _dic[k];
-            return DefVal;
+            return _dic.ContainsKey(k) ? _dic[k] : DefVal;
         }
         //Получение элемента по индексу
         public T this[int k]
@@ -38,8 +37,7 @@ namespace BaseLibrary
         //Получение элемента с указанием значения по умолчанию
         public T Get(int k, T defVal)
         {
-            if (_dic.ContainsKey(k)) return _dic[k];
-            return defVal;
+            return _dic.ContainsKey(k) ? _dic[k] : defVal;
         }
 
         //Добавление элемента, replace - заменять, если ключи совпадают

@@ -9,7 +9,7 @@ namespace ProvidersLibrary
         internal CloneOut(SourceBase source) : base(source) { }
 
         //Чтение одного значения из рекордсета клона
-        internal protected override int ReadMoments(IRecordRead rec)
+        protected internal override int ReadMoments(IRecordRead rec)
         {
             var time = rec.GetTime("Time");
             var errNum = rec.GetIntNull("ErrNum");

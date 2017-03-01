@@ -125,7 +125,7 @@ namespace BaseLibrary
         }
 
         //Задать период обработки
-        internal protected void SetPeriod(DateTime begin, DateTime end, string mode = "")
+        protected internal void SetPeriod(DateTime begin, DateTime end, string mode = "")
         {
             lock (_tabloLocker)
             {
@@ -176,7 +176,7 @@ namespace BaseLibrary
         }
 
         //Вызвать BreakException
-        internal protected void CheckBreak()
+        protected internal void CheckBreak()
         {
             if (WasBreaked)
                 throw new BreakException();
@@ -194,9 +194,9 @@ namespace BaseLibrary
         //Завершение простой команды
         public Command Finish(string results = "")
         {
-            if (Command == CommandLog)
-                return FinishLog(results);
-            return FinishCommand(Command);
+            return Command == CommandLog 
+                ? FinishLog(results) 
+                : FinishCommand(Command);
         }
 
         //Запуск команды логирования

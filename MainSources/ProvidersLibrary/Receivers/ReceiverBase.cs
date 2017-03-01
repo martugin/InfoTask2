@@ -46,6 +46,6 @@ namespace ProvidersLibrary
         protected virtual void PrepareReceiver() { }
 
         //Запись значений в приемник
-        internal protected abstract void WriteValues();
+        protected internal abstract void WriteValues();
     }
 }

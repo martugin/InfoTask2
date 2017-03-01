@@ -22,7 +22,7 @@ namespace Provider
         public string UndefinedErrorText { get { return "Неопределенная ошибка"; } }
 
         //Качество недостоверности
-        private ErrQuality NdQuality(int nd)
+        private static ErrQuality NdQuality(int nd)
         {
             if (nd == 0) return ErrQuality.Good;
             return nd.GetBit(5) || nd.GetBit(15) ? ErrQuality.Error : ErrQuality.Warning;
@@ -51,16 +51,13 @@ namespace Provider
             return s;
         }
 
-        private string AddNdBit(int nd, int bit, string mess, string res)
+        private static string AddNdBit(int nd, int bit, string mess, string res)
         {
-            if (nd.GetBit(bit))
-            {
-                string s = res;
-                if (s != "") s += "; ";
-                s += mess;
-                return s;
-            }
-            return res;
+            if (!nd.GetBit(bit)) return res;
+            string s = res;
+            if (s != "") s += "; ";
+            s += mess;
+            return s;
         }
     }
 }

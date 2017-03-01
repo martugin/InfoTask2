@@ -28,9 +28,9 @@ namespace Provider
         protected override SourceOut AddOut(InitialSignal sig)
         {
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
-            if (!_outs.ContainsKey(ocode))
-                return _outs.Add(ocode, new OutMir(this));
-            return _outs[ocode];
+            return !_outs.ContainsKey(ocode) 
+                ? _outs.Add(ocode, new OutMir(this)) 
+                : _outs[ocode];
         }
         
         //Подготовка провайдера, чтение значений IDCHANNEL

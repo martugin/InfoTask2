@@ -59,17 +59,20 @@ namespace Provider
         protected override SourceOut AddOut(InitialSignal sig)
         {
             var obType = sig.Inf.Get("ObjectType");
-            if (obType == "ALARM")
-                return _alarmOut ?? (_alarmOut = new OutOvationMsg(this, "ALARM"));
-            if (obType == "SOE")
-                return _soeOut ?? (_soeOut = new OutOvationMsg(this, "SOE"));
-            if (obType == "TEXT")
-                return _textOut ?? (_textOut = new OutOvationMsg(this, "TEXT"));
+            switch (obType)
+            {
+                case "ALARM":
+                    return _alarmOut ?? (_alarmOut = new OutOvationMsg(this, "ALARM"));
+                case "SOE":
+                    return _soeOut ?? (_soeOut = new OutOvationMsg(this, "SOE"));
+                case "TEXT":
+                    return _textOut ?? (_textOut = new OutOvationMsg(this, "TEXT"));
+            }
 
             int id = sig.Inf.GetInt("Id");
-            if (!_outsId.ContainsKey(id))
-                return _outsId.Add(id, new OutOvation(this, id));
-            return _outsId[id];
+            return _outsId.ContainsKey(id) 
+                ? _outsId[id] 
+                : _outsId.Add(id, new OutOvation(this, id));
         }
 
         //Удалить все выходы
@@ -143,7 +146,7 @@ namespace Provider
         }
 
         //Строка с условием по времени для запросов
-        private string TimeCondition(DateTime beg, DateTime en)
+        private static string TimeCondition(DateTime beg, DateTime en)
         {
             return " (TIMESTAMP >= " + DateToOvation(beg) + ") and (TIMESTAMP <= " + DateToOvation(en) + ") order by TIMESTAMP, TIME_NSEC";
         }

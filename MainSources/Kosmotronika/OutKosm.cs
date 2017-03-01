@@ -33,10 +33,13 @@ namespace Provider
         //Добавить к выходу сигнал, если такого еще не было
         protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
-            if (sig.Inf["Prop"] == "ND")
-                return StateSignal = StateSignal ?? sig;
-            if (sig.Inf["Prop"] == "POK")
-                return PokSignal = PokSignal ?? sig;
+            switch (sig.Inf["Prop"])
+            {
+                case "ND":
+                    return StateSignal = StateSignal ?? sig;
+                case "POK":
+                    return PokSignal = PokSignal ?? sig;
+            }
             return ValueSignal = ValueSignal ?? sig;
         }
         

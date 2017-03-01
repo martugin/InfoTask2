@@ -9,7 +9,7 @@ namespace ProvidersLibrary
     //Соединение с OPC-сервером
     public abstract class OpcServer : ReceiverBase
     {
-        internal protected OpcServer() 
+        protected internal OpcServer() 
         {
             Server = new OPCServer();
         }
@@ -69,7 +69,7 @@ namespace ProvidersLibrary
         }
 
         //Проверка настроек
-        internal protected override string CheckSettings(DicS<string> inf)
+        protected internal override string CheckSettings(DicS<string> inf)
         {
             return !inf["OPCServerName"].IsEmpty() ? "" : "Не задано имя OPC-сервера";
         }
@@ -173,7 +173,7 @@ namespace ProvidersLibrary
         }
 
         //Запись значений
-        internal protected override void WriteValues()
+        protected internal override void WriteValues()
         {
             if (_items.Count > 0)
                 StartDanger(2, LoggerDangerness.Single, "Ошибка записи значений в OPC-сервер", "Повторная запись в OPC-сервер", true, 500)

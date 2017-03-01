@@ -38,12 +38,7 @@ namespace CommonTypes
         //Доступ к значению по имени поля 
         public Mean this[string name]
         {
-            get
-            {
-                if (_means.ContainsKey(name))
-                    return _means[name];
-                return null;
-            }
+            get { return _means.ContainsKey(name) ? _means[name] : null; }
         }
     }
 }

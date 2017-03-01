@@ -39,8 +39,7 @@ namespace BaseLibrary
         public bool Remove(string s)
         {
             var sl = s.ToUpper();
-            if (_dic.ContainsKey(sl)) return _dic.Remove(sl);
-            return false;
+            return _dic.ContainsKey(sl) && _dic.Remove(sl);
         }
     }
 }

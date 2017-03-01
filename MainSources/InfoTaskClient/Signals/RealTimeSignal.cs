@@ -32,20 +32,17 @@ namespace ComClients
         //Качество ошибки
         public int ErrQuality()
         {
-            if (Mom == null) return 0;
-            return (int)Mom.Error.Quality;
+            return Mom == null ? 0 : (int) Mom.Error.Quality;
         }
         //Номер ошибки
         public int ErrNumber()
         {
-            if (Mom == null) return 0;
-            return Mom.Error.Number;
+            return Mom == null ? 0 : Mom.Error.Number;
         }
         //Текст ошибки
         public string ErrText()
         {
-            if (Mom == null) return null;
-            return Mom.Error.Text;
+            return Mom == null ? null : Mom.Error.Text;
         }
 
         //Значения разного типа

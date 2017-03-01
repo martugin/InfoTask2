@@ -258,10 +258,10 @@ namespace CommonTypes
         {
             get
             {
+                if (_errors == null) return null;
                 ErrMom terr = null;
-                if (_errors != null)
-                    foreach (var err in _errors)
-                        terr = terr.Add(err);
+                foreach (var err in _errors)
+                    terr = terr.Add(err);
                 return terr;
             }
         }

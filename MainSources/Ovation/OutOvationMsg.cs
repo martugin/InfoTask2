@@ -37,26 +37,29 @@ namespace Provider
         //Добавить к выходу сигнал, если такого еще не было
         protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
-            if (sig.Inf["Prop"] == "MSG_FLAGS")
-                return MsgFlagsSignal = MsgFlagsSignal ?? sig;
-            if (sig.Inf["Prop"] == "MSG_TYPE")
-                return MsgTypeSignal = MsgTypeSignal ?? sig;
-            if (sig.Inf["Prop"] == "SUB_TYPE")
-                return SubTypeSignal = SubTypeSignal ?? sig;
-            if (sig.Inf["Prop"] == "SYSTEM")
-                return SystemSignal = SystemSignal ?? sig;
-            if (sig.Inf["Prop"] == "NODE")
-                return NodeSignal = NodeSignal ?? sig;
-            if (sig.Inf["Prop"] == "ALM_NAME")
-                return AlmNameSignal = AlmNameSignal ?? sig;
-            if (sig.Inf["Prop"] == "PRIM_TEXT")
-                return PrimTextSignal = PrimTextSignal ?? sig;
-            if (sig.Inf["Prop"] == "SUPP_TEXT")
-                return SuppTextSignal = SuppTextSignal ?? sig;
-            if (sig.Inf["Prop"] == "INFO1")
-                return Info1Signal = Info1Signal ?? sig;
-            if (sig.Inf["Prop"] == "INFO2")
-                return Info2Signal = Info2Signal ?? sig;
+            switch (sig.Inf["Prop"])
+            {
+                case "MSG_FLAGS":
+                    return MsgFlagsSignal = MsgFlagsSignal ?? sig;
+                case "MSG_TYPE":
+                    return MsgTypeSignal = MsgTypeSignal ?? sig;
+                case "SUB_TYPE":
+                    return SubTypeSignal = SubTypeSignal ?? sig;
+                case "SYSTEM":
+                    return SystemSignal = SystemSignal ?? sig;
+                case "NODE":
+                    return NodeSignal = NodeSignal ?? sig;
+                case "ALM_NAME":
+                    return AlmNameSignal = AlmNameSignal ?? sig;
+                case "PRIM_TEXT":
+                    return PrimTextSignal = PrimTextSignal ?? sig;
+                case "SUPP_TEXT":
+                    return SuppTextSignal = SuppTextSignal ?? sig;
+                case "INFO1":
+                    return Info1Signal = Info1Signal ?? sig;
+                case "INFO2":
+                    return Info2Signal = Info2Signal ?? sig;
+            }
             return null;
         }
 
@@ -69,6 +72,7 @@ namespace Provider
             nwrite += AddMomInt(MsgFlagsSignal, time, rec, "MSG_FLAGS");
             nwrite += AddMomInt(MsgTypeSignal, time, rec, "MSG_TYPE");
             nwrite += AddMomInt(SubTypeSignal, time, rec, "SUB_TYPE");
+            nwrite += AddMomInt(SystemSignal, time, rec, "SYSTEM");
             nwrite += AddMomString(NodeSignal, time, rec, "NODE");
             nwrite += AddMomString(AlmNameSignal, time, rec, "ALM_NAME");
             nwrite += AddMomString(PrimTextSignal, time, rec, "PRIM_TEXT");
@@ -80,7 +84,7 @@ namespace Provider
         }
 
         //Чтение времени из рекордсета источника
-        private DateTime ReadTime(IRecordRead rec)
+        private static DateTime ReadTime(IRecordRead rec)
         {
             return rec.GetTime("TIMESTAMP")
                 .AddMilliseconds(rec.GetInt("TIME_NSEC") / 1000000.0)

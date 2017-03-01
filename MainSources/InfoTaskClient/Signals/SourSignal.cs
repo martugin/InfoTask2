@@ -35,23 +35,17 @@ namespace ComClients
         //Качество ошибки i-ого значения
         public int ErrQuality(int i)
         {
-            if (_signal.MomList.ErrorI(i) == null)
-                return 0;
-            return (int)_signal.MomList.ErrorI(i).Quality;
+            return _signal.MomList.ErrorI(i) == null ? 0 : (int) _signal.MomList.ErrorI(i).Quality;
         }
         //Номер ошибки i-ого значения
         public int ErrNumber(int i)
         {
-            if (_signal.MomList.ErrorI(i) == null)
-                return 0;
-            return _signal.MomList.ErrorI(i).Number;
+            return _signal.MomList.ErrorI(i) == null ? 0 : _signal.MomList.ErrorI(i).Number;
         }
         //Текст ошибки i-ого значения
         public string ErrText(int i)
         {
-            if (_signal.MomList.ErrorI(i) == null)
-                return null;
-            return _signal.MomList.ErrorI(i).Text;
+            return _signal.MomList.ErrorI(i) == null ? null : _signal.MomList.ErrorI(i).Text;
         }
 
         //Значения разного типа

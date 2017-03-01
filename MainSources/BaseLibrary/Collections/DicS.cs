@@ -27,8 +27,7 @@ namespace BaseLibrary
         public T Get(string s)
         {
             string sl = s.ToUpper();
-            if (_dic.ContainsKey(sl)) return _dic[sl];
-            return DefVal;
+            return _dic.ContainsKey(sl) ? _dic[sl] : DefVal;
         }
         //Получение элемента по индексу
         public T this[string s]
@@ -39,8 +38,7 @@ namespace BaseLibrary
         public T Get(string s, T defVal)
         {
             string sl = s.ToUpper();
-            if (_dic.ContainsKey(sl)) return _dic[sl];
-            return defVal;
+            return _dic.ContainsKey(sl) ? _dic[sl] : defVal;
         }
 
         //Добавление элемента, replace - заменять, если ключи совпадают
@@ -56,16 +54,14 @@ namespace BaseLibrary
         //Содержит элемент
         public bool ContainsKey(string s)
         {
-            if (s == null) return false;
-            return _dic.ContainsKey(s.ToUpper());
+            return s != null && _dic.ContainsKey(s.ToUpper());
         }
 
         //Удалить элемент
         public bool Remove(string s)
         {
             string sl = s.ToUpper();
-            if (_dic.ContainsKey(sl)) return _dic.Remove(sl);
-            return false;
+            return _dic.ContainsKey(sl) && _dic.Remove(sl);
         }
         //Удаляет элемены по заданной функции условия
         public void Remove(Func<string, T, bool> cond)

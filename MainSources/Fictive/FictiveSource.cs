@@ -39,23 +39,16 @@ namespace Fictive
             var table = sig.Inf.Get("Table");
             bool isErr = sig.Inf.Get("IsErrorObject") == "True";
             var code = sig.CodeOuts;
-            if (table == "MomValues")
+            switch (table)
             {
-                if (!Outs.ContainsKey(code))
+                case "MomValues":
+                    if (Outs.ContainsKey(code)) return Outs[code];
                     return Outs.Add(code, new OutFictive(this, isErr));
-                return Outs[code];    
-            }
-            if (table == "MomValues2")
-            {
-                if (!Outs2.ContainsKey(code))
+                case "MomValues2":
+                    if (Outs2.ContainsKey(code)) return Outs2[code];
                     return Outs2.Add(code, new OutFictiveSmall(this));
-                return Outs2[code];
-            }
-            if (table == "MomOperator")
-            {
-                if (OperatorOut == null)
-                    OperatorOut = new OutFictiveOperator(this);
-                return OperatorOut;
+                case "MomOperator":
+                    return OperatorOut ?? (OperatorOut = new OutFictiveOperator(this));
             }
             return null;
         }

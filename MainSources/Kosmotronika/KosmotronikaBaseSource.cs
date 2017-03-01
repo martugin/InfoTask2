@@ -33,9 +33,9 @@ namespace Provider
             {
                 var beg = rec.GetTime(0);
                 var en = rec.GetTime(1);
-                if (beg.ToString() != "0:00:00")
-                    return new TimeInterval(beg, en);
-                return TimeInterval.CreateDefault();
+                return beg.ToString() != "0:00:00" 
+                    ? new TimeInterval(beg, en) 
+                    : TimeInterval.CreateDefault();
             }
         }
         
@@ -131,9 +131,7 @@ namespace Provider
             };
             if (IsAnalog && _analogs.ContainsKey(ind))
                 return _analogs[ind];
-            if (_outs.ContainsKey(ind))
-                return _outs[ind];
-            return null;
+            return _outs.ContainsKey(ind) ? _outs[ind] : null;
         }
 
         //Запрос значений действий оператора

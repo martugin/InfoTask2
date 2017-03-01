@@ -17,7 +17,7 @@ namespace ProvidersLibrary
         //Получение диапазона времени источника
         //Возвращает Default интервал, если нет связи с источником
         //Возвращает TimeInterval(Different.MinDate, DateTime.Now) если источник не позволяет определять диапазон
-        internal protected TimeInterval GetTime()
+        protected internal TimeInterval GetTime()
         {
             try
             {
@@ -92,8 +92,8 @@ namespace ProvidersLibrary
         }
 
         //Чтение среза, возврашает количество прочитанных значений
-        internal protected virtual ValuesCount ReadCut() { return new ValuesCount(); }
+        protected internal virtual ValuesCount ReadCut() { return new ValuesCount(); }
         //Чтение изменений, возврашает количество прочитанных и сформированных значений
-        internal protected abstract ValuesCount ReadChanges();
+        protected internal abstract ValuesCount ReadChanges();
     }
 }

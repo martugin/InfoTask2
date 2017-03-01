@@ -36,9 +36,8 @@ namespace Fictive
         protected override SourceOut AddOut(InitialSignal sig)
         {
             var num = sig.Inf.GetInt("NumObject");
-            if (!_objects.ContainsKey(num))
-                return _objects.Add(num, new OutFictive(this, sig.Inf.GetInt("ValuesInterval")));
-            return _objects[num];
+            if (_objects.ContainsKey(num)) return _objects[num];
+            return _objects.Add(num, new OutFictive(this, sig.Inf.GetInt("ValuesInterval")));
         }
 
         //Очистка списков объектов

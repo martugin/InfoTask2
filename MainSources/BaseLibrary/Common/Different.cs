@@ -81,7 +81,7 @@ namespace BaseLibrary
             if (s.IsEmpty()) return def;
             string st = s.Replace(",", ".");
             double d;
-            double res = Double.TryParse(st, NumberStyles.Any, new NumberFormatInfo { NumberDecimalSeparator = "." }, out d) ? d : def;
+            var res = double.TryParse(st, NumberStyles.Any, new NumberFormatInfo { NumberDecimalSeparator = "." }, out d) ? d : def;
             return res;
         }
 
@@ -97,8 +97,7 @@ namespace BaseLibrary
         public static DateTime ToDateTime(this string s)
         {
             DateTime t;
-            if (DateTime.TryParse(s, out t)) return t;
-            return MinDate;
+            return DateTime.TryParse(s, out t) ? t : MinDate;
         }
 
         //Возвращает истинность i-ого бита числа n

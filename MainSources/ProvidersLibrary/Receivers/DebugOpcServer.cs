@@ -11,7 +11,7 @@ namespace ProvidersLibrary
         {
             ServerName = serverName;
             Node = node;
-            Logger = new Logger(LoggerDangerness.Single);
+            Logger = new Logger();
         }
 
         public override string Code { get { return "DebugOpcServer"; } }

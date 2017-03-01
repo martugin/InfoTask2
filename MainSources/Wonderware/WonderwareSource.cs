@@ -103,9 +103,7 @@ namespace Provider
         protected override SourceOut DefineOut(IRecordRead rec)
         {
             string code = rec.GetString("TagName");
-            if (_outs.ContainsKey(code))
-                return _outs[code];
-            return null;
+            return _outs.ContainsKey(code) ? _outs[code] : null;
         }
         
         //Чтение данных из Historian за период

@@ -43,7 +43,7 @@ namespace ProvidersLibrary
         private bool _isConnected;
 
         //Первичное подключение к провайдеру
-        internal protected bool Connect()
+        protected internal bool Connect()
         {
             if (_isConnected) return true;
             using (Start())
@@ -81,7 +81,7 @@ namespace ProvidersLibrary
         }
 
         //Отключение от провайдера
-        internal protected void Disconnect()
+        protected internal void Disconnect()
         {
             try { DisconnectProvider();}
             catch {}
@@ -89,7 +89,7 @@ namespace ProvidersLibrary
         }
 
         //Повторное подключение
-        internal protected bool Reconnect()
+        protected internal bool Reconnect()
         {
             using (Start())
             {
@@ -125,9 +125,9 @@ namespace ProvidersLibrary
         //Проверка соединения в форме настроек возвращает true, если соединение успешное
         protected virtual bool CheckConnection() { return true; }
         //Cтрока для вывода сообщения о последней проверке соединения
-        internal protected string CheckConnectionMessage { get; protected set; }
+        protected internal string CheckConnectionMessage { get; protected set; }
         //Проверка корректности настроек, возвращает строку с ошибками, на входе словарь настроек
-        internal protected virtual string CheckSettings(DicS<string> infDic) { return ""; }
+        protected internal virtual string CheckSettings(DicS<string> infDic) { return ""; }
 
         //Словарь комманд открытия дилогов, ключи - имена свойств, вторые ключи - названия пунктов меню
         private readonly DicS<Dictionary<string, IMenuCommand>> _menuCommands = new DicS<Dictionary<string, IMenuCommand>>();

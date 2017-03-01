@@ -47,7 +47,7 @@ namespace ProvidersLibrary
             return true;
         }
 
-        internal protected override string CheckSettings(DicS<string> infDic)
+        protected internal override string CheckSettings(DicS<string> infDic)
         {
             if (infDic["CloneDir"].IsEmpty())
                 return "Не указан каталог клона";
@@ -140,7 +140,7 @@ namespace ProvidersLibrary
         }
 
         //Чтение среза
-        internal protected override ValuesCount ReadCut()
+        protected internal override ValuesCount ReadCut()
         {
             var vc = new ValuesCount();
             DateTime d = SourceConnect.RemoveMinultes(PeriodBegin);
@@ -163,7 +163,7 @@ namespace ProvidersLibrary
         }
 
         //Чтение изменений
-        internal protected override ValuesCount ReadChanges()
+        protected internal override ValuesCount ReadChanges()
         {
             var vc = new ValuesCount();
             AddEvent("Чтение изменений действительных значений");
