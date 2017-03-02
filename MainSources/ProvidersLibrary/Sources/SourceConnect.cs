@@ -15,7 +15,7 @@ namespace ProvidersLibrary
         public override ProviderType Type { get { return ProviderType.Source;}}
 
         //Текущий провайдер источника
-        private SourceBase Source { get { return (SourceBase) Provider; } }
+        private BaseSource Source { get { return (BaseSource) Provider; } }
 
         //Получение диапазона времени источника
         //Возвращает Default интервал, если нет связи с источником
@@ -68,6 +68,7 @@ namespace ProvidersLibrary
         //Очистка списка сигналов
         public void ClearSignals()
         {
+            AddEvent("Очистка списка сигналов");
             _signals.Clear();
             InitialSignals.Clear();
             CalcSignals.Clear();
@@ -90,9 +91,7 @@ namespace ProvidersLibrary
                 {
                     PeriodBegin = periodBegin;
                     PeriodEnd = periodEnd;
-                    AddEvent("Очистка значений сигналов");
-                    foreach (var sig in _signals.Values)
-                        sig.ClearMoments(PeriodBegin != PrevPeriodEnd);
+                    ClearSignalsValues(PeriodBegin != PrevPeriodEnd);
                     using (Start(5, 80))
                     {
                         valuesCount += GetValues();
@@ -102,9 +101,7 @@ namespace ProvidersLibrary
                     if (!ChangeProvider()) return valuesCount;
                     using (Start(80, 100))
                     {
-                        AddEvent("Очистка значений сигналов");
-                        foreach (var sig in _signals.Values)
-                            sig.ClearMoments(true);
+                        ClearSignalsValues(true);
                         return GetValues();
                     }
                 }
@@ -117,6 +114,13 @@ namespace ProvidersLibrary
             }
         }
 
+        private void ClearSignalsValues(bool clearBegin)
+        {
+            AddEvent("Очистка значений сигналов");
+            foreach (var sig in _signals.Values)
+                sig.ClearMoments(clearBegin);
+        }
+        
         //Чтение значений из источника
         private ValuesCount GetValues()
         {
@@ -187,12 +191,12 @@ namespace ProvidersLibrary
         //Создание клона
         #region
         //Рекордсеты таблиц значений клона
-        internal RecDao CloneRec { get; private set; }
-        internal RecDao CloneCutRec { get; private set; }
-        internal RecDao CloneStrRec { get; private set; }
-        internal RecDao CloneStrCutRec { get; private set; }
+        internal DaoRec CloneRec { get; private set; }
+        internal DaoRec CloneCutRec { get; private set; }
+        internal DaoRec CloneStrRec { get; private set; }
+        internal DaoRec CloneStrCutRec { get; private set; }
         //Рекордсет таблицы ошибок создания клона
-        internal RecDao CloneErrorsRec { get; private set; }
+        internal DaoRec CloneErrorsRec { get; private set; }
 
         //Словарь ошибочных объектов, ключи - коды объектов
         private readonly DicS<string> _errorObjects = new DicS<string>();
@@ -234,7 +238,7 @@ namespace ProvidersLibrary
         private void ReadCloneSignalsId(DaoDb cloneDb)
         {
             AddEvent("Чтение Id сигналов клона");
-            using (var rec = new RecDao(cloneDb, "Signals"))
+            using (var rec = new DaoRec(cloneDb, "Signals"))
                 while (rec.Read())
                 {
                     var code = rec.GetString("FullCode");
@@ -247,7 +251,7 @@ namespace ProvidersLibrary
         private void WriteMomentErrors(DaoDb cloneDb)
         {
             AddEvent("Запись описаний ошибок");
-            using (var rec = new RecDao(cloneDb, "MomentErrors"))
+            using (var rec = new DaoRec(cloneDb, "MomentErrors"))
                 foreach (var ed in Source.ErrPool.UsedErrorDescrs)
                     ed.ToRecordset(rec);
         }
@@ -264,11 +268,11 @@ namespace ProvidersLibrary
                 using (var db = new DaoDb(dir + @"Clone.accdb"))
                 {
                     ReadCloneSignalsId(db);
-                    using (CloneRec = new RecDao(db, "MomentValues"))
-                    using (CloneCutRec = new RecDao(db, "MomentValuesCut"))
-                    using (CloneStrRec = new RecDao(db, "MomentStrValues"))
-                    using (CloneStrCutRec = new RecDao(db, "MomentStrValuesCut"))
-                    using (CloneErrorsRec = new RecDao(db, "ErrorsObjects"))
+                    using (CloneRec = new DaoRec(db, "MomentValues"))
+                    using (CloneCutRec = new DaoRec(db, "MomentValuesCut"))
+                    using (CloneStrRec = new DaoRec(db, "MomentStrValues"))
+                    using (CloneStrCutRec = new DaoRec(db, "MomentStrValuesCut"))
+                    using (CloneErrorsRec = new DaoRec(db, "ErrorsObjects"))
                         GetValues(periodBegin, periodEnd);
                     WriteMomentErrors(db);
                 }

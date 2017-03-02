@@ -13,7 +13,7 @@ namespace Generator
     //Константа
     internal class ConstGenFun : ConstBaseFun, IGenFun
     {
-        public ConstGenFun(FunctionsBase funs, string code, int errNum)
+        public ConstGenFun(BaseFunctions funs, string code, int errNum)
             : base(funs, code, errNum) { }
 
         //Расчет значения
@@ -28,7 +28,7 @@ namespace Generator
     //Скалярная функция для генерации
     internal class ScalarGenFun : ScalarBaseFun, IGenFun
     {
-        internal ScalarGenFun(FunctionsBase funs, string code, int errNum) 
+        internal ScalarGenFun(BaseFunctions funs, string code, int errNum) 
             : base(funs, code, errNum) { }
 
         //Расчет значения

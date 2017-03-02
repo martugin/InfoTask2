@@ -44,25 +44,25 @@ namespace Generator
         public DicS<Var> Vars { get { return _vars; }}
 
         //Методы создания узлов - констант разного типа
-        protected override Node MakeNodeConst(ITerminalNode terminal, bool b)
+        protected override Node MakeConstNode(ITerminalNode terminal, bool b)
         {
-            return new NodeGenConst(terminal, b);
+            return new GenConstNode(terminal, b);
         }
-        protected override Node MakeNodeConst(ITerminalNode terminal, int i)
+        protected override Node MakeConstNode(ITerminalNode terminal, int i)
         {
-            return new NodeGenConst(terminal, i);
+            return new GenConstNode(terminal, i);
         }
-        protected override Node MakeNodeConst(ITerminalNode terminal, double r)
+        protected override Node MakeConstNode(ITerminalNode terminal, double r)
         {
-            return new NodeGenConst(terminal, r);
+            return new GenConstNode(terminal, r);
         }
-        protected override Node MakeNodeConst(ITerminalNode terminal, DateTime d)
+        protected override Node MakeConstNode(ITerminalNode terminal, DateTime d)
         {
-            return new NodeGenConst(terminal, d);
+            return new GenConstNode(terminal, d);
         }
-        protected override Node MakeNodeConst(ITerminalNode terminal, string s)
+        protected override Node MakeConstNode(ITerminalNode terminal, string s)
         {
-            return new NodeGenConst(terminal, s);
+            return new GenConstNode(terminal, s);
         }
     }
 }

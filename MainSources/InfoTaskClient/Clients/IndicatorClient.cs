@@ -17,8 +17,8 @@ namespace ComClients
         //Подписка на события индикатора
         protected void SubscribeEvents()
         {
-            Logger.ShowIndicatorTexted += Indicator.OnShowIndicatorTexted;
-            Logger.ShowIndicatorTimed += Indicator.OnShowIndicatorTimed;
+            Logger.ShowTextedIndicator += Indicator.OnShowTextedIndicator;
+            Logger.ShowTimedIndicator += Indicator.OnShowTimedIndicator;
             Logger.HideIndicator += Indicator.OnHideIndicator;
             Logger.ChangeProcent += Indicator.OnChangeProcent;
             Logger.ChangeTabloText += Indicator.OnChangeTabloText;
@@ -29,8 +29,8 @@ namespace ComClients
         }
         protected void UnsubscribeEvents()
         {
-            Logger.ShowIndicatorTexted -= Indicator.OnShowIndicatorTexted;
-            Logger.ShowIndicatorTimed -= Indicator.OnShowIndicatorTimed;
+            Logger.ShowTextedIndicator -= Indicator.OnShowTextedIndicator;
+            Logger.ShowTimedIndicator -= Indicator.OnShowTimedIndicator;
             Logger.HideIndicator -= Indicator.OnHideIndicator;
             Logger.ChangeProcent -= Indicator.OnChangeProcent;
             Logger.ChangeTabloText -= Indicator.OnChangeTabloText;

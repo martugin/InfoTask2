@@ -4,7 +4,7 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(ProviderBase))]
+    [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "OvationOpcReceiver")]
     public class OvationOpcReceiver : OpcServer
     {

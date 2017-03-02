@@ -14,7 +14,7 @@
     public abstract class CalcVal : Val, ICalcVal
     {
         //Общая ошибка на все значение
-        public virtual ErrMom TotalError { get { return null; } }
+        public virtual MomErr TotalError { get { return null; } }
 
         public override ICalcVal CalcValue { get { return this; } }
     }

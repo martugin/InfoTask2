@@ -4,9 +4,9 @@ using CommonTypes;
 namespace Generator
 {
     //Узел использования переменной
-    internal class NodeVar : NodeKeeper, INodeExpr
+    internal class VarNode : KeeperNode, IExprNode
     {
-        public NodeVar(GenKeeper keeper, ITerminalNode terminal) 
+        public VarNode(GenKeeper keeper, ITerminalNode terminal) 
             : base(keeper, terminal)
         {
             var name = terminal.Symbol.Text;
@@ -36,9 +36,9 @@ namespace Generator
 
     //----------------------------------------------------------------------------------------------------
     //Узел присвоения переменной
-     internal class NodeVarSet : NodeKeeper, INodeVoid
+     internal class VarSetNode : KeeperNode, IVoidNode
      {
-         public NodeVarSet(GenKeeper keeper, ITerminalNode terminal, INodeExpr nodeMean)  
+         public VarSetNode(GenKeeper keeper, ITerminalNode terminal, IExprNode nodeMean)  
              : base(keeper, terminal)
          {
              var name = terminal.Symbol.Text;
@@ -55,7 +55,7 @@ namespace Generator
          //Переменная
          private readonly Var _var;
          //Присваиваемое значение
-         private readonly INodeExpr _nodeMean;
+         private readonly IExprNode _nodeMean;
 
          //Проверка корректности выражений генерации
          public void Check(ITablStruct tabl)

@@ -3,7 +3,7 @@
     //Один параметр для записи в OPC
     public class OpcItem : ReceiverObject
     {
-        internal OpcItem(ReceiverBase receiver, string tag, int clientHandler)
+        internal OpcItem(BaseReceiver receiver, string tag, int clientHandler)
             : base(receiver)
         {
             Tag = tag;

@@ -6,7 +6,7 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(ProviderBase))]
+    [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "MirSource")]
     public class MirSource : SqlServerSource
     {
@@ -14,8 +14,8 @@ namespace Provider
         public override string Code { get { return "MirSource"; } }
         
         //Словари выходов, ключи коды и IdChanell
-        private readonly DicS<OutMir> _outs = new DicS<OutMir>();
-        private readonly DicI<OutMir> _outsId = new DicI<OutMir>();
+        private readonly DicS<MirOut> _outs = new DicS<MirOut>();
+        private readonly DicI<MirOut> _outsId = new DicI<MirOut>();
         
         //Очистка списка выходов
         protected override void ClearOuts()
@@ -29,7 +29,7 @@ namespace Provider
         {
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
             return !_outs.ContainsKey(ocode) 
-                ? _outs.Add(ocode, new OutMir(this)) 
+                ? _outs.Add(ocode, new MirOut(this)) 
                 : _outs[ocode];
         }
         
@@ -37,7 +37,7 @@ namespace Provider
         protected override void PrepareSource()
         {
             _outsId.Clear();
-            using (var rec = new ReaderAdo(SqlProps, "SELECT OBJECTS.NAME_OBJECT, DEVICES.NAME_DEVICE, LIB_CHANNELS.NAME_TYPE, LIB_CHANNELS.UNIT, CHANNELS.IDCHANNEL, LIB_CHANNELS.TABLE_NAME " +
+            using (var rec = new AdoReader(SqlProps, "SELECT OBJECTS.NAME_OBJECT, DEVICES.NAME_DEVICE, LIB_CHANNELS.NAME_TYPE, LIB_CHANNELS.UNIT, CHANNELS.IDCHANNEL, LIB_CHANNELS.TABLE_NAME " +
             "FROM CHANNELS INNER JOIN DEVICES ON CHANNELS.IDDEVICE = DEVICES.IDDEVICE INNER JOIN " +
             "LIB_CHANNELS ON dbo.CHANNELS.IDTYPE_CHANNEL = dbo.LIB_CHANNELS.IDTYPE_CHANNEL INNER JOIN " +
             "POINT_DEVICES ON dbo.DEVICES.IDDEVICE = dbo.POINT_DEVICES.IDDEVICE INNER JOIN " +
@@ -62,7 +62,7 @@ namespace Provider
         {
             string queryString = "SELECT IDCHANNEL, TIME, VALUE, VALUE_UNIT, VALUE_INDICATION FROM IZM_TII" +
                                      " WHERE (TIME >= " + beg.ToSqlString() + ") AND (TIME <=" + en.ToSqlString() + ") ORDER BY TIME";
-            return new ReaderAdo(SqlProps, queryString);
+            return new AdoReader(SqlProps, queryString);
         }
 
         //Определение текущего считываемого выхода

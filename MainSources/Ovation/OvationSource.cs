@@ -10,7 +10,7 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(ProviderBase))]
+    [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "OvationSource")]
     public class OvationSource : OleDbSource
     {
@@ -49,11 +49,11 @@ namespace Provider
         }
 
         //Словарь объектов по Id в Historian
-        private readonly DicI<OutOvation> _outsId = new DicI<OutOvation>();
+        private readonly DicI<OvationOut> _outsId = new DicI<OvationOut>();
         //Объекты сообщений
-        private OutOvationMsg _alarmOut;
-        private OutOvationMsg _soeOut;
-        private OutOvationMsg _textOut;
+        private OvationMsgOut _alarmOut;
+        private OvationMsgOut _soeOut;
+        private OvationMsgOut _textOut;
 
         //Добавить выход в провайдер
         protected override SourceOut AddOut(InitialSignal sig)
@@ -62,17 +62,17 @@ namespace Provider
             switch (obType)
             {
                 case "ALARM":
-                    return _alarmOut ?? (_alarmOut = new OutOvationMsg(this, "ALARM"));
+                    return _alarmOut ?? (_alarmOut = new OvationMsgOut(this, "ALARM"));
                 case "SOE":
-                    return _soeOut ?? (_soeOut = new OutOvationMsg(this, "SOE"));
+                    return _soeOut ?? (_soeOut = new OvationMsgOut(this, "SOE"));
                 case "TEXT":
-                    return _textOut ?? (_textOut = new OutOvationMsg(this, "TEXT"));
+                    return _textOut ?? (_textOut = new OvationMsgOut(this, "TEXT"));
             }
 
             int id = sig.Inf.GetInt("Id");
             return _outsId.ContainsKey(id) 
                 ? _outsId[id] 
-                : _outsId.Add(id, new OutOvation(this, id));
+                : _outsId.Add(id, new OvationOut(this, id));
         }
 
         //Удалить все выходы
@@ -85,9 +85,9 @@ namespace Provider
         }
 
         //Создание фабрики ошибок
-        protected override IErrMomFactory MakeErrFactory()
+        protected override IMomErrFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
+            var factory = new MomErrFactory(ProviderConnect.Name, MomErrType.Source);
             factory.AddGoodDescr(0);
             factory.AddDescr(1, "FAIR", ErrQuality.Warning);
             factory.AddDescr(2, "POOR", ErrQuality.Warning);
@@ -101,14 +101,14 @@ namespace Provider
         {
             var sb = new StringBuilder("select ID, TIMESTAMP, TIME_NSEC, F_VALUE, RAW_VALUE, STS from PT_HF_HIST " + "where (");
             bool isFirst = true;
-            foreach (OutOvation ob in part)
+            foreach (OvationOut ob in part)
             {
                 if (!isFirst) sb.Append(" or ");
                 sb.Append("(ID=").Append(ob.Id).Append(")");
                 isFirst = false;
             }
             sb.Append(") and").Append(TimeCondition(beg, en));
-            var rec = new ReaderAdo(Connection, sb.ToString());
+            var rec = new AdoReader(Connection, sb.ToString());
             if (en.Subtract(beg).TotalMinutes > 59 && !rec.HasRows)
             {
                 AddWarning("Значения из источника не получены", null, beg + " - " + en +"; " + part.First().Context + " и др.");
@@ -124,17 +124,17 @@ namespace Provider
         }
 
         //Запросы значений по сигналам сообщений разного типа
-        protected IRecordRead QueryValuesAlarm(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryAlarmValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
-            return new ReaderAdo(Connection, "select * from MSG_ALARM_HIST" + TimeCondition(beg, en));
+            return new AdoReader(Connection, "select * from MSG_ALARM_HIST" + TimeCondition(beg, en));
         }
-        protected IRecordRead QueryValuesSoe(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QuerySoeValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
-            return new ReaderAdo(Connection, "select * from MSG_SOE_HIST" + TimeCondition(beg, en));
+            return new AdoReader(Connection, "select * from MSG_SOE_HIST" + TimeCondition(beg, en));
         }
-        protected IRecordRead QueryValuesText(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryTextValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
-            return new ReaderAdo(Connection, "select * from MSG_TEXT_HIST" + TimeCondition(beg, en));
+            return new AdoReader(Connection, "select * from MSG_TEXT_HIST" + TimeCondition(beg, en));
         }
 
         //Преводит дату в формат для запросов Ovation Historian
@@ -171,11 +171,11 @@ namespace Provider
                 vc += ReadByParts(_outsId.Values, 200);
 
             using (Start(70, 80))
-                vc += ReadOneOut(_alarmOut, QueryValuesAlarm, "Чтение сигнализационных сообщений");
+                vc += ReadOneOut(_alarmOut, QueryAlarmValues, "Чтение сигнализационных сообщений");
             using (Start(80, 90))
-                vc += ReadOneOut(_soeOut, QueryValuesSoe, "Чтение событий");
+                vc += ReadOneOut(_soeOut, QuerySoeValues, "Чтение событий");
             using (Start(90, 100))
-                vc += ReadOneOut(_textOut, QueryValuesText, "Чтение текстовых сообщений");
+                vc += ReadOneOut(_textOut, QueryTextValues, "Чтение текстовых сообщений");
             return vc;
         }
     }

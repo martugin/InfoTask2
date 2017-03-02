@@ -6,7 +6,7 @@ using ProvidersLibrary;
 
 namespace Logika
 {
-    [Export(typeof(ProviderBase))]
+    [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "PrologSource")]
     public class PrologSource : AccessSource
     {
@@ -20,9 +20,9 @@ namespace Logika
         }
 
         //Словарь выходов, первый ключ - код таблицы, второй ключ - id объекта
-        private readonly DicS<DicI<OutProlog>> _outs = new DicS<DicI<OutProlog>>();
+        private readonly DicS<DicI<PrologOut>> _outs = new DicS<DicI<PrologOut>>();
         //Словарь выходов ключ - id объекта
-        private readonly DicI<OutProlog> _outsId = new DicI<OutProlog>();
+        private readonly DicI<PrologOut> _outsId = new DicI<PrologOut>();
 
         //Добавить выход в источник
         protected override SourceOut AddOut(InitialSignal sig)
@@ -32,8 +32,8 @@ namespace Logika
                 return _outsId[id];
             string tableName = sig.Inf["TableName"];
             if (!_outs.ContainsKey(tableName))
-                _outs.Add(tableName, new DicI<OutProlog>());
-            var ob = new OutProlog(this);
+                _outs.Add(tableName, new DicI<PrologOut>());
+            var ob = new PrologOut(this);
             _outs[tableName].Add(id, ob);
             return _outsId.Add(id, ob);
         }
@@ -51,7 +51,7 @@ namespace Logika
         //Запрос значений
         protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
-            return new RecDao(DbFile, "SELECT * FROM " + _tableName + "_ARCHIVE " +
+            return new DaoRec(DbFile, "SELECT * FROM " + _tableName + "_ARCHIVE " +
                                       "WHERE (TYPE = 1) AND (Время >= " + beg.ToAccessString() + ") AND (Время <= " + en.ToAccessString() + ")"); 
         }
 

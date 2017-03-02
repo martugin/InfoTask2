@@ -46,13 +46,13 @@ namespace BaseLibraryTest
             db.Execute("DELETE * FROM Tabl");
             Thread.Sleep(800);
             db.ExecuteAdo("DELETE * FROM SysTabl");
-            using (var rec = new ReaderAdo(db, "SELECT * FROM Tabl"))
+            using (var rec = new AdoReader(db, "SELECT * FROM Tabl"))
                 Assert.IsFalse(rec.HasRows);
-            using (var rec = new ReaderAdo(db, "SELECT * FROM SubTabl"))
+            using (var rec = new AdoReader(db, "SELECT * FROM SubTabl"))
                 Assert.IsFalse(rec.HasRows);
-            using (var rec = new RecDao(db, "SysTabl"))
+            using (var rec = new DaoRec(db, "SysTabl"))
                 Assert.IsFalse(rec.HasRows);
-            using (var rec = new RecDao(db, "SysSubTabl"))
+            using (var rec = new DaoRec(db, "SysSubTabl"))
                 Assert.IsFalse(rec.HasRows);
 
             Assert.IsTrue(db.TableExists("SubTabl"));
@@ -149,13 +149,13 @@ namespace BaseLibraryTest
 
             DaoDb.Execute(file, "DELETE * FROM Tabl");
             DaoDb.ExecuteAdo(file, "DELETE * FROM SysTabl");
-            using (var rec = new ReaderAdo(file, "SELECT * FROM Tabl"))
+            using (var rec = new AdoReader(file, "SELECT * FROM Tabl"))
                 Assert.IsFalse(rec.HasRows);
-            using (var rec = new ReaderAdo(file, "SELECT * FROM SubTabl"))
+            using (var rec = new AdoReader(file, "SELECT * FROM SubTabl"))
                 Assert.IsFalse(rec.HasRows);
-            using (var rec = new RecDao(file, "SysTabl"))
+            using (var rec = new DaoRec(file, "SysTabl"))
                 Assert.IsFalse(rec.HasRows);
-            using (var rec = new RecDao(file, "SysSubTabl"))
+            using (var rec = new DaoRec(file, "SysSubTabl"))
                 Assert.IsFalse(rec.HasRows);
         }
     }

@@ -9,7 +9,7 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(ProviderBase))]
+    [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "SimaticSource")]
     public class SimaticSource : OleDbSource
     {
@@ -73,7 +73,7 @@ namespace Provider
         }
 
         //Словари сигналов, ключи полные коды и Id
-        private readonly DicI<OutSimatic> _outsId = new DicI<OutSimatic>();
+        private readonly DicI<SimaticOut> _outsId = new DicI<SimaticOut>();
 
         //Добавить объект в провайдер
         protected override SourceOut AddOut(InitialSignal sig)
@@ -81,7 +81,7 @@ namespace Provider
             int id = sig.Inf.GetInt("Id");
             return _outsId.ContainsKey(id) 
                 ? _outsId[id] 
-                : _outsId.Add(id, new OutSimatic(this, sig.Inf["Archive"], sig.Inf["Tag"], id));
+                : _outsId.Add(id, new SimaticOut(this, sig.Inf["Archive"], sig.Inf["Tag"], id));
         }
         
         //Очистка списка сигналов
@@ -91,9 +91,9 @@ namespace Provider
         }
 
         //Создание фабрики ошибок
-        protected override IErrMomFactory MakeErrFactory()
+        protected override IMomErrFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source) {UndefinedErrorText = "Ошибка"};
+            var factory = new MomErrFactory(ProviderConnect.Name, MomErrType.Source) {UndefinedErrorText = "Ошибка"};
             factory.AddGoodDescr(128);
             return factory;
         }
@@ -110,19 +110,19 @@ namespace Provider
         {
             var sb = new StringBuilder("TAG:R, ");
             if (part.Count == 1)
-                sb.Append(((OutSimatic)part[0]).Id);
+                sb.Append(((SimaticOut)part[0]).Id);
             else
             {
-                sb.Append("(").Append(((OutSimatic) part[0]).Id);
+                sb.Append("(").Append(((SimaticOut) part[0]).Id);
                 for (int i = 1; i < part.Count; i++)
-                    sb.Append(";").Append(((OutSimatic) part[i]).Id);
+                    sb.Append(";").Append(((SimaticOut) part[i]).Id);
                 sb.Append(";-2)");
             }
             sb.Append(", ").Append(DateToSimatic(beg));
             sb.Append(", ").Append(DateToSimatic(en));
             
             AddEvent("Запрос значений из архива", part.Count + " тегов");
-            return new ReaderAdo(Connection, sb.ToString());
+            return new AdoReader(Connection, sb.ToString());
         }
 
         //Определение текущего считываемого выхода

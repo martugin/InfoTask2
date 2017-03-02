@@ -9,7 +9,7 @@ namespace GeneratorTest
     public class RealisationScalarTest
     {
         //Вычисление значения скалярной функции
-        private IMean Calc(FunctionsGen funs, string funName, DataType dtype, params IMean[] pars)
+        private IMean Calc(GenFunctions funs, string funName, DataType dtype, params IMean[] pars)
         {
             var fun = (ScalarGenFun)(funs.CurFun = funs.Funs[funName]);
             return fun.Calculate(pars, dtype);
@@ -24,11 +24,11 @@ namespace GeneratorTest
         [TestMethod]
         public void Operations()
         {
-            var funs = new FunctionsGen();
-            IMean i1 = new MeanInt(20), i2 = new MeanInt(5), i3 = new MeanInt(0);
-            IMean r1 = new MeanReal(2.4), r2 = new MeanReal(0.6), r3 = new MeanReal(120);
-            IMean d1 = new MeanTime(RTime(60)), d2 = new MeanTime(RTime(70));
-            IMean s1 = new MeanString("Abc"), s2 = new MeanString("sT");
+            var funs = new GenFunctions();
+            IMean i1 = new IntMean(20), i2 = new IntMean(5), i3 = new IntMean(0);
+            IMean r1 = new RealMean(2.4), r2 = new RealMean(0.6), r3 = new RealMean(120);
+            IMean d1 = new TimeMean(RTime(60)), d2 = new TimeMean(RTime(70));
+            IMean s1 = new StringMean("Abc"), s2 = new StringMean("sT");
 
             IMean m = Calc(funs, "Plus_ii", DataType.Integer, i1, i2);
             Assert.AreEqual(25, m.Integer);
@@ -74,7 +74,7 @@ namespace GeneratorTest
             Assert.AreEqual(521, m.Error.Number);
             Assert.AreEqual(ErrQuality.Error, m.Error.Quality);
 
-            IMean i4 = new MeanInt(-2), r4 = new MeanReal(-1.1);
+            IMean i4 = new IntMean(-2), r4 = new RealMean(-1.1);
 
             Assert.AreEqual(79.62624, Calc(funs, "Power_rr", DataType.Real, r1, i2).Real);
             Assert.AreEqual(0, Calc(funs, "Power_rr", DataType.Real, i3, i4).Real);
@@ -82,7 +82,7 @@ namespace GeneratorTest
             Assert.AreEqual(531, Calc(funs, "Power_rr", DataType.Real, i4, r4).Error.Number);
             Assert.AreEqual(532, Calc(funs, "Power_rr", DataType.Real, i3, i3).Error.Number);
 
-            IMean s3 = new MeanString("A*c"), s4 = new MeanString("Ab?"), s5 = new MeanString("");
+            IMean s3 = new StringMean("A*c"), s4 = new StringMean("Ab?"), s5 = new StringMean("");
             Assert.IsTrue(Calc(funs, "Like_ss", DataType.Boolean, s1, s1).Boolean);
             Assert.IsTrue(Calc(funs, "Like_ss", DataType.Boolean, s1, s3).Boolean);
             Assert.IsTrue(Calc(funs, "Like_ss", DataType.Boolean, s1, s4).Boolean);
@@ -116,7 +116,7 @@ namespace GeneratorTest
             Assert.IsTrue(Calc(funs, "GreaterEqual_uu", DataType.Integer, s2, s1).Boolean);
 
             m = Calc(funs, "Divide_rr", DataType.Real, i1, i3);
-            IMean b1 = new MeanBool(true), b2 = new MeanBool(false), b3 = new MeanErrBool(false, m.Error);
+            IMean b1 = new BoolMean(true), b2 = new BoolMean(false), b3 = new MeanErrBool(false, m.Error);
 
             m = Calc(funs, "Not_b", DataType.Boolean, b1);
             Assert.IsFalse(m.Boolean);
@@ -167,8 +167,8 @@ namespace GeneratorTest
         [TestMethod]
         public void Logic()
         {
-            var funs = new FunctionsGen();
-            IMean i1 = new MeanInt(21), i2 = new MeanInt(2), i3 = new MeanInt(0), i4 = new MeanInt(3);
+            var funs = new GenFunctions();
+            IMean i1 = new IntMean(21), i2 = new IntMean(2), i3 = new IntMean(0), i4 = new IntMean(3);
 
             var c = (ConstGenFun)(funs.CurFun = funs.Funs["TrueFun_"]);
             var m = c.Calculate(new IMean[0], DataType.Boolean);
@@ -194,9 +194,9 @@ namespace GeneratorTest
          [TestMethod]
          public void Mathematical()
          {
-             var funs = new FunctionsGen();
-             IMean r1 = new MeanReal(2.345), r2 = new MeanReal(-1.234);
-             IMean i1 = new MeanInt(2), r3 = new MeanReal(0);
+             var funs = new GenFunctions();
+             IMean r1 = new RealMean(2.345), r2 = new RealMean(-1.234);
+             IMean i1 = new IntMean(2), r3 = new RealMean(0);
 
              Assert.AreEqual(2, Calc(funs, "Round_r", DataType.Integer, r1).Integer);
              Assert.AreEqual(-1, Calc(funs, "Round_r", DataType.Integer, r2).Integer);
@@ -217,7 +217,7 @@ namespace GeneratorTest
              Assert.AreEqual(1001, m.Error.Number);
 
              IMean r4 = new MeanErrReal(-0.567, m.Error);
-             IMean s1 = new MeanString("1111");
+             IMean s1 = new StringMean("1111");
 
              m = Calc(funs, "Min_uu", DataType.Real, r1, r2, r3, r4);
              Assert.AreEqual(-1.234, m.Real);
@@ -265,7 +265,7 @@ namespace GeneratorTest
              m = c.Calculate(new IMean[0], DataType.Real);
              Assert.AreEqual(Math.PI, m.Real);
 
-             IMean r5 = new MeanReal(0.789), r6 = new MeanReal(-Math.PI/2), r7 = new MeanInt(-1);
+             IMean r5 = new RealMean(0.789), r6 = new RealMean(-Math.PI/2), r7 = new IntMean(-1);
              Assert.AreEqual(0, Calc(funs, "Sin_r", DataType.Real, r3).Real);
              Assert.AreEqual(Math.Sin(0.789), Calc(funs, "Sin_r", DataType.Real, r5).Real);
              Assert.AreEqual(-1, Calc(funs, "Sin_r", DataType.Real, r6).Real);
@@ -307,9 +307,9 @@ namespace GeneratorTest
         [TestMethod]
         public void DataTypes()
         {
-            var funs = new FunctionsGen();
-            IMean s1 = new MeanString("1"), s2 = new MeanString("-5"), s3 = new MeanString("23.456"), s4 = new MeanString("10.10.2010 10:10:10");
-            IMean r1 = new MeanReal(-0.1), i1 = new MeanInt(0);
+            var funs = new GenFunctions();
+            IMean s1 = new StringMean("1"), s2 = new StringMean("-5"), s3 = new StringMean("23.456"), s4 = new StringMean("10.10.2010 10:10:10");
+            IMean r1 = new RealMean(-0.1), i1 = new IntMean(0);
 
             Assert.IsTrue(Calc(funs, "IsInt_u", DataType.Boolean, s1).Boolean);
             Assert.IsTrue(Calc(funs, "IsInt_u", DataType.Boolean, s2).Boolean);
@@ -350,8 +350,8 @@ namespace GeneratorTest
         [TestMethod]
         public void Strings()
         {
-            var funs = new FunctionsGen();
-            IMean s1 = new MeanString(" AbAb AA  "), s2 = new MeanString("123Ab34 "), s3 = new MeanString(""), s4 = new MeanString(null);
+            var funs = new GenFunctions();
+            IMean s1 = new StringMean(" AbAb AA  "), s2 = new StringMean("123Ab34 "), s3 = new StringMean(""), s4 = new StringMean(null);
 
             var c = (ConstGenFun)(funs.CurFun = funs.Funs["NewLine_"]);
             IMean m = c.Calculate(new IMean[0], DataType.String);
@@ -387,7 +387,7 @@ namespace GeneratorTest
             Assert.AreEqual("", Calc(funs, "StrUCase_s", DataType.String, s3).String);
             Assert.AreEqual("", Calc(funs, "StrUCase_s", DataType.String, s4).String);
 
-            IMean i1 = new MeanInt(3), i2 = new MeanInt(0), i3 = new MeanInt(5), i4 = new MeanInt(-3);
+            IMean i1 = new IntMean(3), i2 = new IntMean(0), i3 = new IntMean(5), i4 = new IntMean(-3);
 
             Assert.AreEqual(" Ab", Calc(funs, "StrLeft_si", DataType.String, s1, i1).String);
             Assert.AreEqual("123", Calc(funs, "StrLeft_si", DataType.String, s2, i1).String);
@@ -406,7 +406,7 @@ namespace GeneratorTest
             Assert.AreEqual("b AA  ", Calc(funs, "StrMid_si", DataType.String, s1, i3).String);
             Assert.AreEqual(2470, Calc(funs, "StrMid_si", DataType.String, s3, i1).Error.Number);
 
-            IMean s5 = new MeanString("Ab"), s6 = new MeanString("AA");
+            IMean s5 = new StringMean("Ab"), s6 = new StringMean("AA");
             Assert.AreEqual(2, Calc(funs, "StrFind_ssi", DataType.Integer, s5, s1).Integer);
             Assert.AreEqual(4, Calc(funs, "StrFind_ssi", DataType.Integer, s5, s2).Integer);
             Assert.AreEqual(0, Calc(funs, "StrFind_ssi", DataType.Integer, s6, s2).Integer);
@@ -428,7 +428,7 @@ namespace GeneratorTest
             Assert.AreEqual(" AbAAAb AA  ", Calc(funs, "StrInsert_ssi", DataType.String, s1, s6, i3).String);
             Assert.AreEqual(1780, Calc(funs, "StrInsert_ssi", DataType.String, s1, s6, i4).Error.Number);
 
-            IMean s7 = new MeanString(".*Ab.*"), s8 = new MeanString("A.?");
+            IMean s7 = new StringMean(".*Ab.*"), s8 = new StringMean("A.?");
             Assert.IsTrue(Calc(funs, "StrRegMatch_ss", DataType.Boolean, s1, s7).Boolean);
             Assert.IsFalse(Calc(funs, "StrRegMatch_ss", DataType.Boolean, s1, s8).Boolean);
 

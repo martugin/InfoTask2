@@ -3,7 +3,7 @@
 namespace CommonTypes
 {
     //Типы источников ошибок
-    public enum ErrMomType
+    public enum MomErrType
     {
         Source, //Ошибка значения исходного сигнала
         Calc //Ошибка при вычислениях
@@ -14,7 +14,7 @@ namespace CommonTypes
     //Описание ошибки
     public class ErrDescr
     {
-        public ErrDescr(int number, string text, ErrQuality quality, ErrMomType type)
+        public ErrDescr(int number, string text, ErrQuality quality, MomErrType type)
         {
             Text = text;
             Quality = quality;
@@ -23,7 +23,7 @@ namespace CommonTypes
         }
 
         //Из рекордсета клона и т.п.
-        public ErrDescr(IRecordRead rec, ErrMomType type) 
+        public ErrDescr(IRecordRead rec, MomErrType type) 
             : this(rec.GetInt("NumError"), rec.GetString("TextError"), (ErrQuality)rec.GetInt("Quality"), type) { }
 
         //Сообщение об ошибке
@@ -33,10 +33,10 @@ namespace CommonTypes
         //Качество ошибки
         public ErrQuality Quality { get; private set; }
         //Тип источника ошибки
-        public ErrMomType ErrType { get; private set; }
+        public MomErrType ErrType { get; private set; }
 
         //Запись в рекордсет
-        public void ToRecordset(RecDao rec, bool addNew = true)
+        public void ToRecordset(DaoRec rec, bool addNew = true)
         {
             if (addNew) rec.AddNew();
             rec.Put("NumError", Number);

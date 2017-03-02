@@ -87,30 +87,30 @@ namespace CommonTypes
         }
 
         //Методы создания узлов - констант разного типа
-        protected abstract Node MakeNodeConst(ITerminalNode terminal, bool b);
-        protected abstract Node MakeNodeConst(ITerminalNode terminal, int i);
-        protected abstract Node MakeNodeConst(ITerminalNode terminal, double r);
-        protected abstract Node MakeNodeConst(ITerminalNode terminal, DateTime d);
-        protected abstract Node MakeNodeConst(ITerminalNode terminal, string s);
+        protected abstract Node MakeConstNode(ITerminalNode terminal, bool b);
+        protected abstract Node MakeConstNode(ITerminalNode terminal, int i);
+        protected abstract Node MakeConstNode(ITerminalNode terminal, double r);
+        protected abstract Node MakeConstNode(ITerminalNode terminal, DateTime d);
+        protected abstract Node MakeConstNode(ITerminalNode terminal, string s);
 
         //Обработка токена целого числа
         public Node GetIntConst(ITerminalNode terminal)
         {
             if (terminal == null || terminal.Symbol == null)
-                return MakeNodeConst(null, 0);
+                return MakeConstNode(null, 0);
             int res;
             if (!int.TryParse(terminal.Symbol.Text, out res))
                 AddError("Недопустимое целое число", terminal);
-            if (res == 1) return MakeNodeConst(terminal, true);
-            if (res == 0) return MakeNodeConst(terminal, false);
-            return MakeNodeConst(terminal, res);
+            if (res == 1) return MakeConstNode(terminal, true);
+            if (res == 0) return MakeConstNode(terminal, false);
+            return MakeConstNode(terminal, res);
         }
         
         //Обработка токена действительного числа 
         public Node GetRealConst(ITerminalNode terminal)
         {
             if (terminal == null || terminal.Symbol == null)
-                return MakeNodeConst(null, 0.0);
+                return MakeConstNode(null, 0.0);
             var token = terminal.Symbol;
             var d = token.Text.ToDouble();
             if (double.IsNaN(d))
@@ -118,19 +118,19 @@ namespace CommonTypes
                 AddError("Недопустимое число с плавающей точкой", token);
                 d = 0;
             }
-            return MakeNodeConst(terminal, d);
+            return MakeConstNode(terminal, d);
         }
 
         //Обработка токена временной константы
         public Node GetTimeConst(ITerminalNode terminal)
         {
             if (terminal == null || terminal.Symbol == null)
-                return MakeNodeConst(null, Different.MinDate);
+                return MakeConstNode(null, Different.MinDate);
             var token = terminal.Symbol;
             var t = token.Text.ToDateTime();
             if (t == Different.MinDate)
                 AddError("Недопустимое выражение времени", token);
-            return MakeNodeConst(terminal, t);
+            return MakeConstNode(terminal, t);
         }
 
         //Обработка токена строковой константы
@@ -138,9 +138,9 @@ namespace CommonTypes
                                                   bool delAportrof) //Удалять кавычки
         {
             if (terminal == null || terminal.Symbol == null)
-                return MakeNodeConst(null, "");
+                return MakeConstNode(null, "");
             var text = terminal.Symbol.Text;
-            return MakeNodeConst(terminal, delAportrof ? text.Substring(1, text.Length - 2) : text);
+            return MakeConstNode(terminal, delAportrof ? text.Substring(1, text.Length - 2) : text);
         }
     }
 }

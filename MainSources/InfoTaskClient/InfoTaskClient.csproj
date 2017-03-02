@@ -49,11 +49,11 @@
     <Compile Include="Connects\ProvConnect.cs" />
     <Compile Include="Connects\ReceivConnect.cs" />
     <Compile Include="Connects\SourConnect.cs" />
-    <Compile Include="IndicatorFormTimed.cs">
+    <Compile Include="TimedIndicatorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="IndicatorFormTimed.Designer.cs">
-      <DependentUpon>IndicatorFormTimed.cs</DependentUpon>
+    <Compile Include="TimedIndicatorForm.Designer.cs">
+      <DependentUpon>TimedIndicatorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Clients\ItClient.cs" />
     <Compile Include="Clients\LoggerClient.cs" />
@@ -61,11 +61,11 @@
     <Compile Include="Signals\RealTimeSignal.cs" />
     <Compile Include="Signals\ReceivSignal.cs" />
     <Compile Include="Signals\SourSignal.cs" />
-    <Compile Include="IndicatorFormTexted.cs">
+    <Compile Include="TextedIndicatorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="IndicatorFormTexted.Designer.cs">
-      <DependentUpon>IndicatorFormTexted.cs</DependentUpon>
+    <Compile Include="TextedIndicatorForm.Designer.cs">
+      <DependentUpon>TextedIndicatorForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -95,11 +95,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="IndicatorFormTimed.resx">
-      <DependentUpon>IndicatorFormTimed.cs</DependentUpon>
+    <EmbeddedResource Include="TimedIndicatorForm.resx">
+      <DependentUpon>TimedIndicatorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="IndicatorFormTexted.resx">
-      <DependentUpon>IndicatorFormTexted.cs</DependentUpon>
+    <EmbeddedResource Include="TextedIndicatorForm.resx">
+      <DependentUpon>TextedIndicatorForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

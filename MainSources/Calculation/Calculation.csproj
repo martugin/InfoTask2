@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FunsRealisation\FunctionsMoment.cs" />
-    <Compile Include="Funs\FunctionsCalc.cs" />
+    <Compile Include="Funs\CalcFunctions.cs" />
     <Compile Include="FunsRealisation\FunctionsWsp.cs" />
     <Compile Include="Funs\FunData.cs" />
     <Compile Include="Funs\MomentsFun.cs" />

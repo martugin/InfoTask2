@@ -27,16 +27,16 @@ namespace BaseLibrary
 
         private void OpenTables(bool useSubTabl)
         {
-            _tabl = new RecDao(_db, "SELECT * FROM SysTabl");
+            _tabl = new DaoRec(_db, "SELECT * FROM SysTabl");
             if (useSubTabl)
-                _sub = new RecDao(_db, "SELECT SysSubTabl.*, SysTabl.ParamName FROM SysTabl INNER JOIN SysSubTabl ON SysTabl.ParamId = SysSubTabl.ParamId");
+                _sub = new DaoRec(_db, "SELECT SysSubTabl.*, SysTabl.ParamName FROM SysTabl INNER JOIN SysSubTabl ON SysTabl.ParamId = SysSubTabl.ParamId");
         }
 
         //База данных, содержащяя SysTabl
         private readonly DaoDb _db;
         //Рекордсеты SysTabl и  SysSubTabl
-        private RecDao _tabl;
-        private RecDao _sub;
+        private DaoRec _tabl;
+        private DaoRec _sub;
 
         //Закрытие
         public void Dispose()
@@ -149,7 +149,7 @@ namespace BaseLibrary
         public static string ValueS(string file, string param)
         {
             string stSql = "SELECT SysTabl.ParamValue FROM SysTabl WHERE (SysTabl.ParamName='" + param + "')";
-            using (var rec = new RecDao(file, stSql, RecordsetTypeEnum.dbOpenSnapshot, RecordsetOptionEnum.dbReadOnly))
+            using (var rec = new DaoRec(file, stSql, RecordsetTypeEnum.dbOpenSnapshot, RecordsetOptionEnum.dbReadOnly))
                 return rec.GetString("ParamValue");
         }
         
@@ -157,7 +157,7 @@ namespace BaseLibrary
         public static void PutValueS(string file, string param, string value, string tag = null)
         {
             string stSql = "SELECT SysTabl.ParamValue, SysTabl.ParamTag FROM SysTabl WHERE (SysTabl.ParamName='" + param + "')";
-            using (var rec = new RecDao(file, stSql))
+            using (var rec = new DaoRec(file, stSql))
             {
                 rec.Put("ParamValue", value);
                 if (tag != null) rec.Put("ParamTag", tag);
@@ -185,7 +185,7 @@ namespace BaseLibrary
         public static string TagS(string file, string param)
         {
             string stSql = "SELECT SysTabl.ParamTag FROM SysTabl WHERE (SysTabl.ParamName='" + param + "')";
-            using (var rec = new RecDao(file, stSql, RecordsetTypeEnum.dbOpenSnapshot, RecordsetOptionEnum.dbReadOnly))
+            using (var rec = new DaoRec(file, stSql, RecordsetTypeEnum.dbOpenSnapshot, RecordsetOptionEnum.dbReadOnly))
                 return rec.GetString("ParamTag");
         }
 
@@ -193,7 +193,7 @@ namespace BaseLibrary
         public static void PutTagS(string file, string param, string tag, string value = null)
         {
             string stSql = "SELECT SysTabl.ParamValue, SysTabl.ParamTag FROM SysTabl WHERE (SysTabl.ParamName='" + param + "')";
-            using (var rec = new RecDao(file, stSql))
+            using (var rec = new DaoRec(file, stSql))
             {
                 rec.Put("ParamTag", tag);
                 if (value != null) rec.Put("ParamValue", value);
@@ -206,7 +206,7 @@ namespace BaseLibrary
         {
             string stSql = "SELECT SysSubTabl.SubParamValue FROM SysTabl INNER JOIN SysSubTabl ON SysTabl.ParamId = SysSubTabl.ParamId " +
                                  " WHERE (SysTabl.ParamName='" + param + "') AND (SysSubTabl.SubParamName='" + subparam + "')";
-            using (var rec = new RecDao(file, stSql, RecordsetTypeEnum.dbOpenSnapshot, RecordsetOptionEnum.dbReadOnly))
+            using (var rec = new DaoRec(file, stSql, RecordsetTypeEnum.dbOpenSnapshot, RecordsetOptionEnum.dbReadOnly))
                 return rec.GetString("SubParamValue");
         }
 
@@ -215,7 +215,7 @@ namespace BaseLibrary
         {
             string stSql = "SELECT SysSubTabl.SubParamValue, SysSubTabl.SubParamTag FROM SysTabl INNER JOIN SysSubTabl ON SysTabl.ParamId = SysSubTabl.ParamId " +
                                  " WHERE (SysTabl.ParamName='" + param + "') AND (SysSubTabl.SubParamName='" + subparam + "')";
-            using (var rec = new RecDao(file, stSql))
+            using (var rec = new DaoRec(file, stSql))
             {
                 rec.Put("SubParamValue", value);
                 if (tag != null) rec.Put("SubParamTag", tag);
@@ -244,7 +244,7 @@ namespace BaseLibrary
         {
             string stSql = "SELECT SysSubTabl.SubParamTag FROM SysTabl INNER JOIN SysSubTabl ON SysTabl.ParamId = SysSubTabl.ParamId " +
                                  " WHERE (SysTabl.ParamName='" + param + "') AND (SysSubTabl.SubParamName='" + subparam + "')";
-            using (var rec = new RecDao(file, stSql, RecordsetTypeEnum.dbOpenSnapshot, RecordsetOptionEnum.dbReadOnly))
+            using (var rec = new DaoRec(file, stSql, RecordsetTypeEnum.dbOpenSnapshot, RecordsetOptionEnum.dbReadOnly))
                 return rec.GetString("SubParamTag");
         }
 
@@ -253,7 +253,7 @@ namespace BaseLibrary
         {
             string stSql = "SELECT SysSubTabl.SubParamValue, SysSubTabl.SubParamTag FROM SysTabl INNER JOIN SysSubTabl ON SysTabl.ParamId = SysSubTabl.ParamId " +
                                  " WHERE (SysTabl.ParamName='" + param + "') AND (SysSubTabl.SubParamName='" + subparam + "')";
-            using (var rec = new RecDao(file, stSql, RecordsetTypeEnum.dbOpenDynaset))
+            using (var rec = new DaoRec(file, stSql, RecordsetTypeEnum.dbOpenDynaset))
             {
                 rec.Put("SubParamTag", tag);
                 if (value != null) rec.Put("SubParamValue", value);

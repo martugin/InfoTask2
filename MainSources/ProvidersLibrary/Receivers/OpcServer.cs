@@ -7,7 +7,7 @@ using OPCAutomation;
 namespace ProvidersLibrary
 {
     //Соединение с OPC-сервером
-    public abstract class OpcServer : ReceiverBase
+    public abstract class OpcServer : BaseReceiver
     {
         protected internal OpcServer() 
         {

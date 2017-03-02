@@ -4,78 +4,78 @@ namespace CommonTypes
 {
     //Мгновенные значения со временем и ошибкой
 
-    public class MomBool : MeanBool
+    public class BoolMom : BoolMean
     {
         public override DateTime Time { get; internal set; }
         
-        public MomBool(DateTime time, bool b) : base(b)
+        public BoolMom(DateTime time, bool b) : base(b)
         {
             Time = time;
         }
-        internal MomBool(){}
+        internal BoolMom(){}
     }
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MomInt : MeanInt
+    public class IntMom : IntMean
     {
         public override DateTime Time { get; internal set; }
 
-        public MomInt(DateTime time, int i) : base(i)
+        public IntMom(DateTime time, int i) : base(i)
         {
             Time = time;
         }
-        internal MomInt() {}
+        internal IntMom() {}
     }
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MomReal : MeanReal
+    public class RealMom : RealMean
     {
         public override DateTime Time { get; internal set; }
 
-        public MomReal(DateTime time, double r) : base(r)
+        public RealMom(DateTime time, double r) : base(r)
         {
             Time = time;
         }
-        internal MomReal() {}
+        internal RealMom() {}
     }
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MomString : MeanString
+    public class StringMom : StringMean
     {
         public override DateTime Time { get; internal set; }
 
-        public MomString(DateTime time, string s) : base(s)
+        public StringMom(DateTime time, string s) : base(s)
         {
             Time = time;
         }
-        internal MomString() {}
+        internal StringMom() {}
     }
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MomTime : MeanTime
+    public class TimeMom : TimeMean
     {
         public override DateTime Time { get; internal set; }
 
-        public MomTime(DateTime time, DateTime d) : base(d)
+        public TimeMom(DateTime time, DateTime d) : base(d)
         {
             Time = time;
         }
-        internal MomTime() {}
+        internal TimeMom() {}
     }
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MomWeighted : MomReal
+    public class WeightedMom : RealMom
     {
-        public MomWeighted(DateTime time, double r, double w) : base(time, r)
+        public WeightedMom(DateTime time, double r, double w) : base(time, r)
         {
             Weight = w;
         }
-        internal MomWeighted() { }
+        internal WeightedMom() { }
 
         public override DataType DataType { get { return DataType.Weighted; } }
         //Длина интервала
@@ -83,26 +83,26 @@ namespace CommonTypes
 
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new MomWeighted(time, Real, Weight);
-            return new MomErrWeighted(time, Real, Weight, Error);
+            if (Error == null) return new WeightedMom(time, Real, Weight);
+            return new WeightedErrMom(time, Real, Weight, Error);
         }
 
-        public override IMean ToMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new MomErrWeighted(time, Real, Weight, Error.Add(err));
+            return new WeightedErrMom(time, Real, Weight, Error.Add(err));
         }
     }
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MomValue : MeanValue
+    public class ValueMom : ValueMean
     {
         public override DateTime Time { get; internal set; }
         
-        public MomValue(DateTime time)
+        public ValueMom(DateTime time)
         {
             Time = time;
         }
-        internal MomValue() { }
+        internal ValueMom() { }
     }
 }

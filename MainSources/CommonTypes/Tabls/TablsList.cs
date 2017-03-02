@@ -52,7 +52,7 @@ namespace CommonTypes
                     var tabl = Tabls.Add(s.Key, new Tabl(s.Value.Tabls.Count));
                     foreach (var tsi in s.Value.Tabls.Values)
                         if (tsi.Level >= 0)
-                            using (var rec = new RecDao(db, tsi.TableName))
+                            using (var rec = new DaoRec(db, tsi.TableName))
                                 while (rec.Read())
                                     if (!onlyOtm || (rec.ContainsField("Otm") && rec.GetBool("Otm")))
                                         tabl.AddRow(tsi.Level, new TablRow(rec), true);

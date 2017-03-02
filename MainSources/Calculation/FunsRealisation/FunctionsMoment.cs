@@ -3,7 +3,7 @@ using CommonTypes;
 
 namespace Calculation
 {
-    internal partial class FunctionsCalc
+    internal partial class CalcFunctions
     {
         //5 - Мгновенные
         public IMean Aperture_rr(FunData data, DataType dataType, params IMean[] par)

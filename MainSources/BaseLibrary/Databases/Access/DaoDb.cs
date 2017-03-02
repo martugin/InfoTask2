@@ -251,7 +251,7 @@ namespace BaseLibrary
         public void AddSysParam(string templatePath, //Файл с шаблонным SysTabl
                                               string paramName) //Имя параметра
         {
-            using (var rec = new RecDao(File, "SELECT ParamId, ParamName FROM SysTabl WHERE ParamName='" + paramName + "'"))
+            using (var rec = new DaoRec(File, "SELECT ParamId, ParamName FROM SysTabl WHERE ParamName='" + paramName + "'"))
                 if (rec.HasRows) return;
             Execute("INSERT INTO SysTabl SELECT ParamName, ParamType, ParamValue, ParamDescription, ParamTag " +
                     "FROM [" + templatePath + "].SysTabl t1 WHERE t1.ParamName='" + paramName + "';");
@@ -263,7 +263,7 @@ namespace BaseLibrary
                                                     string subParamName) //Имя подпараметра
         {
             int paramId;
-            using (var sysTablRs = new RecDao(templatePath, "SELECT ParamId,ParamName FROM SysTabl WHERE ParamName='" + paramName + "'"))
+            using (var sysTablRs = new DaoRec(templatePath, "SELECT ParamId,ParamName FROM SysTabl WHERE ParamName='" + paramName + "'"))
                 paramId = sysTablRs.GetInt("ParamId");
             Execute("INSERT INTO SysSubTabl " +
                     "SELECT ParamId, SubParamNum, SubParamName,SubParamType, SubParamValue, SubParamDescription, SubParamTag, SubParamRowSource " +

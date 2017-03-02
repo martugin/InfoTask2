@@ -86,7 +86,7 @@ namespace ComClients
         {
             AppCode = appCode;
             Project = project;
-            Logger.History = new HistoryAccess(Logger, DifferentIt.LocalDataProjectDir(project) + @"History\" + appCode + @"\History.accdb", DifferentIt.HistoryTemplateFile);
+            Logger.History = new AccessHistory(Logger, DifferentIt.LocalDataProjectDir(project) + @"History\" + appCode + @"\History.accdb", DifferentIt.HistoryTemplateFile);
         }
         
         //Инициализация для запуска в тестах

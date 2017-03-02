@@ -86,11 +86,11 @@ namespace ProvidersLibrary
         }
 
         //Создание фабрики ошибок
-        protected override IErrMomFactory MakeErrFactory()
+        protected override IMomErrFactory MakeErrFactory()
         {
             AddEvent("Создание фабрики ошибок");
-            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
-            using (var rec = new RecDao(CloneFile, "MomentErrors"))
+            var factory = new MomErrFactory(ProviderConnect.Name, MomErrType.Source);
+            using (var rec = new DaoRec(CloneFile, "MomentErrors"))
                 while (rec.Read())
                 {
                     int quality = rec.GetInt("Quality");
@@ -105,7 +105,7 @@ namespace ProvidersLibrary
         protected override void PrepareSource()
         {
             AddEvent("Отметка в клоне считывемых сигналов");
-            using (var rec = new RecDao(CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
+            using (var rec = new DaoRec(CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
                 while (rec.Read())
                 {
                     string code = rec.GetString("FullCode");
@@ -129,7 +129,7 @@ namespace ProvidersLibrary
         {
             string table = "Moment" + (_isStrTable ? "Str" : "") + "Values" + (isCut ? "Cut" : "");
             string timeField = (isCut ? "Cut" : "") + "Time";
-            return new RecDao(CloneFile, "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
+            return new DaoRec(CloneFile, "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
                                                              " WHERE (Signals.Otm=True) AND (" + table + "." + timeField + ">=" + beg.ToAccessString() + ") AND (" + table + "." + timeField + "<=" + en.ToAccessString() + ")");
         }
 

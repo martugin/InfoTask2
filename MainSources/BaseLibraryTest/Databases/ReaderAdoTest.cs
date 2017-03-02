@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BaseLibraryTest
 {
-    //Тесты для ReaderAdo
+    //Тесты для AdoReader
     [TestClass]
     public class ReaderAdoTest
     {
@@ -24,7 +24,7 @@ namespace BaseLibraryTest
         {
             var db = CopyDb("");
             var file = File("");
-            var rec = new ReaderAdo(db, "SELECT * FROM Tabl");
+            var rec = new AdoReader(db, "SELECT * FROM Tabl");
             Assert.IsNotNull(rec.DaoDb);
             Assert.IsNotNull(rec.Reader);
             Assert.AreEqual(DatabaseType.Access, rec.DatabaseType);
@@ -43,7 +43,7 @@ namespace BaseLibraryTest
             Assert.IsTrue(rec.EOF);
             rec.Dispose();
 
-            rec = new ReaderAdo(db, "SELECT * FROM EmptyTabl");
+            rec = new AdoReader(db, "SELECT * FROM EmptyTabl");
             Assert.AreEqual(DatabaseType.Access, rec.DatabaseType);
             Assert.AreEqual(file, rec.DaoDb.File);
             Assert.IsFalse(rec.HasRows);
@@ -53,7 +53,7 @@ namespace BaseLibraryTest
             Assert.IsTrue(rec.EOF);
             rec.Dispose();
 
-            rec = new ReaderAdo(db, "SELECT Tabl.IntField, Tabl.RealField, SubTabl.StringSubField FROM Tabl INNER JOIN SubTabl ON Tabl.Id = SubTabl.ParentId");
+            rec = new AdoReader(db, "SELECT Tabl.IntField, Tabl.RealField, SubTabl.StringSubField FROM Tabl INNER JOIN SubTabl ON Tabl.Id = SubTabl.ParentId");
             Assert.IsNotNull(rec.DaoDb);
             Assert.IsNotNull(rec.Reader);
             Assert.AreEqual(file, rec.DaoDb.File);
@@ -77,7 +77,7 @@ namespace BaseLibraryTest
         [TestMethod]
         public void RecAccessRead()
         {
-            using (var rec = new ReaderAdo(CopyDb("Read"), "SELECT * FROM Tabl"))
+            using (var rec = new AdoReader(CopyDb("Read"), "SELECT * FROM Tabl"))
             {
                 Assert.IsTrue(rec.GetBool("BoolField"));
                 Assert.AreEqual(true, rec.GetBoolNull("BoolField"));
@@ -190,7 +190,7 @@ namespace BaseLibraryTest
                 Assert.IsNotNull(exception);
             }
 
-            using (var rec = new ReaderAdo(new DaoDb(File("Read")), 
+            using (var rec = new AdoReader(new DaoDb(File("Read")), 
                 "SELECT Tabl.Id, Tabl.IntField AS IntF, Tabl.RealField, SubTabl.StringSubField AS StringF " +
                 "FROM Tabl LEFT JOIN SubTabl ON Tabl.Id = SubTabl.ParentId ORDER BY Tabl.Id, SubTabl.StringSubField;"))
             {

@@ -23,13 +23,13 @@ namespace Generator
             if (tree == null) return null;
             return Visit(tree);
         }
-        public INodeExpr GoExpr(IParseTree tree)
+        public IExprNode GoExpr(IParseTree tree)
         {
-            return (INodeExpr)Go(tree);
+            return (IExprNode)Go(tree);
         }
-        public NodeList GoList(IParseTree tree)
+        public ListNode GoList(IParseTree tree)
         {
-            return (NodeList)Go(tree);
+            return (ListNode)Go(tree);
         }
         public Node GoTabl(IParseTree tabl, IParseTree query)
         {
@@ -84,24 +84,24 @@ namespace Generator
         
         public override Node VisitSubTablIdent(P.SubTablIdentContext context)
         {
-            return new NodeRSub(_keeper, context.SUBTABL(), null);
+            return new SubNodeR(_keeper, context.SUBTABL(), null);
         }
 
         public override Node VisitSubTablCond(P.SubTablCondContext context)
         {
             _keeper.CheckParenths(context);
-            return new NodeRSub(_keeper, context.SUBTABL(), GoExpr(context.expr()));
+            return new SubNodeR(_keeper, context.SUBTABL(), GoExpr(context.expr()));
         }
 
         public override Node VisitGroupSimple(P.GroupSimpleContext context)
         {
-            return new NodeRGroup(_keeper, context.ROWGROUP(), null);
+            return new GroupNodeR(_keeper, context.ROWGROUP(), null);
         }
 
         public override Node VisitGroupIdent(P.GroupIdentContext context)
         {
             _keeper.CheckParenths(context);
-            return new NodeRGroup(_keeper, context.ROWGROUP(), 
+            return new GroupNodeR(_keeper, context.ROWGROUP(), 
                                                 context.IDENT().Select(field => _keeper.GetStringConst(field, false)));
         }
 
@@ -120,40 +120,40 @@ namespace Generator
 
         public override Node VisitExprIdent(P.ExprIdentContext context)
         {
-            return new NodeField(_keeper, context.IDENT());
+            return new FieldNode(_keeper, context.IDENT());
         }
 
         public override Node VisitExprFunConst(P.ExprFunConstContext context)
         {
-            return new NodeFun(_keeper, context.FUNCONST());
+            return new FunNode(_keeper, context.FUNCONST());
         }
 
         public override Node VisitExprFun(P.ExprFunContext context)
         {
             _keeper.CheckParenths(context);
-            return new NodeFun(_keeper, context.IDENT(), GoList(context.pars()));
+            return new FunNode(_keeper, context.IDENT(), GoList(context.pars()));
         }
 
         public override Node VisitExprUnary(P.ExprUnaryContext context)
         {
             var fun = (ITerminalNode)context.children[0];
-            return new NodeFun(_keeper, fun, GoExpr(context.expr()));
+            return new FunNode(_keeper, fun, GoExpr(context.expr()));
         }
 
         public override Node VisitExprOper(P.ExprOperContext context)
         {
             var fun = (ITerminalNode)context.children[1];
-            return new NodeFun(_keeper, fun, GoExpr(context.expr(0)), GoExpr(context.expr(1)));
+            return new FunNode(_keeper, fun, GoExpr(context.expr(0)), GoExpr(context.expr(1)));
         }
         
         public override Node VisitParamsList(P.ParamsListContext context)
         {
-            return new NodeList(context.expr().Select(Visit).ToList());
+            return new ListNode(context.expr().Select(Visit).ToList());
         }
 
         public override Node VisitParamsEmpty(P.ParamsEmptyContext context)
         {
-            return new NodeList(new List<Node>());
+            return new ListNode(new List<Node>());
         }
 
         //Константы

@@ -12,25 +12,25 @@ namespace Generator
                                          string templateFile, //Файл шаблона генерации
                                          GenTemplateTable table, //Главная таблица шаблона генерации
                                          GenTemplateTable subTable = null) //Подчиненная таблица шаблона генерации
+                                         : base(logger)
         {
             GenErrorsCount = 0;
-            Logger = logger;
             AddEvent("Загрузка списка функций");
             FunsChecker = new FunsChecker(FunsCheckType.Gen);
-            Functions = new FunctionsGen();
+            Functions = new GenFunctions();
             
             DataTabls = dataTabls;
             try
             {
                 AddEvent("Загрузка таблиц шаблона генерации", templateFile + ", " + table.Name);
                 bool hasSub = subTable != null;
-                using (var rec = new RecDao(templateFile, table.QueryString))
-                    using (var subRec = !hasSub ? null : new RecDao(rec.DaoDb, subTable.QueryString))
+                using (var rec = new DaoRec(templateFile, table.QueryString))
+                    using (var subRec = !hasSub ? null : new DaoRec(rec.DaoDb, subTable.QueryString))
                     {
                         if (hasSub && !subRec.EOF) subRec.MoveFirst();
                         while (rec.Read())
                         {
-                            var row = new RowGen(this, dataTabls, table, rec, subTable, subRec);
+                            var row = new GenRow(this, dataTabls, table, rec, subTable, subRec);
                             GenErrorsCount += row.Keeper.Errors.Count;
                             _rowsGen.Add(row.Id, row);
                         }
@@ -44,12 +44,12 @@ namespace Generator
 
         //Список функций
         internal FunsChecker FunsChecker { get; private set; }
-        internal FunctionsGen Functions { get; private set; }
+        internal GenFunctions Functions { get; private set; }
 
         //Список таблиц с данными для генерации
         internal TablsList DataTabls { get; private set; }
         //Ряды таблицы с шаблоном генерации
-        private readonly DicI<RowGen> _rowsGen = new DicI<RowGen>();
+        private readonly DicI<GenRow> _rowsGen = new DicI<GenRow>();
 
         //Количество ошибок при последней проверке шаблона генерации
         public int GenErrorsCount { get; private set; }
@@ -67,8 +67,8 @@ namespace Generator
                     if (makedSubTabl != null)
                         db.Execute("DELETE * FROM " + makedSubTabl);
                     db.Execute("DELETE * FROM " + makedTabl);
-                    using (var rec = new RecDao(db, makedTabl))
-                        using (var subRec = makedSubTabl == null ? null : new RecDao(db, makedSubTabl))
+                    using (var rec = new DaoRec(db, makedTabl))
+                        using (var subRec = makedSubTabl == null ? null : new DaoRec(db, makedSubTabl))
                             foreach (var row in _rowsGen.Values)
                                 if (row.Keeper.Errors.Count == 0)
                                 {

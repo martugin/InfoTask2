@@ -8,7 +8,7 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Реализация скалярных функции
-    public partial class FunctionsBase
+    public partial class BaseFunctions
     {
         //1 - Операции
         #region
@@ -245,12 +245,12 @@ namespace CommonTypes
         #region
         public IVal TrueFun_()
         {
-            return new MeanBool(true);
+            return new BoolMean(true);
         }
 
         public IVal FalseFun_()
         {
-            return new MeanBool(false);
+            return new BoolMean(false);
         }
 
         private bool GetBit(IMean[] par, int num)
@@ -342,7 +342,7 @@ namespace CommonTypes
 
         public IVal Pi_()
         {
-            return new MeanReal(Math.PI);
+            return new RealMean(Math.PI);
         }
 
         public void Sqr_r(IMean[] par)
@@ -484,17 +484,17 @@ namespace CommonTypes
 
         public IVal QuGood_()
         {
-            return new MeanInt(0);
+            return new IntMean(0);
         }
 
         public IVal QuWarning_()
         {
-            return new MeanInt(1);
+            return new IntMean(1);
         }
 
         public IVal QuError_()
         {
-            return new MeanInt(2);
+            return new IntMean(2);
         }
 
         public void MakeError_u(IMean[] par)
@@ -502,7 +502,7 @@ namespace CommonTypes
             ScalarRes.CopyValueFrom(par[0]);
             if (par.Length != 4 || par[3].Boolean)
                 ScalarRes.Error = null;
-            ScalarRes.AddError(new ErrMom(par[2].String, par[1].Integer));
+            ScalarRes.AddError(new MomErr(par[2].String, par[1].Integer));
             PutErr(par[2].String, par[1].Integer);
         }
 
@@ -633,37 +633,37 @@ namespace CommonTypes
         #region
         public IVal TiYear_()
         {
-            return new MeanInt((int)TimeUnit.Year);
+            return new IntMean((int)TimeUnit.Year);
         }
 
         public IVal TiMonth_()
         {
-            return new MeanInt((int)TimeUnit.Month);
+            return new IntMean((int)TimeUnit.Month);
         }
 
         public IVal TiDay_()
         {
-            return new MeanInt((int)TimeUnit.Day);
+            return new IntMean((int)TimeUnit.Day);
         }
 
         public IVal TiHour()
         {
-            return new MeanInt((int)TimeUnit.Hour);
+            return new IntMean((int)TimeUnit.Hour);
         }
 
         public IVal TiMinute_()
         {
-            return new MeanInt((int)TimeUnit.Minute);
+            return new IntMean((int)TimeUnit.Minute);
         }
 
         public IVal TiSecond_()
         {
-            return new MeanInt((int)TimeUnit.Second);
+            return new IntMean((int)TimeUnit.Second);
         }
 
         public IVal TiMsec_()
         {
-            return new MeanInt((int)TimeUnit.MSec);
+            return new IntMean((int)TimeUnit.MSec);
         }
 
         public void TimeAdd_idr(IMean[] par)
@@ -774,7 +774,7 @@ namespace CommonTypes
 
         public IVal Now_()
         {
-            return new MeanTime(DateTime.Now);
+            return new TimeMean(DateTime.Now);
         }
         #endregion
 
@@ -782,7 +782,7 @@ namespace CommonTypes
         #region
         public IVal NewLine_()
         {
-            return new MeanString(Environment.NewLine);
+            return new StringMean(Environment.NewLine);
         }
 
         public void StrMid_si(IMean[] par)

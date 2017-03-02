@@ -7,7 +7,7 @@ namespace Calculation
     //Один интервал события
     public class Segment : TimeInterval
     {
-        public Segment(DateTime begin, DateTime end, double pos, ErrMom err = null)
+        public Segment(DateTime begin, DateTime end, double pos, MomErr err = null)
             : base(begin, end)
         {
             Pos = pos;
@@ -31,7 +31,7 @@ namespace Calculation
         //True, если время значения указано
         public bool IsResultTime { get; set; }
         //Ошибка
-        public ErrMom Error { get; set; }
+        public MomErr Error { get; set; }
 
         //Сравнение сегментов
         public bool EqualsTo(Segment s)

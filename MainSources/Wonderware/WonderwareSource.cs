@@ -10,7 +10,7 @@ using Different = BaseLibrary.Different;
 namespace Provider
 {
     //Провайдер источника Wonderware
-    [Export(typeof(ProviderBase))]
+    [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "WonderwareSource")]
     public class WonderwareSource : SqlServerSource
     {
@@ -21,7 +21,7 @@ namespace Provider
         protected override TimeInterval GetTimeSource()
         {
             DateTime mind = Different.MaxDate, maxd = Different.MinDate;
-            using (var rec = new ReaderAdo(SqlProps, "SELECT FromDate, ToDate FROM v_HistoryBlock ORDER BY FromDate, ToDate DESC"))
+            using (var rec = new AdoReader(SqlProps, "SELECT FromDate, ToDate FROM v_HistoryBlock ORDER BY FromDate, ToDate DESC"))
                 while (rec.Read())
                 {
                     var fromd = rec.GetTime("FromDate");
@@ -35,14 +35,14 @@ namespace Provider
         }
 
         //Словарь выходов по TagName
-        private readonly Dictionary<string, OutWonderware> _outs = new Dictionary<string, OutWonderware>();
+        private readonly Dictionary<string, WonderwareOut> _outs = new Dictionary<string, WonderwareOut>();
 
         //Добавить выход в провайдер
         protected override SourceOut AddOut(InitialSignal sig)
         {
             string tag = sig.Inf["TagName"];
             if (!_outs.ContainsKey(tag))
-                _outs.Add(tag, new OutWonderware(this, tag));
+                _outs.Add(tag, new WonderwareOut(this, tag));
             return _outs[tag];
         }
 
@@ -53,9 +53,9 @@ namespace Provider
         }
 
         //Создание фабрики ошибок
-        protected override IErrMomFactory MakeErrFactory()
+        protected override IMomErrFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
+            var factory = new MomErrFactory(ProviderConnect.Name, MomErrType.Source);
             factory.AddGoodDescr(192);
             factory.AddDescr(0, "Bad Quality of undetermined state");
             factory.AddDescr(1, "No data available, tag did not exist at the time");
@@ -87,7 +87,7 @@ namespace Provider
             for (var n = 0; n < part.Count; n++)
             {
                 if (n != 0) sb.Append(", ");
-                var ob = (OutWonderware)part[n];
+                var ob = (WonderwareOut)part[n];
                 sb.Append("'").Append(ob.TagName).Append("'");
             }
             sb.Append(") AND wwRetrievalMode = 'Delta'");
@@ -96,7 +96,7 @@ namespace Provider
                 sb.Append(" AND DateTime <").Append(en.ToSqlString());
             sb.Append(" ORDER BY DateTime");
 
-            return new ReaderAdo(SqlProps, sb.ToString(), 10000);
+            return new AdoReader(SqlProps, sb.ToString(), 10000);
         }
 
         //Определение текущего считываемого объекта

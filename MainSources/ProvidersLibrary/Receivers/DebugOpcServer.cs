@@ -7,7 +7,7 @@ namespace ProvidersLibrary
     {
         public DebugOpcServer() { }
 
-        public DebugOpcServer(string serverName, string node)
+        public DebugOpcServer(string serverName, string node) 
         {
             ServerName = serverName;
             Node = node;

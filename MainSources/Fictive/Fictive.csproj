@@ -42,10 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FictiveSource.cs" />
-    <Compile Include="OutFictive.cs" />
+    <Compile Include="FictiveOut.cs" />
     <Compile Include="FictiveSimpleSource.cs" />
     <Compile Include="OutFictiveOperator.cs" />
-    <Compile Include="OutFictiveSmall.cs" />
+    <Compile Include="FictiveSmallOut.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

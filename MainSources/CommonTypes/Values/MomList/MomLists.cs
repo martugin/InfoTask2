@@ -4,11 +4,11 @@ using System.Collections.Generic;
 namespace CommonTypes
 {
     //Список логических значений
-    public class MomListBool : MomList
+    public class BoolMomList : MomList
     {
-        public MomListBool()
+        public BoolMomList()
         {
-            BufMom = new MeanBool();
+            BufMom = new BoolMean();
         }
 
         //Список значений
@@ -38,11 +38,11 @@ namespace CommonTypes
 
     //--------------------------------------------------------------------------------------------
     //Список целых значений
-    public class MomListInt : MomList
+    public class IntMomList : MomList
     {
-        public MomListInt()
+        public IntMomList()
         {
-            BufMom = new MeanInt();
+            BufMom = new IntMean();
         }
 
         //Список значений
@@ -72,11 +72,11 @@ namespace CommonTypes
 
     //--------------------------------------------------------------------------------------------
     //Список действительных значений
-    public class MomListReal : MomList
+    public class RealMomList : MomList
     {
-        public MomListReal()
+        public RealMomList()
         {
-            BufMom = new MeanReal();
+            BufMom = new RealMean();
         }
 
         //Список значений
@@ -106,11 +106,11 @@ namespace CommonTypes
 
     //--------------------------------------------------------------------------------------------
     //Список строковых значений
-    public class MomListString : MomList
+    public class StringMomList : MomList
     {
-        public MomListString()
+        public StringMomList()
         {
-            BufMom = new MeanString();
+            BufMom = new StringMean();
         }
 
         //Список значений
@@ -140,11 +140,11 @@ namespace CommonTypes
 
     //--------------------------------------------------------------------------------------------
     //Список значений - дат
-    public class MomListTime : MomList
+    public class TimeMomList : MomList
     {
-        public MomListTime()
+        public TimeMomList()
         {
-            BufMom = new MeanTime();
+            BufMom = new TimeMean();
         }
 
         //Список значений
@@ -174,11 +174,11 @@ namespace CommonTypes
 
     //--------------------------------------------------------------------------------------------
     //Список действительных взвешенных значений
-    public class MomListWeighted : MomListReal
+    public class WeightedMomList : RealMomList
     {
-        public MomListWeighted()
+        public WeightedMomList()
         {
-            BufMom = new MomWeighted();
+            BufMom = new WeightedMom();
         }
 
         //Список весов значений
@@ -188,18 +188,18 @@ namespace CommonTypes
         protected override void AddBufMom(int i)
         {
             base.AddBufMom(i);
-            _weights.Insert(i, ((MomWeighted)BufMom).Weight);
+            _weights.Insert(i, ((WeightedMom)BufMom).Weight);
         }
         protected override void AddBufMomEnd()
         {
             base.AddBufMomEnd();
-            _weights.Add(((MomWeighted)BufMom).Weight);
+            _weights.Add(((WeightedMom)BufMom).Weight);
         }
         //Загрузить буферное значение из списка 
         protected override void SetBufMom(int i)
         {
             base.SetBufMom(i);
-            ((MomWeighted)BufMom).Weight = _weights[i];
+            ((WeightedMom)BufMom).Weight = _weights[i];
         }
 
         //Очистка значений

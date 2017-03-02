@@ -44,7 +44,7 @@ namespace ProvidersLibraryTest
             connect.Prepare();
             Assert.AreEqual(1, source.Objects.Count);
             Assert.IsTrue(source.Objects.ContainsKey(1));
-            OutFictive ob1 = source.Objects[1];
+            FictiveOut ob1 = source.Objects[1];
             Assert.AreEqual("Ob", ob1.Context);
             Assert.IsNotNull(ob1.IntSignal);
             Assert.IsNull(ob1.RealSignal);
@@ -88,7 +88,7 @@ namespace ProvidersLibraryTest
             connect.Prepare();
             Assert.AreEqual(2, source.Objects.Count);
             Assert.IsTrue(source.Objects.ContainsKey(2));
-            OutFictive ob2 = source.Objects[2];
+            FictiveOut ob2 = source.Objects[2];
             Assert.AreEqual("Ob2", ob2.Context);
             Assert.IsNotNull(ob2.IntSignal);
             Assert.IsNull(ob2.ValueSignal);

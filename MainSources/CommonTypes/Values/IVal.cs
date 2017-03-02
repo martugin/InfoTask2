@@ -19,7 +19,7 @@ namespace CommonTypes
     public interface ICalcVal : IVal
     {
         //Итоговая ошибка для записи в Result
-        ErrMom TotalError { get; }
+        MomErr TotalError { get; }
     }
     
     //-----------------------------------------------------------------------------------------------
@@ -48,9 +48,9 @@ namespace CommonTypes
         object ObjectI(int i);
 
         //Ошибка
-        ErrMom Error { get; }
+        MomErr Error { get; }
         //Ошибка i-ого значения
-        ErrMom ErrorI(int i);
+        MomErr ErrorI(int i);
 
         //Время или MinDate
         DateTime Time { get; }
@@ -74,19 +74,19 @@ namespace CommonTypes
 
         //Копия значения, возможно с новым временем и ошибкой
         IMean ToMean();
-        IMean ToMean(ErrMom err);
+        IMean ToMean(MomErr err);
         IMean ToMom();
-        IMean ToMom(ErrMom err);
+        IMean ToMom(MomErr err);
         IMean ToMom(DateTime time);
-        IMean ToMom(DateTime time, ErrMom err);
+        IMean ToMom(DateTime time, MomErr err);
 
         //Копия значения по индексу, возможно с новым временем и ошибкой
         IMean ToMeanI(int i);
-        IMean ToMeanI(int i, ErrMom err);
+        IMean ToMeanI(int i, MomErr err);
         IMean ToMomI(int i);
-        IMean ToMomI(int i, ErrMom err);
+        IMean ToMomI(int i, MomErr err);
         IMean ToMomI(int i, DateTime time);
-        IMean ToMomI(int i, DateTime time, ErrMom err);
+        IMean ToMomI(int i, DateTime time, MomErr err);
     }
 
     //-----------------------------------------------------------------------------------------------
@@ -96,15 +96,15 @@ namespace CommonTypes
         //Добавление мгновенного значения
         void AddMom(IMean mom);
         void AddMom(DateTime time, IMean mean);
-        void AddMom(IMean mom, ErrMom err);
-        void AddMom(DateTime time, IMean mean, ErrMom err);
+        void AddMom(IMean mom, MomErr err);
+        void AddMom(DateTime time, IMean mean, MomErr err);
         //Добавление с указанием времени и значения
-        void AddMom(DateTime time, bool b, ErrMom err = null);
-        void AddMom(DateTime time, int i, ErrMom err = null);
-        void AddMom(DateTime time, double r, ErrMom err = null);
-        void AddMom(DateTime time, DateTime d, ErrMom err = null);
-        void AddMom(DateTime time, string s, ErrMom err = null);
-        void AddMom(DateTime time, object ob, ErrMom err = null);
+        void AddMom(DateTime time, bool b, MomErr err = null);
+        void AddMom(DateTime time, int i, MomErr err = null);
+        void AddMom(DateTime time, double r, MomErr err = null);
+        void AddMom(DateTime time, DateTime d, MomErr err = null);
+        void AddMom(DateTime time, string s, MomErr err = null);
+        void AddMom(DateTime time, object ob, MomErr err = null);
 
         //Очистить список значений
         void Clear();

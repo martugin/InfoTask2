@@ -6,7 +6,7 @@ namespace CommonTypes
     //Одна строка таблицы
     public class TablRow : SubRows
     {
-        public TablRow(RecDao rec)
+        public TablRow(DaoRec rec)
         {
             foreach (Field f in rec.Recordset.Fields)
                 Means.Add(f.Name, rec.GetMean(f.Type.ToDataType(), f.Name));

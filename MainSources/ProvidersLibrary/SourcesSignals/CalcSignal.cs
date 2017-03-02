@@ -88,7 +88,7 @@ namespace ProvidersLibrary
         
         //Среднее по равномерным сегментам, 
         public void Average() { Agregate(AverageScalar); }
-        private void AverageScalar(MomEdit res, MomList mlist, int i, DateTime t)
+        private void AverageScalar(EditMom res, MomList mlist, int i, DateTime t)
         {
             DateTime time = (i >= mlist.Count - 1 || mlist.TimeI(i + 1) > t) ? t : mlist.TimeI(i + 1);
             res.Real += mlist.RealI(i) * (time.Subtract(mlist.TimeI(i)).TotalSeconds) /_pars[0].Real;
@@ -96,11 +96,11 @@ namespace ProvidersLibrary
 
         //Первое по равномерным сегментам, pars[0] - длина сегмента в секундах
         public void First() { Agregate(FirstScalar); }
-        private void FirstScalar(MomEdit res, MomList mlist, int i, DateTime t) { }
+        private void FirstScalar(EditMom res, MomList mlist, int i, DateTime t) { }
         
         //Последнее по равномерным сегментам, pars[0] - длина сегмента в секундах
         public void Last() { Agregate( LastScalar); }
-        private void LastScalar(MomEdit res, MomList mlist, int i, DateTime t)
+        private void LastScalar(EditMom res, MomList mlist, int i, DateTime t)
         {
             res.CopyValueFrom(mlist, i);
             res.Error = mlist.ErrorI(i);
@@ -108,7 +108,7 @@ namespace ProvidersLibrary
 
         //Минимум по равномерным сегментам, pars[0] - длина сегмента в секундах
         public void Min() { Agregate(MinScalar); }
-        private void MinScalar(MomEdit res, MomList mlist, int i, DateTime t)
+        private void MinScalar(EditMom res, MomList mlist, int i, DateTime t)
         {
             if (mlist.MeanI(i).ValueLess(res))
             {
@@ -119,7 +119,7 @@ namespace ProvidersLibrary
 
         //Максимум по равномерным сегментам, pars[0] - длина сегмента в секундах
         public void Max() { Agregate(MaxScalar); }
-        private void MaxScalar(MomEdit res, MomList mlist, int i, DateTime t)
+        private void MaxScalar(EditMom res, MomList mlist, int i, DateTime t)
         {
             if (res.ValueLess(mlist.MeanI(i)))
             {
@@ -130,7 +130,7 @@ namespace ProvidersLibrary
 
         //Агрегация по равномерным сегментам
         //На входе функция с параметрами: текущий результат, список и обрабатываемый номер
-        private void Agregate(Action<MomEdit, MomList, int, DateTime> fun)
+        private void Agregate(Action<EditMom, MomList, int, DateTime> fun)
         {
             double seglen = _pars[0].Real, segshift = _pars.Length < 2 ? 0 : _pars[1].Real * seglen;
             var moms = _initialSignal.MomList;
@@ -157,7 +157,7 @@ namespace ProvidersLibrary
             i = 0;
             while (t < Connect.PeriodEnd.AddMilliseconds(-1))
             {
-                var me = new MomEdit(DataType, t.AddSeconds(segshift));
+                var me = new EditMom(DataType, t.AddSeconds(segshift));
                 if (fun.Method.Name == "AverageScalar")
                     me.Real = 0;
                 else me.CopyValueFrom(mlist, i);

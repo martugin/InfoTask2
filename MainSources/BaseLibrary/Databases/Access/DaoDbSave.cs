@@ -2,13 +2,13 @@
 
 namespace BaseLibrary
 {
-    //Интерфейс для класса, допускающего сохранение в рекордсет RecDao
+    //Интерфейс для класса, допускающего сохранение в рекордсет DaoRec
     public interface ISaveToRecDao
     {
         //Записывает характеристики объекта в рекордсет rec 
         //addnew = true - добавлять новую запись, false - записывать в текущую
         //Возвращает Id счетчика или 0, если счетчика нет
-        int ToRecordset(RecDao rec, bool addnew);
+        int ToRecordset(DaoRec rec, bool addnew);
     }
 
     //Работа с сохранением объектов в таблицы
@@ -33,7 +33,7 @@ namespace BaseLibrary
         {
             var old = new SetS();
             var add = new SetS();
-            using (var rec = new RecDao(this, tabl, RecordsetTypeEnum.dbOpenTable))
+            using (var rec = new DaoRec(this, tabl, RecordsetTypeEnum.dbOpenTable))
                 while (rec.Read())
                 {
                     var code = rec.GetString(keyField);
@@ -46,7 +46,7 @@ namespace BaseLibrary
 
             foreach (var ap in dic.Keys)
                 if (!old.Contains(ap)) add.Add(ap);
-            using (var rec = new RecDao(this, tabl, RecordsetTypeEnum.dbOpenTable))
+            using (var rec = new DaoRec(this, tabl, RecordsetTypeEnum.dbOpenTable))
             {
                 while (rec.Read())
                     dic[rec.GetString(keyField) + (keyField2.IsEmpty() ? "" : ("." + rec.GetString(keyField2)))].ToRecordset(rec, false);

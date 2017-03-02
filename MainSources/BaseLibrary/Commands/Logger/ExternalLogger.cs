@@ -36,9 +36,9 @@ namespace BaseLibrary
         }
 
         //Период обработки
-        public DateTime BeginPeriod { get { return Logger.BeginPeriod; } }
-        public DateTime EndPeriod { get { return Logger.EndPeriod; } }
-        public string ModePeriod { get { return Logger.ModePeriod; } }
+        public DateTime BeginPeriod { get { return Logger.PeriodBegin; } }
+        public DateTime EndPeriod { get { return Logger.PeriodEnd; } }
+        public string ModePeriod { get { return Logger.PeriodMode; } }
 
         //Прервать выполнение
         public void Break()
@@ -67,64 +67,64 @@ namespace BaseLibrary
         }
 
         //Запуск команды логирования
-        public CommandLog StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
+        public LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
         {
             return Logger.StartLog(startProcent, finishProcent, name, context, pars);
         }
-        public CommandLog StartLog(string name, string context = "", string pars = "")
+        public LogCommand StartLog(string name, string context = "", string pars = "")
         {
             return Logger.StartLog(name, context, pars);
         }
         //Завершение команды логирования
-        public CommandLog FinishLog(string results = "")
+        public LogCommand FinishLog(string results = "")
         {
             return Logger.FinishLog(results);
         }
 
         //Запуск команды логирования в SuperHistory и отображения индикатора
-        public CommandProgress StartProgress(string text, string name, string pars = "", DateTime? endTime = null)
+        public ProgressCommand StartProgress(string text, string name, string pars = "", DateTime? endTime = null)
         {
             return Logger.StartProgress(text, name, pars, endTime);
         }
-        public CommandProgress StartProgress(DateTime begin, DateTime end, string mode, string name, string pars = "", DateTime? endTime = null)
+        public ProgressCommand StartProgress(DateTime begin, DateTime end, string mode, string name, string pars = "", DateTime? endTime = null)
         {
             return Logger.StartProgress(begin, end, mode, name, pars, endTime);
         }
         //Завершение команды логирования в SuperHistory
-        public CommandProgress FinishProgress()
+        public ProgressCommand FinishProgress()
         {
             return Logger.FinishProgress();
         }
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommandIndicatorText StartProgressText(double startProcent, double finishProcent, string text)
+        public IndicatorTextCommand StartProgressText(double startProcent, double finishProcent, string text)
         {
             return Logger.StartIndicatorText(startProcent, finishProcent, text);
         }
         //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
-        public CommandIndicatorText StartProgressText(string text)
+        public IndicatorTextCommand StartProgressText(string text)
         {
             return Logger.StartIndicatorText(text);
         }
 
         //Запуск команды, колекционирущей ошибки
-        public CommandCollect StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
+        public CollectCommand StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
                                                          bool isCollect) //Формировать общую ошибку
         {
             return Logger.StartCollect(isWriteHistory, isCollect);
         }
         //Завершение команды, колекционирущей ошибки
-        public CommandCollect FinishCollect()
+        public CollectCommand FinishCollect()
         {
             return Logger.FinishCollect();
         }
 
         //Запуск команды, которая копит ошибки, но не выдает из во вне
-        public CommandKeep StartKeep(double startProcent, double finishProcent)
+        public KeepCommand StartKeep(double startProcent, double finishProcent)
         {
             return Logger.StartKeep(startProcent, finishProcent);
         }
-        public CommandKeep StartKeep()
+        public KeepCommand StartKeep()
         {
             return Logger.StartKeep();
         }
@@ -132,7 +132,7 @@ namespace BaseLibrary
         public string KeepedError { get { return Logger.KeepedError; } }
 
         //Запуск команды, обрамляющей опасную операцию
-        public CommandDanger StartDanger(double startProcent, double finishProcent,
+        public DangerCommand StartDanger(double startProcent, double finishProcent,
                                         int repetitions, //Cколько раз повторять, если не удалась (вместе с первым)
                                         LoggerDangerness dangerness, //Минимальная LoggerDangerness, начиная с которой выполняется более одного повторения операции
                                         string errMess, //Сообщение об ошибке 
@@ -142,16 +142,16 @@ namespace BaseLibrary
         {
             return Logger.StartDanger(startProcent, finishProcent, repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
         }
-        public CommandDanger StartDanger(int repetitions, LoggerDangerness dangerness, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
+        public DangerCommand StartDanger(int repetitions, LoggerDangerness dangerness, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
         {
             return Logger.StartDanger(repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
         }
         //Без повторов
-        public CommandDanger StartDanger(double startProcent, double finishProcent)
+        public DangerCommand StartDanger(double startProcent, double finishProcent)
         {
             return StartDanger(startProcent, finishProcent, 1, LoggerDangerness.Single, "", "");
         }
-        public CommandDanger StartDanger()
+        public DangerCommand StartDanger()
         {
             return StartDanger(0, 100);
         }

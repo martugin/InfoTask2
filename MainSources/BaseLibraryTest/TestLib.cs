@@ -59,8 +59,8 @@ namespace BaseLibraryTest
             var exFields = new SetS();
             foreach (var f in exeptionFields)
                 exFields.Add(f);
-            using (var rec1 = new RecDao(db1, "SELECT * FROM " + tableName1 + " ORDER BY " + idField))
-                using (var rec2 = new RecDao(db2, "SELECT * FROM " + (tableName2 ?? tableName1) + " ORDER BY " + idField))
+            using (var rec1 = new DaoRec(db1, "SELECT * FROM " + tableName1 + " ORDER BY " + idField))
+                using (var rec2 = new DaoRec(db2, "SELECT * FROM " + (tableName2 ?? tableName1) + " ORDER BY " + idField))
                 {
                     rec1.Read();
                     while (rec2.Read())

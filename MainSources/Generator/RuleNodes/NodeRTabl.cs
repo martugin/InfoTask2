@@ -6,9 +6,9 @@ using CommonTypes;
 namespace Generator
 {
     //Узел - проход по таблице
-    internal class NodeRTabl : NodeKeeper, INodeRTabl
+    internal class NodeRTabl : KeeperNode, INodeRTabl
     {
-        public NodeRTabl(ParsingKeeper keeper, ITerminalNode terminal, INodeExpr condition)
+        public NodeRTabl(ParsingKeeper keeper, ITerminalNode terminal, IExprNode condition)
             : base(keeper, terminal)
         {
             if (terminal != null)
@@ -19,7 +19,7 @@ namespace Generator
         //Имя таблицы
         private readonly string _tablName;
         //Условие фильтрации или имя типа
-        private readonly INodeExpr _condition;
+        private readonly IExprNode _condition;
         //Следующий узел в цепочке
         public INodeRQuery ChildNode { get; set; }
 

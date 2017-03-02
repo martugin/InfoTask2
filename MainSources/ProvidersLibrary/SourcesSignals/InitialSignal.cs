@@ -11,14 +11,14 @@ namespace ProvidersLibrary
         public InitialSignal(SourceConnect connect, string code, string codeOut, DataType dataType, string signalInf)
             : base(connect, code, codeOut, dataType, signalInf)
         {
-            BufMom = new MomEdit(dataType);
+            BufMom = new EditMom(dataType);
         }
 
         //Id в таблице сигналов клона
         internal int IdInClone { get; set; }
 
         //Буферное значение для добавления
-        internal MomEdit BufMom { get; private set; }
+        internal EditMom BufMom { get; private set; }
 
         //Очистка списка значений
         internal override void ClearMoments(bool clearBegin)
@@ -28,7 +28,7 @@ namespace ProvidersLibrary
 
         //Добавка мгновенного значения в список или клон
         //Возвращает количество реально добавленных значений 
-        internal virtual int AddMom(DateTime time, ErrMom err)
+        internal virtual int AddMom(DateTime time, MomErr err)
         {
             BufMom.Time = time;
             BufMom.Error = err;
@@ -57,7 +57,7 @@ namespace ProvidersLibrary
         }
         //Запись значения в рекордсет клона
         protected void PutCloneRec(IMean mom, //Значение
-                                                 RecDao rec, //Рекордсет
+                                                 DaoRec rec, //Рекордсет
                                                  bool isCutTable, //Запись в таблицу срезов
                                                  DateTime d) //Время среза
         {

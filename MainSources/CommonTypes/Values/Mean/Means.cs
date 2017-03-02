@@ -4,13 +4,13 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Логическое значение
-    public class MeanBool : Mean
+    public class BoolMean : Mean
     {
-        public MeanBool(bool b)
+        public BoolMean(bool b)
         {
             _bool = b;
         }
-        internal MeanBool() { }
+        internal BoolMean() { }
 
         //Значение
         private bool _bool;
@@ -52,24 +52,24 @@ namespace CommonTypes
 
         public override IMean ToMean()
         {
-            if (Error == null) return new MeanBool(_bool);
+            if (Error == null) return new BoolMean(_bool);
             return new MeanErrBool(_bool, Error);
         }
 
-        public override IMean ToMean(ErrMom err)
+        public override IMean ToMean(MomErr err)
         {
             return new MeanErrBool(_bool, Error.Add(err));
         }
 
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new MomBool(time, _bool);
-            return new MomErrBool(time, _bool, Error);
+            if (Error == null) return new BoolMom(time, _bool);
+            return new BoolErrMom(time, _bool, Error);
         }
 
-        public override IMean ToMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new MomErrBool(time, _bool, Error.Add(err));
+            return new BoolErrMom(time, _bool, Error.Add(err));
         }
 
         internal override void CopyValueFrom(IMean mean)
@@ -85,13 +85,13 @@ namespace CommonTypes
 
     //--------------------------------------------------------------------------------------------------
     //Целое значение
-    public class MeanInt : Mean
+    public class IntMean : Mean
     {
-        public MeanInt(int i)
+        public IntMean(int i)
         {
             _int = i;
         }
-        public MeanInt() { }
+        public IntMean() { }
 
         //Значение
         private int _int;
@@ -132,24 +132,24 @@ namespace CommonTypes
 
         public override IMean ToMean()
         {
-            if (Error == null) return new MeanInt(_int);
+            if (Error == null) return new IntMean(_int);
             return new MeanErrInt(_int, Error);
         }
 
-        public override IMean ToMean(ErrMom err)
+        public override IMean ToMean(MomErr err)
         {
             return new MeanErrInt(_int, Error.Add(err));
         }
 
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new MomInt(time, _int);
-            return new MomErrInt(time, _int, Error);
+            if (Error == null) return new IntMom(time, _int);
+            return new IntErrMom(time, _int, Error);
         }
 
-        public override IMean ToMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new MomErrInt(time, _int, Error.Add(err));
+            return new IntErrMom(time, _int, Error.Add(err));
         }
 
         internal override void CopyValueFrom(IMean mean)
@@ -165,13 +165,13 @@ namespace CommonTypes
 
     //--------------------------------------------------------------------------------------------------
     //Действительное значение
-    public class MeanReal : Mean
+    public class RealMean : Mean
     {
-        public MeanReal(double r)
+        public RealMean(double r)
         {
             _real = r;
         }
-        public MeanReal() { }
+        public RealMean() { }
 
         //Значение
         private double _real;
@@ -213,24 +213,24 @@ namespace CommonTypes
 
         public override IMean ToMean()
         {
-            if (Error == null) return new MeanReal(_real);
+            if (Error == null) return new RealMean(_real);
             return new MeanErrReal(_real, Error);
         }
 
-        public override IMean ToMean(ErrMom err)
+        public override IMean ToMean(MomErr err)
         {
             return new MeanErrReal(_real, Error.Add(err));
         }
 
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new MomReal(time, _real);
-            return new MomErrReal(time, _real, Error);
+            if (Error == null) return new RealMom(time, _real);
+            return new RealErrMom(time, _real, Error);
         }
 
-        public override IMean ToMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new MomErrReal(time, _real, Error.Add(err));
+            return new RealErrMom(time, _real, Error.Add(err));
         }
 
         internal override void CopyValueFrom(IMean mean)
@@ -246,13 +246,13 @@ namespace CommonTypes
 
     //--------------------------------------------------------------------------------------------------
     //Строковое значение
-    public class MeanString : Mean
+    public class StringMean : Mean
     {
-        public MeanString(string s)
+        public StringMean(string s)
         {
             _string = s ?? "";
         }
-        public MeanString() { }
+        public StringMean() { }
 
         //Значение
         private string _string;
@@ -298,24 +298,24 @@ namespace CommonTypes
 
         public override IMean ToMean()
         {
-            if (Error == null) return new MeanString(_string);
+            if (Error == null) return new StringMean(_string);
             return new MeanErrString(_string, Error);
         }
 
-        public override IMean ToMean(ErrMom err)
+        public override IMean ToMean(MomErr err)
         {
             return new MeanErrString(_string, Error.Add(err));
         }
 
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new MomString(time, _string);
-            return new MomErrString(time, _string, Error);
+            if (Error == null) return new StringMom(time, _string);
+            return new StringErrMom(time, _string, Error);
         }
 
-        public override IMean ToMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new MomErrString(time, _string, Error.Add(err));
+            return new StringErrMom(time, _string, Error.Add(err));
         }
 
         internal override void CopyValueFrom(IMean mean)
@@ -331,13 +331,13 @@ namespace CommonTypes
 
     //--------------------------------------------------------------------------------------------------
     //Временное значение
-    public class MeanTime : Mean
+    public class TimeMean : Mean
     {
-        public MeanTime(DateTime d)
+        public TimeMean(DateTime d)
         {
             _date = d;
         }
-        public MeanTime() { }
+        public TimeMean() { }
 
         //Значение
         private DateTime _date;
@@ -368,24 +368,24 @@ namespace CommonTypes
 
         public override IMean ToMean()
         {
-            if (Error == null) return new MeanTime(_date);
+            if (Error == null) return new TimeMean(_date);
             return new MeanErrTime(_date, Error);
         }
 
-        public override IMean ToMean(ErrMom err)
+        public override IMean ToMean(MomErr err)
         {
             return new MeanErrTime(_date, Error.Add(err));
         }
 
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new MomTime(time, _date);
-            return new MomErrTime(time, _date, Error);
+            if (Error == null) return new TimeMom(time, _date);
+            return new TimeErrMom(time, _date, Error);
         }
 
-        public override IMean ToMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new MomErrTime(time, _date, Error.Add(err));
+            return new TimeErrMom(time, _date, Error.Add(err));
         }
 
         internal override void CopyValueFrom(IMean mean)
@@ -400,7 +400,7 @@ namespace CommonTypes
     }
 
     //-------------------------------------------------------------------------------------
-    public class MeanValue : Mean
+    public class ValueMean : Mean
     {
         //Тип данных
         public override DataType DataType { get { return DataType.Value; } }
@@ -415,21 +415,21 @@ namespace CommonTypes
         public override void ValueToRec(IRecordAdd rec, string field) { }
         public override IMean ToMean()
         {
-            if (Error == null) return new MeanValue();
+            if (Error == null) return new ValueMean();
             return new MeanErrValue(Error);
         }
-        public override IMean ToMean(ErrMom err)
+        public override IMean ToMean(MomErr err)
         {
             return new MeanErrValue(Error.Add(err));
         }
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new MomValue(time);
-            return new MomErrValue(time, Error);
+            if (Error == null) return new ValueMom(time);
+            return new ValueErrMom(time, Error);
         }
-        public override IMean ToMom(DateTime time, ErrMom err)
+        public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new MomErrValue(time, Error.Add(err));
+            return new ValueErrMom(time, Error.Add(err));
         }
         internal override void CopyValueFrom(IMean mean) { }
         internal override void MakeDefaultValue() { }

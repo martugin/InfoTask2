@@ -21,7 +21,7 @@ namespace CommonTypes
             {
                 var funsId = new DicI<FunCompile>();
                 var where = " WHERE (Functions.IsCompile = True)" + (isGenerate ? "AND (Functions.IsGen = True) " : " ");
-                using (var rec = new ReaderAdo(db, "SELECT * FROM Functions" + where))
+                using (var rec = new AdoReader(db, "SELECT * FROM Functions" + where))
                     while (rec.Read())
                     {
                         var f = new FunCompile(rec);
@@ -30,7 +30,7 @@ namespace CommonTypes
                         if (!f.Synonym.IsEmpty())
                             _funs.Add(f.Synonym, f);
                     }    
-                using ( var rec = new ReaderAdo(db, "SELECT FunctionsOverloads.* FROM Functions INNER JOIN FunctionsOverloads ON Functions.Id = FunctionsOverloads.FunctionId "
+                using ( var rec = new AdoReader(db, "SELECT FunctionsOverloads.* FROM Functions INNER JOIN FunctionsOverloads ON Functions.Id = FunctionsOverloads.FunctionId "
                                                     + where + "ORDER BY FunctionsOverloads.FunctionId, FunctionsOverloads.RunNumber"))
                 {
                     rec.Read();

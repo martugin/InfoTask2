@@ -54,7 +54,7 @@ namespace ProvidersLibrary
         }
 
         //Создание провайдера
-        public ProviderBase CreateProvider(string code, //Код провайдера
+        public BaseProvider CreateProvider(string code, //Код провайдера
                                                              string inf) //Настройки
         {
             var prc = ProviderConfigs[code];
@@ -66,11 +66,11 @@ namespace ProvidersLibrary
         }
 
         //Запуск экземпляра провайдера через MEF, позднее связывание с dll
-        [ImportMany(typeof(ProviderBase))]
-        private Lazy<ProviderBase, IDictionary<string, object>>[] ImportProvs { get; set; }
+        [ImportMany(typeof(BaseProvider))]
+        private Lazy<BaseProvider, IDictionary<string, object>>[] ImportProvs { get; set; }
 
         //Создать провайдер через MEF
-        private ProviderBase NewProvider(ProviderConfig prc)
+        private BaseProvider NewProvider(ProviderConfig prc)
         {
             var catalog = new AggregateCatalog();
             catalog.Catalogs.Add(new DirectoryCatalog(prc.Complect.DllDir));
@@ -86,7 +86,7 @@ namespace ProvidersLibrary
         }
 
         //Создать встроенный провайдер
-        private ProviderBase NewStandardProvider(ProviderConfig prc)
+        private BaseProvider NewStandardProvider(ProviderConfig prc)
         {
             switch (prc.Code)
             {

@@ -16,7 +16,7 @@ namespace CommonTypes
         //Список времен
         private readonly List<DateTime> _times = new List<DateTime>();
         //Список ошибок
-        private List<ErrMom> _errors;
+        private List<MomErr> _errors;
 
         //Мгновенное значение для добавления в список и получения из списка
         protected Mean BufMom { get; set; }
@@ -45,13 +45,13 @@ namespace CommonTypes
         public DateTime Time { get { return _times[CurNum]; } }
 
         //Ошибка i-ого значения
-        public ErrMom ErrorI(int i)
+        public MomErr ErrorI(int i)
         {
             if (_errors == null) return null;
             return _errors[i];
         }
         //Ошибка значения с номером CurNum
-        public ErrMom Error { get { return _errors[CurNum]; } }
+        public MomErr Error { get { return _errors[CurNum]; } }
 
         //Значение по индексу
         public bool BooleanI(int i) { return MeanI(i).Boolean;}
@@ -98,12 +98,12 @@ namespace CommonTypes
         protected abstract void AddBufMomEnd();
 
         //Добавить ошибку в i-ю позицию списка
-        private void AddError(ErrMom err, int i)
+        private void AddError(MomErr err, int i)
         {
             if (err == null && _errors == null) return;
             if (_errors == null)
             {
-                _errors = new List<ErrMom>();
+                _errors = new List<MomErr>();
                 foreach (var t in _times)
                     _errors.Add(null);
                 _errors[i] = err;
@@ -112,7 +112,7 @@ namespace CommonTypes
         }
         
         //Добавить время, ошибку и значение в списки
-        private void AddTimeErrorMean(DateTime time, ErrMom err)
+        private void AddTimeErrorMean(DateTime time, MomErr err)
         {
             int num = Count - 1;
             if (Count == 0)
@@ -129,7 +129,7 @@ namespace CommonTypes
             }
         }
 
-        private void AddMomToEnd(DateTime time, ErrMom err)
+        private void AddMomToEnd(DateTime time, MomErr err)
         {
             _times.Add(time);
             AddError(err, Count - 1);
@@ -149,49 +149,49 @@ namespace CommonTypes
             AddTimeErrorMean(time, mean.Error);
         }
 
-        public void AddMom(IMean mom, ErrMom err)
+        public void AddMom(IMean mom, MomErr err)
         {
             BufMom.CopyValueFrom(mom);
             AddTimeErrorMean(mom.Time, err);
         }
 
-        public void AddMom(DateTime time, IMean mean, ErrMom err)
+        public void AddMom(DateTime time, IMean mean, MomErr err)
         {
             BufMom.CopyValueFrom(mean);
             AddTimeErrorMean(time, err);
         }
 
-        public void AddMom(DateTime time, bool b, ErrMom err = null)
+        public void AddMom(DateTime time, bool b, MomErr err = null)
         {
             BufMom.Boolean = b;
             AddTimeErrorMean(time, err);
         }
 
-        public void AddMom(DateTime time, int i, ErrMom err = null)
+        public void AddMom(DateTime time, int i, MomErr err = null)
         {
             BufMom.Integer = i;
             AddTimeErrorMean(time, err);
         }
 
-        public void AddMom(DateTime time, double r, ErrMom err = null)
+        public void AddMom(DateTime time, double r, MomErr err = null)
         {
             BufMom.Real = r;
             AddTimeErrorMean(time, err);
         }
 
-        public void AddMom(DateTime time, DateTime d, ErrMom err = null)
+        public void AddMom(DateTime time, DateTime d, MomErr err = null)
         {
             BufMom.Date = d;
             AddTimeErrorMean(time, err);
         }
 
-        public void AddMom(DateTime time, string s, ErrMom err = null)
+        public void AddMom(DateTime time, string s, MomErr err = null)
         {
             BufMom.String = s;
             AddTimeErrorMean(time, err);
         }
 
-        public void AddMom(DateTime time, object ob, ErrMom err = null)
+        public void AddMom(DateTime time, object ob, MomErr err = null)
         {
             BufMom.Object = ob;
             AddTimeErrorMean(time, err);
@@ -211,7 +211,7 @@ namespace CommonTypes
             return MeanI(i).ToMean(ErrorI(i));
         }
 
-        public IMean ToMeanI(int i, ErrMom err)
+        public IMean ToMeanI(int i, MomErr err)
         {
             return MeanI(i).ToMean(ErrorI(i).Add(err));
         }
@@ -221,7 +221,7 @@ namespace CommonTypes
             return MeanI(i).ToMom(TimeI(i), ErrorI(i));
         }
 
-        public IMean ToMomI(int i, ErrMom err)
+        public IMean ToMomI(int i, MomErr err)
         {
             return MeanI(i).ToMom(TimeI(i), ErrorI(i).Add(err));
         }
@@ -231,17 +231,17 @@ namespace CommonTypes
             return MeanI(i).ToMom(time, ErrorI(i));
         }
 
-        public IMean ToMomI(int i, DateTime time, ErrMom err)
+        public IMean ToMomI(int i, DateTime time, MomErr err)
         {
             return MeanI(i).ToMom(time, ErrorI(i).Add(err));
         }
 
         public IMean ToMean() { return ToMeanI(CurNum);}
-        public IMean ToMean(ErrMom err) { return ToMeanI(CurNum, err); }
+        public IMean ToMean(MomErr err) { return ToMeanI(CurNum, err); }
         public IMean ToMom() { return ToMomI(CurNum); }
-        public IMean ToMom(ErrMom err) { return ToMomI(CurNum, err); }
+        public IMean ToMom(MomErr err) { return ToMomI(CurNum, err); }
         public IMean ToMom(DateTime time) { return ToMomI(CurNum, time); }
-        public IMean ToMom(DateTime time, ErrMom err) { return ToMomI(CurNum, time, err); }
+        public IMean ToMom(DateTime time, MomErr err) { return ToMomI(CurNum, time, err); }
         
         //Последнее значение
         public IMean LastMom
@@ -254,12 +254,12 @@ namespace CommonTypes
         }
         
         //Итоговая ошибка
-        public override ErrMom TotalError
+        public override MomErr TotalError
         {
             get
             {
                 if (_errors == null) return null;
-                ErrMom terr = null;
+                MomErr terr = null;
                 foreach (var err in _errors)
                     terr = terr.Add(err);
                 return terr;

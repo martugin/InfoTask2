@@ -7,21 +7,21 @@
         Logger Logger { get; }
 
         //Начало выполнения надкомманды
-        void WriteStartSuper(CommandProgress command);
+        void WriteStartSuper(ProgressCommand command);
         //Начало выполнения комманды
-        void WriteStart(CommandLog command);
+        void WriteStart(LogCommand command);
         //Конец выполнения надкомманды
-        void WriteFinishSuper(CommandProgress command, string results);
+        void WriteFinishSuper(ProgressCommand command, string results);
         //Конец выполнения комманды
-        void WriteFinish(CommandLog command, string results);
+        void WriteFinish(LogCommand command, string results);
 
         //Записать событие
         void WriteEvent(string description, string pars);
         //Записать ошибку в историю
-        void WriteError(ErrorCommand error);
+        void WriteError(CommandError error);
 
         //Записать ошибку в список ошибок
-        void WriteErrorToList(ErrorCommand error);
+        void WriteErrorToList(CommandError error);
         //Очистить список ошибок
         void ClearErrorsList();
 

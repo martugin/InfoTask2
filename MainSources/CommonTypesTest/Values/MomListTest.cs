@@ -9,13 +9,13 @@ namespace CommonTypesTest
     public class MomListTest
     {
         //Создание пула ошибок
-        private static ErrMomPool MakeErrPool()
+        private static MomErrPool MakeErrPool()
         {
-            var ef = new ErrMomFactory("ErrSource", ErrMomType.Source);
+            var ef = new MomErrFactory("ErrSource", MomErrType.Source);
             ef.AddGoodDescr(0);
             ef.AddDescr(1, "Warning");
             ef.AddDescr(2, "Error");
-            return new ErrMomPool(ef);
+            return new MomErrPool(ef);
         }
 
         //Время по заданным относительным минутам и секундам
@@ -30,7 +30,7 @@ namespace CommonTypesTest
             var pool = MakeErrPool();
             var c = new ContextTest("Context");
             
-            var list = new MomListBool();
+            var list = new BoolMomList();
             Assert.AreEqual(0, list.Count);
             Assert.AreEqual(DataType.Boolean, list.DataType);
             Assert.AreEqual(0, list.CurNum);
@@ -218,7 +218,7 @@ namespace CommonTypesTest
             var pool = MakeErrPool();
             var c = new ContextTest("Context");
 
-            var list = new MomListInt();
+            var list = new IntMomList();
             Assert.AreEqual(0, list.Count);
             Assert.AreEqual(DataType.Integer, list.DataType);
             Assert.AreEqual(0, list.CurNum);
@@ -259,7 +259,7 @@ namespace CommonTypesTest
             Assert.AreEqual(1, m.Error.Number);
             Assert.AreEqual(RTime(1), m.Time);
 
-            var me = new MomEdit(DataType.Integer);
+            var me = new EditMom(DataType.Integer);
             me.Time = RTime(0, 5);
             me.Integer = 20;
             list.AddMom(me);
@@ -330,7 +330,7 @@ namespace CommonTypesTest
             Assert.AreEqual(1, m.Error.Number);
             Assert.AreEqual(RTime(1), m.Time);
 
-            var me = new MomEdit(DataType.Real);
+            var me = new EditMom(DataType.Real);
             me.Time = RTime(0, 5);
             me.Real = 2;
             list.AddMom(me);
@@ -397,7 +397,7 @@ namespace CommonTypesTest
             Assert.AreEqual(1, m.Error.Number);
             Assert.AreEqual(RTime(1), m.Time);
 
-            var me = new MomEdit(DataType.Real);
+            var me = new EditMom(DataType.Real);
             me.Time = RTime(0, 5);
             me.Real = 2;
             list.AddMom(me);
@@ -468,7 +468,7 @@ namespace CommonTypesTest
             Assert.AreEqual(1, m.Error.Number);
             Assert.AreEqual(RTime(1), m.Time);
 
-            var me = new MomEdit(DataType.Time);
+            var me = new EditMom(DataType.Time);
             me.Time = RTime(0, 5);
             me.Date = RTime(0, 30);
             list.AddMom(me);

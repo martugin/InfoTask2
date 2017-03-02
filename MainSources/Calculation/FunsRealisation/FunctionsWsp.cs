@@ -1,7 +1,7 @@
 ﻿namespace Calculation
 {
     //Реализация функций WSP
-    internal partial class FunctionsCalc
+    internal partial class CalcFunctions
     {
          
     }

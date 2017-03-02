@@ -44,12 +44,12 @@ namespace CommonTypes
         public string StringI(int i) { return String; }
         public object ObjectI(int i) { return Object; }
 
-        public virtual ErrMom Error
+        public virtual MomErr Error
         {
             get { return null; }
             internal set { }
         }
-        public ErrMom ErrorI(int i) { return Error; }
+        public MomErr ErrorI(int i) { return Error; }
 
         public virtual DateTime Time
         {
@@ -117,20 +117,20 @@ namespace CommonTypes
         public void ValueToRecI(IRecordAdd rec, string field, int i) { ValueToRec(rec, field); }
 
         public abstract IMean ToMean();
-        public abstract IMean ToMean(ErrMom err);
+        public abstract IMean ToMean(MomErr err);
         public abstract IMean ToMom(DateTime time);
-        public abstract IMean ToMom(DateTime time, ErrMom err);
+        public abstract IMean ToMom(DateTime time, MomErr err);
         public IMean ToMom() { return ToMom(Time, Error);}
-        public IMean ToMom(ErrMom err) { return ToMom(Time, err); }
+        public IMean ToMom(MomErr err) { return ToMom(Time, err); }
 
         public IMean ToMeanI(int i) { return ToMean(); }
-        public IMean ToMeanI(int i, ErrMom err) { return ToMean(err); }
+        public IMean ToMeanI(int i, MomErr err) { return ToMean(err); }
         public IMean ToMomI(int i) { return ToMom(); }
-        public IMean ToMomI(int i, ErrMom err) { return ToMom(err); }
+        public IMean ToMomI(int i, MomErr err) { return ToMom(err); }
         public IMean ToMomI(int i, DateTime time) { return ToMom(time); }
-        public IMean ToMomI(int i, DateTime time, ErrMom err) { return ToMom(time, err); }
+        public IMean ToMomI(int i, DateTime time, MomErr err) { return ToMom(time, err); }
 
-        public override ErrMom TotalError
+        public override MomErr TotalError
         {
             get { return Error; }
         }

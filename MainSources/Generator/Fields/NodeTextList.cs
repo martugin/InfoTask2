@@ -4,7 +4,7 @@ using CommonTypes;
 namespace Generator
 {
     //Главный узел генерации значения поля
-    internal class NodeTextList : NodeList, INodeExpr
+    internal class NodeTextList : ListNode, IExprNode
     {
         public NodeTextList(IEnumerable<Node> children)
             : base(children) { }
@@ -14,13 +14,13 @@ namespace Generator
         {
             var dtype = DataType.Value;
             foreach (var child in Children)
-                if (child is INodeExpr)
+                if (child is IExprNode)
                 {
-                    var res = ((INodeExpr)child).Check(tabl);
+                    var res = ((IExprNode)child).Check(tabl);
                     dtype = dtype == DataType.Value ? res : DataType.String;
                 } 
-                else if (child is INodeVoid)
-                    ((INodeVoid)child).Check(tabl);
+                else if (child is IVoidNode)
+                    ((IVoidNode)child).Check(tabl);
             return dtype;
         }
 
@@ -28,15 +28,15 @@ namespace Generator
         public IMean Generate(SubRows row)
         {
             if (Children.Count == 1)
-                return ((INodeExpr) Children[0]).Generate(row);
+                return ((IExprNode) Children[0]).Generate(row);
             string s = "";
             foreach (var child in Children)
             {
-                if (child is INodeExpr)
-                    s += ((INodeExpr)child).Generate(row).String;
-                else ((INodeVoid)child).Generate(row);
+                if (child is IExprNode)
+                    s += ((IExprNode)child).Generate(row).String;
+                else ((IVoidNode)child).Generate(row);
             }
-            return new MeanString(s);
+            return new StringMean(s);
         }
     }
 }

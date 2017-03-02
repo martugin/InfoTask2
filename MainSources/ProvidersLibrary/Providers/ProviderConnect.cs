@@ -26,25 +26,27 @@ namespace ProvidersLibrary
         }
 
         //Основной и резервный провайдеры
-        private ProviderBase _mainProvider;
-        private ProviderBase _reserveProvider;
+        private BaseProvider _mainProvider;
+        private BaseProvider _reserveProvider;
         //Текущий провайдер
-        public ProviderBase Provider { get; private set; }
+        public BaseProvider Provider { get; private set; }
 
         //Присвоение основного и резервного провайдеров 
-        public void JoinProviders(ProviderBase mainProvider, ProviderBase reserveProvaider = null)
+        public void JoinProviders(BaseProvider mainProvider, BaseProvider reserveProvider = null)
         {
             Provider = _mainProvider = mainProvider;
             if (mainProvider != null)
             {
+                AddEvent("Присоединение основного провайдера", mainProvider.Code + "; " + mainProvider.Inf);
                 mainProvider.ProviderConnect = this;
                 mainProvider.Logger = Logger;
             }
-            _reserveProvider = reserveProvaider;
-            if (reserveProvaider != null)
+            _reserveProvider = reserveProvider;
+            if (reserveProvider != null)
             {
-                reserveProvaider.ProviderConnect = this;
-                reserveProvaider.Logger = Logger;
+                AddEvent("Присоединение резервного провайдера", reserveProvider.Code + "; " + reserveProvider.Inf);
+                reserveProvider.ProviderConnect = this;
+                reserveProvider.Logger = Logger;
             }
         }
 
@@ -86,10 +88,10 @@ namespace ProvidersLibrary
         {
             try
             {
-                if (Provider is SourceBase)
-                    ((SourceBase)Provider).Prepare();
-                if (Provider is ReceiverBase)
-                    ((ReceiverBase)Provider).Prepare();
+                if (Provider is BaseSource)
+                    ((BaseSource)Provider).Prepare();
+                if (Provider is BaseReceiver)
+                    ((BaseReceiver)Provider).Prepare();
             }
             catch (Exception ex)
             {

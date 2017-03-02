@@ -4,11 +4,11 @@ namespace CommonTypes
 {
     //Значение + ошибка, но вез времени
 
-    public class MeanErrBool : MeanBool
+    public class MeanErrBool : BoolMean
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
         
-        public MeanErrBool(bool b, ErrMom err) : base(b)
+        public MeanErrBool(bool b, MomErr err) : base(b)
         {
             Error = err;
         }
@@ -17,11 +17,11 @@ namespace CommonTypes
 
     //---------------------------------------------------------------------------------------------------
     
-    public class MeanErrInt : MeanInt
+    public class MeanErrInt : IntMean
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
 
-        public MeanErrInt(int i, ErrMom err) : base(i)
+        public MeanErrInt(int i, MomErr err) : base(i)
         {
             Error = err;
         }
@@ -30,11 +30,11 @@ namespace CommonTypes
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MeanErrReal : MeanReal
+    public class MeanErrReal : RealMean
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
 
-        public MeanErrReal(double r, ErrMom err) : base(r)
+        public MeanErrReal(double r, MomErr err) : base(r)
         {
             Error = err;
         }
@@ -43,11 +43,11 @@ namespace CommonTypes
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MeanErrTime : MeanTime
+    public class MeanErrTime : TimeMean
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
 
-        public MeanErrTime(DateTime t, ErrMom err) : base(t)
+        public MeanErrTime(DateTime t, MomErr err) : base(t)
         {
             Error = err;
         }
@@ -56,11 +56,11 @@ namespace CommonTypes
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MeanErrString : MeanString
+    public class MeanErrString : StringMean
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
 
-        public MeanErrString(string s, ErrMom err) : base(s)
+        public MeanErrString(string s, MomErr err) : base(s)
         {
             Error = err;
         }
@@ -69,11 +69,11 @@ namespace CommonTypes
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MeanErrValue : MeanValue
+    public class MeanErrValue : ValueMean
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
 
-        public MeanErrValue(ErrMom err)
+        public MeanErrValue(MomErr err)
         {
             Error = err;
         }

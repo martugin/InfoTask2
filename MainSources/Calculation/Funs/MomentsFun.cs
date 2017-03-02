@@ -9,10 +9,10 @@ namespace Calculation
     //Функция работы со списками мгновенных значений
     internal class MomentsFun : CalcBaseFun, IFunction 
     {
-        public MomentsFun(FunctionsBase funs, string code, int errNum) 
+        public MomentsFun(BaseFunctions funs, string code, int errNum) 
             : base(funs, code, errNum) { }
 
-        protected override void CreateDelegateInstance(FunctionsBase funs, MethodInfo met)
+        protected override void CreateDelegateInstance(BaseFunctions funs, MethodInfo met)
         {
             _fun = (MomentsDelegate)Delegate.CreateDelegate(typeof(MomentsDelegate), funs, met);
         }

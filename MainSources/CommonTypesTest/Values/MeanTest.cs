@@ -8,13 +8,13 @@ namespace CommonTypesTest
     [TestClass]
     public class MeanTest
     {
-        private static ErrMomPool MakeErrPool()
+        private static MomErrPool MakeErrPool()
         {
-            var ef = new ErrMomFactory("ErrSource", ErrMomType.Source);
+            var ef = new MomErrFactory("ErrSource", MomErrType.Source);
             ef.AddGoodDescr(0);
             ef.AddDescr(1, "Warning");
             ef.AddDescr(2, "Error");
-            return new ErrMomPool(ef);
+            return new MomErrPool(ef);
         }
 
         [TestMethod]
@@ -89,10 +89,10 @@ namespace CommonTypesTest
             Assert.IsNotNull(m.TotalError);
             Assert.AreEqual(2, m.Error.Number);
             Assert.AreEqual("Error", m.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
             Assert.AreEqual(2, m.TotalError.Number);
             Assert.AreEqual("Error", m.TotalError.Text);
-            Assert.AreEqual(ErrMomType.Source, m.TotalError.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.TotalError.ErrType);
             Assert.AreEqual(false, m.Boolean);
             Assert.AreEqual(0, m.Integer);
             Assert.AreEqual(0.0, m.Real);
@@ -118,10 +118,10 @@ namespace CommonTypesTest
             Assert.IsNotNull(m.TotalError);
             Assert.AreEqual(1, m.Error.Number);
             Assert.AreEqual("Warning", m.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
             Assert.AreEqual(1, m.TotalError.Number);
             Assert.AreEqual("Warning", m.TotalError.Text);
-            Assert.AreEqual(ErrMomType.Source, m.TotalError.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.TotalError.ErrType);
             Assert.AreEqual(true, m.Boolean);
             Assert.AreEqual(1, m.Integer);
             Assert.AreEqual(1.0, m.Real);
@@ -224,10 +224,10 @@ namespace CommonTypesTest
             Assert.IsNotNull(m.TotalError);
             Assert.AreEqual(2, m.Error.Number);
             Assert.AreEqual("Error", m.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
             Assert.AreEqual(2, m.TotalError.Number);
             Assert.AreEqual("Error", m.TotalError.Text);
-            Assert.AreEqual(ErrMomType.Source, m.TotalError.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.TotalError.ErrType);
             Assert.AreEqual(true, m.Boolean);
             Assert.AreEqual(-32, m.Integer);
             Assert.AreEqual(-32.0, m.Real);
@@ -246,10 +246,10 @@ namespace CommonTypesTest
             Assert.IsNotNull(m.TotalError);
             Assert.AreEqual(1, m.Error.Number);
             Assert.AreEqual("Warning", m.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
             Assert.AreEqual(1, m.TotalError.Number);
             Assert.AreEqual("Warning", m.TotalError.Text);
-            Assert.AreEqual(ErrMomType.Source, m.TotalError.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.TotalError.ErrType);
             Assert.AreEqual(true, m.Boolean);
             Assert.AreEqual(24, m.Integer);
             Assert.AreEqual(24.0, m.Real);
@@ -311,7 +311,7 @@ namespace CommonTypesTest
             Assert.IsNotNull(m1.TotalError);
             Assert.AreEqual(2, m1.Error.Number);
             Assert.AreEqual("Error", m1.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m1.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m1.Error.ErrType);
             Assert.AreEqual(true, m1.Boolean);
             Assert.AreEqual(33, m1.Integer);
             Assert.AreEqual(33.4, m1.Real);
@@ -328,7 +328,7 @@ namespace CommonTypesTest
             Assert.IsNotNull(m.TotalError);
             Assert.AreEqual(2, m.Error.Number);
             Assert.AreEqual("Error", m.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
             Assert.AreEqual(true, m.Boolean);
             Assert.AreEqual(33, m.Integer);
             Assert.AreEqual(33.4, m.Real);
@@ -347,7 +347,7 @@ namespace CommonTypesTest
             Assert.IsNotNull(m.TotalError);
             Assert.AreEqual(1, m.Error.Number);
             Assert.AreEqual("Warning", m.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
             Assert.AreEqual(true, m.Boolean);
             Assert.AreEqual(-3, m.Integer);
             Assert.AreEqual(-2.7, m.Real);
@@ -403,7 +403,7 @@ namespace CommonTypesTest
             Assert.IsNotNull(m1.TotalError);
             Assert.AreEqual(2, m1.Error.Number);
             Assert.AreEqual("Error", m1.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m1.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m1.Error.ErrType);
             Assert.AreEqual(true, m1.Boolean);
             Assert.AreEqual(333, m1.Integer);
             Assert.AreEqual(333.0, m1.Real);
@@ -420,7 +420,7 @@ namespace CommonTypesTest
             Assert.IsNotNull(m.TotalError);
             Assert.AreEqual(2, m.Error.Number);
             Assert.AreEqual("Error", m.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
             Assert.AreEqual(true, m.Boolean);
             Assert.AreEqual(0, m.Integer);
             Assert.AreEqual(0.0, m.Real);
@@ -440,7 +440,7 @@ namespace CommonTypesTest
             Assert.IsNotNull(m.TotalError);
             Assert.AreEqual(1, m.Error.Number);
             Assert.AreEqual("Warning", m.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
             Assert.AreEqual(true, m.Boolean);
             Assert.AreEqual(0, m.Integer);
             Assert.AreEqual(-12.3, m.Real);
@@ -490,7 +490,7 @@ namespace CommonTypesTest
             Assert.IsNotNull(mo.TotalError);
             Assert.AreEqual(2, mo.Error.Number);
             Assert.AreEqual("Error", mo.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, mo.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, mo.Error.ErrType);
             Assert.AreEqual(false, mo.Boolean);
             Assert.AreEqual(0, mo.Integer);
             Assert.AreEqual(0.0, mo.Real);
@@ -509,7 +509,7 @@ namespace CommonTypesTest
             Assert.IsNotNull(m1.TotalError);
             Assert.AreEqual(2, m1.Error.Number);
             Assert.AreEqual("Error", m1.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m1.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m1.Error.ErrType);
             Assert.AreEqual(false, m1.Boolean);
             Assert.AreEqual(0, m1.Integer);
             Assert.AreEqual(0.0, m1.Real);
@@ -526,7 +526,7 @@ namespace CommonTypesTest
             Assert.IsNotNull(m.TotalError);
             Assert.AreEqual(2, m.Error.Number);
             Assert.AreEqual("Error", m.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
             Assert.AreEqual(false, m.Boolean);
             Assert.AreEqual(0, m.Integer);
             Assert.AreEqual(0.0, m.Real);
@@ -546,7 +546,7 @@ namespace CommonTypesTest
             Assert.IsNotNull(m.TotalError);
             Assert.AreEqual(1, m.Error.Number);
             Assert.AreEqual("Warning", m.Error.Text);
-            Assert.AreEqual(ErrMomType.Source, m.Error.ErrType);
+            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
             Assert.AreEqual(false, m.Boolean);
             Assert.AreEqual(0, m.Integer);
             Assert.AreEqual(0.0, m.Real);

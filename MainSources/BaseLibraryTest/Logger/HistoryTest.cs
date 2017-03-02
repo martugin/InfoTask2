@@ -19,7 +19,7 @@ namespace BaseLibraryTest
                 DaoDb.FromTemplate(DifferentIt.HistoryTemplateFile, file, ReplaceByTemplate.Always);
                 TestLib.CopyFile("BaseLibrary", "CorrectHistory.accdb", @"History\CorrectHistory.accdb");
             }
-            History = new HistoryAccess(this, file, DifferentIt.HistoryTemplateFile);
+            History = new AccessHistory(this, file, DifferentIt.HistoryTemplateFile);
         }
 
         [TestMethod]

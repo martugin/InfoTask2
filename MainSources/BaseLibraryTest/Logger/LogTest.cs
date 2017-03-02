@@ -24,16 +24,16 @@ namespace BaseLibraryTest
         {
             RunHistory();
             StartLog("Op0", "Source", "Par0");
-            Assert.IsNotNull(CommandLog);
-            Assert.AreEqual(CommandLog, Command);
-            Assert.IsNull(CommandProgress);
-            Assert.IsNull(CommandCollect);
+            Assert.IsNotNull(LogCommand);
+            Assert.AreEqual(LogCommand, Command);
+            Assert.IsNull(ProgressCommand);
+            Assert.IsNull(CollectCommand);
             Assert.AreEqual(0, Procent);
-            Assert.AreEqual(0, CommandLog.Procent);
+            Assert.AreEqual(0, LogCommand.Procent);
             Assert.AreEqual(0, Command.Procent);
-            Assert.AreEqual(CommandQuality.Success, CommandLog.Quality);
-            Assert.IsTrue(CommandLog.IsSuccess);
-            Assert.IsFalse(CommandLog.IsFinished);
+            Assert.AreEqual(CommandQuality.Success, LogCommand.Quality);
+            Assert.IsTrue(LogCommand.IsSuccess);
+            Assert.IsFalse(LogCommand.IsFinished);
             Assert.AreEqual("Op0 (Source)", TabloText(1));
 
             Assert.AreEqual(1, Logs.Count);
@@ -42,34 +42,34 @@ namespace BaseLibraryTest
             Assert.AreEqual("Source", Logs[0].Context);
             Assert.AreEqual("Запущено", Logs[0].Status);
             Assert.AreEqual(null, Logs[0].Results);
-            Assert.AreEqual(CommandLog.StartTime, Logs[0].Time);
+            Assert.AreEqual(LogCommand.StartTime, Logs[0].Time);
             Assert.AreEqual(0, Logs[0].Events.Count);
 
             AddEvent("Event", "EventPar");
             Assert.AreEqual(1, Logs[0].Events.Count);
-            Assert.AreEqual(CommandQuality.Success, CommandLog.Quality);
+            Assert.AreEqual(CommandQuality.Success, LogCommand.Quality);
             Assert.AreEqual("Event", Logs[0].Events[0].Description);
             Assert.AreEqual("EventPar", Logs[0].Events[0].Params);
             Assert.AreEqual(null, Logs[0].Events[0].Status);
 
             AddWarning("Warning", null, "WarningPars");
             Assert.AreEqual(2, Logs[0].Events.Count);
-            Assert.AreEqual(CommandQuality.Warning, CommandLog.Quality);
+            Assert.AreEqual(CommandQuality.Warning, LogCommand.Quality);
             Assert.AreEqual("Warning", Logs[0].Events[1].Description);
             Assert.AreEqual("WarningPars", Logs[0].Events[1].Params);
             Assert.AreEqual("Предупреждение", Logs[0].Events[1].Status);
 
             AddError("Error", null, "ErrorPars");
             Assert.AreEqual(3, Logs[0].Events.Count);
-            Assert.AreEqual(CommandQuality.Error, CommandLog.Quality);
-            Assert.IsTrue(CommandLog.IsError);
+            Assert.AreEqual(CommandQuality.Error, LogCommand.Quality);
+            Assert.IsTrue(LogCommand.IsError);
             Assert.AreEqual("Error", Logs[0].Events[2].Description);
             Assert.AreEqual("ErrorPars", Logs[0].Events[2].Params);
             Assert.AreEqual("Ошибка", Logs[0].Events[2].Status);
 
             Command c = FinishLog("Results");
             Assert.IsTrue(c.IsFinished);
-            Assert.IsNull(CommandLog);
+            Assert.IsNull(LogCommand);
             Assert.IsNull(Command);
             Assert.AreEqual(0, Procent);
             Assert.AreEqual(1, Logs.Count);
@@ -83,15 +83,15 @@ namespace BaseLibraryTest
 
             StartLog("Op1", "Source", "Par1").Run(() =>
                 {
-                    Assert.IsNotNull(CommandLog);
-                    Assert.AreSame(CommandLog, Command);
-                    Assert.AreEqual(CommandQuality.Success, CommandLog.Quality);
-                    Assert.IsFalse(CommandLog.IsFinished);
+                    Assert.IsNotNull(LogCommand);
+                    Assert.AreSame(LogCommand, Command);
+                    Assert.AreEqual(CommandQuality.Success, LogCommand.Quality);
+                    Assert.IsFalse(LogCommand.IsFinished);
                     Assert.AreEqual("Op1 (Source)", TabloText(1));
 
                     AddWarning("Warning", null, "WarningPars");
                     Assert.AreEqual(1, Logs[1].Events.Count);
-                    Assert.AreEqual(CommandQuality.Warning, CommandLog.Quality);
+                    Assert.AreEqual(CommandQuality.Warning, LogCommand.Quality);
                     Assert.AreEqual("Warning", Logs[1].Events[1].Description);
                     Assert.AreEqual("WarningPars", Logs[1].Events[1].Params);
                     Assert.AreEqual("Предупреждение", Logs[0].Events[1].Status);
@@ -99,12 +99,12 @@ namespace BaseLibraryTest
                     var cc = Start().Run(() =>
                     {
                         Assert.IsNotNull(Command);
-                        Assert.AreNotEqual(CommandLog, Command);
-                        Assert.AreEqual(CommandLog, Command.Parent);
+                        Assert.AreNotEqual(LogCommand, Command);
+                        Assert.AreEqual(LogCommand, Command.Parent);
 
                         AddEvent("Event", "EventPar");
                         Assert.AreEqual(2, Logs[1].Events.Count);
-                        Assert.AreEqual(CommandQuality.Warning, CommandLog.Quality);
+                        Assert.AreEqual(CommandQuality.Warning, LogCommand.Quality);
                         Assert.AreEqual("Event", Logs[1].Events[1].Description);
                         Assert.AreEqual("EventPar", Logs[1].Events[1].Params);
                         Assert.AreEqual(null, Logs[0].Events[1].Status);
@@ -112,7 +112,7 @@ namespace BaseLibraryTest
                     Assert.IsTrue(cc.IsFinished);
                 });
 
-            Assert.IsNull(CommandLog);
+            Assert.IsNull(LogCommand);
             Assert.IsNull(Command);
             Assert.AreEqual(2, Logs.Count);
             Assert.AreEqual("Op1", Logs[1].Command);
@@ -123,14 +123,14 @@ namespace BaseLibraryTest
             Assert.AreEqual(2, Logs[1].Events.Count);
 
             StartLog("Op2", "Source", "Par2");
-            Assert.IsNotNull(CommandLog);
-            Assert.AreEqual("Op2", CommandLog.Name);
+            Assert.IsNotNull(LogCommand);
+            Assert.AreEqual("Op2", LogCommand.Name);
             Assert.AreEqual("Op2 (Source)", TabloText(1));
 
             c = StartLog("Op3", "Source", "Par3").Run(() =>
                 {
-                    Assert.IsNotNull(CommandLog);
-                    Assert.AreEqual("Op3", CommandLog.Name);
+                    Assert.IsNotNull(LogCommand);
+                    Assert.AreEqual("Op3", LogCommand.Name);
                     Assert.AreEqual("Op3 (Source)", TabloText(1));
 
                     Assert.AreEqual(4, Logs.Count);
@@ -143,7 +143,7 @@ namespace BaseLibraryTest
 
                     AddEvent("Event", "EventPar");
                     Assert.AreEqual(1, Logs[3].Events.Count);
-                    Assert.AreEqual(CommandQuality.Success, CommandLog.Quality);
+                    Assert.AreEqual(CommandQuality.Success, LogCommand.Quality);
                     Assert.AreEqual("Event", Logs[3].Events[0].Description);
                     Assert.AreEqual("EventPar", Logs[3].Events[0].Params);
                     Assert.AreEqual(null, Logs[3].Events[0].Status);
@@ -166,30 +166,30 @@ namespace BaseLibraryTest
         {
             RunHistory();
             StartProgress("Процесс", "Progress", "Pars", DateTime.Now.AddHours(1));
-            Assert.IsNotNull(CommandProgress);
-            Assert.AreSame(CommandProgress, Command);
+            Assert.IsNotNull(ProgressCommand);
+            Assert.AreSame(ProgressCommand, Command);
             Assert.AreEqual(1, Supers.Count);
             Assert.AreEqual("Progress", Supers[0].Command);
             Assert.AreEqual("Pars", Supers[0].Params);
             Assert.AreEqual("Запущено", Supers[0].Status);
-            Assert.AreEqual(CommandProgress.StartTime, Supers[0].Time);
+            Assert.AreEqual(ProgressCommand.StartTime, Supers[0].Time);
             Assert.AreEqual("Процесс", TabloText(0));
             
             Assert.AreEqual(0, Procent);
             Procent = 10;
             Assert.AreEqual(10, Procent);
-            Assert.AreEqual(10, CommandProgress.Procent);
+            Assert.AreEqual(10, ProgressCommand.Procent);
             Assert.AreEqual(10, TabloProcent);
 
             Start(20, 70);
-            Assert.AreSame(CommandProgress, Command.Parent);
+            Assert.AreSame(ProgressCommand, Command.Parent);
             Assert.AreEqual("Процесс", TabloText(0));
-            Assert.AreEqual(20, CommandProgress.Procent);
+            Assert.AreEqual(20, ProgressCommand.Procent);
             Assert.AreEqual(20, TabloProcent);
             Assert.AreEqual(0, Procent);
             Assert.AreEqual(0, Command.Procent);
             Procent = 20;
-            Assert.AreEqual(30, CommandProgress.Procent);
+            Assert.AreEqual(30, ProgressCommand.Procent);
             Assert.AreEqual(30, TabloProcent);
             Assert.AreEqual(20, Procent);
             Assert.AreEqual(20, Command.Procent);
@@ -197,17 +197,17 @@ namespace BaseLibraryTest
             Assert.IsNull(TabloText(2));
             StartIndicatorText(20, 30, "Text3").Run(() =>
                 {
-                    Assert.AreEqual(30, CommandProgress.Procent);
+                    Assert.AreEqual(30, ProgressCommand.Procent);
                     Assert.AreEqual(30, TabloProcent);
                     Assert.AreEqual(0, Procent);
                     Assert.AreEqual("Text3", TabloText(2));
                 });
 
             StartLog(40, 80, "Log", "Mod");
-            Assert.IsNotNull(CommandLog);
-            Assert.AreEqual(CommandProgress, CommandLog.Parent.Parent);
-            Assert.AreEqual(Command, CommandLog);
-            Assert.AreEqual(40, CommandProgress.Procent);
+            Assert.IsNotNull(LogCommand);
+            Assert.AreEqual(ProgressCommand, LogCommand.Parent.Parent);
+            Assert.AreEqual(Command, LogCommand);
+            Assert.AreEqual(40, ProgressCommand.Procent);
             Assert.AreEqual(40, TabloProcent);
             Assert.AreEqual(0, Procent);
             Assert.AreEqual(1, Supers[0].Logs.Count);
@@ -218,28 +218,28 @@ namespace BaseLibraryTest
             Assert.AreEqual("Log (Mod)", TabloText(1));
 
             AddEvent("Event", "Pars", 50);
-            Assert.AreEqual(50, CommandProgress.Procent);
+            Assert.AreEqual(50, ProgressCommand.Procent);
             Assert.AreEqual(50, TabloProcent);
             Assert.AreEqual(50, Procent);
             Assert.AreEqual(1, Logs[0].Events.Count);
             Assert.AreEqual("Event", Logs[0].Events[0].Description);
-            Assert.AreEqual(CommandQuality.Success, CommandLog.Quality);
-            Assert.AreEqual(CommandQuality.Success, CommandProgress.Quality);
+            Assert.AreEqual(CommandQuality.Success, LogCommand.Quality);
+            Assert.AreEqual(CommandQuality.Success, ProgressCommand.Quality);
 
             AddError("Error");
-            Assert.AreEqual(50, CommandProgress.Procent);
+            Assert.AreEqual(50, ProgressCommand.Procent);
             Assert.AreEqual(50, TabloProcent);
             Assert.AreEqual(50, Procent);
             Assert.AreEqual(2, Logs[0].Events.Count);
             Assert.AreEqual("Error", Logs[0].Events[1].Description);
-            Assert.AreEqual(CommandQuality.Error, CommandLog.Quality);
-            Assert.AreEqual(CommandQuality.Error, CommandProgress.Quality);
+            Assert.AreEqual(CommandQuality.Error, LogCommand.Quality);
+            Assert.AreEqual(CommandQuality.Error, ProgressCommand.Quality);
             
             Finish();
-            Assert.AreEqual(60, CommandProgress.Procent);
+            Assert.AreEqual(60, ProgressCommand.Procent);
             Assert.AreEqual(60, TabloProcent);
             Assert.AreEqual(80, Procent);
-            Assert.AreEqual(CommandQuality.Error, CommandProgress.Quality);
+            Assert.AreEqual(CommandQuality.Error, ProgressCommand.Quality);
             Assert.AreEqual("Процесс", TabloText(0));
             Assert.AreEqual("", TabloText(1));
 
@@ -248,14 +248,14 @@ namespace BaseLibraryTest
                     Assert.AreEqual("Процесс", TabloText(0));
                     Assert.AreEqual("Log2 (Mod2)", TabloText(1));
                 });
-            Assert.AreEqual(70, CommandProgress.Procent);
+            Assert.AreEqual(70, ProgressCommand.Procent);
             Assert.AreEqual(70, TabloProcent);
             Assert.AreEqual(100, Procent);
             Assert.AreEqual(100, c.Procent);
             Assert.AreEqual(CommandQuality.Success, c.Quality);
             Assert.AreEqual(2, Logs.Count);
             Assert.AreEqual(2, Supers[0].Logs.Count);
-            Assert.AreEqual(CommandQuality.Error, CommandProgress.Quality);
+            Assert.AreEqual(CommandQuality.Error, ProgressCommand.Quality);
 
             StartIndicatorText(20, 30, "Text3_1");
             Assert.AreEqual("Процесс", TabloText(0));
@@ -279,8 +279,8 @@ namespace BaseLibraryTest
             RunHistory();
             History.ClearErrorsList(); 
             StartCollect(true, true);
-            Assert.IsNotNull(CommandCollect);
-            Assert.AreSame(Command, CommandCollect);
+            Assert.IsNotNull(CollectCommand);
+            Assert.AreSame(Command, CollectCommand);
             Assert.AreEqual(0, Logs.Count);
             Assert.AreEqual(0, Supers.Count);
             Assert.IsNull(TabloText(1));
@@ -289,21 +289,21 @@ namespace BaseLibraryTest
             var en = new DateTime(2017, 1, 2);
             StartProgress(beg, en, "Mode", "Progress", "Pars");
             Assert.AreEqual(1, Supers.Count);
-            Assert.AreSame(CommandCollect, CommandProgress.Parent);
+            Assert.AreSame(CollectCommand, ProgressCommand.Parent);
             Assert.AreEqual(beg, Supers[0].BeginPeriod);
             Assert.AreEqual(en, Supers[0].EndPeriod);
             Assert.AreEqual("Mode", Supers[0].ModePeriod);
             Assert.AreEqual("Progress", Supers[0].Command);
-            Assert.AreEqual(beg, BeginPeriod);
-            Assert.AreEqual(en, EndPeriod);
-            Assert.AreEqual("Mode", ModePeriod);
+            Assert.AreEqual(beg, PeriodBegin);
+            Assert.AreEqual(en, PeriodEnd);
+            Assert.AreEqual("Mode", PeriodMode);
 
             StartLog("Log0", "Source", "Log0Pars");
             Assert.AreEqual(1, Supers[0].Logs.Count);
-            Assert.AreSame(CommandProgress, CommandLog.Parent);
+            Assert.AreSame(ProgressCommand, LogCommand.Parent);
             Assert.AreEqual("Log0 (Source)", TabloText(1));
-            Assert.AreEqual(beg, BeginPeriod);
-            Assert.AreEqual(en, EndPeriod);
+            Assert.AreEqual(beg, PeriodBegin);
+            Assert.AreEqual(en, PeriodEnd);
             
             AddWarning("War0", null, "War0Pars");
             Assert.AreEqual(1, Logs[0].Events.Count);
@@ -315,7 +315,7 @@ namespace BaseLibraryTest
             Assert.AreEqual("Log0", Errors[0].Command);
             Assert.AreEqual("War0Pars", Errors[0].Params);
             Assert.AreEqual("Предупреждение", Errors[0].Status);
-            Assert.AreEqual(CommandQuality.Warning, CommandCollect.Quality);
+            Assert.AreEqual(CommandQuality.Warning, CollectCommand.Quality);
 
             AddWarning("War1", null, "War1Pars");
             Assert.AreEqual(2, Logs[0].Events.Count);
@@ -327,11 +327,11 @@ namespace BaseLibraryTest
             Assert.AreEqual("Log0", Errors[1].Command);
             Assert.AreEqual("War1Pars", Errors[1].Params);
             Assert.AreEqual("Предупреждение", Errors[1].Status);
-            Assert.AreEqual(CommandQuality.Warning, CommandCollect.Quality);
+            Assert.AreEqual(CommandQuality.Warning, CollectCommand.Quality);
 
             StartLog("Log1", "Source2", "Log1Pars");
             Assert.AreEqual(2, Logs.Count);
-            Assert.AreSame(CommandProgress, CommandLog.Parent);
+            Assert.AreSame(ProgressCommand, LogCommand.Parent);
             Assert.AreEqual("Log1 (Source2)", TabloText(1));
 
             AddError("Err2", null, "Err2Pars");
@@ -344,9 +344,9 @@ namespace BaseLibraryTest
             Assert.AreEqual("Log1", Errors[2].Command);
             Assert.AreEqual("Err2Pars", Errors[2].Params);
             Assert.AreEqual("Ошибка", Errors[2].Status);
-            Assert.AreEqual(CommandQuality.Error, CommandCollect.Quality);
+            Assert.AreEqual(CommandQuality.Error, CollectCommand.Quality);
 
-            try { Command = CommandCollect.Parent.Parent;}
+            try { Command = CollectCommand.Parent.Parent;}
             catch (Exception ex)
             {
                 AddError("Err3", ex, "Err3Pars");
@@ -365,22 +365,22 @@ namespace BaseLibraryTest
             Assert.AreEqual("Log1", Errors[3].Command);
             Assert.AreEqual("Err3Pars", Errors[3].Params);
             Assert.AreEqual("Ошибка", Errors[3].Status);
-            Assert.AreEqual(CommandQuality.Error, CommandCollect.Quality);
+            Assert.AreEqual(CommandQuality.Error, CollectCommand.Quality);
 
             FinishProgress();
             Assert.AreEqual("", TabloText(1));
             Assert.AreEqual("", TabloText(0));
-            Assert.AreEqual(beg, BeginPeriod);
-            Assert.AreEqual(en, EndPeriod);
-            Assert.AreEqual("Mode", ModePeriod);
+            Assert.AreEqual(beg, PeriodBegin);
+            Assert.AreEqual(en, PeriodEnd);
+            Assert.AreEqual("Mode", PeriodMode);
 
             Assert.AreEqual(1, Supers.Count);
-            Assert.IsNull(CommandProgress);
-            Assert.AreEqual(CommandQuality.Error, CommandCollect.Quality);
+            Assert.IsNull(ProgressCommand);
+            Assert.AreEqual(CommandQuality.Error, CollectCommand.Quality);
 
             var c = FinishCollect("Results");
             Assert.AreEqual("Results", CommandResults);
-            Assert.IsNull(CommandCollect);
+            Assert.IsNull(CollectCommand);
             Assert.IsNull(Command);
             Assert.AreEqual(CommandQuality.Error, c.Quality);
             Assert.AreEqual("Ошибка: Err2; Source2; Err2Pars" + Environment.NewLine +
@@ -404,7 +404,7 @@ namespace BaseLibraryTest
         public void BreakEx()
         {
             RunHistory();
-            var c = (CommandCollect)StartCollect(false, true).Run(() =>
+            var c = (CollectCommand)StartCollect(false, true).Run(() =>
                 {
                     WasBreaked = true;
                     StartLog("aa");
@@ -418,7 +418,7 @@ namespace BaseLibraryTest
             Assert.AreEqual(0, Logs.Count);
             Assert.AreEqual("", c.ErrorMessage());
 
-            c = (CommandCollect)StartCollect(false, true).Run(() =>
+            c = (CollectCommand)StartCollect(false, true).Run(() =>
                 {
                     StartProgress("Progress", "Progress");
                     Assert.AreEqual("Progress", TabloText(0));
@@ -441,7 +441,7 @@ namespace BaseLibraryTest
             Assert.AreEqual("Прервано", c.Status);
             Assert.AreEqual("", c.ErrorMessage());
 
-            c = (CommandCollect)StartCollect(false, true).Run(
+            c = (CollectCommand)StartCollect(false, true).Run(
                 () =>
                 {
                     StartLog("L");
@@ -507,7 +507,7 @@ namespace BaseLibraryTest
             Assert.AreEqual(CommandQuality.Error, c.Quality);
         }
 
-        private CommandCollect RunDanger(int reps, int repserr, LoggerDangerness dangerness, bool useThread, bool useException)
+        private CollectCommand RunDanger(int reps, int repserr, LoggerDangerness dangerness, bool useThread, bool useException)
         {
             StartCollect(false, true);
             StartLog("Log");
@@ -557,7 +557,7 @@ namespace BaseLibraryTest
                 AddEvent("Повтор");
                 Assert.AreEqual(i * 4, Logs[0].Events.Count);
             });
-            Assert.AreSame(CommandLog, Command);
+            Assert.AreSame(LogCommand, Command);
             var c = FinishCollect();
             Assert.AreEqual(9, Logs[0].Events.Count);
             Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));

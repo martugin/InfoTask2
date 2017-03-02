@@ -4,94 +4,94 @@ namespace CommonTypes
 {
     //Мгновенные значения со временем и ошибками
     
-    public class MomErrBool : MomBool
+    public class BoolErrMom : BoolMom
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
         
-        public MomErrBool(DateTime time, bool b, ErrMom err) : base(time, b)
+        public BoolErrMom(DateTime time, bool b, MomErr err) : base(time, b)
         {
             Error = err;
         }
-        internal MomErrBool() {}
+        internal BoolErrMom() {}
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    public class MomErrInt : MomInt
+    public class IntErrMom : IntMom
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
 
-        public MomErrInt(DateTime time, int i, ErrMom err) : base(time, i)
+        public IntErrMom(DateTime time, int i, MomErr err) : base(time, i)
         {
             Error = err;
         }
-        internal MomErrInt() { }
+        internal IntErrMom() { }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    public class MomErrReal : MomReal
+    public class RealErrMom : RealMom
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
 
-        public MomErrReal(DateTime time, double r, ErrMom err) : base(time, r)
+        public RealErrMom(DateTime time, double r, MomErr err) : base(time, r)
         {
             Error = err;
         }
-        internal MomErrReal() { }
+        internal RealErrMom() { }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    public class MomErrString : MomString
+    public class StringErrMom : StringMom
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
 
-        public MomErrString(DateTime time, string s, ErrMom err)
+        public StringErrMom(DateTime time, string s, MomErr err)
             : base(time, s)
         {
             Error = err;
         }
-        internal MomErrString() { }
+        internal StringErrMom() { }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    public class MomErrTime : MomTime
+    public class TimeErrMom : TimeMom
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
 
-        public MomErrTime(DateTime time, DateTime d, ErrMom err)
+        public TimeErrMom(DateTime time, DateTime d, MomErr err)
             : base(time, d)
         {
             Error = err;
         }
-        internal MomErrTime() { }
+        internal TimeErrMom() { }
     }
 
     //---------------------------------------------------------------------------------------------------
 
-    public class MomErrWeighted : MomWeighted
+    public class WeightedErrMom : WeightedMom
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
 
-        public MomErrWeighted(DateTime time, double r, double w, ErrMom err) : base(time, r, w)
+        public WeightedErrMom(DateTime time, double r, double w, MomErr err) : base(time, r, w)
         {
             Error = err;
         }
-        internal MomErrWeighted() { }
+        internal WeightedErrMom() { }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    public class MomErrValue : MomValue
+    public class ValueErrMom : ValueMom
     {
-        public override ErrMom Error { get; internal set; }
+        public override MomErr Error { get; internal set; }
 
-        public MomErrValue(DateTime time, ErrMom err) : base(time)
+        public ValueErrMom(DateTime time, MomErr err) : base(time)
         {
             Error = err;
         }
-        internal MomErrValue() { }
+        internal ValueErrMom() { }
     }
 }

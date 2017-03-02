@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace ProvidersLibrary
 {
     //Источник c функцией чтения по блокам
-    public abstract class PartsSource : SourceBase
+    public abstract class PartsSource : BaseSource
     {
         //Чтение значений по блокам объектов
         protected ValuesCount ReadByParts(IEnumerable<SourceOut> objects, //список объектов

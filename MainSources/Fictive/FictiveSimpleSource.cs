@@ -7,9 +7,9 @@ using ProvidersLibrary;
 namespace Fictive
 {
     //Фиктивный тестовый источник, реализация без чтения по блокам и OleDb
-    [Export(typeof(ProviderBase))]
+    [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "FictiveSimpleSource")]
-    public class FictiveSimpleSource : SourceBase
+    public class FictiveSimpleSource : BaseSource
     {
         //Код
         public override string Code { get { return "FictiveSimpleSource"; } }
@@ -29,15 +29,15 @@ namespace Fictive
         }
 
         //Словарь объектов, ключи - номера
-        private readonly DicI<OutFictive> _objects = new DicI<OutFictive>();
-        internal DicI<OutFictive> Objects { get { return _objects; } }
+        private readonly DicI<FictiveOut> _objects = new DicI<FictiveOut>();
+        internal DicI<FictiveOut> Objects { get { return _objects; } }
 
         //Добавить объект в провайдер
         protected override SourceOut AddOut(InitialSignal sig)
         {
             var num = sig.Inf.GetInt("NumObject");
             if (_objects.ContainsKey(num)) return _objects[num];
-            return _objects.Add(num, new OutFictive(this, sig.Inf.GetInt("ValuesInterval")));
+            return _objects.Add(num, new FictiveOut(this, sig.Inf.GetInt("ValuesInterval")));
         }
 
         //Очистка списков объектов
@@ -54,9 +54,9 @@ namespace Fictive
         }
         
         //Создание фабрики ошибок
-        protected override IErrMomFactory MakeErrFactory()
+        protected override IMomErrFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
+            var factory = new MomErrFactory(ProviderConnect.Name, MomErrType.Source);
             factory.AddGoodDescr(0);
             factory.AddDescr(1, "Предупреждение", ErrQuality.Warning);
             factory.AddDescr(2, "Ошибка");

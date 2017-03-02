@@ -5,7 +5,7 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(ProviderBase))]
+    [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "KosmotronikaRetroSource")]
     public class KosmotronikaRetroSource : KosmotronikaBaseSource
     {

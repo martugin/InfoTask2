@@ -28,8 +28,8 @@ namespace ComClients
         private TimeInterval _interval;
 
         //Диапазон времени источника
-        public DateTime TimeBegin { get { return _interval.Begin; } }
-        public DateTime TimeEnd { get { return _interval.End; } }
+        public DateTime BeginTime { get { return _interval.Begin; } }
+        public DateTime EndTime { get { return _interval.End; } }
 
         //Очистка списка сигналов
         public void ClearSignals()

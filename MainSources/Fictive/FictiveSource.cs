@@ -9,7 +9,7 @@ using ProvidersLibrary;
 namespace Fictive
 {
     //Фиктивный тестовый источник с чтением по блокам, OleDb, резервным подключением
-    [Export(typeof(ProviderBase))]
+    [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "FictiveSource")]
     public class FictiveSource : AccessSource
     {
@@ -25,11 +25,11 @@ namespace Fictive
         }
         
         //Словари выходов, ключи - номера и коды
-        internal readonly DicI<OutFictive> OutsId = new DicI<OutFictive>();
-        internal readonly DicS<OutFictive> Outs = new DicS<OutFictive>();
+        internal readonly DicI<FictiveOut> OutsId = new DicI<FictiveOut>();
+        internal readonly DicS<FictiveOut> Outs = new DicS<FictiveOut>();
         //Словари объектов второй таблицы
-        internal readonly DicI<OutFictiveSmall> OutsId2 = new DicI<OutFictiveSmall>();
-        internal readonly DicS<OutFictiveSmall> Outs2 = new DicS<OutFictiveSmall>();
+        internal readonly DicI<FictiveSmallOut> OutsId2 = new DicI<FictiveSmallOut>();
+        internal readonly DicS<FictiveSmallOut> Outs2 = new DicS<FictiveSmallOut>();
         //Объект действий оператора
         internal OutFictiveOperator OperatorOut;
 
@@ -43,10 +43,10 @@ namespace Fictive
             {
                 case "MomValues":
                     if (Outs.ContainsKey(code)) return Outs[code];
-                    return Outs.Add(code, new OutFictive(this, isErr));
+                    return Outs.Add(code, new FictiveOut(this, isErr));
                 case "MomValues2":
                     if (Outs2.ContainsKey(code)) return Outs2[code];
-                    return Outs2.Add(code, new OutFictiveSmall(this));
+                    return Outs2.Add(code, new FictiveSmallOut(this));
                 case "MomOperator":
                     return OperatorOut ?? (OperatorOut = new OutFictiveOperator(this));
             }
@@ -68,7 +68,7 @@ namespace Fictive
         {
             OutsId.Clear();
             OutsId2.Clear();
-            using (var rec = new RecDao(DbFile, "Objects"))
+            using (var rec = new DaoRec(DbFile, "Objects"))
                 while (rec.Read())
                 {
                     var code = rec.GetString("Code");
@@ -89,9 +89,9 @@ namespace Fictive
         }
 
         //Создание фабрики ошибок
-        protected override IErrMomFactory MakeErrFactory()
+        protected override IMomErrFactory MakeErrFactory()
         {
-            var factory = new ErrMomFactory(ProviderConnect.Name, ErrMomType.Source);
+            var factory = new MomErrFactory(ProviderConnect.Name, MomErrType.Source);
             factory.AddGoodDescr(0);
             factory.AddDescr(1, "Предупреждение", ErrQuality.Warning);
             factory.AddDescr(2, "Ошибка");
@@ -104,7 +104,7 @@ namespace Fictive
             var sb = new StringBuilder("SELECT " + "MomValues.* FROM " + "MomValues" + " WHERE (");
             for (int i = 0; i < part.Count; i++)
             {
-                var ob = (OutFictive)part[i];
+                var ob = (FictiveOut)part[i];
                 if (ob.IsErrorObject) 
                     throw new Exception("Ошибочный объект");
                 if (i > 0) sb.Append(" Or ");
@@ -112,7 +112,7 @@ namespace Fictive
             }
             sb.Append(") And (Time > " + beg.ToAccessString() + ") And (Time <= " + en.ToAccessString() + ")");
             sb.Append(" ORDER BY Time");
-            return new RecDao(DbFile, sb.ToString());
+            return new DaoRec(DbFile, sb.ToString());
         }
         //Определение текущего считываемого объекта
         protected override SourceOut DefineOut(IRecordRead rec)
@@ -123,15 +123,15 @@ namespace Fictive
         //Запрос значений по одному блоку из таблицы Values2
         protected IRecordRead QueryValues2(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
-            var sb = new StringBuilder("SELECT MomValues2.* FROM MomValues2 WHERE ((ObjectId = " + ((OutFictiveSmall)part[0]).Id + ")");
+            var sb = new StringBuilder("SELECT MomValues2.* FROM MomValues2 WHERE ((ObjectId = " + ((FictiveSmallOut)part[0]).Id + ")");
             for (int i = 1; i < part.Count; i++)
             {
                 sb.Append(" Or ");
-                sb.Append("(ObjectId = " + ((OutFictiveSmall)part[i]).Id + ")");
+                sb.Append("(ObjectId = " + ((FictiveSmallOut)part[i]).Id + ")");
             }
             sb.Append(") And (Time > " + beg.ToAccessString() + ") And (Time <= " + en.ToAccessString() + ")");
             sb.Append(" ORDER BY Time");
-            return new RecDao(DbFile, sb.ToString());
+            return new DaoRec(DbFile, sb.ToString());
         }
         protected SourceOut DefineOut2(IRecordRead rec)
         {
@@ -141,7 +141,7 @@ namespace Fictive
         //Запрос действий оператора
         protected IRecordRead QueryOperator(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
-            return new RecDao(DbFile, "SELECT * FROM MomOperator WHERE (Time >= " + beg.ToAccessString() + ") And (Time <= " + en.ToAccessString() + ")");
+            return new DaoRec(DbFile, "SELECT * FROM MomOperator WHERE (Time >= " + beg.ToAccessString() + ") And (Time <= " + en.ToAccessString() + ")");
         }
 
         //Чтение среза

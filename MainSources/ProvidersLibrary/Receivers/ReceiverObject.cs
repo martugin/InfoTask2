@@ -5,13 +5,13 @@ namespace ProvidersLibrary
 {
     public abstract class ReceiverObject : IContextable 
     {
-        protected ReceiverObject(ReceiverBase receiver)
+        protected ReceiverObject(BaseReceiver receiver)
         {
             Receiver = receiver;
         }
 
         //Ссылка на приемник
-        protected ReceiverBase Receiver { get; private set; }
+        protected BaseReceiver Receiver { get; private set; }
         //Код объекта - контекст для формирования ошибок
         public string Context { get; internal set; }
 

@@ -42,8 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OutOvation.cs" />
-    <Compile Include="OutOvationMsg.cs" />
+    <Compile Include="OvationOut.cs" />
+    <Compile Include="OvationMsgOut.cs" />
     <Compile Include="OvationOPCReceiver.cs" />
     <Compile Include="OvationSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

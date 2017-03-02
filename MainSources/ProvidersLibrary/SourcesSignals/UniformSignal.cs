@@ -10,17 +10,17 @@ namespace ProvidersLibrary
         public UniformSignal(SourceConnect connect, string code, string codeOut, DataType dataType, string signalInf)
             : base(connect, code, codeOut, dataType, signalInf)
         {
-            _prevMom = new MomEdit(dataType);
-            _beginMom = new MomEdit(dataType);
-            _endMom = new MomEdit(dataType);    
+            _prevMom = new EditMom(dataType);
+            _beginMom = new EditMom(dataType);
+            _endMom = new EditMom(dataType);    
         }
 
         //Значение среза на начало периода
-        private readonly MomEdit _beginMom;
+        private readonly EditMom _beginMom;
         //Значение среза для следующего периода
-        private readonly MomEdit _endMom;
+        private readonly EditMom _endMom;
         //Предыдущее значение, добавленное в клон
-        private readonly MomEdit _prevMom;
+        private readonly EditMom _prevMom;
 
         //Очистка списка значений
         internal override void ClearMoments(bool clearBegin)
@@ -32,7 +32,7 @@ namespace ProvidersLibrary
 
         //Добавка мгновенного значения в список или клон
         //Возвращает количество реально добавленных значений 
-        internal override int AddMom(DateTime time, ErrMom err)  
+        internal override int AddMom(DateTime time, MomErr err)  
         {
             BufMom.Time = time;
             BufMom.Error = err;

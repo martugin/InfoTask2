@@ -3,9 +3,9 @@
 namespace Generator
 {
     //Программа без значения
-    internal class NodeVoidProg : Node, INodeVoid
+    internal class NodeVoidProg : Node, IVoidNode
     {
-        public NodeVoidProg(params INodeVoid[] parts) : base(null)
+        public NodeVoidProg(params IVoidNode[] parts) : base(null)
         {
             _voidParts = parts;
         }
@@ -18,7 +18,7 @@ namespace Generator
         }
 
         //Список частей программы
-        private readonly INodeVoid[] _voidParts;
+        private readonly IVoidNode[] _voidParts;
 
         //Проверка корректности выражений генерации
         public void Check(ITablStruct tabl)
@@ -37,9 +37,9 @@ namespace Generator
 
     //-------------------------------------------------------------------------------------------------------------
     //Программа, возвращающая значение
-    internal class NodeValueProg : Node, INodeExpr
+    internal class NodeValueProg : Node, IExprNode
     {
-        public NodeValueProg(NodeVoidProg voidProg, INodeExpr expr) : base(null)
+        public NodeValueProg(NodeVoidProg voidProg, IExprNode expr) : base(null)
         {
             _voidProg = voidProg;
             _expr = expr;
@@ -48,7 +48,7 @@ namespace Generator
         //Узел, список частей программы без значения
         private readonly NodeVoidProg _voidProg;
         //Выражение, возвращающее значение
-        private readonly INodeExpr _expr;
+        private readonly IExprNode _expr;
 
         public override string ToTestString()
         {

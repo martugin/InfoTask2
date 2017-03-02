@@ -9,8 +9,8 @@ namespace ComClients
     internal interface IIndicator
     {
         //Обработчики событий отображения индикатора
-        void OnShowIndicatorTexted(object sender, EventArgs e);
-        void OnShowIndicatorTimed(object sender, EventArgs e);
+        void OnShowTextedIndicator(object sender, EventArgs e);
+        void OnShowTimedIndicator(object sender, EventArgs e);
         void OnHideIndicator(object sender, EventArgs e);
         void OnChangeProcent(object sender, ChangeProcentEventArgs e);
         void OnSetProcessTimed(object sender, SetProcentTimedEventArgs e);
@@ -31,22 +31,22 @@ namespace ComClients
         private delegate void FormDelegate();
 
         //Форма индикатора с указанием периода
-        private IndicatorFormTimed _formTimed;
+        private TimedIndicatorForm _timedForm;
         //Форма индикатора с текстом
-        private IndicatorFormTexted _formTexted;
+        private TextedIndicatorForm _textedForm;
 
         //Обработка событий показать форму индикатора
-        public void OnShowIndicatorTexted(object sender, EventArgs e)
+        public void OnShowTextedIndicator(object sender, EventArgs e)
         {
-            if (_formTexted == null)
-                _formTexted = new IndicatorFormTexted();
-            ShowIndicatorForm(_formTexted);
+            if (_textedForm == null)
+                _textedForm = new TextedIndicatorForm();
+            ShowIndicatorForm(_textedForm);
         }
-        public void OnShowIndicatorTimed(object sender, EventArgs e)
+        public void OnShowTimedIndicator(object sender, EventArgs e)
         {
-            if (_formTimed == null)
-                _formTimed = new IndicatorFormTimed();
-            ShowIndicatorForm(_formTimed);
+            if (_timedForm == null)
+                _timedForm = new TimedIndicatorForm();
+            ShowIndicatorForm(_timedForm);
         }
         //Высвечивает форму индикатора
         private void ShowIndicatorForm(Form form)
@@ -64,16 +64,16 @@ namespace ComClients
         //Обработка события скрыть форму индикатора
         public void OnHideIndicator(object sender, EventArgs e)
         {
-            Invoke(_formTimed, () => _formTimed.Hide());
-            Invoke(_formTexted, () => _formTexted.Hide());
+            Invoke(_timedForm, () => _timedForm.Hide());
+            Invoke(_textedForm, () => _textedForm.Hide());
         }
 
         //Обработка события изменения уровня индикатора
         public void OnChangeProcent(object sender, ChangeProcentEventArgs e)
         {
             int p = Convert.ToInt32(e.Procent);
-            Invoke(_formTimed, () => { _formTimed.Procent.Value = p; });
-            Invoke(_formTexted, () => { _formTexted.Procent.Value = p; });
+            Invoke(_timedForm, () => { _timedForm.Procent.Value = p; });
+            Invoke(_textedForm, () => { _textedForm.Procent.Value = p; });
         }
 
         public void OnSetProcessTimed(object sender, SetProcentTimedEventArgs e) {}
@@ -82,26 +82,26 @@ namespace ComClients
         //Обработка события изменения текста на табло
         public void OnChangeTabloText(object sender, ChangeTabloTextEventArgs e)
         {
-            Invoke(_formTimed, () =>
+            Invoke(_timedForm, () =>
             {
-                _formTimed.Text1.Text = e.TabloText[1];
-                _formTimed.Text2.Text = e.TabloText[2];
+                _timedForm.Text1.Text = e.TabloText[1];
+                _timedForm.Text2.Text = e.TabloText[2];
             });
-            Invoke(_formTexted, () =>
+            Invoke(_textedForm, () =>
             {
-                _formTexted.Text0.Text = e.TabloText[0];
-                _formTexted.Text1.Text = e.TabloText[1];
-                _formTexted.Text2.Text = e.TabloText[2];
+                _textedForm.Text0.Text = e.TabloText[0];
+                _textedForm.Text1.Text = e.TabloText[1];
+                _textedForm.Text2.Text = e.TabloText[2];
             });
         }
 
         //Обработка события изменения периода обработки
         public void OnChangePeriod(object sender, ChangePeriodEventArgs e)
         {
-            Invoke(_formTimed, () =>
+            Invoke(_timedForm, () =>
             {
-                _formTimed.PeriodBegin.Text = e.BeginPeriod.ToString();
-                _formTimed.PeriodEnd.Text = e.EndPeriod.ToString();
+                _timedForm.PeriodBegin.Text = e.BeginPeriod.ToString();
+                _timedForm.PeriodEnd.Text = e.EndPeriod.ToString();
             });
         }
     }

@@ -6,7 +6,7 @@ namespace Fictive
     //Объект для фиктивных действий оператора
     internal class OutFictiveOperator : SourceOut
     {
-        internal OutFictiveOperator(SourceBase source) 
+        internal OutFictiveOperator(BaseSource source) 
             : base(source) { }
 
         //Текст команды

@@ -29,7 +29,7 @@ namespace BaseLibrary
         public bool IsSuccess { get { return Quality == CommandQuality.Success; } }
 
         //Добавить ошибку
-        public virtual void AddError(ErrorCommand err)
+        public virtual void AddError(CommandError err)
         {
             AddQuality(err.Quality);
             if (Parent != null)

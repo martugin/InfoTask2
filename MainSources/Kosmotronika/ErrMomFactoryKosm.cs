@@ -3,7 +3,7 @@ using CommonTypes;
 
 namespace Provider
 {
-    public class ErrMomFactoryKosm : IErrMomFactory
+    public class KosmMomErrFactory : IMomErrFactory
     {
         //Код источника ошибок
         public string ErrSourceCode
@@ -15,7 +15,7 @@ namespace Provider
         public ErrDescr GetDescr(int number)
         {
             if (number == 0) return null;
-            return new ErrDescr(number, NdText(number), NdQuality(number), ErrMomType.Source);
+            return new ErrDescr(number, NdText(number), NdQuality(number), MomErrType.Source);
         }
 
         //Текст в случае неопределенной ошибки

@@ -13,81 +13,81 @@ namespace CommonTypes
             return CreateMean(dtype, null);
         }
 
-        public static IMean NewMean(DataType dtype, ErrMom err)
+        public static IMean NewMean(DataType dtype, MomErr err)
         {
             return CreateMean(dtype, err);
         }
 
-        public static IMean NewMean(bool b, ErrMom err = null)
+        public static IMean NewMean(bool b, MomErr err = null)
         {
-            return err == null ? new MeanBool(b) : new MeanErrBool(b, err);
+            return err == null ? new BoolMean(b) : new MeanErrBool(b, err);
         }
-        public static IMean NewMean(DataType dtype, bool b, ErrMom err = null)
+        public static IMean NewMean(DataType dtype, bool b, MomErr err = null)
         {
             var mean = CreateMean(dtype, err);
             mean.Boolean = b;
             return mean;
         }
 
-        public static IMean NewMean(int i, ErrMom err = null)
+        public static IMean NewMean(int i, MomErr err = null)
         {
-            return err == null ? new MeanInt(i) : new MeanErrInt(i, err);
+            return err == null ? new IntMean(i) : new MeanErrInt(i, err);
         }
-        public static Mean NewMean(DataType dtype, int i, ErrMom err = null)
+        public static Mean NewMean(DataType dtype, int i, MomErr err = null)
         {
             var mean = CreateMean(dtype, err);
             mean.Integer = i;
             return mean;
         }
 
-        public static IMean NewMean(double d, ErrMom err = null)
+        public static IMean NewMean(double d, MomErr err = null)
         {
-            return err == null ? new MeanReal(d) : new MeanErrReal(d, err);
+            return err == null ? new RealMean(d) : new MeanErrReal(d, err);
         }
-        public static Mean NewMean(DataType dtype, double r, ErrMom err = null)
+        public static Mean NewMean(DataType dtype, double r, MomErr err = null)
         {
             var mean = CreateMean(dtype, err);
             mean.Real = r;
             return mean;
         }
 
-        public static IMean NewMean(string s, ErrMom err = null)
+        public static IMean NewMean(string s, MomErr err = null)
         {
-            return err == null ? new MeanString(s) : new MeanErrString(s, err);
+            return err == null ? new StringMean(s) : new MeanErrString(s, err);
         }
-        public static Mean NewMean(DataType dtype, string s, ErrMom err = null)
+        public static Mean NewMean(DataType dtype, string s, MomErr err = null)
         {
             var mean = CreateMean(dtype, err);
             mean.String = s;
             return mean;
         }
 
-        public static IMean NewMean(DateTime d, ErrMom err = null)
+        public static IMean NewMean(DateTime d, MomErr err = null)
         {
-            return err == null ? new MeanTime(d) : new MeanErrTime(d, err);
+            return err == null ? new TimeMean(d) : new MeanErrTime(d, err);
         }
-        public static Mean NewMean(DataType dtype, DateTime d, ErrMom err = null)
+        public static Mean NewMean(DataType dtype, DateTime d, MomErr err = null)
         {
             var mean = CreateMean(dtype, err);
             mean.Date = d;
             return mean;
         }
         
-        private static Mean CreateMean(DataType dtype, ErrMom err)
+        private static Mean CreateMean(DataType dtype, MomErr err)
         {
             if (err == null)
                 switch (dtype)
                 {
                     case DataType.Real:
-                        return new MeanReal();
+                        return new RealMean();
                     case DataType.String:
-                        return new MeanString();
+                        return new StringMean();
                     case DataType.Integer:
-                        return new MeanInt();
+                        return new IntMean();
                     case DataType.Boolean:
-                        return new MeanBool();
+                        return new BoolMean();
                     case DataType.Time:
-                        return new MeanTime();
+                        return new TimeMean();
                 }
             else
             {
@@ -120,15 +120,15 @@ namespace CommonTypes
             switch (dtype)
             {
                 case DataType.Real:
-                    return new MeanReal(rec.GetDouble(field));
+                    return new RealMean(rec.GetDouble(field));
                 case DataType.String:
-                    return new MeanString(rec.GetString(field));
+                    return new StringMean(rec.GetString(field));
                 case DataType.Integer:
-                    return new MeanInt(rec.GetInt(field));
+                    return new IntMean(rec.GetInt(field));
                 case DataType.Boolean:
-                    return new MeanBool(rec.GetBool(field));
+                    return new BoolMean(rec.GetBool(field));
                 case DataType.Time:
-                    return new MeanTime(rec.GetTime(field));
+                    return new TimeMean(rec.GetTime(field));
             }
             return null;
         }
@@ -136,111 +136,111 @@ namespace CommonTypes
 
         //NewMom
         #region
-        public static IMean NewMom(DateTime time, bool b, ErrMom err = null)
+        public static IMean NewMom(DateTime time, bool b, MomErr err = null)
         {
-            return err == null ? new MomBool(time, b) : new MomErrBool(time, b, err);
+            return err == null ? new BoolMom(time, b) : new BoolErrMom(time, b, err);
         }
-        public static IMean NewMom(DataType dtype, DateTime time, bool b, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, bool b, MomErr err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Boolean = b;
             return mom;
         }
 
-        public static IMean NewMom(DateTime time, int i, ErrMom err = null)
+        public static IMean NewMom(DateTime time, int i, MomErr err = null)
         {
-            return err == null ? new MomInt(time, i) : new MomErrInt(time, i, err);
+            return err == null ? new IntMom(time, i) : new IntErrMom(time, i, err);
         }
-        public static IMean NewMom(DataType dtype, DateTime time, int i, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, int i, MomErr err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Integer = i;
             return mom;
         }
 
-        public static IMean NewMom(DateTime time, double r, ErrMom err = null)
+        public static IMean NewMom(DateTime time, double r, MomErr err = null)
         {
-            return err == null ? new MomReal(time, r) : new MomErrReal(time, r, err);
+            return err == null ? new RealMom(time, r) : new RealErrMom(time, r, err);
         }
-        public static IMean NewMom(DataType dtype, DateTime time, double r, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, double r, MomErr err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Real = r;
             return mom;
         }
 
-        public static IMean NewMom(DateTime time, string s, ErrMom err = null)
+        public static IMean NewMom(DateTime time, string s, MomErr err = null)
         {
-            return err == null ? new MomString(time, s) : new MomErrString(time, s, err);
+            return err == null ? new StringMom(time, s) : new StringErrMom(time, s, err);
         }
-        public static IMean NewMom(DataType dtype, DateTime time, string s, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, string s, MomErr err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.String = s;
             return mom;
         }
 
-        public static IMean NewMom(DateTime time, DateTime d, ErrMom err = null)
+        public static IMean NewMom(DateTime time, DateTime d, MomErr err = null)
         {
-            return err == null ? new MomTime(time, d) : new MomErrTime(time, d, err);
+            return err == null ? new TimeMom(time, d) : new TimeErrMom(time, d, err);
         }
-        public static IMean NewMom(DataType dtype, DateTime time, DateTime d, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, DateTime d, MomErr err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Date = d;
             return mom;
         }
 
-        public static IMean NewMom(DataType dtype, DateTime time, object ob, ErrMom err = null)
+        public static IMean NewMom(DataType dtype, DateTime time, object ob, MomErr err = null)
         {
             var mom = CreateMom(dtype, time, err);
             mom.Object = ob;
             return mom;
         }
 
-        internal static IMean NewMom(DataType dtype, DateTime time, ErrMom err = null)
+        internal static IMean NewMom(DataType dtype, DateTime time, MomErr err = null)
         {
             return CreateMom(dtype, time, err);
         }
 
-        private static Mean CreateMom(DataType dtype, DateTime time, ErrMom err)
+        private static Mean CreateMom(DataType dtype, DateTime time, MomErr err)
         {
             if (err == null)
             {
                 switch (dtype)
                 {
                     case DataType.Real:
-                        return new MomReal {Time = time};
+                        return new RealMom {Time = time};
                     case DataType.String:
-                        return new MomString {Time = time};
+                        return new StringMom {Time = time};
                     case DataType.Integer:
-                        return new MomInt {Time = time};
+                        return new IntMom {Time = time};
                     case DataType.Boolean:
-                        return new MomBool {Time = time};
+                        return new BoolMom {Time = time};
                     case DataType.Time:
-                        return new MomTime {Time = time};
+                        return new TimeMom {Time = time};
                     case DataType.Weighted:
-                        return new MomWeighted {Time = time};
+                        return new WeightedMom {Time = time};
                     case DataType.Value:
-                        return new MomValue {Time = time};
+                        return new ValueMom {Time = time};
                 }
             }
             switch (dtype)
             {
                 case DataType.Real:
-                    return new MomErrReal { Time = time, Error = err};
+                    return new RealErrMom { Time = time, Error = err};
                 case DataType.String:
-                    return new MomErrString { Time = time, Error = err };
+                    return new StringErrMom { Time = time, Error = err };
                 case DataType.Integer:
-                    return new MomErrInt { Time = time, Error = err };
+                    return new IntErrMom { Time = time, Error = err };
                 case DataType.Boolean:
-                    return new MomErrBool { Time = time, Error = err };
+                    return new BoolErrMom { Time = time, Error = err };
                 case DataType.Time:
-                    return new MomErrTime { Time = time, Error = err };
+                    return new TimeErrMom { Time = time, Error = err };
                 case DataType.Weighted:
-                    return new MomWeighted { Time = time, Error = err};
+                    return new WeightedMom { Time = time, Error = err};
                 case DataType.Value:
-                    return new MomValue { Time = time, Error = err};
+                    return new ValueMom { Time = time, Error = err};
             }
             return null;
         }
@@ -253,17 +253,17 @@ namespace CommonTypes
             switch (dtype)
             {
                 case DataType.Boolean:
-                    return new MomListBool();
+                    return new BoolMomList();
                 case DataType.Integer:
-                    return new MomListInt();
+                    return new IntMomList();
                 case DataType.Real:
-                    return new MomListReal();
+                    return new RealMomList();
                 case DataType.String:
-                    return new MomListString();
+                    return new StringMomList();
                 case DataType.Time:
-                    return new MomListTime();
+                    return new TimeMomList();
                 case DataType.Weighted:
-                    return new MomListWeighted();
+                    return new WeightedMomList();
             }
             return null;
         }

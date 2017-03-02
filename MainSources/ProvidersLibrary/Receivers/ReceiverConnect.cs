@@ -14,7 +14,7 @@ namespace ProvidersLibrary
         public override ProviderType Type { get { return ProviderType.Receiver; } }
 
         //Текущий провайдер источника
-        private ReceiverBase Receiver { get { return (ReceiverBase)Provider; } }
+        private BaseReceiver Receiver { get { return (BaseReceiver)Provider; } }
 
         //Словарь сигналов приемников, ключи - коды
         private readonly DicS<ReceiverSignal> _signals = new DicS<ReceiverSignal>();

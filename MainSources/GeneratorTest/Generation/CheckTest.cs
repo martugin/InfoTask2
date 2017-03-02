@@ -48,7 +48,7 @@ namespace GeneratorTest
             keeper.Errors.Clear();
             var parsing = new FieldsParsing(keeper, "поле", formula);
             if (parsing.ResultTree == null) return DataType.Error;
-            return ((INodeExpr)parsing.ResultTree).Check(tstruct);
+            return ((IExprNode)parsing.ResultTree).Check(tstruct);
         }
 
         [TestMethod]

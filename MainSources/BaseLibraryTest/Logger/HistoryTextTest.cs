@@ -18,7 +18,7 @@ namespace BaseLibraryTest
                  new FileInfo(file).Delete();
                  new FileInfo(efile).Delete();
              }
-             History = new HistoryText(this, file, true);
+             History = new TextHistory(this, file, true);
          }
 
          [TestMethod]

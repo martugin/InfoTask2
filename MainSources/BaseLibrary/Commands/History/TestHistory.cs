@@ -14,7 +14,7 @@ namespace BaseLibrary
     }
 
     //-------------------------------------------------------------------------------------------------------
-    //CommandLog тестовой истории
+    //LogCommand тестовой истории
     internal class TestCommandLog
     {
         internal string Command { get; set; }
@@ -80,7 +80,7 @@ namespace BaseLibrary
         internal TestCommandSuper CommandSuper { get; private set; }
         internal TestCommandLog CommandLog { get; private set; }
 
-        public void WriteStartSuper(CommandProgress command)
+        public void WriteStartSuper(ProgressCommand command)
         {
             CommandSuper = new TestCommandSuper();
             Supers.Add(CommandSuper);
@@ -93,7 +93,7 @@ namespace BaseLibrary
             CommandSuper.Time = command.StartTime;
         }
 
-        public void WriteStart(CommandLog command)
+        public void WriteStart(LogCommand command)
         {
             CommandLog = new TestCommandLog();
             Logs.Add(CommandLog);
@@ -105,7 +105,7 @@ namespace BaseLibrary
             CommandLog.Context = command.Context;
         }
 
-        public void WriteFinishSuper(CommandProgress command, string results)
+        public void WriteFinishSuper(ProgressCommand command, string results)
         {
             CommandSuper.ProcessLength = command.FromStart;
             CommandSuper.Results = results;
@@ -113,7 +113,7 @@ namespace BaseLibrary
             CommandSuper = null;
         }
 
-        public void WriteFinish(CommandLog command, string results)
+        public void WriteFinish(LogCommand command, string results)
         {
             CommandLog.ProcessLength = command.FromStart;
             CommandLog.Results = results;
@@ -130,12 +130,12 @@ namespace BaseLibrary
                 ev.Description = description;
                 ev.Params = pars;
                 ev.Time = DateTime.Now;
-                ev.FromStart = Logger.CommandLog.FromStart;
+                ev.FromStart = Logger.LogCommand.FromStart;
                 ev.Status = null;
             }
         }
 
-        public void WriteError(ErrorCommand error)
+        public void WriteError(CommandError error)
         {
             if (CommandLog != null)
             {
@@ -144,12 +144,12 @@ namespace BaseLibrary
                 ev.Description = error.Text;
                 ev.Params = error.ToLog();
                 ev.Time = DateTime.Now;
-                ev.FromStart = Logger.CommandLog.FromStart;
+                ev.FromStart = Logger.LogCommand.FromStart;
                 ev.Status = error.Quality.ToRussian();
             }
         }
 
-        public void WriteErrorToList(ErrorCommand error)
+        public void WriteErrorToList(CommandError error)
         {
             var err = new TestErrorLog();
             Errors.Add(err);
@@ -157,12 +157,12 @@ namespace BaseLibrary
             err.Params = error.Params;
             err.Status = error.Quality.ToRussian();
             err.Time = DateTime.Now;
-            err.Command = Logger.CommandLog.Name;
-            err.Context = Logger.CommandLog.Context;
-            if (Logger.CommandProgress != null && Logger.CommandProgress.BeginPeriod != Different.MinDate)
+            err.Command = Logger.LogCommand.Name;
+            err.Context = Logger.LogCommand.Context;
+            if (Logger.ProgressCommand != null && Logger.ProgressCommand.BeginPeriod != Different.MinDate)
             {
-                err.BeginPeriod = Logger.CommandProgress.BeginPeriod;
-                err.EndPeriod = Logger.CommandProgress.EndPeriod;
+                err.BeginPeriod = Logger.ProgressCommand.BeginPeriod;
+                err.EndPeriod = Logger.ProgressCommand.EndPeriod;
             }
         }
 

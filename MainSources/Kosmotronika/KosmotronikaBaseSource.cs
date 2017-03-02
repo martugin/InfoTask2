@@ -29,7 +29,7 @@ namespace Provider
         //Получение времени архива ПТК
         protected override TimeInterval GetTimeSource()
         {
-            using (var rec = new ReaderAdo(Connection, "Exec RT_ARCHDATE"))
+            using (var rec = new AdoReader(Connection, "Exec RT_ARCHDATE"))
             {
                 var beg = rec.GetTime(0);
                 var en = rec.GetTime(1);
@@ -40,11 +40,11 @@ namespace Provider
         }
         
         //Словарь выходов. Один элемент словаря - один выход
-        private readonly Dictionary<OutIndex, OutKosm> _outs = new Dictionary<OutIndex, OutKosm>();
+        private readonly Dictionary<OutIndex, KosmOut> _outs = new Dictionary<OutIndex, KosmOut>();
         //Словарь аналоговых выходов
-        private readonly Dictionary<OutIndex, OutKosm> _analogs = new Dictionary<OutIndex, OutKosm>();
+        private readonly Dictionary<OutIndex, KosmOut> _analogs = new Dictionary<OutIndex, KosmOut>();
         //Выход действий оператора
-        private OutKosmOperator _operatorOut;
+        private KosmOperatorOut _operatorOut;
 
         //Очистка списка сигналов
         protected override void ClearOuts()
@@ -58,7 +58,7 @@ namespace Provider
         protected override SourceOut AddOut(InitialSignal sig)
         {
             if (sig.Inf.Get("ObjectType") == "Operator")
-                return _operatorOut ?? (_operatorOut = new OutKosmOperator(this));
+                return _operatorOut ?? (_operatorOut = new KosmOperatorOut(this));
             
             var ind = new OutIndex
             {
@@ -67,24 +67,24 @@ namespace Provider
                 Appartment = sig.Inf.GetInt("Appartment"),
                 Out = sig.Inf.GetInt("NumOut")
             };
-            OutKosm obj;
+            KosmOut obj;
             if (ind.Out == 1 && (ind.NumType == 1 || ind.NumType == 3 || ind.NumType == 32))
             {
                 if (_analogs.ContainsKey(ind)) obj = _analogs[ind];
-                else _analogs.Add(ind, obj = new OutKosm(this, ind));
+                else _analogs.Add(ind, obj = new KosmOut(this, ind));
             }
             else
             {
                 if (_outs.ContainsKey(ind)) obj = _outs[ind];
-                else _outs.Add(ind, obj = new OutKosm(this, ind));
+                else _outs.Add(ind, obj = new KosmOut(this, ind));
             }
             return obj;
         }
 
         //Создание фабрики ошибок
-        protected override IErrMomFactory MakeErrFactory()
+        protected override IMomErrFactory MakeErrFactory()
         {
-            return new ErrMomFactoryKosm();
+            return new KosmMomErrFactory();
         }
 
         //Производится считывание аналоговых сигналов
@@ -99,7 +99,7 @@ namespace Provider
             var nums = new ushort[part.Count, IsAnalog ? 3 : 4];
             for (int i = 0; i < part.Count; i++)
             {
-                var ob = (OutKosm)part[i];
+                var ob = (KosmOut)part[i];
                 nums[i, 0] = (ushort)ob.Sn;
                 nums[i, 1] = (ushort)ob.NumType;
                 nums[i, 2] = (ushort)ob.Appartment;
@@ -110,8 +110,8 @@ namespace Provider
             var parBeginTime = new OleDbParameter("BeginTime", OleDbType.DBTimeStamp) { Value = beg };
             var parEndTime = new OleDbParameter("EndTime", OleDbType.DBTimeStamp) { Value = en };
             var rec = isCut
-                ? new ReaderAdo(Connection, IsAnalog ? "Exec ST_ANALOG ?, ?" : "Exec ST_OUT ?, ?", parBeginTime, parSysNums)
-                : new ReaderAdo(Connection, IsAnalog ? "Exec RT_ANALOGREAD ? , ? , ?" : "Exec RT_EXTREAD ? , ? , ?", parBeginTime, parEndTime, parSysNums);
+                ? new AdoReader(Connection, IsAnalog ? "Exec ST_ANALOG ?, ?" : "Exec ST_OUT ?, ?", parBeginTime, parSysNums)
+                : new AdoReader(Connection, IsAnalog ? "Exec RT_ANALOGREAD ? , ? , ?" : "Exec RT_EXTREAD ? , ? , ?", parBeginTime, parEndTime, parSysNums);
 
             if (isCut && !rec.HasRows)
                 AddWarning("Значения из источника не получены", null, part[0].Context + " и др.");
@@ -139,7 +139,7 @@ namespace Provider
         {
             var parBeginTime = new OleDbParameter("BeginTime", OleDbType.DBTimeStamp) { Value = beg };
             var parEndTime = new OleDbParameter("EndTime", OleDbType.DBTimeStamp) { Value = en };
-            return new ReaderAdo(Connection, "Exec RT_OPRREAD ?, ?, ?", parBeginTime, parEndTime);
+            return new AdoReader(Connection, "Exec RT_OPRREAD ?, ?, ?", parBeginTime, parEndTime);
         }
 
         //Чтение среза

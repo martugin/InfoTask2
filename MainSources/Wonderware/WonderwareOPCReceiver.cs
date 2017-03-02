@@ -5,7 +5,7 @@ using ProvidersLibrary;
 namespace Provider
 {
     //OPC-сервер Wonderware
-    [Export(typeof(ProviderBase))]
+    [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "WonderwareOpcReceiver")]
     public class WonderwareOpcReceiver : OpcServer
     {

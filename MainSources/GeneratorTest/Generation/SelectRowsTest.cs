@@ -60,7 +60,7 @@ namespace GeneratorTest
             keeper.Errors.Clear();
             var parsing = new SubRuleParsing(keeper, "поле", formula);
             if (parsing.ResultTree == null) return null;
-            var node = (NodeRSub)parsing.ResultTree;
+            var node = (SubNodeR)parsing.ResultTree;
             node.Check(tabls, tstruct);
             return node.SelectRows(tabls, rows).ToArray();
         }

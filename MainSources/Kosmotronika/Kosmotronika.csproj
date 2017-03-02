@@ -47,8 +47,8 @@
     <Compile Include="KosmotronikaBaseSource.cs" />
     <Compile Include="KosmotronikaOPCReceiver.cs" />
     <Compile Include="KosmotronikaRetroSource.cs" />
-    <Compile Include="OutKosm.cs" />
-    <Compile Include="OutKosmOperator.cs" />
+    <Compile Include="KosmOut.cs" />
+    <Compile Include="KosmOperatorOut.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

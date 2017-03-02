@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OutWonderware.cs" />
+    <Compile Include="WonderwareOut.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WonderwareSource.cs" />
     <Compile Include="WonderwareOPCReceiver.cs" />

@@ -6,7 +6,7 @@ namespace ProvidersLibrary
     //Объект для клона, содержит один сигнал
     internal class CloneOut : SourceOut
     {
-        internal CloneOut(SourceBase source) : base(source) { }
+        internal CloneOut(BaseSource source) : base(source) { }
 
         //Чтение одного значения из рекордсета клона
         protected internal override int ReadMoments(IRecordRead rec)

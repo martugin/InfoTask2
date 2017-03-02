@@ -44,12 +44,12 @@ namespace InfoTaskClientTest
         }
 
 
-        public void OnShowIndicatorTexted(object sender, EventArgs e)
+        public void OnShowTextedIndicator(object sender, EventArgs e)
         {
             AddEvent("ShowTexted");
         }
 
-        public void OnShowIndicatorTimed(object sender, EventArgs e)
+        public void OnShowTimedIndicator(object sender, EventArgs e)
         {
             AddEvent("ShowTimed");
         }

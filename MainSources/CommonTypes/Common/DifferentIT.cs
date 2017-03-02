@@ -552,7 +552,7 @@ namespace CommonTypes
         }
 
         //Выбирает одну ошибку из двух
-        public static ErrMom Add(this ErrMom err1, ErrMom err2)
+        public static MomErr Add(this MomErr err1, MomErr err2)
         {
             if (err1 == null) return err2;
             if (err2 == null) return err1;
