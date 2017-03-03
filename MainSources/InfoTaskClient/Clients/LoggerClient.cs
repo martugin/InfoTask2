@@ -5,10 +5,10 @@ using BaseLibrary;
 namespace ComClients
 {
     //Оболочка логгера для вызова через COM
-    public abstract class LoggerClient
+    public abstract class LoggerClient : ILoggerClient
     {
         //Логгер
-        protected internal Logger Logger { get; protected set; }
+        protected Logger Logger { get; set; }
         
         //Добавить событие в историю
         public void AddEvent(string text, //Описание
@@ -19,26 +19,34 @@ namespace ComClients
 
         //Добавить предупреждение в историю
         public void AddWarning(string text, //Описание
-                                            string par = "") //Дополнительная информация
+                                            string pars = "") //Дополнительная информация
         {
-            Logger.AddWarning(text, null, par);
+            Logger.AddWarning(text, null, pars);
         }
 
         //Добавить предупреждение в историю
         public void AddError(string text, //Описание
-                                        string par = "") //Дополнительная информация
+                                        string pars = "") //Дополнительная информация
         {
-            Logger.AddError(text, null, par);
+            Logger.AddError(text, null, pars);
+        }
+
+        //Установить процент текущей комманды
+        public void SetProcent(double procent)
+        {
+            Logger.Procent = procent;
         }
 
         //Запуск простой команды
-        public void Start()
-        {
-            Logger.Start();
-        }
         public void Start(double startProcent, double finishProcent)
         {
             Logger.Start(startProcent, finishProcent);
+        }
+
+        //Завершение комманды
+        public void Finish(string results = null)
+        {
+            Logger.Finish(results);
         }
 
         //Запуск команды для записи в History
@@ -51,6 +59,11 @@ namespace ComClients
         public void StartLog(double startProcent, double finishProcent, string name, string pars = "", string context = "") 
         {
             Logger.StartLog(startProcent, finishProcent, name, pars, context);
+        }
+        //Завершение текущей команды логирования
+        public void FinishLog(string results = null)
+        {
+            Logger.FinishLog(results);
         }
 
         //Запуск команды для записи в SuperHistory
@@ -66,6 +79,11 @@ namespace ComClients
         {
             Logger.StartProgress(beg, en, mode, name, pars);
         }
+        //Звершение текущей команды отображения индикатора
+        public void FinishProgress()
+        {
+            Logger.FinishProgress();
+        }
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
         public void StartIndicatorText(string text)
@@ -76,17 +94,16 @@ namespace ComClients
         {
             Logger.StartIndicatorText(startProcent, finishProcent, text);
         }
-
-        //Завершение комманды
-        public void Finish(string results = null)
+        //Завершение текущей команды отображения текста индикатора 2-ого уровня
+        public void FinishIndicatorText()
         {
-            Logger.Finish(results);
+            Logger.FinishIndicatorText();
         }
 
-        //Установить процент текущей комманды
-        public void SetProcent(double procent)
+        //Прервать выполнение
+        public void Break()
         {
-            Logger.Procent = procent;
+            Logger.Break();
         }
 
         //Запускает команду и дожидается ее завершения
@@ -94,16 +111,10 @@ namespace ComClients
         {
             Logger.StartCollect(false, true).Run(action);
         }
-        //Запускает команду. Оповещение о завершении команды через событие
+        //Запускает команду. Оповещение о завершении команды через событие Finished
         protected void RunLongCommand(Action action)
         {
             new Thread(() => Logger.StartCollect(false, true).Run(action)).Start();
-        }
-
-        //Прервать выполнение
-        public void Break()
-        {
-            Logger.Break();
         }
     }
 }

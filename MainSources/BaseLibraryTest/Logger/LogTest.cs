@@ -96,7 +96,7 @@ namespace BaseLibraryTest
                     Assert.AreEqual("WarningPars", Logs[1].Events[1].Params);
                     Assert.AreEqual("Предупреждение", Logs[0].Events[1].Status);
 
-                    var cc = Start().Run(() =>
+                    var cc = Start(0, 100).Run(() =>
                     {
                         Assert.IsNotNull(Command);
                         Assert.AreNotEqual(LogCommand, Command);
@@ -147,7 +147,7 @@ namespace BaseLibraryTest
                     Assert.AreEqual("Event", Logs[3].Events[0].Description);
                     Assert.AreEqual("EventPar", Logs[3].Events[0].Params);
                     Assert.AreEqual(null, Logs[3].Events[0].Status);
-                    SetLogResults("Res");
+                    SetLogCommandResults("Res");
                 });
             Assert.IsTrue(c.IsFinished);
             Assert.AreEqual("", TabloText(1));
@@ -379,7 +379,7 @@ namespace BaseLibraryTest
             Assert.AreEqual(CommandQuality.Error, CollectCommand.Quality);
 
             var c = FinishCollect("Results");
-            Assert.AreEqual("Results", CommandResults);
+            Assert.AreEqual("Results", CollectedResults);
             Assert.IsNull(CollectCommand);
             Assert.IsNull(Command);
             Assert.AreEqual(CommandQuality.Error, c.Quality);
@@ -387,17 +387,17 @@ namespace BaseLibraryTest
                                      "Ошибка: Err3; Source2; Err3Pars" + Environment.NewLine +
                                      "Предупреждение: War0; Source; War0Pars" + Environment.NewLine + 
                                      "Предупреждение: War1; Source; War1Pars", c.ErrorMessage());
-            Assert.AreEqual(ErrorMessage, c.ErrorMessage());
+            Assert.AreEqual(CollectedErrorMessage, c.ErrorMessage());
             Assert.AreEqual("Err2; Err2Pars" + Environment.NewLine +
                                      "Err3; Err3Pars" + Environment.NewLine +
                                      "War0; War0Pars" + Environment.NewLine +
                                      "War1; War1Pars", c.ErrorMessage(false, true, false));
-            Assert.AreEqual(ErrorMessage, c.ErrorMessage());
+            Assert.AreEqual(CollectedErrorMessage, c.ErrorMessage());
             Assert.AreEqual("Ошибка: Err2" + Environment.NewLine +
                                      "Ошибка: Err3" + Environment.NewLine +
                                      "Предупреждение: War0" + Environment.NewLine +
                                      "Предупреждение: War1", c.ErrorMessage(false, false));
-            Assert.AreEqual(ErrorMessage, c.ErrorMessage());
+            Assert.AreEqual(CollectedErrorMessage, c.ErrorMessage());
         }
 
         [TestMethod]
@@ -409,8 +409,8 @@ namespace BaseLibraryTest
                     WasBreaked = true;
                     StartLog("aa");
                 },
-                () => { SetCollectResults("Good"); });
-            Assert.AreEqual("Good", CommandResults);
+                () => { SetCollectCommandResults("Good"); });
+            Assert.AreEqual("Good", CollectedResults);
             Assert.IsTrue(c.IsBreaked);
             Assert.IsTrue(c.IsFinished);
             Assert.AreEqual(CommandQuality.Success, c.Quality);
@@ -447,9 +447,9 @@ namespace BaseLibraryTest
                     StartLog("L");
                     throw new Exception("Er");
                 },
-                () => { SetCollectResults("Bad"); });
-            Assert.AreEqual("Ошибка: Ошибка", ErrorMessage);
-            Assert.AreEqual("Bad", CommandResults);
+                () => { SetCollectCommandResults("Bad"); });
+            Assert.AreEqual("Ошибка: Ошибка", CollectedErrorMessage);
+            Assert.AreEqual("Bad", CollectedResults);
             Assert.IsTrue(c.IsFinished);
             Assert.AreEqual(CommandQuality.Error, c.Quality);
             Assert.AreEqual(2, Logs.Count);
@@ -461,60 +461,60 @@ namespace BaseLibraryTest
         public void CommDanger()
         {
             RunHistory();
-            var c = RunDanger(3, 2, LoggerDangerness.Single, false, true);
+            var c = RunDanger(3, 2, LoggerStability.Single, false, true);
             Assert.AreEqual(9, Logs[0].Events.Count);
             Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
             Assert.AreEqual(CommandQuality.Repeat, c.Quality);
 
-            c = RunDanger(3, 0, LoggerDangerness.Single, false, true);
+            c = RunDanger(3, 0, LoggerStability.Single, false, true);
             Assert.AreEqual(1, Logs[1].Events.Count);
             Assert.AreEqual("", c.ErrorMessage(false, false));
             Assert.AreEqual(CommandQuality.Success, c.Quality);
 
-            c = RunDanger(3, 3, LoggerDangerness.Single, false, true);
+            c = RunDanger(3, 3, LoggerStability.Single, false, true);
             Assert.AreEqual(10, Logs[2].Events.Count);
             Assert.AreEqual("Ошибка: Исключение" + Environment.NewLine + "Предупреждение: Повтор операции", c.ErrorMessage(false, false));
             Assert.AreEqual(CommandQuality.Error, c.Quality);
 
-            c = RunDanger(3, 2, LoggerDangerness.Single, true, true);
+            c = RunDanger(3, 2, LoggerStability.Single, true, true);
             Assert.AreEqual(9, Logs[3].Events.Count);
             Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
             Assert.AreEqual(CommandQuality.Repeat, c.Quality);
 
-            c = RunDanger(3, 3, LoggerDangerness.Periodic, false, true);
+            c = RunDanger(3, 3, LoggerStability.Periodic, false, true);
             Assert.AreEqual(2, Logs[4].Events.Count);
             Assert.AreEqual("Ошибка: Исключение", c.ErrorMessage(false, false));
             Assert.AreEqual(CommandQuality.Error, c.Quality);
 
-            c = RunDanger(7, 5, LoggerDangerness.RealTime, false, true);
+            c = RunDanger(7, 5, LoggerStability.RealTime, false, true);
             Assert.AreEqual(21, Logs[5].Events.Count);
             Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
             Assert.AreEqual(CommandQuality.Repeat, c.Quality);
 
-            c = RunDanger(2, 1, LoggerDangerness.Single, false, true);
+            c = RunDanger(2, 1, LoggerStability.Single, false, true);
             Assert.AreEqual(5, Logs[6].Events.Count);
             Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
             Assert.AreEqual(CommandQuality.Repeat, c.Quality);
 
-            c = RunDanger(3, 2, LoggerDangerness.Single, false, false);
+            c = RunDanger(3, 2, LoggerStability.Single, false, false);
             Assert.AreEqual(9, Logs[7].Events.Count);
             Assert.AreEqual("Предупреждение: Повтор операции", c.ErrorMessage(false, false));
             Assert.AreEqual(CommandQuality.Repeat, c.Quality);
 
-            c = RunDanger(3, 3, LoggerDangerness.Single, false, false);
+            c = RunDanger(3, 3, LoggerStability.Single, false, false);
             Assert.AreEqual(10, Logs[8].Events.Count);
             Assert.AreEqual("Ошибка: Ошибка" + Environment.NewLine + "Предупреждение: Повтор операции", c.ErrorMessage(false, false));
             Assert.AreEqual(CommandQuality.Error, c.Quality);
         }
 
-        private CollectCommand RunDanger(int reps, int repserr, LoggerDangerness dangerness, bool useThread, bool useException)
+        private CollectCommand RunDanger(int reps, int repserr, LoggerStability stability, bool useThread, bool useException)
         {
             StartCollect(false, true);
             StartLog("Log");
             int num = Logs.Count - 1;
             Assert.AreEqual(0, Logs[num].Events.Count);
             int i = 0;
-            StartDanger(reps, dangerness, "Исключение", "Повтор операции", useThread).Run(() =>
+            StartDanger(reps, stability, "Исключение", "Повтор операции", useThread).Run(() =>
             {
                 Assert.AreEqual(i * 4, Logs[num].Events.Count);
                 AddEvent("Попытка");
@@ -541,13 +541,13 @@ namespace BaseLibraryTest
             StartLog("Log");
             Assert.AreEqual(0, Logs[0].Events.Count);
             int i = 0;
-            var cden = StartDanger(3, LoggerDangerness.Single, "Исключение", "Повтор операции", true);
+            var cden = StartDanger(3, LoggerStability.Single, "Исключение", "Повтор операции", true);
             cden.Run(() =>
             {
                 Assert.AreEqual(i * 4, Logs[0].Events.Count);
                 Assert.AreSame(cden, Command);
                 AddEvent("Попытка");
-                var com = Start();
+                var com = Start(0, 100);
                 Assert.AreSame(com, Command);
                 Assert.AreEqual(i * 4 + 1, Logs[0].Events.Count);
                 if (i++ < 2) throw new Exception("Err");
@@ -567,8 +567,8 @@ namespace BaseLibraryTest
             StartLog("Log");
             Assert.AreEqual(0, Logs[1].Events.Count);
             int k = 0, n = 0;
-            StartDanger(3, LoggerDangerness.Single, "Исключение", "Повтор операции").Run(() =>
-                StartDanger(3, LoggerDangerness.Single, "Исключение", "Повтор операции").Run(() =>
+            StartDanger(3, LoggerStability.Single, "Исключение", "Повтор операции").Run(() =>
+                StartDanger(3, LoggerStability.Single, "Исключение", "Повтор операции").Run(() =>
                 {
                     Assert.AreEqual(k*4 - n, Logs[1].Events.Count);
                     AddEvent("Попытка");
@@ -589,8 +589,8 @@ namespace BaseLibraryTest
             StartLog("Log");
             Assert.AreEqual(0, Logs[2].Events.Count);
             k = 0; n = 0;
-            StartDanger(2, LoggerDangerness.Single, "Исключение", "Повтор операции").Run(() =>
-                StartDanger(2, LoggerDangerness.Single, "Исключение", "Повтор операции").Run(() =>
+            StartDanger(2, LoggerStability.Single, "Исключение", "Повтор операции").Run(() =>
+                StartDanger(2, LoggerStability.Single, "Исключение", "Повтор операции").Run(() =>
                 {
                     Assert.AreEqual(k * 4 - n, Logs[2].Events.Count);
                     AddEvent("Попытка");
@@ -611,7 +611,7 @@ namespace BaseLibraryTest
                 {
                     StartLog("Log");
                     Assert.AreEqual(0, Logs[3].Events.Count);
-                    var cd = StartDanger(2, LoggerDangerness.Single, "Исключение", "Повтор операции").Run(() =>
+                    var cd = StartDanger(2, LoggerStability.Single, "Исключение", "Повтор операции").Run(() =>
                         {
                             AddEvent("Событие");
                             Break();

@@ -33,7 +33,7 @@ namespace BaseLibraryTest
                  AddEvent("Event112", "Pars112");
              });
              StartLog("Command12", "Context2", "Pars12");
-             Start().Run(() =>
+             Start(0, 100).Run(() =>
              {
                  AddEvent("Event121", "Pars121");
                  AddError("Error122", null, "Pars122");
@@ -43,7 +43,7 @@ namespace BaseLibraryTest
              StartProgress(new DateTime(2017, 1, 2), new DateTime(2017, 1, 3), "Синхронный", "SuperCommand2");
              StartLog("Command21", "Context1", "Pars21");
              AddEvent("Event211");
-             Start();
+             Start(0, 100);
              AddWarning("Error212");
              AddWarning("Error213", null, "Pars21", "ContextE");
              FinishLog("Results21");

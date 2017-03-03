@@ -49,37 +49,34 @@ namespace ProvidersLibrary
         protected internal bool Connect()
         {
             if (_isConnected) return true;
-            using (Start())
+            try
             {
-                try
-                {
-                    if (ConnectProvider())
-                        return _isConnected = true;
-                }
-                catch (Exception ex)
-                {
-                    AddWarning("Нет соединения с провайдером. Попытка повторного соединения", ex);
-                }
-
-                Procent = 30;
-                Thread.Sleep(300);
-                Disconnect();
-                Procent = 60;
-                Thread.Sleep(300);
-                Procent = 70;
-
-                try
-                {
-                    if (ConnectProvider())
-                        return _isConnected = true;
-                }
-                catch (Exception ex)
-                {
-                    AddError("Ошибка соединения с провайдером", ex);
-                }
-                Procent = 90;
-                Disconnect();
+                if (ConnectProvider())
+                    return _isConnected = true;
             }
+            catch (Exception ex)
+            {
+                AddWarning("Нет соединения с провайдером. Попытка повторного соединения", ex);
+            }
+
+            Procent = 30;
+            Thread.Sleep(300);
+            Disconnect();
+            Procent = 60;
+            Thread.Sleep(300);
+            Procent = 70;
+
+            try
+            {
+                if (ConnectProvider())
+                    return _isConnected = true;
+            }
+            catch (Exception ex)
+            {
+                AddError("Ошибка соединения с провайдером", ex);
+            }
+            Procent = 90;
+            Disconnect();
             return false;
         }
 
@@ -94,23 +91,18 @@ namespace ProvidersLibrary
         //Повторное подключение
         protected internal bool Reconnect()
         {
-            using (Start())
+            if (_isConnected)
             {
-                if (_isConnected)
-                {
-                    Disconnect();
-                    Procent = 10;
-                    Thread.Sleep(300);
-                    Procent = 30;
-                }
-                if (!Connect()) return false;
-                if (!(this is BaseSource)) return true;
-
-                AddEvent("Получение времени источника", 70);
-                if (!((BaseSource)this).GetTime().IsDefault)
-                    return true;
+                Disconnect();
+                Procent = 10;
+                Thread.Sleep(300);
+                Procent = 30;
             }
-            return false;
+            if (!Connect()) return false;
+            if (!(this is BaseSource)) return true;
+
+            AddEvent("Получение времени источника", 70);
+            return !((BaseSource)this).GetTime().IsDefault;
         }
 
         //Очистка ресурсов

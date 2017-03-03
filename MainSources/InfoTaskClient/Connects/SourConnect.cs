@@ -1,12 +1,52 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
 namespace ComClients
 {
+    //Интерфейс для SourConnect
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    public interface ISourConnect : IProvConnect
+    {
+        //Получение диапазона времени источника
+        void GetTime();
+
+        //Диапазон времени источника
+        DateTime BeginTime { get; }
+        DateTime EndTime { get; }
+
+        //Очистка списка сигналов
+        void ClearSignals();
+
+        //Добавить исходный сигнал
+        SourSignal AddInitialSignal(string fullCode, //Полный код сигнала
+                string codeOut, //Код выхода
+                string dataType, //Тип данных
+                string signalInf, //Настройки сигнала
+                bool needCut); //Нужно считывать срез значений
+
+        //Добавить расчетный сигнал
+        SourSignal AddCalcSignal(string fullCode, //Полный код сигнала
+                string codeObject, //Код объекта
+                string initialSignal, //Код исходного сигнала
+                string formula); //Формула
+
+        //Чтение значений из источника
+        void GetValues(DateTime periodBegin, DateTime periodEnd);
+
+        //Создание клона
+        void MakeClone(DateTime periodBegin, //Начало периода клона
+                DateTime periodEnd, //Конец периода клона
+                string cloneDir); //Каталог клона
+    }
+
+    //-----------------------------------------------------------------------------------------------------
     //Соединение с источником для взаимодействия через COM
-    public class SourConnect : ProvConnect
+    [ClassInterface(ClassInterfaceType.None),
+    ComSourceInterfaces(typeof(ILoggerClientEvents))]
+    public class SourConnect : ProvConnect, ISourConnect
     {
         internal SourConnect(SourceConnect connect, ProvidersFactory factory) 
             : base(connect, factory) {}
@@ -47,7 +87,7 @@ namespace ComClients
             return new SourSignal(Connect.AddInitialSignal(fullCode, codeOut, dataType.ToDataType(), signalInf, needCut));
         }
 
-        //Добавить исходный сигнал
+        //Добавить расчетный сигнал
         public SourSignal AddCalcSignal(string fullCode, //Полный код сигнала
                                                          string codeObject, //Код объекта
                                                          string initialSignal, //Код исходного сигнала

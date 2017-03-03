@@ -176,7 +176,7 @@ namespace ProvidersLibrary
         protected internal override void WriteValues()
         {
             if (_items.Count > 0)
-                StartDanger(2, LoggerDangerness.Single, "Ошибка записи значений в OPC-сервер", "Повторная запись в OPC-сервер", true, 500)
+                StartDanger(2, LoggerStability.Single, "Ошибка записи значений в OPC-сервер", "Повторная запись в OPC-сервер", true, 500)
                     .Run(() =>
                         {
                             int m = _itemsList == null ? 0 : _itemsList.Length;

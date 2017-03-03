@@ -8,13 +8,13 @@ namespace BaseLibrary
     {
         internal DangerCommand(Logger logger, Command parent, double startProcent, double finishProcent, 
                                         int repetitions,
-                                        LoggerDangerness dangerness, //Минимальная LoggerDangerness, начиная с которой выполняется более одного повторения операции
+                                        LoggerStability stability, //Минимальная LoggerStability, начиная с которой выполняется более одного повторения операции
                                         string errMess, string repeatMess,
                                         bool useThread = false, 
                                         int errWaiting = 0)
             : base(logger, parent, startProcent, finishProcent)
         {
-            _repetitions = Logger.Dangerness >= dangerness ? repetitions : 1;
+            _repetitions = Logger.Stability >= stability ? repetitions : 1;
             _useThread = useThread;
             _errWaiting = errWaiting;
             _errMess = errMess;

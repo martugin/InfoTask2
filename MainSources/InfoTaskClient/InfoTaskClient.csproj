@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clients\ILoggerClient.cs" />
     <Compile Include="Clients\Indicator.cs" />
     <Compile Include="Clients\IndicatorClient.cs" />
     <Compile Include="Connects\ProvConnect.cs" />

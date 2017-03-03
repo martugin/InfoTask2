@@ -43,19 +43,16 @@ namespace ProvidersLibrary
         //Запись значений в приемник
         public bool WriteValues(DateTime periodBegin, DateTime periodEnd)
         {
-            using (Start())
-            {
-                PeriodBegin = periodBegin;
-                PeriodEnd = periodEnd;
+            PeriodBegin = periodBegin;
+            PeriodEnd = periodEnd;
 
-                using (Start(5, 80))
-                    if (WriteValuesReceiver()) return true;
+            using (Start(5, 80))
+                if (WriteValuesReceiver()) return true;
 
-                _isPrepared = false;
-                if (!ChangeProvider()) return false;
-                using (Start(80, 100))
-                    return WriteValuesReceiver();
-            }
+            _isPrepared = false;
+            if (!ChangeProvider()) return false;
+            using (Start(80, 100))
+                return WriteValuesReceiver();
         }
         public bool WriteValues()
         {

@@ -14,76 +14,73 @@ namespace ProvidersLibrary
                                                            Func<List<SourceOut>, DateTime, DateTime, bool, ValuesCount> readPartFun, //Функция чтения значений по одному блоку 
                                                            string msg = null) //Сообщение для истории о запуске чтения данных
         {
-            using (Start())
+            var valuesCount = new ValuesCount();
+            try
             {
-                var valuesCount = new ValuesCount();
-                try
+                int n;
+                var parts = MakeParts(objects, partSize, isCut, out n);
+                if (n == 0)
                 {
-                    int n;
-                    var parts = MakeParts(objects, partSize, isCut, out n);
-                    if (n == 0)
-                    {
-                        AddEvent("Пустой список объектов для считывания" + (isCut ? " среза" : ""), beg + " - " + en);
-                        return valuesCount;
-                    }
-                    if (!Connect()) return valuesCount.AddStatus(VcStatus.Fail);
-                    AddEvent(msg ?? ("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов"), n + " объектов, " + beg + " - " + en);
+                    AddEvent("Пустой список объектов для считывания" + (isCut ? " среза" : ""), beg + " - " + en);
+                    return valuesCount;
+                }
+                if (!Connect()) return valuesCount.AddStatus(VcStatus.Fail);
+                AddEvent(msg ?? ("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов"), n + " объектов, " + beg + " - " + en);
                     
-                    var success = new bool[parts.Count];
-                    int errCount = 0, consErrCount = 0;
-                    double d = 70.0 / parts.Count;
-                    for (int i = 0; i < parts.Count; i++)
-                        using (StartKeep(Procent, Procent + d))
+                var success = new bool[parts.Count];
+                int errCount = 0, consErrCount = 0;
+                double d = 70.0 / parts.Count;
+                for (int i = 0; i < parts.Count; i++)
+                    using (StartKeep(Procent, Procent + d))
+                    {
+                        var vc = new ValuesCount();
+                        try { vc += readPartFun(parts[i], beg, en, isCut); }
+                        catch (Exception ex)
                         {
-                            var vc = new ValuesCount();
-                            try { vc += readPartFun(parts[i], beg, en, isCut); }
-                            catch (Exception ex)
+                            vc.AddStatus(VcStatus.NoSuccess);
+                            AddWarning("Ошибка при чтении блока значений", ex);
+                        }
+                        success[i] = vc.Status == VcStatus.Success || vc.Status == VcStatus.Undefined;
+                        valuesCount += vc;
+                        if (vc.Status != VcStatus.Fail && vc.Status != VcStatus.NoSuccess)
+                        {
+                            AddEvent("Значения блока объектов прочитаны", vc.ToString());
+                            consErrCount = 0;
+                        }
+                        else
+                        {
+                            errCount++;
+                            consErrCount++;
+                            AddWarning("Значения блока объектов не были прочитаны", null, vc.ToString());
+                            if (consErrCount == 1 && !Reconnect())
+                                return valuesCount.AddStatus(VcStatus.Fail);
+                            if (consErrCount > 2)
                             {
-                                vc.AddStatus(VcStatus.NoSuccess);
-                                AddWarning("Ошибка при чтении блока значений", ex);
-                            }
-                            success[i] = vc.Status == VcStatus.Success || vc.Status == VcStatus.Undefined;
-                            valuesCount += vc;
-                            if (vc.Status != VcStatus.Fail && vc.Status != VcStatus.NoSuccess)
-                            {
-                                AddEvent("Значения блока объектов прочитаны", vc.ToString());
-                                consErrCount = 0;
-                            }
-                            else
-                            {
-                                errCount++;
-                                consErrCount++;
-                                AddWarning("Значения блока объектов не были прочитаны", null, vc.ToString());
-                                if (consErrCount == 1 && !Reconnect())
-                                    return valuesCount.AddStatus(VcStatus.Fail);
-                                if (consErrCount > 2)
-                                {
-                                    AddError("Значения с источника не были прочитаны", null, valuesCount.ToString());
-                                    return valuesCount.AddStatus(VcStatus.Fail);
-                                }
+                                AddError("Значения с источника не были прочитаны", null, valuesCount.ToString());
+                                return valuesCount.AddStatus(VcStatus.Fail);
                             }
                         }
-                    if (errCount == 0)
-                    {
-                        AddEvent("Значения с источника прочитаны", valuesCount.ToString());
-                        return valuesCount;
                     }
-
-                    AddEvent("Рекурсивное чтение значений по блокам объектов");
-                    valuesCount.Status = VcStatus.Undefined;
-                    d = 30.0 / parts.Count;
-                    for (int i = 0; i < parts.Count; i++)
-                        using (Start(Procent, Procent + d))
-                            if (!success[i])
-                                valuesCount += ReadPartRecursive(parts[i], beg, en, isCut, readPartFun);
-                }
-                catch (Exception ex)
+                if (errCount == 0)
                 {
-                    AddError("Ошибка при получении данных", ex);
-                    return valuesCount.AddStatus(VcStatus.Fail);
+                    AddEvent("Значения с источника прочитаны", valuesCount.ToString());
+                    return valuesCount;
                 }
-                return valuesCount;
+
+                AddEvent("Рекурсивное чтение значений по блокам объектов");
+                valuesCount.Status = VcStatus.Undefined;
+                d = 30.0 / parts.Count;
+                for (int i = 0; i < parts.Count; i++)
+                    using (Start(Procent, Procent + d))
+                        if (!success[i])
+                            valuesCount += ReadPartRecursive(parts[i], beg, en, isCut, readPartFun);
             }
+            catch (Exception ex)
+            {
+                AddError("Ошибка при получении данных", ex);
+                return valuesCount.AddStatus(VcStatus.Fail);
+            }
+            return valuesCount;
         }
         //Чтение значений по блокам объектов без указания времени и признака среза
         protected ValuesCount ReadByParts(IEnumerable<SourceOut> objects, int partSize,

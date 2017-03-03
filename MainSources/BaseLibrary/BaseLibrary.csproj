@@ -57,6 +57,7 @@
     <Compile Include="Commands\Commands\CommandsEnums.cs" />
     <Compile Include="Commands\Commands\KeepCommand.cs" />
     <Compile Include="Commands\History\TestHistory.cs" />
+    <Compile Include="Commands\Logger\ILogger.cs" />
     <Compile Include="Commands\Logger\ProcentTabloEventArgs.cs" />
     <Compile Include="Databases\SqlServer\SqlInserter.cs" />
     <Compile Include="Commands\History\TextHistory.cs" />

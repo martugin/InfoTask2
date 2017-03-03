@@ -8,9 +8,9 @@ using ProvidersLibrary;
 
 namespace ComClients
 {
-    //Интерфейс
+    //Интерфейс для ItClient
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface IItClient
+    public interface IItClient : ILoggerClient
     {
         //Инициализация
         void Initialize(string appCode, //Код приложения
@@ -18,61 +18,21 @@ namespace ComClients
         //Закрытие клиента
         void Close();
 
-        //Прервать выполнение
-        void Break();
-        
         //Генерация параметров
         string GenerateParams(string moduleDir);
 
         //Создание соединения
-        SourConnect CreateSourConnect(string name, string complect);
-        ReceivConnect CreateReceivConnect(string name, string complect);
-
-        //Добавить событие, предупреждение или ошибку в историю
-        void AddEvent(string text, string pars = "");
-        void AddWarning(string text, string pars = "");
-        void AddError(string text, string pars = "");
-
-        //Запуск простой команды
-        void Start();
-        void Start(double startProcent, double finishProcent);
-
-        //Запуск команды для записи в History
-        void StartLog(string name, //Имя команды
-                      string pars = "", //Дополнительная информация
-                      string context = ""); //Контекст выполнения команды
-        void StartLog(double startProcent, double finishProcent, string name, string pars = "", string context = "");
-
-        //Запуск команды для записи в SuperHistory
-        void StartProgress(string name, //Имя команды
-                           string pars = "", //Дополнительная информация
-                           string text = ""); //Текст для отображения на индикаторе
-        void StartProgress(string name, //Имя команды
-                           string pars, //Дополнительная информация
-                           DateTime beg, DateTime en, string mode = "");//Преиод обработки
-
-        //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
-        void StartIndicatorText(string text);
-        void StartIndicatorText(double startProcent, double finishProcent, string text);
-
-        //Завершение комманды
-        void Finish(string results = null);
-        
-        //Установить процент текущей комманды
-        void SetProcent(double procent);
+        SourConnect CreateSourConnect(string name, //Имя соединения
+                                                        string complect); //Комплект
+        ReceivConnect CreateReceivConnect(string name, //Имя соединения
+                                                              string complect); //Комплект
     }
 
-    //Интерфейс событий
-    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface IItClientEvents
-    {
-        [DispId(1)]
-        void Finished();
-    }
+    //------------------------------------------------------------------------------------------------------------------------------
 
     //Клиент работы с функциями InfoTask, написанными на C#, вызываемыми из внешних приложений через COM
     [ClassInterface(ClassInterfaceType.None),
-    ComSourceInterfaces(typeof(IItClientEvents))]
+    ComSourceInterfaces(typeof(ILoggerClientEvents))]
     public class ItClient : IndicatorClient , IItClient
     {
         public ItClient() : base(new Logger(), new Indicator())

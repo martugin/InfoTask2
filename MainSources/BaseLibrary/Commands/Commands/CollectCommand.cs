@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BaseLibrary
 {
-    //Кооманда, обрамляющая вызов клиентских операций или запись в ErrorsList
+    //Команда, обрамляющая вызов клиентских операций или запись в ErrorsList
     public class CollectCommand : Command
     {
         public CollectCommand(Logger logger, Command parent, bool isWriteHistory, bool isCollect)
@@ -73,7 +73,7 @@ namespace BaseLibrary
         //Завершение команды
         protected internal override void FinishCommand(bool isBreaked)
         {
-            Logger.ErrorMessage = ErrorMessage();
+            Logger.CollectedErrorMessage = ErrorMessage();
             base.FinishCommand(isBreaked);
             Logger.CollectCommand = null;
         }

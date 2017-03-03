@@ -46,21 +46,18 @@ namespace ProvidersLibrary
         {
             try
             {
-                using (Start())
+                AddEvent("Подготовка источника");
+                ClearOuts();
+                foreach (var sig in SourceConnect.InitialSignals.Values)
                 {
-                    AddEvent("Подготовка источника");
-                    ClearOuts();
-                    foreach (var sig in SourceConnect.InitialSignals.Values)
-                    {
-                        var ob = AddOut(sig);
-                        ob.Context = sig.CodeOuts;
-                        ob.AddSignal(sig);
-                    }
-                    StartDanger(30, 100, 2, LoggerDangerness.Single, "Ошибка при подготовке источника", "Повтор подготовки источника")
-                        .Run(() => PrepareSource(), () => Reconnect());
-                    if (ErrPool == null)
-                        ErrPool = new MomErrPool(MakeErrFactory());
+                    var ob = AddOut(sig);
+                    ob.Context = sig.CodeOuts;
+                    ob.AddSignal(sig);
                 }
+                StartDanger(30, 100, 2, LoggerStability.Single, "Ошибка при подготовке источника", "Повтор подготовки источника")
+                    .Run(() => PrepareSource(), () => Reconnect());
+                if (ErrPool == null)
+                    ErrPool = new MomErrPool(MakeErrFactory());
             }
             catch (Exception ex)
             {

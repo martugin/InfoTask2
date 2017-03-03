@@ -85,33 +85,30 @@ namespace ProvidersLibrary
         public ValuesCount GetValues(DateTime periodBegin, DateTime periodEnd)
         {
             var valuesCount = new ValuesCount();
-            using (Start())
+            try
             {
-                try
+                PeriodBegin = periodBegin;
+                PeriodEnd = periodEnd;
+                ClearSignalsValues(PeriodBegin != PrevPeriodEnd);
+                using (Start(5, 80))
                 {
-                    PeriodBegin = periodBegin;
-                    PeriodEnd = periodEnd;
-                    ClearSignalsValues(PeriodBegin != PrevPeriodEnd);
-                    using (Start(5, 80))
-                    {
-                        valuesCount += GetValues();
-                        if (!valuesCount.IsFail) return valuesCount;
-                    }
-                    _isPrepared = false;
-                    if (!ChangeProvider()) return valuesCount;
-                    using (Start(80, 100))
-                    {
-                        ClearSignalsValues(true);
-                        return GetValues();
-                    }
+                    valuesCount += GetValues();
+                    if (!valuesCount.IsFail) return valuesCount;
                 }
-                catch (Exception ex)
+                _isPrepared = false;
+                if (!ChangeProvider()) return valuesCount;
+                using (Start(80, 100))
                 {
-                    AddError("Ошибка при чтении значений из источника", ex);
-                    return new ValuesCount(VcStatus.Fail);
+                    ClearSignalsValues(true);
+                    return GetValues();
                 }
-                finally { PrevPeriodEnd = periodEnd; }
             }
+            catch (Exception ex)
+            {
+                AddError("Ошибка при чтении значений из источника", ex);
+                return new ValuesCount(VcStatus.Fail);
+            }
+            finally { PrevPeriodEnd = periodEnd; }
         }
 
         private void ClearSignalsValues(bool clearBegin)

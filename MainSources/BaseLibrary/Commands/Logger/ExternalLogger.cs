@@ -3,7 +3,7 @@
 namespace BaseLibrary
 {
     //Класс для переопределения операций логгера
-    public abstract class ExternalLogger : IContextable
+    public abstract class ExternalLogger : ILogger, IContextable
     {
         protected ExternalLogger() { }
         protected ExternalLogger(Logger logger)
@@ -13,148 +13,9 @@ namespace BaseLibrary
 
         //Ссылка на логгер
         public Logger Logger { get; set; }
-        //Ссылка на историю
-        public IHistory History { get { return Logger.History; } }
+
         //Контекст
         public virtual string Context { get { return ""; } }
-
-        //Процент индикатора
-        public double TabloProcent
-        {
-            get { return Logger.TabloProcent; }
-            set { Logger.TabloProcent = value; }
-        }
-
-        //Три уровня текста на форме индикатора
-        public string TabloText(int number)
-        {
-            return Logger.TabloText(number);
-        }
-        public void SetTabloText(int number, string text)
-        {
-            Logger.SetTabloText(number, text);
-        }
-
-        //Период обработки
-        public DateTime BeginPeriod { get { return Logger.PeriodBegin; } }
-        public DateTime EndPeriod { get { return Logger.PeriodEnd; } }
-        public string ModePeriod { get { return Logger.PeriodMode; } }
-
-        //Прервать выполнение
-        public void Break()
-        {
-            Logger.Break();
-        }
-        //Вызвать BreakException
-        protected internal void CheckBreak()
-        {
-            Logger.CheckBreak();
-        }
-
-        //Запуск простой комманды
-        public Command Start(double startProcent, double finishProcent)
-        {
-            return Logger.Start(startProcent, finishProcent);
-        }
-        public Command Start()
-        {
-            return Logger.Start();
-        }
-        //Завершение простоя команды
-        public Command Finish()
-        {
-            return Logger.Finish();
-        }
-
-        //Запуск команды логирования
-        public LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
-        {
-            return Logger.StartLog(startProcent, finishProcent, name, context, pars);
-        }
-        public LogCommand StartLog(string name, string context = "", string pars = "")
-        {
-            return Logger.StartLog(name, context, pars);
-        }
-        //Завершение команды логирования
-        public LogCommand FinishLog(string results = "")
-        {
-            return Logger.FinishLog(results);
-        }
-
-        //Запуск команды логирования в SuperHistory и отображения индикатора
-        public ProgressCommand StartProgress(string text, string name, string pars = "", DateTime? endTime = null)
-        {
-            return Logger.StartProgress(text, name, pars, endTime);
-        }
-        public ProgressCommand StartProgress(DateTime begin, DateTime end, string mode, string name, string pars = "", DateTime? endTime = null)
-        {
-            return Logger.StartProgress(begin, end, mode, name, pars, endTime);
-        }
-        //Завершение команды логирования в SuperHistory
-        public ProgressCommand FinishProgress()
-        {
-            return Logger.FinishProgress();
-        }
-
-        //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
-        public IndicatorTextCommand StartProgressText(double startProcent, double finishProcent, string text)
-        {
-            return Logger.StartIndicatorText(startProcent, finishProcent, text);
-        }
-        //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
-        public IndicatorTextCommand StartProgressText(string text)
-        {
-            return Logger.StartIndicatorText(text);
-        }
-
-        //Запуск команды, колекционирущей ошибки
-        public CollectCommand StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
-                                                         bool isCollect) //Формировать общую ошибку
-        {
-            return Logger.StartCollect(isWriteHistory, isCollect);
-        }
-        //Завершение команды, колекционирущей ошибки
-        public CollectCommand FinishCollect()
-        {
-            return Logger.FinishCollect();
-        }
-
-        //Запуск команды, которая копит ошибки, но не выдает из во вне
-        public KeepCommand StartKeep(double startProcent, double finishProcent)
-        {
-            return Logger.StartKeep(startProcent, finishProcent);
-        }
-        public KeepCommand StartKeep()
-        {
-            return Logger.StartKeep();
-        }
-        //Накопленная ошибка
-        public string KeepedError { get { return Logger.KeepedError; } }
-
-        //Запуск команды, обрамляющей опасную операцию
-        public DangerCommand StartDanger(double startProcent, double finishProcent,
-                                        int repetitions, //Cколько раз повторять, если не удалась (вместе с первым)
-                                        LoggerDangerness dangerness, //Минимальная LoggerDangerness, начиная с которой выполняется более одного повторения операции
-                                        string errMess, //Сообщение об ошибке 
-                                        string repeatMess, //Сообщение о повторе
-                                        bool useThread = false, //Запускать опасную операцию в другом потоке, чтобы была возможность ее жестко прервать
-                                        int errWaiting = 0)  //Cколько мс ждать при ошибке
-        {
-            return Logger.StartDanger(startProcent, finishProcent, repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
-        }
-        public DangerCommand StartDanger(int repetitions, LoggerDangerness dangerness, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
-        {
-            return Logger.StartDanger(repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
-        }
-        //Без повторов
-        public DangerCommand StartDanger(double startProcent, double finishProcent)
-        {
-            return StartDanger(startProcent, finishProcent, 1, LoggerDangerness.Single, "", "");
-        }
-        public DangerCommand StartDanger()
-        {
-            return StartDanger(0, 100);
-        }
 
         //Добавляет событие в историю
         public void AddEvent(string description, string pars = "")
@@ -188,6 +49,143 @@ namespace BaseLibrary
         {
             get { return Logger.Procent; }
             set { Logger.Procent = value; }
+        }
+
+        //Запуск простой комманды
+        public Command Start(double startProcent, double finishProcent)
+        {
+            return Logger.Start(startProcent, finishProcent);
+        }
+        //Завершение простоя команды
+        public Command Finish(string results = "")
+        {
+            return Logger.Finish();
+        }
+        
+        //Запуск команды логирования
+        public LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
+        {
+            return Logger.StartLog(startProcent, finishProcent, name, context, pars);
+        }
+        public LogCommand StartLog(string name, string context = "", string pars = "")
+        {
+            return Logger.StartLog(name, context, pars);
+        }
+        //Завершение команды логирования
+        public LogCommand FinishLog(string results = "")
+        {
+            return Logger.FinishLog(results);
+        }
+        public void SetLogCommandResults(string results)
+        {
+            Logger.SetLogCommandResults(results);
+        }
+
+        //Запуск команды логирования в SuperHistory и отображения индикатора
+        public ProgressCommand StartProgress(string text, string name, string pars = "", DateTime? endTime = null)
+        {
+            return Logger.StartProgress(text, name, pars, endTime);
+        }
+        public ProgressCommand StartProgress(DateTime begin, DateTime end, string mode, string name, string pars = "", DateTime? endTime = null)
+        {
+            return Logger.StartProgress(begin, end, mode, name, pars, endTime);
+        }
+        //Завершение команды логирования в SuperHistory
+        public ProgressCommand FinishProgress()
+        {
+            return Logger.FinishProgress();
+        }
+
+        //Начало, конец и режим периода обработки
+        public DateTime PeriodBegin { get { return Logger.PeriodBegin; } }
+        public DateTime PeriodEnd { get { return Logger.PeriodEnd; } }
+        public string PeriodMode { get { return Logger.PeriodMode; } }
+
+        //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
+        public IndicatorTextCommand StartIndicatorText(double startProcent, double finishProcent, string text)
+        {
+            return Logger.StartIndicatorText(startProcent, finishProcent, text);
+        }
+        public IndicatorTextCommand StartIndicatorText(string text)
+        {
+            return Logger.StartIndicatorText(text);
+        }
+        //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
+        public IndicatorTextCommand FinishIndicatorText()
+        {
+            return Logger.FinishIndicatorText();
+        }
+
+        //Запуск команды, колекционирущей ошибки
+        public CollectCommand StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
+                                                              bool isCollect) //Формировать общую ошибку
+        {
+            return Logger.StartCollect(isWriteHistory, isCollect);
+        }
+        //Завершение команды, колекционирущей ошибки
+        public CollectCommand FinishCollect(string results = null)
+        {
+            return Logger.FinishCollect(results);
+        }
+
+        //Запись результатов в команду Collect
+        public void SetCollectCommandResults(string results)
+        {
+            Logger.SetCollectCommandResults(results);
+        }
+        //Итоговая ошибка комманды Collect
+        public string CollectedErrorMessage 
+        { 
+            get { return Logger.CollectedErrorMessage; } 
+        }
+        //Результаты выполнения команды Collect
+        public string CollectedResults
+        {
+            get { return Logger.CollectedResults; }
+        }
+
+        //Запуск команды, которая копит ошибки, но не выдает из во вне
+        public KeepCommand StartKeep(double startProcent, double finishProcent)
+        {
+            return Logger.StartKeep(startProcent, finishProcent);
+        }
+        public KeepCommand StartKeep()
+        {
+            return Logger.StartKeep();
+        }
+        public KeepCommand FinishKeep()
+        {
+            return Logger.FinishKeep();
+        }
+
+        //Ошибка, накопленная KeepCommand
+        public string KeepedError { get { return Logger.KeepedError; } }
+
+        //Запуск команды, обрамляющей опасную операцию
+        public DangerCommand StartDanger(double startProcent, double finishProcent,
+                                        int repetitions, //Cколько раз повторять, если не удалась (вместе с первым)
+                                        LoggerStability stability, //Минимальная LoggerStability, начиная с которой выполняется более одного повторения операции
+                                        string errMess, //Сообщение об ошибке 
+                                        string repeatMess, //Сообщение о повторе
+                                        bool useThread = false, //Запускать опасную операцию в другом потоке, чтобы была возможность ее жестко прервать
+                                        int errWaiting = 0)  //Cколько мс ждать при ошибке
+        {
+            return Logger.StartDanger(startProcent, finishProcent, repetitions, stability, errMess, repeatMess, useThread, errWaiting);
+        }
+        public DangerCommand StartDanger(int repetitions, LoggerStability stability, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
+        {
+            return Logger.StartDanger(repetitions, stability, errMess, repeatMess, useThread, errWaiting);
+        }
+
+        //Прервать выполнение
+        public void Break()
+        {
+            Logger.Break();
+        }
+        //Вызвать BreakException
+        protected void CheckBreak()
+        {
+            Logger.CheckBreak();
         }
     }
 }

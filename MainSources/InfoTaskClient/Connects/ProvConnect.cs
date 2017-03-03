@@ -2,8 +2,20 @@
 
 namespace ComClients
 {
+    //Интерфейс для ProvConnect
+    public interface IProvConnect : ILoggerClient
+    {
+        //Код соединения
+        string Name { get; }
+        //Комплект провайдеров
+        string Complect { get; }
+        //Присвоение основного и резервного провайдера 
+        void JoinProviders(string mainCode, string mainInf, string reserveCode = null, string reserveInf = null);
+    }
+
+    //-------------------------------------------------------------------------------------------------------------
     //Базовый класс для соединений с провайдерами через COM
-    public abstract class ProvConnect : LoggerClient
+    public abstract class ProvConnect : LoggerClient, IProvConnect
     {
         protected ProvConnect(ProviderConnect providerConnect, ProvidersFactory factory)
         {
@@ -24,7 +36,8 @@ namespace ComClients
         public string Complect { get { return ProviderConnect.Complect; } }
 
         //Присвоение основного и резервного провайдера 
-        public void JoinProviders(string mainCode, string mainInf, string reserveCode = null, string reserveInf = null)
+        public void JoinProviders(string mainCode, string mainInf, //Код и настройки основного провайдера
+                                               string reserveCode = null, string reserveInf = null) //Код и настройки резервного провайдера
         {
             RunShortCommand(() =>
                 {

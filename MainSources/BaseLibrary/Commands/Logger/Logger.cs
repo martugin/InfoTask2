@@ -3,11 +3,11 @@
 namespace BaseLibrary
 {
     //Логгер
-    public class Logger
+    public class Logger : ILogger
     {
-        public Logger(LoggerDangerness dangerness = LoggerDangerness.Single)
+        public Logger(LoggerStability stability = LoggerStability.Single)
         {
-            Dangerness = dangerness;
+            Stability = stability;
         }
 
         //Ссылка на историю
@@ -20,11 +20,9 @@ namespace BaseLibrary
         internal IndicatorTextCommand IndicatorTextCommand { get; set; }
         internal CollectCommand CollectCommand { get; set; }
         internal KeepCommand KeepCommand { get; set; }
-        //Накопленная ошибка
-        public string KeepedError { get { return KeepCommand.ErrorMessage; } }
-
+        
          //Режим работы потока
-        public LoggerDangerness Dangerness { get; private set; }
+        protected internal LoggerStability Stability { get; private set; }
 
         //События отображения индикатора
         public event EventHandler<EventArgs> ShowTextedIndicator;
@@ -187,10 +185,6 @@ namespace BaseLibrary
         {
             return Command = new Command(this, Command, startProcent, finishProcent);
         }
-        public Command Start()
-        {
-            return Start(Procent, 100);
-        }
         //Завершение простой команды
         public Command Finish(string results = "")
         {
@@ -206,7 +200,7 @@ namespace BaseLibrary
             Command = LogCommand = new LogCommand(this, Command, startProcent, finishProcent, name, context, pars);
             return LogCommand;
         }
-        public LogCommand StartLog(string name, string context = "", string pars = "", DateTime? endTime = null)
+        public LogCommand StartLog(string name, string context = "", string pars = "")
         {
             return StartLog(Procent, 100, name, context, pars);
         }
@@ -217,7 +211,7 @@ namespace BaseLibrary
             return (LogCommand)FinishCommand(LogCommand);
         }
         //Присвоить результаты в команду логирования
-        public void SetLogResults(string results)
+        public void SetLogCommandResults(string results)
         {
             if (LogCommand != null)
                 LogCommand.Results = results;
@@ -273,26 +267,26 @@ namespace BaseLibrary
                                                               bool isCollect) //Формировать общую ошибку
         {
             FinishCommand(CollectCommand);
-            CommandResults = null;
+            CollectedResults = null;
             Command = CollectCommand = new CollectCommand(this, Command, isWriteHistory, isCollect);
             return CollectCommand;
         }
         //Завершение команды, колекционирущей ошибки
         public CollectCommand FinishCollect(string results = null)
         {
-            if (results != null) CommandResults = results;
+            if (results != null) CollectedResults = results;
             return (CollectCommand)FinishCommand(CollectCommand);
         }
         //Присвоить результат команды Collect
-        public void SetCollectResults(string results)
+        public void SetCollectCommandResults(string results)
         {
-            CommandResults = results;
+            CollectedResults = results;
         }
         
         //Итоговое сообщение об ошибке
-        public string ErrorMessage { get; internal set; }
+        public string CollectedErrorMessage { get; internal set; }
         //Результат выполнения комманды Collect
-        public string CommandResults { get; internal set; }
+        public string CollectedResults { get; internal set; }
         
         //Запуск команды, которая копит ошибки, но не выдает их во вне
         public KeepCommand StartKeep(double startProcent, double finishProcent)
@@ -309,22 +303,25 @@ namespace BaseLibrary
         {
             return (KeepCommand)FinishCommand(KeepCommand);
         }
-        
+
+        //Ошибка, накопленная KeepCommand
+        public string KeepedError { get { return KeepCommand.ErrorMessage; } }
+
         //Запуск команды, обрамляющей опасную операцию
         public DangerCommand StartDanger(double startProcent, double finishProcent, 
                                         int repetitions, //Cколько раз повторять, если не удалась (вместе с первым)
-                                        LoggerDangerness dangerness, //Минимальная LoggerDangerness, начиная с которой выполняется более одного повторения операции
+                                        LoggerStability stability, //Минимальная LoggerStability, начиная с которой выполняется более одного повторения операции
                                         string errMess, //Сообщение об ошибке 
                                         string repeatMess, //Сообщение о повторе
                                         bool useThread = false, //Запускать опасную операцию в другом потоке, чтобы была возможность ее жестко прервать
                                         int errWaiting = 0)  //Cколько мс ждать при ошибке
         {
-            Command = new DangerCommand(this, Command, startProcent, finishProcent, repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
+            Command = new DangerCommand(this, Command, startProcent, finishProcent, repetitions, stability, errMess, repeatMess, useThread, errWaiting);
             return (DangerCommand) Command;
         }
-        public DangerCommand StartDanger(int repetitions, LoggerDangerness dangerness, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
+        public DangerCommand StartDanger(int repetitions, LoggerStability stability, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
         {
-            return StartDanger(Procent, 100, repetitions, dangerness, errMess, repeatMess, useThread, errWaiting);
+            return StartDanger(Procent, 100, repetitions, stability, errMess, repeatMess, useThread, errWaiting);
         }
 
         //Завершить указанную команду и всех детей

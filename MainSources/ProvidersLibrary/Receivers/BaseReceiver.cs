@@ -17,20 +17,17 @@ namespace ProvidersLibrary
         {
             try
             {
-                using (Start())
+                AddEvent("Подготовка приемника");
+                ClearObjects();
+                foreach (var sig in ReceiverConnect.Signals.Values)
                 {
-                    AddEvent("Подготовка приемника");
-                    ClearObjects();
-                    foreach (var sig in ReceiverConnect.Signals.Values)
-                    {
-                        var ob = AddObject(sig);
-                        ob.Context = sig.CodeOuts;
-                        ob.AddSignal(sig);
-                    }
-                    Procent = 30;
-                    StartDanger(30, 100, 2, LoggerDangerness.Single, "Ошибка при подготовке приемника", "Повторная подготовка приемника")
-                        .Run(() => PrepareReceiver(), () => Reconnect());
+                    var ob = AddObject(sig);
+                    ob.Context = sig.CodeOuts;
+                    ob.AddSignal(sig);
                 }
+                Procent = 30;
+                StartDanger(30, 100, 2, LoggerStability.Single, "Ошибка при подготовке приемника", "Повторная подготовка приемника")
+                    .Run(() => PrepareReceiver(), () => Reconnect());
             }
             catch (Exception ex)
             {
