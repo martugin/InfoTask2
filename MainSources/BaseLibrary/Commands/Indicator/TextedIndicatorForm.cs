@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace ComClients
+namespace BaseLibrary
 {
-    public partial class TimedIndicatorForm : Form
+    public partial class TextedIndicatorForm : Form
     {
-        public TimedIndicatorForm()
+        public TextedIndicatorForm()
         {
             InitializeComponent();
         }

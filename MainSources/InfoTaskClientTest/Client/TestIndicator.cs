@@ -24,7 +24,7 @@ namespace InfoTaskClientTest
     //-------------------------------------------------------------------------------------------------
 
     //Тестовый индикатор процесса
-    internal class TestIndicator : IIndicator
+    internal class TestIndicator : IIndicatorOld
     {
         //Последовательный список событий индикатора
         private readonly List<TestIndicatorEvent> _events = new List<TestIndicatorEvent>();

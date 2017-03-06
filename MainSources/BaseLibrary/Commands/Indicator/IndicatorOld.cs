@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using BaseLibrary;
 
-namespace ComClients
+namespace BaseLibrary
 {
     //Интерфейс для отображения индикатора
-    internal interface IIndicator
+    internal interface IIndicatorOld
     {
         //Обработчики событий отображения индикатора
         void OnShowTextedIndicator(object sender, EventArgs e);
@@ -20,7 +19,7 @@ namespace ComClients
     }
 
     //Оболочка логгера с отображением индикатора
-    internal class Indicator : IIndicator
+    internal class IndicatorOld : IIndicatorOld
     {
         //Вызов обновлений формы
         private void Invoke(Form form, Action action)

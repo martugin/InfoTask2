@@ -57,7 +57,22 @@
     <Compile Include="Commands\Commands\CommandsEnums.cs" />
     <Compile Include="Commands\Commands\KeepCommand.cs" />
     <Compile Include="Commands\History\TestHistory.cs" />
+    <Compile Include="Commands\Indicator\AppIndicator.cs" />
+    <Compile Include="Commands\Indicator\IndicatorClient.cs" />
+    <Compile Include="Commands\Indicator\TextedIndicatorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Commands\Indicator\TextedIndicatorForm.Designer.cs">
+      <DependentUpon>TextedIndicatorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Commands\Indicator\TimedIndicatorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Commands\Indicator\TimedIndicatorForm.Designer.cs">
+      <DependentUpon>TimedIndicatorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Commands\Logger\ILogger.cs" />
+    <Compile Include="Commands\Indicator\IndicatorOld.cs" />
     <Compile Include="Commands\Logger\ProcentTabloEventArgs.cs" />
     <Compile Include="Databases\SqlServer\SqlInserter.cs" />
     <Compile Include="Commands\History\TextHistory.cs" />
@@ -94,7 +109,14 @@
     <Compile Include="WPF\WPFConverters.cs" />
     <Compile Include="WPF\TreeItem.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Commands\Indicator\TextedIndicatorForm.resx">
+      <DependentUpon>TextedIndicatorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Indicator\TimedIndicatorForm.resx">
+      <DependentUpon>TimedIndicatorForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

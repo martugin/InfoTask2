@@ -5,14 +5,14 @@ namespace ComClients
 {
     public abstract class IndicatorClient : LoggerClient
     {
-        internal IndicatorClient(Logger logger, IIndicator indicator)
+        internal IndicatorClient(Logger logger, IIndicatorOld indicator)
         {
             Logger = logger;
             Indicator = indicator;
         }
 
         //Индикатор
-        internal IIndicator Indicator { get; set; }
+        internal IIndicatorOld Indicator { get; set; }
 
         //Подписка на события индикатора
         protected void SubscribeEvents()

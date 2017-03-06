@@ -1,6 +1,6 @@
-﻿namespace ComClients
+﻿namespace BaseLibrary
 {
-    partial class TimedIndicatorForm
+    partial class TextedIndicatorForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,10 +29,7 @@
         private void InitializeComponent()
         {
             this.Procent = new System.Windows.Forms.ProgressBar();
-            this.PeriodEnd = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.PeriodBegin = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.Text0 = new System.Windows.Forms.Label();
             this.Text1 = new System.Windows.Forms.Label();
             this.Text2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -44,45 +41,15 @@
             this.Procent.Size = new System.Drawing.Size(340, 23);
             this.Procent.TabIndex = 0;
             // 
-            // PeriodEnd
+            // Text0
             // 
-            this.PeriodEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.PeriodEnd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.PeriodEnd.Location = new System.Drawing.Point(192, 4);
-            this.PeriodEnd.Name = "PeriodEnd";
-            this.PeriodEnd.Size = new System.Drawing.Size(150, 16);
-            this.PeriodEnd.TabIndex = 8;
-            this.PeriodEnd.Text = "00.00.0000 00:00:00";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(168, 4);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(26, 16);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "до";
-            // 
-            // PeriodBegin
-            // 
-            this.PeriodBegin.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.PeriodBegin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.PeriodBegin.Location = new System.Drawing.Point(20, 4);
-            this.PeriodBegin.Name = "PeriodBegin";
-            this.PeriodBegin.Size = new System.Drawing.Size(147, 16);
-            this.PeriodBegin.TabIndex = 6;
-            this.PeriodBegin.Text = "00.00.0000 00:00:00";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(0, 4);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(25, 16);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "от";
+            this.Text0.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.Text0.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.Text0.Location = new System.Drawing.Point(0, 4);
+            this.Text0.Name = "Text0";
+            this.Text0.Size = new System.Drawing.Size(342, 16);
+            this.Text0.TabIndex = 6;
+            this.Text0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Text1
             // 
@@ -104,35 +71,28 @@
             this.Text2.Text = "***";
             this.Text2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // TimedIndicatorForm
+            // TextedIndicatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(345, 101);
+            this.ClientSize = new System.Drawing.Size(342, 101);
             this.ControlBox = false;
             this.Controls.Add(this.Text2);
             this.Controls.Add(this.Text1);
-            this.Controls.Add(this.PeriodEnd);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.PeriodBegin);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.Text0);
             this.Controls.Add(this.Procent);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "TimedIndicatorForm";
+            this.Name = "TextedIndicatorForm";
             this.Text = "InfoTask";
             this.TopMost = true;
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
+        internal System.Windows.Forms.Label Text0;
         internal System.Windows.Forms.ProgressBar Procent;
-        internal System.Windows.Forms.Label PeriodEnd;
-        internal System.Windows.Forms.Label PeriodBegin;
         internal System.Windows.Forms.Label Text1;
         internal System.Windows.Forms.Label Text2;
     }

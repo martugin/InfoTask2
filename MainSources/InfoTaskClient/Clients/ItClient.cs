@@ -35,7 +35,7 @@ namespace ComClients
     ComSourceInterfaces(typeof(ILoggerClientEvents))]
     public class ItClient : IndicatorClient , IItClient
     {
-        public ItClient() : base(new Logger(), new Indicator())
+        public ItClient() : base(new Logger(), new AppIndicator())
         {
             SubscribeEvents();
         }
