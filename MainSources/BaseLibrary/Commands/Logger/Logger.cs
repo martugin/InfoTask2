@@ -12,7 +12,9 @@ namespace BaseLibrary
 
         //Ссылка на историю
         public IHistory History { get; set; }
-        
+        //Ссылка на индикатор
+        public IIndicator Indicator { get; set; }
+
         //Текущие команды разных типов
         internal Command Command { get; set; }
         internal LogCommand LogCommand { get; set; }
@@ -24,138 +26,31 @@ namespace BaseLibrary
          //Режим работы потока
         protected internal LoggerStability Stability { get; private set; }
 
-        //События отображения индикатора
-        public event EventHandler<EventArgs> ShowTextedIndicator;
-        public event EventHandler<EventArgs> ShowTimedIndicator;
-        //Событие скрытия индикатора
-        public event EventHandler<EventArgs> HideIndicator;
-        //Событие изменения текста на табло
-        public event EventHandler<ChangeTabloTextEventArgs> ChangeTabloText;
-        //Событие обновления периода для индикатора
-        public event EventHandler<ChangePeriodEventArgs> ChangePeriod;
-        //События установки и снятия режима индикатора с обратным отсчетом времени
-        public event EventHandler<SetProcentTimedEventArgs> SetProcentTimed;
-        public event EventHandler<EventArgs> SetProcentUsual;
-        //Событие изменения уровня индикатора
-        public event EventHandler<ChangeProcentEventArgs> ChangeProcent;
-
-        //Аргументы события изменения текста табло
-        protected readonly ChangeTabloTextEventArgs TabloArgs = new ChangeTabloTextEventArgs();
-
         //Событие прерывания выполнения
         public event EventHandler<EventArgs> ExecutionFinished;
-
         //Вызов события прерывания
         internal void CallExecutionFinished()
         {
             if (ExecutionFinished != null)
                 ExecutionFinished(this, new EventArgs());
         }
-
-        //Вызов событий отображения индикаторов
-        internal void CallShowTextedIndicator()
-        {
-            lock (_tabloLocker)
-                if (ShowTextedIndicator != null)
-                    ShowTextedIndicator(this, new EventArgs());        
-            
-        }
-        internal void CallShowIndicatorTimed()
-        {
-            lock (_tabloLocker)
-                if (ShowTimedIndicator != null)
-                    ShowTimedIndicator(this, new EventArgs());
-            
-        }
-        internal void CallHideIndicator()
-        {
-            lock (_tabloLocker)
-                if (HideIndicator != null)
-                    HideIndicator(this, new EventArgs());    
-        }
-
-        //Включение и отключение индикатора с режимом отсчета обратного времени
-        internal void CallSetProcentTimed(DateTime endTime)
-        {
-            if (SetProcentTimed != null)
-                SetProcentTimed(this, new SetProcentTimedEventArgs(endTime));
-        }
-        internal void CallSetProcentUsual()
-        {
-            if (SetProcentUsual != null)
-                SetProcentUsual(this, new EventArgs());
-        }
-
-        //Процент индикатора
-        private double _tabloProcent;
-        public double TabloProcent
-        {
-            get { lock (_tabloLocker) return _tabloProcent; }
-            internal set
-            {
-                lock (_tabloLocker)
-                {
-                    if (_tabloProcent == value) return;
-                    _tabloProcent = value;
-                    if (ChangeProcent != null)
-                        ChangeProcent(this, new ChangeProcentEventArgs(value));
-                }
-            }
-        }
         
         //Три уровня текста на форме индикатора
         //Текст нулевого уровня задается в ProgressCommand
         //Текст первого уровня задается в LogCommand
         //Текст второго уровня задается в CommandProgressText
-        internal string TabloText(int number)
-        {
-            lock (_tabloLocker)
-                return TabloArgs.TabloText[number];
-        }
         public void SetTabloText(int number, string text)
         {
-            lock (_tabloLocker)
-            {
-                if (TabloArgs.TabloText[number] == text) return;
-                TabloArgs.TabloText[number] = text;
-                if (ChangeTabloText != null) ChangeTabloText(this, TabloArgs);
-            }
+            if (Indicator != null)
+                Indicator.ChangeTabloText(number, text);
         }
 
-        //Задать период обработки
-        protected internal void SetPeriod(DateTime begin, DateTime end, string mode = "")
-        {
-            lock (_tabloLocker)
-            {
-                _periodBegin = begin;
-                _periodEnd = end;
-                _periodMode = mode;
-                if (ChangePeriod != null)
-                    ChangePeriod(this, new ChangePeriodEventArgs(begin, end, mode));
-            }
-        }
-
-        //Начало и конец текущего периода обработки
-        private DateTime _periodBegin = Different.MinDate;
-        public DateTime PeriodBegin
-        {
-            get { lock (_tabloLocker) return _periodBegin; }
-        }
-        private DateTime _periodEnd = Different.MinDate;
-        public DateTime PeriodEnd
-        {
-            get { lock (_tabloLocker) return _periodEnd; }
-        }
-
-        //Режим (Выравнивание, Синхроннный, Разовый и т.п.)
-        private string _periodMode;
-        public string PeriodMode
-        {
-            get { lock (_tabloLocker) return _periodMode; }
-        }
+        //Начало, конец и режим текущего периода обработки
+        public DateTime PeriodBegin { get; internal set; }
+        public DateTime PeriodEnd { get; internal set; }
+        public string PeriodMode { get; internal set; }
         
         //Объекты блокировки
-        private readonly object _tabloLocker = new object();
         private readonly object _breakLocker = new object();
         
         //Пришла команда Break

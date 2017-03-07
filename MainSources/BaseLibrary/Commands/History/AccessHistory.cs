@@ -249,8 +249,8 @@ namespace BaseLibrary
                 }
                 if (Logger.PeriodBegin != Different.MinDate && ProgressCommand != null)
                 {
-                    _errorsRec.Put("BeginPeriod", ProgressCommand.BeginPeriod);
-                    _errorsRec.Put("EndPeriod", ProgressCommand.EndPeriod);
+                    _errorsRec.Put("BeginPeriod", ProgressCommand.PeriodBegin);
+                    _errorsRec.Put("EndPeriod", ProgressCommand.PeriodEnd);
                 }
             });
         }

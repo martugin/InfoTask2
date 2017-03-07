@@ -9,42 +9,56 @@ namespace BaseLibrary
         protected internal ProgressCommand(Logger logger, Command parent, DateTime begin, DateTime end, string mode, string name, string pars, DateTime? endTime)
             : base(logger, parent, 0, 100, name, pars)
         {
-            Logger.CallShowIndicatorTimed();
-            BeginPeriod = begin;
-            EndPeriod = end;
-            ModePeriod = mode;
-            Logger.SetPeriod(begin, end, mode);
+            Logger.PeriodBegin = PeriodBegin = begin;
+            Logger.PeriodEnd = PeriodEnd = end;
+            Logger.PeriodMode = PeriodMode = mode;
+            if (Indicator != null)
+            {
+                Indicator.ShowTimedIndicator();
+                Indicator.ChangePeriod(begin, end, mode);
+            }
             Initialize(endTime);
         }
         //Конструктор с указанием текста 0-го уровня формы индикатора
         protected internal ProgressCommand(Logger logger, Command parent, string text, string name, string pars, DateTime? endTime)
             : base(logger, parent, 0, 100, name, pars)
         {
-            Logger.CallShowTextedIndicator();
+            Indicator.ShowTextedIndicator();
             Logger.SetTabloText(0, text);
             Initialize(endTime);
         }
         private void Initialize(DateTime? endTime)//Если не null, то время конца обратного отсчета
         {
-            if (endTime != null)
-                Logger.CallSetProcentTimed((DateTime) endTime);
-            else Logger.CallSetProcentUsual();
-            Logger.TabloProcent = 0;
+            if (Indicator != null)
+            {
+                if (endTime != null)
+                    Indicator.SetProcessTimed((DateTime)endTime);
+                else Indicator.SetProcessUsual();
+                Indicator.ChangeProcent(0);    
+            }
             if (History != null)
                 History.WriteStartSuper(this);
         }
-        
+
+        //Ссылка на индикатор
+        private IIndicator Indicator {get { return Logger.Indicator; }}
+
         //Период обработки
-        public DateTime BeginPeriod { get; private set; }
-        public DateTime EndPeriod { get; private set; }
+        public DateTime PeriodBegin { get; private set; }
+        public DateTime PeriodEnd { get; private set; }
         //Режим выполнения
-        public string ModePeriod { get; private set; }
+        public string PeriodMode { get; private set; }
 
         //Отобразить индикатор
         public override double Procent
         {
-            get { return Logger.TabloProcent; }
-            set { Logger.TabloProcent = value; }
+            get { return base.Procent; }
+            set
+            {
+                base.Procent = value; 
+                if (Indicator != null)
+                    Indicator.ChangeProcent(value);
+            }
         }
 
         //Завершение команды
@@ -54,7 +68,8 @@ namespace BaseLibrary
             if (History != null)
                 History.WriteFinishSuper(this, null);
             Logger.SetTabloText(0, "");
-            Logger.CallHideIndicator();
+            if (Indicator != null)
+                Indicator.HideIndicator();
             Logger.ProgressCommand = null;
         }
     }

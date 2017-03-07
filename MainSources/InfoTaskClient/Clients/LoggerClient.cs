@@ -7,9 +7,42 @@ namespace ComClients
     //Оболочка логгера для вызова через COM
     public abstract class LoggerClient : ILoggerClient
     {
+        protected LoggerClient()
+        {
+            Logger = new Logger {Indicator = new AppIndicator()};
+            Logger.ExecutionFinished += OnExecutionFinished;
+        }
+
         //Логгер
-        protected Logger Logger { get; set; }
-        
+        protected Logger Logger { get; private set; }
+
+        //Событие, сообщающее внешнему приложению, что выполнение было прервано
+        public delegate void EvDelegate();
+        public event EvDelegate Finished;
+
+        //Обработка события прерывания
+        private void OnExecutionFinished(object sender, EventArgs e)
+        {
+            if (Finished != null) Finished();
+        }
+
+        //Закрытие клиента
+        public void Close()
+        {
+            try
+            {
+                Logger.ExecutionFinished -= OnExecutionFinished;
+                if (Logger.History != null)
+                    Logger.History.Close();
+            }
+            catch { }
+            Thread.Sleep(100);
+            GC.Collect();
+            IsClosed = true;
+        }
+        //Клиент уже был закрыт
+        protected bool IsClosed { get; private set; }
+
         //Добавить событие в историю
         public void AddEvent(string text, //Описание
                                         string pars = "") //Дополнительная информация

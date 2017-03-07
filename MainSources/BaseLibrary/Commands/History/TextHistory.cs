@@ -163,7 +163,7 @@ namespace BaseLibrary
             if (!error.Params.IsEmpty() || error.Exeption != null) 
                 _errWriter.WriteLine(error.ToLog());
             if (Logger.ProgressCommand != null && Logger.PeriodBegin != Different.MinDate)
-                _errWriter.WriteLine(Logger.ProgressCommand.BeginPeriod + " - " + Logger.ProgressCommand.EndPeriod + "  ");
+                _errWriter.WriteLine(Logger.ProgressCommand.PeriodBegin + " - " + Logger.ProgressCommand.PeriodEnd + "  ");
             if (Logger.LogCommand != null)
                 _errWriter.WriteLine(Logger.LogCommand.Name + ", " + Logger.LogCommand.Context);
             _errWriter.WriteLine();

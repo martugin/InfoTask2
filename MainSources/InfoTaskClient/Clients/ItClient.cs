@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Threading;
 using BaseLibrary;
 using CommonTypes;
 using Generator;
@@ -33,13 +32,8 @@ namespace ComClients
     //Клиент работы с функциями InfoTask, написанными на C#, вызываемыми из внешних приложений через COM
     [ClassInterface(ClassInterfaceType.None),
     ComSourceInterfaces(typeof(ILoggerClientEvents))]
-    public class ItClient : IndicatorClient , IItClient
+    public class ItClient : LoggerClient , IItClient
     {
-        public ItClient() : base(new Logger(), new AppIndicator())
-        {
-            SubscribeEvents();
-        }
-
         //Инициализация
         public void Initialize(string appCode, //Код приложения
                                         string project) //Код проекта
@@ -56,23 +50,6 @@ namespace ComClients
             Project = "TestProject";
             Logger.History = new TestHistory(Logger);
         }
-
-        //Закрытие клиента
-        public void Close()
-        {
-            try
-            {
-                UnsubscribeEvents();
-                if (Logger.History != null)
-                    Logger.History.Close();
-            }
-            catch { }
-            Thread.Sleep(100);
-            GC.Collect();
-            IsClosed = true;
-        }
-        //Клиент уже был закрыт
-        protected bool IsClosed { get; private set; }
 
         //Код приложения
         protected string AppCode { get; private set; }

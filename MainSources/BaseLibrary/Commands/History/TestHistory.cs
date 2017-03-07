@@ -86,9 +86,9 @@ namespace BaseLibrary
             Supers.Add(CommandSuper);
             CommandSuper.Command = command.Name;
             CommandSuper.Params = command.Params;
-            CommandSuper.BeginPeriod = command.BeginPeriod;
-            CommandSuper.EndPeriod = command.EndPeriod;
-            CommandSuper.ModePeriod = command.ModePeriod;
+            CommandSuper.BeginPeriod = command.PeriodBegin;
+            CommandSuper.EndPeriod = command.PeriodEnd;
+            CommandSuper.ModePeriod = command.PeriodMode;
             CommandSuper.Status = command.Status;
             CommandSuper.Time = command.StartTime;
         }
@@ -159,10 +159,10 @@ namespace BaseLibrary
             err.Time = DateTime.Now;
             err.Command = Logger.LogCommand.Name;
             err.Context = Logger.LogCommand.Context;
-            if (Logger.ProgressCommand != null && Logger.ProgressCommand.BeginPeriod != Different.MinDate)
+            if (Logger.ProgressCommand != null && Logger.ProgressCommand.PeriodBegin != Different.MinDate)
             {
-                err.BeginPeriod = Logger.ProgressCommand.BeginPeriod;
-                err.EndPeriod = Logger.ProgressCommand.EndPeriod;
+                err.BeginPeriod = Logger.ProgressCommand.PeriodBegin;
+                err.EndPeriod = Logger.ProgressCommand.PeriodEnd;
             }
         }
 

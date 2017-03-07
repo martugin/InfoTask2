@@ -58,7 +58,6 @@
     <Compile Include="Commands\Commands\KeepCommand.cs" />
     <Compile Include="Commands\History\TestHistory.cs" />
     <Compile Include="Commands\Indicator\AppIndicator.cs" />
-    <Compile Include="Commands\Indicator\IndicatorClient.cs" />
     <Compile Include="Commands\Indicator\TextedIndicatorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,7 +71,6 @@
       <DependentUpon>TimedIndicatorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Commands\Logger\ILogger.cs" />
-    <Compile Include="Commands\Indicator\IndicatorOld.cs" />
     <Compile Include="Commands\Logger\ProcentTabloEventArgs.cs" />
     <Compile Include="Databases\SqlServer\SqlInserter.cs" />
     <Compile Include="Commands\History\TextHistory.cs" />
