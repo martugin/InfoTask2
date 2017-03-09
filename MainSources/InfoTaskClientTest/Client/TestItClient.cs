@@ -11,11 +11,7 @@ namespace InfoTaskClientTest
         public TestItClient(bool useTestIndicator)
         {
             if (useTestIndicator)
-            {
-                UnsubscribeEvents();
-                Indicator = new TestIndicator();
-                SubscribeEvents();    
-            }
+                Logger.Indicator = new TestIndicator();
             Logger.History = new TestHistory(Logger);
         }
 
@@ -29,7 +25,7 @@ namespace InfoTaskClientTest
         {
             Logger.StartCollect(false, false).Run(() =>
             {
-                StartProgress("P", "P", "Процесс");
+                StartProgress("P", "Процесс");
                 StartLog(0, 30, "11111111");
                 Thread.Sleep(1000);
                 SetProcent(33);
@@ -53,7 +49,8 @@ namespace InfoTaskClientTest
 
         public void RunTestForm()
         {
-            StartProgress("Process", "", new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
+            StartPeriod(new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
+            StartProgress("Process");
             StartLog(0, 20, "Command", "SSS");
             StartIndicatorText("Text");
             Thread.Sleep(1000);
@@ -76,7 +73,8 @@ namespace InfoTaskClientTest
             Thread.Sleep(1000);
             StartIndicatorText(70, 100, "Last");
             Thread.Sleep(1000);
-            StartProgress("Process", "", new DateTime(2017, 1, 1, 11, 0, 0), new DateTime(2017, 1, 1, 12, 0, 0));
+            StartPeriod(new DateTime(2017, 1, 1, 11, 0, 0), new DateTime(2017, 1, 1, 12, 0, 0));
+            StartProgress("Process");
             StartLog("Log");
             StartIndicatorText(0, 50, "ProgressText");
             Thread.Sleep(1000);
@@ -88,7 +86,8 @@ namespace InfoTaskClientTest
             Thread.Sleep(1000);
             Finish();
             Finish();
-            StartProgress("Process", "", "Заголовок");
+            FinishPeriod();
+            StartProgress("Process");
             StartLog(0, 50, "Com", "xxx", "P");
             StartIndicatorText(0, 50, "Text");
             Thread.Sleep(1000);
@@ -114,7 +113,8 @@ namespace InfoTaskClientTest
 
         public void RunTestIndicator()
         {
-            StartProgress("Process", "", new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
+            StartPeriod(new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
+            StartProgress("Process");
             StartLog(0, 20, "Command", "SSS");
             StartIndicatorText("Text");
             Thread.Sleep(10);
@@ -137,7 +137,8 @@ namespace InfoTaskClientTest
             Thread.Sleep(10);
             StartIndicatorText(70, 100, "Last");
             Thread.Sleep(10);
-            Logger.StartProgress(new DateTime(2017, 1, 1, 11, 0, 0), new DateTime(2017, 1, 1, 12, 0, 0), "Mode", "Process", "", new DateTime(2017, 1, 1, 12, 0, 0));
+            Logger.StartPeriod(new DateTime(2017, 1, 1, 11, 0, 0), new DateTime(2017, 1, 1, 12, 0, 0), "Mode");
+            Logger.StartProgress("Process", "", new DateTime(2017, 1, 1, 12, 0, 0));
             StartLog("Log");
             StartIndicatorText(0, 50, "ProgressText");
             Thread.Sleep(10);
@@ -149,7 +150,8 @@ namespace InfoTaskClientTest
             Thread.Sleep(10);
             Finish();
             Finish();
-            StartProgress("Process", "", "Заголовок");
+            FinishPeriod();
+            StartProgress("Process", "");
             StartLog(0, 50, "Com", "xxx", "P");
             StartIndicatorText(0, 50, "Text");
             Thread.Sleep(10);
@@ -176,7 +178,7 @@ namespace InfoTaskClientTest
         public void RunBreak()
         {
             Logger.StartCollect(false, true).Run(() => 
-                Logger.StartProgress("T", "N", "P").Run(() => 
+                Logger.StartProgress("T", "N").Run(() => 
                     Logger.StartLog(20, 60, "Log").Run(() =>
                     {
                         Logger.Procent = 50;

@@ -14,7 +14,6 @@ namespace ProvidersLibrary
     {
         public ProvidersFactory()
         {
-            //Загрузить провайдеры из Config
             var doc = XDocument.Load(DifferentIt.InfoTaskDir() + @"General\Config.xml");
             foreach (var ncomp in doc.Element("Config").Element("Providers").Elements())
             {

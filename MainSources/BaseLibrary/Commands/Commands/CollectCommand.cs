@@ -22,6 +22,8 @@ namespace BaseLibrary
 
         //Список ошибок 
         private readonly List<CommandError> _errors = new List<CommandError>();
+        //Список результатов выполнения команды
+        private readonly List<string> _results = new List<string>();
 
         //Добавить ошибку
         public override void AddError(CommandError err)
@@ -37,6 +39,16 @@ namespace BaseLibrary
                 if (!isFound) _errors.Add(err);
             }
             base.AddError(err);
+        }
+
+        //Добавление результата команды, возвращает итоговую строку результатов
+        public string AddResult(string result)
+        {
+            _results.Add(result);
+            string res = "";
+            foreach (var r in _results)
+                res += r;
+            return res;
         }
 
         public override Command Run(Action action)

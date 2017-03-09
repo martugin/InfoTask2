@@ -27,7 +27,7 @@ namespace GeneratorTest
             var templatesFile = TestLib.TestRunDir + @"Generator\Gen" + tablName + "Template.accdb";
             var table = new GenTemplateTable(tablName, "GenRule", "ErrMess", "CalcOn", "Id");
             var subTable = subTablName == null ? null : new GenTemplateTable(subTablName, table, "GenRule", "ErrMess", "CalcOn", "Id", "ParentId");
-            var generator = new TablGenerator(new Logger(), tabls, templatesFile, table, subTable);
+            var generator = new ModuleGenerator(new Logger(), tabls, templatesFile, table, subTable);
 
             var s = TestLib.TestRunDir + @"Generator\Gen" + tablName;
             if (copyRes) generator.Generate(s + "Res.accdb", tablName, subTablName);

@@ -6,14 +6,14 @@
         //Ссылка на логгер
         Logger Logger { get; }
 
-        //Начало выполнения надкомманды
+        //Записать начало выполнения надкомманды
         void WriteStartSuper(ProgressCommand command);
-        //Начало выполнения комманды
+        //Записать начало выполнения комманды
         void WriteStart(LogCommand command);
-        //Конец выполнения надкомманды
-        void WriteFinishSuper(ProgressCommand command, string results);
-        //Конец выполнения комманды
-        void WriteFinish(LogCommand command, string results);
+        //Записать конец выполнения надкомманды
+        void WriteFinishSuper(string results);
+        //Записать конец выполнения комманды
+        void WriteFinish(string results);
 
         //Записать событие
         void WriteEvent(string description, string pars);

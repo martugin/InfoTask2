@@ -26,7 +26,8 @@ namespace BaseLibraryTest
          {
              OpenHistory("History", true);
              StartCollect(true, false);
-             StartProgress(new DateTime(2017, 1, 1), new DateTime(2017, 1, 2), "Синхронный", "SuperCommand1");
+             StartPeriod(new DateTime(2017, 1, 1), new DateTime(2017, 1, 2));
+             StartProgress("Синхронный", "SuperCommand1");
              StartLog("Command11", "Context1", "Pars11").Run(() =>
              {
                  AddEvent("Event111", "Pars111");
@@ -40,7 +41,8 @@ namespace BaseLibraryTest
                  AddEvent("Event123", "Pars123");
              });
              StartLog("Command13", "Context3", "Pars13");
-             StartProgress(new DateTime(2017, 1, 2), new DateTime(2017, 1, 3), "Синхронный", "SuperCommand2");
+             StartPeriod(new DateTime(2017, 1, 2), new DateTime(2017, 1, 3));
+             StartProgress("Синхронный", "SuperCommand2");
              StartLog("Command21", "Context1", "Pars21");
              AddEvent("Event211");
              Start(0, 100);
@@ -51,17 +53,21 @@ namespace BaseLibraryTest
              AddEvent("Event221");
              AddError("Error222", new Exception("Text"));
              FinishLog("Results22");
-             StartProgress(new DateTime(2017, 1, 3), new DateTime(2017, 1, 4), "Синхронный", "SuperCommand3");
+             StartPeriod(new DateTime(2017, 1, 3), new DateTime(2017, 1, 4));
+             StartProgress("Синхронный", "SuperCommand3");
              FinishCollect();
              History.Close();
 
              OpenHistory("History", false);
-             StartProgress(new DateTime(2017, 1, 4), new DateTime(2017, 1, 5), "Синхронный", "SuperCommand4").Run(() =>
+             StartPeriod(new DateTime(2017, 1, 4), new DateTime(2017, 1, 5)).Run(() =>
              {
-                 StartLog("Command41", "Context4", "Pars41");
-                 StartLog("Command42", "Context4", "Pars42");
-                 AddEvent("Event421", "Pars421");
-                 AddEvent("Event422");
+                 StartProgress("Синхронный", "SuperCommand4").Run(() =>
+                 {
+                     StartLog("Command41", "Context4", "Pars41");
+                     StartLog("Command42", "Context4", "Pars42");
+                     AddEvent("Event421", "Pars421");
+                     AddEvent("Event422");
+                 });
              });
 
              StartCollect(true, false).Run(() =>

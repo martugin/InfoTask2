@@ -19,6 +19,13 @@ namespace ProvidersLibraryTest
             return (SourceConnect)connect;
         }
 
+        private static void GetValues(SourceConnect connect, DateTime beg, DateTime en)
+        {
+            connect.Logger.StartPeriod(beg, en);
+            connect.GetValues();
+            connect.Logger.FinishPeriod();
+        }
+
         [TestMethod]
         public void CloneProps()
         {
@@ -83,7 +90,7 @@ namespace ProvidersLibraryTest
             Assert.IsTrue(connect.Signals.ContainsKey("ObConst.SigS"));
 
             connect.Prepare();
-            connect.GetValues(new DateTime(2016, 7, 8), new DateTime(2016, 7, 8, 1, 0, 0));
+            GetValues(connect, new DateTime(2016, 7, 8), new DateTime(2016, 7, 8, 1, 0, 0));
         }
     }
 }

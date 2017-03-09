@@ -18,7 +18,7 @@ namespace ComClients
         void Close();
 
         //Генерация параметров
-        string GenerateParams(string moduleDir);
+        void GenerateParams(string moduleDir);
 
         //Создание соединения
         SourConnect CreateSourConnect(string name, //Имя соединения
@@ -55,54 +55,36 @@ namespace ComClients
         protected string AppCode { get; private set; }
         //Код проекта
         protected string Project { get; private set; }
-        
+
+        //Генератор параметров, синглетон
+        private TablGenerator _generator;
+
         //Генерация параметров
-        public string GenerateParams(string moduleDir)
+        public void GenerateParams(string moduleDir)
         {
-            using (Logger.StartLog("Генерация параметров", moduleDir))
-            {
-                try
-                {
-                    var dir = moduleDir.EndsWith("\\") ? moduleDir : moduleDir + "\\";
-                    var table = new GenTemplateTable("GenParams", "GenRule", "ErrMess", "CalcOn", "ParamId");
-                    var subTable = new GenTemplateTable("GenSubParams", table, "GenRule", "ErrMess", "CalcOn", "SubParamId", "ParamId");
-                    var dataTabls = new TablsList();
-                    Logger.AddEvent("Загрузка структуры исходных таблиц", dir + "Tables.accdb");
-                    using (var db = new DaoDb(dir + "Tables.accdb"))
-                    {
-                        dataTabls.AddDbStructs(db);
-                        Logger.AddEvent("Загрузка значений из исходных таблиц");
-                        dataTabls.LoadValues(db, true);
-                    }
-                    Logger.AddEvent("Загрузка и проверка генерирующих параметров");
-                    var generator = new TablGenerator(Logger, dataTabls, dir + "CalcParams.accdb", table, subTable);
-                    generator.Generate(dir + "Compiled.accdb", "GeneratedParams", "GeneratedSubParams");
-                    Logger.AddEvent("Генерация завершена", generator.GenErrorsCount + " ошибок");
-                    if (generator.GenErrorsCount == 0) return "";
-                    return "Шаблон генерации содержит " + generator.GenErrorsCount + " ошибок";    
-                }
-                catch (Exception ex)
-                {
-                    Logger.AddError("Ошибка при генерации параметров", ex);
-                    return ex.MessageString("Ошибка при генерации параметров");
-                }
-            }
+            if (_generator == null)
+                _generator = new TablGenerator(Logger);
+            RunSyncCommand(() => _generator.GenerateParams(moduleDir));
         }
 
         //Создание соединения-источника
         public SourConnect CreateSourConnect(string name, string complect)
         {
-            return new SourConnect(
-                (SourceConnect)Factory.CreateConnect(ProviderType.Source, name, complect, Logger),
-                Factory);
+            SourceConnect s = null;
+            RunSyncCommand(() => { 
+                s = (SourceConnect) Factory.CreateConnect(ProviderType.Source, name, complect, Logger);
+            });
+            return new SourConnect(s, Factory);
         }
 
         //Создание соединения-приемника
         public ReceivConnect CreateReceivConnect(string name, string complect)
         {
-            return new ReceivConnect(
-                (ReceiverConnect)Factory.CreateConnect(ProviderType.Receiver, name, complect, Logger),
-                Factory);
+            ReceiverConnect r = null;
+            RunSyncCommand(() => {
+                r = (ReceiverConnect)Factory.CreateConnect(ProviderType.Receiver, name, complect, Logger);
+            });
+            return new ReceivConnect(r, Factory);
         }
 
         //Фабрика провайдеров

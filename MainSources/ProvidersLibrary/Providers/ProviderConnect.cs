@@ -99,8 +99,12 @@ namespace ProvidersLibrary
             }
         }
 
-        //Текущий период расчета
-        public DateTime PeriodBegin { get; protected set; }
-        public DateTime PeriodEnd { get; protected set; }
+        //Проверяет, что в логгере задан период обработки
+        protected bool CheckPeriodIsDefined()
+        {
+            if (PeriodBegin != Different.MinDate) return true;
+            AddError("Не задан период обработки");
+            return false;
+        }
     }
 }

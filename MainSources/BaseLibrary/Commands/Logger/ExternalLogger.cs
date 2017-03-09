@@ -17,40 +17,6 @@ namespace BaseLibrary
         //Контекст
         public virtual string Context { get { return ""; } }
 
-        //Добавляет событие в историю
-        public void AddEvent(string description, string pars = "")
-        {
-            Logger.AddEvent(description, pars);
-        }
-        //Добавляет событие в лог c указанием процентов текущей комманды
-        public void AddEvent(string description, string pars, double procent)
-        {
-            Logger.AddEvent(description, pars, procent);
-        }
-        public void AddEvent(string description, double procent)
-        {
-            Logger.AddEvent(description, procent);
-        }
-
-        //text - текст ошибки, ex - исключение, par - праметры ошибки
-        public void AddError(string text, Exception ex = null, string pars = "", string context = null)
-        {
-            Logger.AddError(text, ex, pars, context);
-        }
-
-        //text - текст ошибки, ex - исключение, par - праметры ошибки
-        public void AddWarning(string text, Exception ex = null, string pars = "", string context = null)
-        {
-            Logger.AddWarning(text, ex, pars, context);
-        }
-
-        //Процент текущей комманды
-        public double Procent
-        {
-            get { return Logger.Procent; }
-            set { Logger.Procent = value; }
-        }
-
         //Запуск простой комманды
         public Command Start(double startProcent, double finishProcent)
         {
@@ -60,60 +26,6 @@ namespace BaseLibrary
         public Command Finish(string results = "")
         {
             return Logger.Finish();
-        }
-        
-        //Запуск команды логирования
-        public LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
-        {
-            return Logger.StartLog(startProcent, finishProcent, name, context, pars);
-        }
-        public LogCommand StartLog(string name, string context = "", string pars = "")
-        {
-            return Logger.StartLog(name, context, pars);
-        }
-        //Завершение команды логирования
-        public LogCommand FinishLog(string results = "")
-        {
-            return Logger.FinishLog(results);
-        }
-        public void SetLogCommandResults(string results)
-        {
-            Logger.SetLogCommandResults(results);
-        }
-
-        //Запуск команды логирования в SuperHistory и отображения индикатора
-        public ProgressCommand StartProgress(string text, string name, string pars = "", DateTime? endTime = null)
-        {
-            return Logger.StartProgress(text, name, pars, endTime);
-        }
-        public ProgressCommand StartProgress(DateTime begin, DateTime end, string mode, string name, string pars = "", DateTime? endTime = null)
-        {
-            return Logger.StartProgress(begin, end, mode, name, pars, endTime);
-        }
-        //Завершение команды логирования в SuperHistory
-        public ProgressCommand FinishProgress()
-        {
-            return Logger.FinishProgress();
-        }
-
-        //Начало, конец и режим периода обработки
-        public DateTime PeriodBegin { get { return Logger.PeriodBegin; } }
-        public DateTime PeriodEnd { get { return Logger.PeriodEnd; } }
-        public string PeriodMode { get { return Logger.PeriodMode; } }
-
-        //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
-        public IndicatorTextCommand StartIndicatorText(double startProcent, double finishProcent, string text)
-        {
-            return Logger.StartIndicatorText(startProcent, finishProcent, text);
-        }
-        public IndicatorTextCommand StartIndicatorText(string text)
-        {
-            return Logger.StartIndicatorText(text);
-        }
-        //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
-        public IndicatorTextCommand FinishIndicatorText()
-        {
-            return Logger.FinishIndicatorText();
         }
 
         //Запуск команды, колекционирущей ошибки
@@ -129,19 +41,79 @@ namespace BaseLibrary
         }
 
         //Запись результатов в команду Collect
-        public void SetCollectCommandResults(string results)
+        public void AddCollectResult(string result)
         {
-            Logger.SetCollectCommandResults(results);
+            Logger.AddCollectResult(result);
         }
         //Итоговая ошибка комманды Collect
-        public string CollectedErrorMessage 
-        { 
-            get { return Logger.CollectedErrorMessage; } 
+        public string CollectedErrorMessage
+        {
+            get { return Logger.CollectedErrorMessage; }
         }
         //Результаты выполнения команды Collect
         public string CollectedResults
         {
             get { return Logger.CollectedResults; }
+        }
+
+        //Команда, задающая период обработки
+        public PeriodCommand StartPeriod(DateTime begin, DateTime end, string mode)
+        {
+            return Logger.StartPeriod(begin, end, mode);
+        }
+        public PeriodCommand FinishPeriod()
+        {
+            return Logger.FinishPeriod();
+        }
+
+        //Начало, конец и режим периода обработки
+        public DateTime PeriodBegin { get { return Logger.PeriodBegin; } }
+        public DateTime PeriodEnd { get { return Logger.PeriodEnd; } }
+        public string PeriodMode { get { return Logger.PeriodMode; } }
+
+        //Запуск команды логирования в SuperHistory и отображения индикатора
+        public ProgressCommand StartProgress(string name, string pars = "", DateTime? endTime = null)
+        {
+            return Logger.StartProgress(name, pars, endTime);
+        }
+        //Завершение команды логирования в SuperHistory
+        public ProgressCommand FinishProgress()
+        {
+            return Logger.FinishProgress();
+        }
+
+        //Запуск команды логирования
+        public LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
+        {
+            return Logger.StartLog(startProcent, finishProcent, name, context, pars);
+        }
+        public LogCommand StartLog(string name, string context = "", string pars = "")
+        {
+            return Logger.StartLog(name, context, pars);
+        }
+        //Завершение команды логирования
+        public LogCommand FinishLog(string results = "")
+        {
+            return Logger.FinishLog(results);
+        }
+        public void SetLogResults(string results)
+        {
+            Logger.SetLogResults(results);
+        }
+
+        //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
+        public IndicatorTextCommand StartIndicatorText(double startProcent, double finishProcent, string text)
+        {
+            return Logger.StartIndicatorText(startProcent, finishProcent, text);
+        }
+        public IndicatorTextCommand StartIndicatorText(string text)
+        {
+            return Logger.StartIndicatorText(text);
+        }
+        //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
+        public IndicatorTextCommand FinishIndicatorText()
+        {
+            return Logger.FinishIndicatorText();
         }
 
         //Запуск команды, которая копит ошибки, но не выдает из во вне
@@ -177,6 +149,40 @@ namespace BaseLibrary
             return Logger.StartDanger(repetitions, stability, errMess, repeatMess, useThread, errWaiting);
         }
 
+        //Добавляет событие в историю
+        public void AddEvent(string description, string pars = "")
+        {
+            Logger.AddEvent(description, pars);
+        }
+        //Добавляет событие в лог c указанием процентов текущей комманды
+        public void AddEvent(string description, string pars, double procent)
+        {
+            Logger.AddEvent(description, pars, procent);
+        }
+        public void AddEvent(string description, double procent)
+        {
+            Logger.AddEvent(description, procent);
+        }
+
+        //text - текст ошибки, ex - исключение, par - праметры ошибки
+        public void AddError(string text, Exception ex = null, string pars = "", string context = null)
+        {
+            Logger.AddError(text, ex, pars, context);
+        }
+
+        //text - текст ошибки, ex - исключение, par - праметры ошибки
+        public void AddWarning(string text, Exception ex = null, string pars = "", string context = null)
+        {
+            Logger.AddWarning(text, ex, pars, context);
+        }
+
+        //Процент текущей комманды
+        public double Procent
+        {
+            get { return Logger.Procent; }
+            set { Logger.Procent = value; }
+        }
+        
         //Прервать выполнение
         public void Break()
         {

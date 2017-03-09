@@ -6,33 +6,20 @@ namespace BaseLibrary
     public class ProgressCommand : LogBaseCommand
     {
         //Конструктор с указанием периода обработки
-        protected internal ProgressCommand(Logger logger, Command parent, DateTime begin, DateTime end, string mode, string name, string pars, DateTime? endTime)
+        protected internal ProgressCommand(Logger logger, Command parent, string name, string pars, DateTime? endTime)
             : base(logger, parent, 0, 100, name, pars)
-        {
-            Logger.PeriodBegin = PeriodBegin = begin;
-            Logger.PeriodEnd = PeriodEnd = end;
-            Logger.PeriodMode = PeriodMode = mode;
-            if (Indicator != null)
-            {
-                Indicator.ShowTimedIndicator();
-                Indicator.ChangePeriod(begin, end, mode);
-            }
-            Initialize(endTime);
-        }
-        //Конструктор с указанием текста 0-го уровня формы индикатора
-        protected internal ProgressCommand(Logger logger, Command parent, string text, string name, string pars, DateTime? endTime)
-            : base(logger, parent, 0, 100, name, pars)
-        {
-            Indicator.ShowTextedIndicator();
-            Logger.SetTabloText(0, text);
-            Initialize(endTime);
-        }
-        private void Initialize(DateTime? endTime)//Если не null, то время конца обратного отсчета
         {
             if (Indicator != null)
             {
+                if (Logger.PeriodCommand != null)
+                {
+                    Indicator.ShowTimedIndicator();
+                    Indicator.ChangePeriod(Logger.PeriodBegin, Logger.PeriodEnd, Logger.PeriodMode);
+                }
+                else Indicator.ShowTextedIndicator();
+                Logger.SetTabloText(0, name);
                 if (endTime != null)
-                    Indicator.SetProcessTimed((DateTime)endTime);
+                    Indicator.SetTimedProcess((DateTime)endTime);
                 else Indicator.SetProcessUsual();
                 Indicator.ChangeProcent(0);    
             }
@@ -42,12 +29,6 @@ namespace BaseLibrary
 
         //Ссылка на индикатор
         private IIndicator Indicator {get { return Logger.Indicator; }}
-
-        //Период обработки
-        public DateTime PeriodBegin { get; private set; }
-        public DateTime PeriodEnd { get; private set; }
-        //Режим выполнения
-        public string PeriodMode { get; private set; }
 
         //Отобразить индикатор
         public override double Procent
@@ -66,7 +47,7 @@ namespace BaseLibrary
         {
             base.FinishCommand(isBreaked);
             if (History != null)
-                History.WriteFinishSuper(this, null);
+                History.WriteFinishSuper(null);
             Logger.SetTabloText(0, "");
             if (Indicator != null)
                 Indicator.HideIndicator();

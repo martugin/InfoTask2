@@ -8,7 +8,7 @@ namespace Generator
     //Базовый класс для ряда таблицы и ряда подтаблицы шаблона генерации
     internal class GenBaseRow
     {
-        public GenBaseRow(TablGenerator generator, //Ссылка на генератор
+        public GenBaseRow(ModuleGenerator generator, //Ссылка на генератор
                           GenTemplateTable table, //Описание полей таблицы-шаблона
                           DaoRec rec) //Рекордсет таблицы шаблона генерации
         {

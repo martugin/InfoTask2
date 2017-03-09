@@ -10,7 +10,7 @@ namespace GeneratorTest
     {
         private GenKeeper MakeKeeper()
         {
-            return new GenKeeper(new TablGenerator(new Logger(), null, null, null));
+            return new GenKeeper(new ModuleGenerator(new Logger(), null, null, null));
         }
 
         //Разбор выражения GenRule таблицы и подтаблицы

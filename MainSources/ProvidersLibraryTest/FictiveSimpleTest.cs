@@ -22,6 +22,13 @@ namespace ProvidersLibraryTest
             return connect;
         }
 
+        private static void GetValues(SourceConnect connect, DateTime beg, DateTime en)
+        {
+            connect.Logger.StartPeriod(beg, en);
+            connect.GetValues();
+            connect.Logger.FinishPeriod();
+        }
+
         [TestMethod]
         public void Signals()
         {
@@ -116,14 +123,14 @@ namespace ProvidersLibraryTest
             source.Prepare();
             var beg = new DateTime(2007, 11, 20, 10, 30, 0);
             var en = new DateTime(2007, 11, 20, 10, 40, 0);
-            connect.GetValues(beg, en);
+            GetValues(connect, beg, en);
             Assert.AreEqual(0, connect.Signals.Count);
 
             var sigi = connect.AddInitialSignal("Ob.Int", "Ob", DataType.Integer, "NumObject=1;Signal=Int;ValuesInterval=1000", true);
             var sigr = connect.AddInitialSignal("Ob.Real", "Ob", DataType.Real, "NumObject=1;Signal=Real;ValuesInterval=1000", true);
             Assert.AreEqual(2, connect.Signals.Count);
             connect.Prepare();
-            connect.GetValues(beg, en);
+            GetValues(connect, beg, en);
             Assert.AreEqual(601, sigi.MomList.Count);
             Assert.AreEqual(beg, sigi.MomList.TimeI(0));
             Assert.AreEqual(0, sigi.MomList.IntegerI(0));
@@ -182,7 +189,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(1, source.Objects.Count);
             var beg = new DateTime(2007, 11, 20, 10, 30, 0);
             var en = new DateTime(2007, 11, 20, 10, 40, 0);
-            connect.GetValues(beg, en);
+            GetValues(connect, beg, en);
 
             //Bit
             Assert.AreEqual(601, sigBit.MomList.Count);
@@ -334,7 +341,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(1, source.Objects.Count);
             var beg = new DateTime(2007, 11, 20, 10, 0, 0);
             var en = new DateTime(2007, 11, 20, 10, 1, 0);
-            connect.GetValues(beg, en);
+            GetValues(connect, beg, en);
 
             //Bit
             Assert.AreEqual(61, sigBit.MomList.Count);
@@ -450,7 +457,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(2, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
             source.MakeErrorOnTheNextReading();
-            connect.GetValues(beg, en);
+            GetValues(connect, beg, en);
             var source2 = (FictiveSimpleSource)connect.Provider;
             Assert.AreEqual("p2", source2.Label);
             Assert.AreEqual(1, source2.Objects.Count);

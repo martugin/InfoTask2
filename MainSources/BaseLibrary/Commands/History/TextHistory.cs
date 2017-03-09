@@ -63,9 +63,7 @@ namespace BaseLibrary
             {
                 try
                 {
-                    var commLog = new LogCommand(Logger, null, 0, 0, "Создание нового файла истории", "", _updateReason);
-                    WriteStart(commLog);
-                    WriteFinish(commLog, "");
+                    Logger.StartLog(0, 0, "Создание нового файла истории", "", _updateReason).Finish();
                     _updateReason = null;
                 }
                 catch (OutOfMemoryException) { }
@@ -120,8 +118,9 @@ namespace BaseLibrary
             _writer.WriteLine(command.StartTime);
         }
 
-        public void WriteFinishSuper(ProgressCommand command, string results)
+        public void WriteFinishSuper(string results)
         {
+            var command = Logger.ProgressCommand;
             _writer.WriteLine(@"\" + command.Name + ", " + command.Status + ", Длительность: " + command.FromStart + (results.IsEmpty() ? "" : (", " + results)));
         }
         
@@ -136,8 +135,9 @@ namespace BaseLibrary
             _writer.WriteLine(", " + command.StartTime);
         }
 
-        public void WriteFinish(LogCommand command, string results)
+        public void WriteFinish(string results)
         {
+            var command = Logger.LogCommand;
             LogEventTime = DateTime.Now;
             _writer.WriteLine(_shift + @"\" + command.Name + ", " + command.Status + ", Длительность: " + command.FromStart + (results.IsEmpty() ? "" : (", " + results)));
         }
@@ -162,8 +162,8 @@ namespace BaseLibrary
             _errWriter.WriteLine(error.Text + ", " + error.Quality.ToRussian() + ", " + DateTime.Now);
             if (!error.Params.IsEmpty() || error.Exeption != null) 
                 _errWriter.WriteLine(error.ToLog());
-            if (Logger.ProgressCommand != null && Logger.PeriodBegin != Different.MinDate)
-                _errWriter.WriteLine(Logger.ProgressCommand.PeriodBegin + " - " + Logger.ProgressCommand.PeriodEnd + "  ");
+            if (Logger.PeriodCommand != null)
+                _errWriter.WriteLine(Logger.PeriodBegin + " - " + Logger.PeriodEnd + "  ");
             if (Logger.LogCommand != null)
                 _errWriter.WriteLine(Logger.LogCommand.Name + ", " + Logger.LogCommand.Context);
             _errWriter.WriteLine();

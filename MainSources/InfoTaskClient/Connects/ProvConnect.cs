@@ -39,7 +39,7 @@ namespace ComClients
         public void JoinProviders(string mainCode, string mainInf, //Код и настройки основного провайдера
                                                string reserveCode = null, string reserveInf = null) //Код и настройки резервного провайдера
         {
-            RunShortCommand(() =>
+            RunSyncCommand(() =>
                 {
                     var main = Factory.CreateProvider(mainCode, mainInf);
                     var reserve = reserveCode == null ? null : Factory.CreateProvider(reserveCode, reserveInf);

@@ -38,11 +38,11 @@ namespace Calculation
         }
 
         //Начало и конец периода расчета
-        public DateTime BeginPeriod
+        public DateTime PeriodBegin
         {
             get { throw new NotImplementedException();}
         }
-        public DateTime EndPeriod
+        public DateTime PeriodEnd
         {
             get { throw new NotImplementedException(); }
         }
@@ -76,7 +76,7 @@ namespace Calculation
                 foreach (var mean in mpar)
                     if (mean.Time > t)
                         t = mean.Time;
-                if (t == Different.MinDate) t = BeginPeriod;
+                if (t == Different.MinDate) t = PeriodBegin;
                 CalcScalarFun(mpar, () => action(mpar, cpar));
                 return ScalarRes.ToMom(t);
             }

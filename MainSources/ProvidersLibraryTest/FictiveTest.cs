@@ -24,6 +24,14 @@ namespace ProvidersLibraryTest
             return connect;
         }
 
+        private static ValuesCount GetValues(SourceConnect connect, DateTime beg, DateTime en)
+        {
+            connect.Logger.StartPeriod(beg, en);
+            var vc = connect.GetValues();
+            connect.Logger.FinishPeriod();
+            return vc;
+        }
+
         //Время по заданным относительным минутам и секундам
         private DateTime RTime(int minutes, int seconds = 0)
         {
@@ -179,7 +187,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual("Operator.CommandNumber", sig9.Code);
             Assert.AreEqual("Operator", sig9.CodeOuts);
 
-            connect.GetValues(RTime(0), RTime(10));
+            GetValues(connect, RTime(0), RTime(10));
             Assert.IsNotNull(sig1.MomList);
             Assert.AreEqual(12, sig1.MomList.Count);
             Assert.IsNotNull(sig2.MomList);
@@ -406,7 +414,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(6, connect.Signals.Count);
             Assert.AreEqual(6, connect.InitialSignals.Count);
 
-            var vc = connect.GetValues(RTime(-6), RTime(-1));
+            var vc = GetValues(connect, RTime(-6), RTime(-1));
             Assert.IsNotNull(sigR.MomList);
             Assert.AreEqual(0, sigR.MomList.Count);
             Assert.AreEqual(0, sigS.MomList.Count);
@@ -421,7 +429,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(0, vc.WriteCount);
             Assert.AreEqual(VcStatus.Undefined, vc.Status);
 
-            vc = connect.GetValues(RTime(-1), RTime(4));
+            vc = GetValues(connect, RTime(-1), RTime(4));
             Assert.IsNotNull(sigR.MomList);
             Assert.AreEqual(4, sigR.MomList.Count);
             Assert.AreEqual(4, sigS.MomList.Count);
@@ -493,7 +501,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(RTime(1, 28), sigN.MomList.TimeI(1));
             Assert.AreEqual(2, sigN.MomList.IntegerI(1));
             
-            vc = connect.GetValues(RTime(4), RTime(7));
+            vc = GetValues(connect, RTime(4), RTime(7));
             Assert.AreEqual(5, sigR.MomList.Count);
             Assert.AreEqual(5, sigS.MomList.Count);
             Assert.AreEqual(5, sigI.MomList.Count);
@@ -568,7 +576,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(RTime(6, 55), sigN.MomList.TimeI(0));
             Assert.AreEqual(3, sigN.MomList.IntegerI(0));
 
-            vc = connect.GetValues(RTime(7), RTime(12));
+            vc = GetValues(connect, RTime(7), RTime(12));
             Assert.AreEqual(6, sigR.MomList.Count);
             Assert.AreEqual(6, sigS.MomList.Count);
             Assert.AreEqual(6, sigI.MomList.Count);
@@ -639,7 +647,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(1, sigX.MomList.RealI(0));
             Assert.IsNull(sigX.MomList.ErrorI(0));
 
-            vc = connect.GetValues(RTime(12), RTime(15, 30));
+            vc = GetValues(connect, RTime(12), RTime(15, 30));
             Assert.AreEqual(4, sigR.MomList.Count);
             Assert.AreEqual(4, sigS.MomList.Count);
             Assert.AreEqual(4, sigI.MomList.Count);
@@ -707,7 +715,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(2, connect.Signals.Count);
             Assert.AreEqual(2, connect.InitialSignals.Count);
 
-            var vc = connect.GetValues(RTime(0), RTime(2));
+            var vc = GetValues(connect, RTime(0), RTime(2));
             Assert.AreEqual(VcStatus.Partial, vc.Status);
             Assert.AreEqual(3, vc.ReadCount);
             Assert.AreEqual(3, vc.WriteCount);
@@ -729,7 +737,7 @@ namespace ProvidersLibraryTest
             connect.AddInitialSignal("Ob3.RealSignal", "Ob3", DataType.Boolean, "Table=MomValues;NumObject=3;Signal=Bool;IsErrorObject=True", true);
             connect.AddInitialSignal("Ob4.IntSignal", "Ob4", DataType.String, "Table=MomValues;NumObject=4;Signal=String;IsErrorObject=True", true);
 
-            vc = connect.GetValues(RTime(0), RTime(2));
+            vc = GetValues(connect, RTime(0), RTime(2));
             Assert.AreEqual(VcStatus.NoSuccess, vc.Status);
             Assert.AreEqual(0, vc.ReadCount);
             Assert.AreEqual(0, vc.WriteCount);
@@ -740,7 +748,7 @@ namespace ProvidersLibraryTest
             var sigB = (UniformSignal)connect.AddInitialSignal("Ob3.RealSignal", "Ob3", DataType.Boolean, "Table=MomValues;NumObject=3;Signal=Bool", true);
             var sigS = (UniformSignal)connect.AddInitialSignal("Ob4.IntSignal", "Ob4", DataType.String, "Table=MomValues;NumObject=4;Signal=String;IsErrorObject=True", true);
 
-            vc = connect.GetValues(RTime(0), RTime(2));
+            vc = GetValues(connect, RTime(0), RTime(2));
             Assert.AreEqual(VcStatus.Partial, vc.Status);
             Assert.AreEqual(6, vc.ReadCount);
             Assert.AreEqual(6, vc.WriteCount);

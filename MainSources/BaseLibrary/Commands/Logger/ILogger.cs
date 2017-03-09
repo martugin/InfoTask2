@@ -24,51 +24,48 @@ namespace BaseLibrary
         //Завершение текущей команды
         Command Finish(string results = "");
 
-        //Запуск команды логирования
-        LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "");
-        LogCommand StartLog(string name, string context = "", string pars = "");
-        //Завершение текущей команды логирования
-        LogCommand FinishLog(string results = null);
-        //Присвоение результата в команду логирования
-        void SetLogCommandResults(string results);
-
-        //Запуск команды отображения индикатора
-        ProgressCommand StartProgress(string text, //Текст 0-го уровня для формы индикатора
-            string name, //Имя комманды
-            string pars = "", //Параметры команды
-            DateTime? endTime = null); //Если не null, то время конца обратного отсчета
-        
-        ProgressCommand StartProgress(DateTime begin, DateTime end, //Период обработки
-            string mode, //Режим обработки
-            string name, //Имя комманды
-            string pars = "", //Параметры команды
-            DateTime? endTime = null); //Если не null, то время конца обратного отсчета
-        
-        //Звершение текущей команды отображения индикатора
-        ProgressCommand FinishProgress();
-
-        //Начало, конец и режим периода обработки
-        DateTime PeriodBegin { get; }
-        DateTime PeriodEnd { get; }
-        string PeriodMode { get; }
-
-        //Запуск команды отображения текста индикатора 2-ого уровня
-        IndicatorTextCommand StartIndicatorText(double startProcent, double finishProcent, string text);
-        IndicatorTextCommand StartIndicatorText(string text);
-        //Завершение текущей команды отображения текста индикатора 2-ого уровня
-        IndicatorTextCommand FinishIndicatorText();
-
         //Запуск команды, обрамляющей вызов клиентских операций или запись в ErrorsList
         CollectCommand StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
                                                     bool isCollect); //Формировать общую ошибку
         CollectCommand FinishCollect(string results = null);
 
         //Запись результатов в команду Collect
-        void SetCollectCommandResults(string results);
+        void AddCollectResult(string result);
         //Итоговая ошибка комманды Collect
         string CollectedErrorMessage { get; }
         //Результаты выполнения команды Collect
         string CollectedResults { get; }
+
+        //Команда, задающая период обработки
+        PeriodCommand StartPeriod(DateTime begin, DateTime end, string mode);
+        //Звершение команды, задающей период обработки
+        PeriodCommand FinishPeriod();
+        
+        //Начало, конец и режим периода обработки
+        DateTime PeriodBegin { get; }
+        DateTime PeriodEnd { get; }
+        string PeriodMode { get; }
+
+        //Запуск команды отображения индикатора
+        ProgressCommand StartProgress(string name, //Имя комманды, оно же текст 0-го уровня для формы индикатора
+                                                        string pars = "", //Параметры команды
+                                                        DateTime? endTime = null); //Если не null, то время конца обратного отсчета
+        //Завершение текущей команды отображения индикатора
+        ProgressCommand FinishProgress();
+
+        //Запуск команды логирования
+        LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "");
+        LogCommand StartLog(string name, string context = "", string pars = "");
+        //Завершение текущей команды логирования
+        LogCommand FinishLog(string results = null);
+        //Присвоение результата в команду логирования
+        void SetLogResults(string results);
+        
+        //Запуск команды отображения текста индикатора 2-ого уровня
+        IndicatorTextCommand StartIndicatorText(double startProcent, double finishProcent, string text);
+        IndicatorTextCommand StartIndicatorText(string text);
+        //Завершение текущей команды отображения текста индикатора 2-ого уровня
+        IndicatorTextCommand FinishIndicatorText();
 
         //Запуск команды, накапливающей ошибку
         KeepCommand StartKeep(double startProcent, double finishProcent);

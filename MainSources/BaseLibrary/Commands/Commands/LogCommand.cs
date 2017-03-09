@@ -49,7 +49,7 @@ namespace BaseLibrary
             if (History != null)
             {
                 if (isBreaked) History.WriteEvent("Прерывание команды", null);
-                History.WriteFinish(this, Results);
+                History.WriteFinish(Results);
             }
             Logger.SetTabloText(1, "");
             Logger.LogCommand = null;

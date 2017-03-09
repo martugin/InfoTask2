@@ -16,14 +16,15 @@ namespace BaseLibrary
         public IIndicator Indicator { get; set; }
 
         //Текущие команды разных типов
-        internal Command Command { get; set; }
-        internal LogCommand LogCommand { get; set; }
-        internal ProgressCommand ProgressCommand { get; set; }
-        internal IndicatorTextCommand IndicatorTextCommand { get; set; }
         internal CollectCommand CollectCommand { get; set; }
+        internal PeriodCommand PeriodCommand { get; set; }
+        internal ProgressCommand ProgressCommand { get; set; }
+        internal LogCommand LogCommand { get; set; }
+        internal IndicatorTextCommand IndicatorTextCommand { get; set; }
         internal KeepCommand KeepCommand { get; set; }
+        internal Command Command { get; set; }
         
-         //Режим работы потока
+        //Режим работы потока
         protected internal LoggerStability Stability { get; private set; }
 
         //Событие прерывания выполнения
@@ -45,11 +46,6 @@ namespace BaseLibrary
                 Indicator.ChangeTabloText(number, text);
         }
 
-        //Начало, конец и режим текущего периода обработки
-        public DateTime PeriodBegin { get; internal set; }
-        public DateTime PeriodEnd { get; internal set; }
-        public string PeriodMode { get; internal set; }
-        
         //Объекты блокировки
         private readonly object _breakLocker = new object();
         
@@ -75,6 +71,8 @@ namespace BaseLibrary
                 throw new BreakException();
         }
 
+        //-----
+
         //Запуск простой комманды
         public Command Start(double startProcent, double finishProcent)
         {
@@ -87,6 +85,90 @@ namespace BaseLibrary
                 ? FinishLog(results) 
                 : FinishCommand(Command);
         }
+
+        //Завершить указанную команду и всех детей
+        private Command FinishCommand(Command command)
+        {
+            CheckBreak();
+            if (command != null) command.Finish();
+            return command;
+        }
+
+        //-----
+
+        //Запуск команды, колекционирущей ошибки
+        public CollectCommand StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
+                                                              bool isCollect) //Формировать общую ошибку
+        {
+            FinishCommand(CollectCommand);
+            CollectedResults = null;
+            Command = CollectCommand = new CollectCommand(this, Command, isWriteHistory, isCollect);
+            return CollectCommand;
+        }
+        //Завершение команды, колекционирущей ошибки
+        public CollectCommand FinishCollect(string results = null)
+        {
+            if (results != null) CollectedResults = results;
+            return (CollectCommand)FinishCommand(CollectCommand);
+        }
+        //Присвоить результат команды Collect
+        public void AddCollectResult(string result)
+        {
+            CollectedResults = result;
+        }
+
+        //Итоговое сообщение об ошибке
+        public string CollectedErrorMessage { get; internal set; }
+        //Результат выполнения комманды Collect
+        public string CollectedResults { get; internal set; }
+
+        //-----
+
+        //Команда, задающая период обработки
+        public PeriodCommand StartPeriod(DateTime begin, DateTime end, string mode = "") //Начало, конец, режим
+        {
+            FinishCommand(PeriodCommand);
+            Command = PeriodCommand = new PeriodCommand(this, Command, begin, end, mode);
+            return PeriodCommand;
+        }
+        public PeriodCommand FinishPeriod()
+        {
+            return (PeriodCommand)FinishCommand(PeriodCommand);
+        }
+
+        //Начало, конец и режим текущего периода обработки
+        public DateTime PeriodBegin
+        {
+            get { return PeriodCommand == null ? Different.MinDate : PeriodCommand.Begin; }
+        }
+        public DateTime PeriodEnd
+        {
+            get { return PeriodCommand == null ? Different.MinDate : PeriodCommand.End; }
+        }
+        public string PeriodMode
+        {
+            get { return PeriodCommand == null ? null : PeriodCommand.Mode; }
+        }
+
+        //-----
+
+        //Запуск команды логирования в SuperHistory и отображения индикатора
+        public ProgressCommand StartProgress(string name, //Имя команды
+                                                                  string pars = "", //Параметры команды
+                                                                  DateTime? endTime = null) //Если не null, то время конца обратного отсчета
+        {
+            FinishCommand(ProgressCommand);
+            Command = ProgressCommand = new ProgressCommand(this, Command, name, pars, endTime);
+            return ProgressCommand;
+        }
+        
+        //Завершение команды логирования в SuperHistory
+        public ProgressCommand FinishProgress()
+        {
+            return (ProgressCommand)FinishCommand(ProgressCommand);
+        }
+
+        //-----
 
         //Запуск команды логирования
         public LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
@@ -106,39 +188,13 @@ namespace BaseLibrary
             return (LogCommand)FinishCommand(LogCommand);
         }
         //Присвоить результаты в команду логирования
-        public void SetLogCommandResults(string results)
+        public void SetLogResults(string results)
         {
             if (LogCommand != null)
                 LogCommand.Results = results;
         }
 
-        //Запуск команды логирования в SuperHistory и отображения индикатора
-        public ProgressCommand StartProgress(string text, //Текст 0-го уровня для формы индикатора
-                                                                  string name, //Имя комманды
-                                                                  string pars = "", //Параметры команды
-                                                                  DateTime? endTime = null) //Если не null, то время конца обратного отсчета
-        {
-            FinishCommand(ProgressCommand);
-            Command = ProgressCommand = new ProgressCommand(this, Command, text, name, pars, endTime);
-            return ProgressCommand;
-        }
-        //С указанием периода обработки
-        public ProgressCommand StartProgress(DateTime begin, DateTime end, //Период обработки
-                                                                  string mode, //Режим обработки
-                                                                  string name, //Имя комманды
-                                                                  string pars = "", //Параметры команды
-                                                                  DateTime? endTime = null) //Если не null, то время конца обратного отсчета
-        {
-            FinishCommand(ProgressCommand);
-            Command = ProgressCommand = new ProgressCommand(this, Command, begin, end, mode, name, pars, endTime);
-            return ProgressCommand;
-        }
-
-        //Завершение команды логирования в SuperHistory
-        public ProgressCommand FinishProgress()
-        {
-            return (ProgressCommand)FinishCommand(ProgressCommand);
-        }
+        //-----
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
         public IndicatorTextCommand StartIndicatorText(double startProcent, double finishProcent, string text)
@@ -157,32 +213,8 @@ namespace BaseLibrary
             return (IndicatorTextCommand)FinishCommand(IndicatorTextCommand);
         }
 
-        //Запуск команды, колекционирущей ошибки
-        public CollectCommand StartCollect(bool isWriteHistory, //Записывать ошибки в ErrorsList
-                                                              bool isCollect) //Формировать общую ошибку
-        {
-            FinishCommand(CollectCommand);
-            CollectedResults = null;
-            Command = CollectCommand = new CollectCommand(this, Command, isWriteHistory, isCollect);
-            return CollectCommand;
-        }
-        //Завершение команды, колекционирущей ошибки
-        public CollectCommand FinishCollect(string results = null)
-        {
-            if (results != null) CollectedResults = results;
-            return (CollectCommand)FinishCommand(CollectCommand);
-        }
-        //Присвоить результат команды Collect
-        public void SetCollectCommandResults(string results)
-        {
-            CollectedResults = results;
-        }
-        
-        //Итоговое сообщение об ошибке
-        public string CollectedErrorMessage { get; internal set; }
-        //Результат выполнения комманды Collect
-        public string CollectedResults { get; internal set; }
-        
+        //-----
+
         //Запуск команды, которая копит ошибки, но не выдает их во вне
         public KeepCommand StartKeep(double startProcent, double finishProcent)
         {
@@ -202,6 +234,8 @@ namespace BaseLibrary
         //Ошибка, накопленная KeepCommand
         public string KeepedError { get { return KeepCommand.ErrorMessage; } }
 
+        //-----
+
         //Запуск команды, обрамляющей опасную операцию
         public DangerCommand StartDanger(double startProcent, double finishProcent, 
                                         int repetitions, //Cколько раз повторять, если не удалась (вместе с первым)
@@ -219,14 +253,8 @@ namespace BaseLibrary
             return StartDanger(Procent, 100, repetitions, stability, errMess, repeatMess, useThread, errWaiting);
         }
 
-        //Завершить указанную команду и всех детей
-        protected Command FinishCommand(Command command) 
-        {
-            CheckBreak();
-            if (command != null) command.Finish();
-            return command;
-        }
-
+        //-----
+        
         //Добавляет событие в историю
         public void AddEvent(string description, string pars = "")
         {

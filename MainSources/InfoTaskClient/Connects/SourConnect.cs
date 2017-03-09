@@ -35,11 +35,19 @@ namespace ComClients
 
         //Чтение значений из источника
         void GetValues(DateTime periodBegin, DateTime periodEnd);
+        //Чтение значений из источника. Выполняется асинхронно, программа после вызова метода сразу освобождается 
+        //Система узнает о завершении чтения через событие Finished
+        void GetValuesAsync(DateTime periodBegin, DateTime periodEnd);
+        //То же самое, но время берется из логгера
+        void GetValues();
+        void GetValuesAsync();
 
         //Создание клона
         void MakeClone(DateTime periodBegin, //Начало периода клона
-                DateTime periodEnd, //Конец периода клона
-                string cloneDir); //Каталог клона
+                                DateTime periodEnd, //Конец периода клона
+                                string cloneDir); //Каталог клона
+        //То же самое, но время берется из логгера
+        void MakeClone(string cloneDir); //Каталог клона
     }
 
     //-----------------------------------------------------------------------------------------------------
@@ -63,7 +71,7 @@ namespace ComClients
         //Получение диапазона времени источника
         public void GetTime()
         {
-            RunShortCommand(() => {_interval = Connect.GetTime();});
+            RunSyncCommand(() => {_interval = Connect.GetTime();});
         }
         private TimeInterval _interval;
 
@@ -74,7 +82,7 @@ namespace ComClients
         //Очистка списка сигналов
         public void ClearSignals()
         {
-            Connect.ClearSignals();
+            RunSyncCommand(Connect.ClearSignals);
         }
 
         //Добавить исходный сигнал
@@ -96,18 +104,38 @@ namespace ComClients
             return new SourSignal(Connect.AddCalcSignal(fullCode, codeObject, initialSignal, formula));
         }
         
-        //Чтение значений из источника
+        //Чтение значений из источника. Программа, вызвавшая метод, занята пока чтение не завершится
         public void GetValues(DateTime periodBegin, DateTime periodEnd)
         {
-            RunLongCommand(() => Connect.GetValues(periodBegin, periodEnd));
+            RunSyncCommand(periodBegin, periodEnd, () => Connect.GetValues());
+        }
+        //Чтение значений из источника. Выполняется асинхронно, программа после вызова метода сразу освобождается 
+        //Система узнает о завершении чтения через событие Finished
+        public void GetValuesAsync(DateTime periodBegin, DateTime periodEnd)
+        {
+            RunAsyncCommand(periodBegin, periodEnd, () => Connect.GetValues());
+        }
+        //То же самое, но время берется из логгера
+        public void GetValues()
+        {
+            RunSyncCommand(() => Connect.GetValues());
+        }
+        public void GetValuesAsync()
+        {
+            RunAsyncCommand(() => Connect.GetValues());
         }
 
-        //Создание клона источника
+        //Создание клона источника, всегда выполняется асинхронно
         public void MakeClone(DateTime periodBegin, //Начало периода клона
                                           DateTime periodEnd, //Конец периода клона
                                           string cloneDir) //Каталог клона
         {
-            RunLongCommand(() => Connect.MakeClone(periodBegin, periodEnd, cloneDir));
+            RunAsyncCommand(periodBegin, periodEnd, () => Connect.MakeClone(cloneDir));
+        }
+        //То же самое, но время берется из логгера
+        public void MakeClone(string cloneDir) //Каталог клона
+        {
+            RunAsyncCommand(() => Connect.MakeClone(cloneDir));
         }
     }
 }

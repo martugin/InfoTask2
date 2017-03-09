@@ -34,9 +34,9 @@ namespace BaseLibrary
     {
         internal string Command { get; set; }
         internal string Params { get; set; }
-        internal DateTime BeginPeriod { get; set; }
-        internal DateTime EndPeriod { get; set; }
-        internal string ModePeriod { get; set; }
+        internal DateTime PeriodBegin { get; set; }
+        internal DateTime PeriodEnd { get; set; }
+        internal string PeriodMode { get; set; }
         internal string Status { get; set; }
         internal DateTime Time { get; set; }
         internal double ProcessLength { get; set; }
@@ -55,8 +55,8 @@ namespace BaseLibrary
         internal DateTime Time { get; set; }
         internal string Command { get; set; }
         internal string Context { get; set; }
-        internal DateTime BeginPeriod { get; set; }
-        internal DateTime EndPeriod { get; set; }
+        internal DateTime PeriodBegin { get; set; }
+        internal DateTime PeriodEnd { get; set; }
     }
 
     //-------------------------------------------------------------------------------------------------------
@@ -86,9 +86,9 @@ namespace BaseLibrary
             Supers.Add(CommandSuper);
             CommandSuper.Command = command.Name;
             CommandSuper.Params = command.Params;
-            CommandSuper.BeginPeriod = command.PeriodBegin;
-            CommandSuper.EndPeriod = command.PeriodEnd;
-            CommandSuper.ModePeriod = command.PeriodMode;
+            CommandSuper.PeriodBegin = Logger.PeriodBegin;
+            CommandSuper.PeriodEnd = Logger.PeriodEnd;
+            CommandSuper.PeriodMode = Logger.PeriodMode;
             CommandSuper.Status = command.Status;
             CommandSuper.Time = command.StartTime;
         }
@@ -105,19 +105,19 @@ namespace BaseLibrary
             CommandLog.Context = command.Context;
         }
 
-        public void WriteFinishSuper(ProgressCommand command, string results)
+        public void WriteFinishSuper(string results)
         {
-            CommandSuper.ProcessLength = command.FromStart;
+            CommandSuper.ProcessLength = Logger.ProgressCommand.FromStart;
             CommandSuper.Results = results;
-            CommandSuper.Status = command.Status;
+            CommandSuper.Status = Logger.ProgressCommand.Status;
             CommandSuper = null;
         }
 
-        public void WriteFinish(LogCommand command, string results)
+        public void WriteFinish(string results)
         {
-            CommandLog.ProcessLength = command.FromStart;
+            CommandLog.ProcessLength = Logger.LogCommand.FromStart;
             CommandLog.Results = results;
-            CommandLog.Status = command.Status;
+            CommandLog.Status = Logger.LogCommand.Status;
             CommandLog = null;
         }
 
@@ -159,10 +159,10 @@ namespace BaseLibrary
             err.Time = DateTime.Now;
             err.Command = Logger.LogCommand.Name;
             err.Context = Logger.LogCommand.Context;
-            if (Logger.ProgressCommand != null && Logger.ProgressCommand.PeriodBegin != Different.MinDate)
+            if (Logger.PeriodCommand != null)
             {
-                err.BeginPeriod = Logger.ProgressCommand.PeriodBegin;
-                err.EndPeriod = Logger.ProgressCommand.PeriodEnd;
+                err.PeriodBegin = Logger.PeriodBegin;
+                err.PeriodEnd = Logger.PeriodEnd;
             }
         }
 

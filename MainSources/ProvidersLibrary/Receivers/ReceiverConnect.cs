@@ -34,6 +34,7 @@ namespace ProvidersLibrary
         //Очистка списка сигналов
         public void ClearSignals()
         {
+            AddEvent("Очистка списка сигналов");
             _signals.Clear();
         }
 
@@ -41,10 +42,9 @@ namespace ProvidersLibrary
         private bool _isPrepared;
 
         //Запись значений в приемник
-        public bool WriteValues(DateTime periodBegin, DateTime periodEnd)
+        public bool WriteValues()
         {
-            PeriodBegin = periodBegin;
-            PeriodEnd = periodEnd;
+            if (!CheckPeriodIsDefined()) return false;
 
             using (Start(5, 80))
                 if (WriteValuesReceiver()) return true;
@@ -53,10 +53,6 @@ namespace ProvidersLibrary
             if (!ChangeProvider()) return false;
             using (Start(80, 100))
                 return WriteValuesReceiver();
-        }
-        public bool WriteValues()
-        {
-            return WriteValues(Different.MinDate, Different.MaxDate);
         }
 
         //Запись значений в приемник

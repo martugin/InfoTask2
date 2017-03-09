@@ -6,7 +6,7 @@ namespace Generator
     //Ряд подтаблицы с разобранными выражениями для генерации
     internal class GenSubRow : GenBaseRow
     {
-        public GenSubRow(TablGenerator generator, //Ссылка на генератор
+        public GenSubRow(ModuleGenerator generator, //Ссылка на генератор
                          TablsList dataTabls, //Исходные таблицы для генерации
                          ITablStruct dataTabl, //Таблица - шаблон генерации
                          GenTemplateTable table, //Поля таблицы - шаблона генерации   

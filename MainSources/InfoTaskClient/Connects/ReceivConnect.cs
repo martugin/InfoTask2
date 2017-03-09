@@ -19,8 +19,11 @@ namespace ComClients
                                             string signalInf); //Настройки сигнала
 
         //Запись значений в приемник
-        void WriteValues(DateTime periodBegin, DateTime periodEnd);
+        void WriteValues(DateTime periodBegin, DateTime periodEnd); //Период обработки
         void WriteValues();
+        //Запись значений в приемник с отображением индикатора, при завершении вызывает событие
+        void WriteValuesAsync(DateTime periodBegin, DateTime periodEnd); //Период обработки
+        void WriteValuesAsync();
     }
 
     //-----------------------------------------------------------------------------------------------------
@@ -44,7 +47,7 @@ namespace ComClients
         //Очистка списка сигналов
         public void ClearSignals()
         {
-            Connect.ClearSignals();
+            RunSyncCommand(Connect.ClearSignals);
         }
 
         //Добавить сигнал
@@ -59,11 +62,21 @@ namespace ComClients
         //Запись значений в приемник
         public void WriteValues(DateTime periodBegin, DateTime periodEnd)
         {
-            RunLongCommand(() => Connect.WriteValues(periodBegin, periodEnd));
+            RunSyncCommand(periodBegin, periodEnd, () => Connect.WriteValues());
         }
         public void WriteValues()
         {
-            RunLongCommand(() => Connect.WriteValues());
+            RunSyncCommand(() => Connect.WriteValues());
+        }
+
+        //Запись значений в приемник с отображением индикатора, при завершении вызывает событие
+        public void WriteValuesAsync(DateTime periodBegin, DateTime periodEnd)
+        {
+            RunAsyncCommand(periodBegin, periodEnd, () => Connect.WriteValues());
+        }
+        public void WriteValuesAsync()
+        {
+            RunAsyncCommand(() => Connect.WriteValues());
         }
     }
 }

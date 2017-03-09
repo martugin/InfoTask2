@@ -14,7 +14,7 @@ namespace ComClients
         }
 
         //Логгер
-        protected Logger Logger { get; private set; }
+        protected internal Logger Logger { get; private set; }
 
         //Событие, сообщающее внешнему приложению, что выполнение было прервано
         public delegate void EvDelegate();
@@ -99,19 +99,24 @@ namespace ComClients
             Logger.FinishLog(results);
         }
 
+        //Запуск команды, задающей период обработки
+        public void StartPeriod(DateTime beg, DateTime en, string mode = "")
+        {
+            Logger.StartPeriod(beg, en, mode);
+        }
+        //Завершение команды, задающей период обработки
+        public void FinishPeriod()
+        {
+            Logger.FinishPeriod();
+        }
+        
         //Запуск команды для записи в SuperHistory
         public void StartProgress(string name,  //Имя команды
-                                               string pars = "",  //Дополнительная информация
-                                               string text = "") //Текст для отображения на индикаторе
+                                               string pars = "")  //Дополнительная информация
         {
-            Logger.StartProgress(text, name, pars);
+            Logger.StartProgress(name, pars);
         }
-        public void StartProgress(string name,  //Имя команды
-                                               string pars,  //Дополнительная информация
-                                               DateTime beg, DateTime en, string mode = "") //Период расчета
-        {
-            Logger.StartProgress(beg, en, mode, name, pars);
-        }
+
         //Звершение текущей команды отображения индикатора
         public void FinishProgress()
         {
@@ -140,14 +145,23 @@ namespace ComClients
         }
 
         //Запускает команду и дожидается ее завершения
-        protected void RunShortCommand(Action action)
+        protected void RunSyncCommand(Action action)
         {
             Logger.StartCollect(false, true).Run(action);
         }
         //Запускает команду. Оповещение о завершении команды через событие Finished
-        protected void RunLongCommand(Action action)
+        protected void RunAsyncCommand(Action action)
         {
             new Thread(() => Logger.StartCollect(false, true).Run(action)).Start();
+        }
+        //То же самое. только с запуском вложенной PeriodCommand
+        protected void RunSyncCommand(DateTime beg, DateTime en, Action action)
+        {
+            RunSyncCommand(() => {StartPeriod(beg, en); action(); });
+        }
+        protected void RunAsyncCommand(DateTime beg, DateTime en, Action action)
+        {
+            RunAsyncCommand(() => { StartPeriod(beg, en); action(); });
         }
     }
 }

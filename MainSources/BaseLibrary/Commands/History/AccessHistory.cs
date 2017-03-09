@@ -105,9 +105,7 @@ namespace BaseLibrary
             {
                 try
                 {
-                    var commLog = new LogCommand(Logger, null, 0, 0, "Создание нового файла истории", "",  _updateReason);
-                    WriteStart(commLog);
-                    WriteFinish(commLog, "");
+                    Logger.StartLog(0, 0, "Создание нового файла истории", "", _updateReason).Finish();
                     _updateReason = null;
                 }
                 catch (OutOfMemoryException) { }
@@ -150,11 +148,11 @@ namespace BaseLibrary
                 _superHistory.AddNew();
                 _superHistory.Put("Command", command.Name);
                 _superHistory.Put("Params", command.Params);
-                if (Logger.PeriodBegin != Different.MinDate)
+                if (Logger.PeriodCommand != null)
                 {
-                    _superHistory.Put("BeginPeriod", Logger.PeriodBegin);
-                    _superHistory.Put("EndPeriod", Logger.PeriodEnd);
-                    _superHistory.Put("ModePeriod", Logger.PeriodMode);    
+                    _superHistory.Put("PeriodBegin", Logger.PeriodBegin);
+                    _superHistory.Put("PeriodEnd", Logger.PeriodEnd);
+                    _superHistory.Put("PeriodMode", Logger.PeriodMode);    
                 }
                 _superHistory.Put("Status", command.Status);
                 _superHistory.Put("Time", command.StartTime);
@@ -162,14 +160,14 @@ namespace BaseLibrary
             });
         }
 
-        public void WriteFinishSuper(ProgressCommand command, string results = null)
+        public void WriteFinishSuper(string results = null)
         {
             RunHistoryOperation(_superHistory, () =>
             {
                 _superHistory.MoveLast();
-                _superHistory.Put("Status", command.Status);
+                _superHistory.Put("Status", ProgressCommand.Status);
                 _superHistory.Put("Results", results);
-                _superHistory.Put("ProcessLength", command.FromStart);
+                _superHistory.Put("ProcessLength", ProgressCommand.FromStart);
                 _superHistoryId = 0;
             });
         }
@@ -191,15 +189,15 @@ namespace BaseLibrary
             });
         }
         
-        public void WriteFinish(LogCommand command, string results)
+        public void WriteFinish(string results)
         {
             LogEventTime = DateTime.Now;
             RunHistoryOperation(_history, () =>
             {
                 _history.MoveLast();
-                _history.Put("Status", command.Status);
+                _history.Put("Status", LogCommand.Status);
                 _history.Put("Results", results);
-                _history.Put("ProcessLength", command.FromStart);
+                _history.Put("ProcessLength", LogCommand.FromStart);
                 _historyId = 0;
             });
         }
@@ -247,10 +245,10 @@ namespace BaseLibrary
                     _errorsRec.Put("Command", LogCommand.Name);
                     _errorsRec.Put("Context", LogCommand.Context);
                 }
-                if (Logger.PeriodBegin != Different.MinDate && ProgressCommand != null)
+                if (Logger.PeriodCommand != null && ProgressCommand != null)
                 {
-                    _errorsRec.Put("BeginPeriod", ProgressCommand.PeriodBegin);
-                    _errorsRec.Put("EndPeriod", ProgressCommand.PeriodEnd);
+                    _errorsRec.Put("PeriodBegin", Logger.PeriodBegin);
+                    _errorsRec.Put("PeriodEnd", Logger.PeriodEnd);
                 }
             });
         }

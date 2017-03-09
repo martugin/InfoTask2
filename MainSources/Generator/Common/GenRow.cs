@@ -8,7 +8,7 @@ namespace Generator
     //Ряд таблицы с разобранными выражениями для генерации
     internal class GenRow : GenBaseRow
     {
-        public GenRow(TablGenerator generator, //Ссылка на генератор
+        public GenRow(ModuleGenerator generator, //Ссылка на генератор
                               TablsList dataTabls, //Исходные таблицы для генерации
                               GenTemplateTable table, DaoRec rec, //Рекортсет и поля таблицы
                               GenTemplateTable subTable, DaoRec subRec) //Рекордсет и и поля подтаблицы

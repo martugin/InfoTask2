@@ -32,13 +32,14 @@ namespace ComClients
         //Завершение текущей команды логирования
         void FinishLog(string results = null);
 
+        //Запуск команды, задающей период обработки
+        void StartPeriod(DateTime beg, DateTime en, string mode = "");
+        //Завершение команды, задающей период обработки
+        void FinishPeriod();
+
         //Запуск команды отображения индикатора
         void StartProgress(string name, //Имя команды
-                                    string pars = "", //Дополнительная информация
-                                    string text = ""); //Текст для отображения на индикаторе
-        void StartProgress(string name, //Имя команды
-                                    string pars, //Дополнительная информация
-                                    DateTime beg, DateTime en, string mode = ""); //Период расчета
+                                     string pars = ""); //Дополнительная информация
         //Звершение текущей команды отображения индикатора
         void FinishProgress();
 

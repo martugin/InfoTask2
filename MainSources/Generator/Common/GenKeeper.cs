@@ -25,7 +25,7 @@ namespace Generator
     //Накопитель ошибок и переменных генерации
     internal class GenKeeper : ParsingKeeper
     {
-        public GenKeeper(TablGenerator generator)
+        public GenKeeper(ModuleGenerator generator)
         {
             Generator = generator;
         }
@@ -37,7 +37,7 @@ namespace Generator
         }
 
         //Ссылка на генератор
-        internal TablGenerator Generator { get; private set; }
+        internal ModuleGenerator Generator { get; private set; }
 
         //Словарь внутренних переменных генерации
         private readonly DicS<Var> _vars = new DicS<Var>(); 

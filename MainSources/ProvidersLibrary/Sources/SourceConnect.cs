@@ -82,17 +82,17 @@ namespace ProvidersLibrary
         internal DateTime PrevPeriodEnd { get; private set; }
 
         //Чтение значений из источника, возвращает true, если прочитались все значения или частично
-        public ValuesCount GetValues(DateTime periodBegin, DateTime periodEnd)
+        //В логгере дожны быть заданы начало и конец периода через CommandProgress
+        public ValuesCount GetValues()
         {
             var valuesCount = new ValuesCount();
+            if (!CheckPeriodIsDefined()) return valuesCount;
             try
             {
-                PeriodBegin = periodBegin;
-                PeriodEnd = periodEnd;
                 ClearSignalsValues(PeriodBegin != PrevPeriodEnd);
                 using (Start(5, 80))
                 {
-                    valuesCount += GetValues();
+                    valuesCount += ReadValues();
                     if (!valuesCount.IsFail) return valuesCount;
                 }
                 _isPrepared = false;
@@ -100,7 +100,7 @@ namespace ProvidersLibrary
                 using (Start(80, 100))
                 {
                     ClearSignalsValues(true);
-                    return GetValues();
+                    return ReadValues();
                 }
             }
             catch (Exception ex)
@@ -108,7 +108,7 @@ namespace ProvidersLibrary
                 AddError("Ошибка при чтении значений из источника", ex);
                 return new ValuesCount(VcStatus.Fail);
             }
-            finally { PrevPeriodEnd = periodEnd; }
+            finally { PrevPeriodEnd = PeriodEnd; }
         }
 
         private void ClearSignalsValues(bool clearBegin)
@@ -119,7 +119,7 @@ namespace ProvidersLibrary
         }
         
         //Чтение значений из источника
-        private ValuesCount GetValues()
+        private ValuesCount ReadValues()
         {
             var vcount = new ValuesCount();
             try
@@ -254,12 +254,11 @@ namespace ProvidersLibrary
         }
 
         //Создание клона источника
-        public void MakeClone(DateTime periodBegin, //Начало периода клона
-                                          DateTime periodEnd, //Конец периода клона
-                                          string cloneDir) //Каталог клона
+        public void MakeClone(string cloneDir) //Каталог клона
         {
             try
             {
+                if (!CheckPeriodIsDefined()) return;
                 string dir = cloneDir;
                 if (!dir.EndsWith(@"\")) dir += @"\";
                 using (var db = new DaoDb(dir + @"Clone.accdb"))
@@ -270,7 +269,7 @@ namespace ProvidersLibrary
                     using (CloneStrRec = new DaoRec(db, "MomentStrValues"))
                     using (CloneStrCutRec = new DaoRec(db, "MomentStrValuesCut"))
                     using (CloneErrorsRec = new DaoRec(db, "ErrorsObjects"))
-                        GetValues(periodBegin, periodEnd);
+                        GetValues();
                     WriteMomentErrors(db);
                 }
             }

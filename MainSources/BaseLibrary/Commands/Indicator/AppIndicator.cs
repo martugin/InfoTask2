@@ -11,10 +11,10 @@ namespace BaseLibrary
         void ShowTimedIndicator();
         void HideIndicator();
         void ChangeProcent(double procent);
-        void SetProcessTimed(DateTime endTime);
+        void SetTimedProcess(DateTime endTime);
         void SetProcessUsual();
         void ChangeTabloText(int num, string text);
-        void ChangePeriod(DateTime periodBegin, DateTime periodEnd, string modePeriod);
+        void ChangePeriod(DateTime periodBegin, DateTime periodEnd, string periodMode);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ namespace BaseLibrary
             Invoke(_textedForm, () => { _textedForm.Procent.Value = p; });
         }
 
-        public void SetProcessTimed(DateTime endTime) { }
+        public void SetTimedProcess(DateTime endTime) { }
         public void SetProcessUsual() { }
 
         //Обработка события изменения текста на табло
@@ -96,7 +96,7 @@ namespace BaseLibrary
         }
 
         //Обработка события изменения периода обработки
-        public void ChangePeriod(DateTime periodBegin, DateTime periodEnd, string modePeriod)
+        public void ChangePeriod(DateTime periodBegin, DateTime periodEnd, string periodMode)
         {
             Invoke(_timedForm, () =>
             {

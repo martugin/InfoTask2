@@ -4,85 +4,45 @@ using CommonTypes;
 
 namespace Generator
 {
-    //Генератор
+    //Главный гласс для вызова генерации
     public class TablGenerator : ExternalLogger
     {
-        public TablGenerator(Logger logger, //Логгер
-                                         TablsList dataTabls, //Таблицы с данными для генерации
-                                         string templateFile, //Файл шаблона генерации
-                                         GenTemplateTable table, //Главная таблица шаблона генерации
-                                         GenTemplateTable subTable = null) //Подчиненная таблица шаблона генерации
-                                         : base(logger)
+        public TablGenerator(Logger logger) 
+            : base(logger) { }
+
+        //Генерация расчетных параметров для одного модуля
+        public void GenerateParams(string moduleDir) //Каталог модуля                                         
         {
-            GenErrorsCount = 0;
-            AddEvent("Загрузка списка функций");
-            FunsChecker = new FunsChecker(FunsCheckType.Gen);
-            Functions = new GenFunctions();
-            
-            DataTabls = dataTabls;
-            try
-            {
-                AddEvent("Загрузка таблиц шаблона генерации", templateFile + ", " + table.Name);
-                bool hasSub = subTable != null;
-                using (var rec = new DaoRec(templateFile, table.QueryString))
-                    using (var subRec = !hasSub ? null : new DaoRec(rec.DaoDb, subTable.QueryString))
+                using (StartLog("Генерация параметров", moduleDir))
+                {
+                    try
                     {
-                        if (hasSub && !subRec.EOF) subRec.MoveFirst();
-                        while (rec.Read())
+                        var dir = moduleDir.EndsWith("\\") ? moduleDir : moduleDir + "\\";
+                        var table = new GenTemplateTable("GenParams", "GenRule", "ErrMess", "CalcOn", "ParamId");
+                        var subTable = new GenTemplateTable("GenSubParams", table, "GenRule", "ErrMess", "CalcOn", "SubParamId", "ParamId");
+                        var dataTabls = new TablsList();
+                        AddEvent("Загрузка структуры исходных таблиц", dir + "Tables.accdb");
+                        using (var db = new DaoDb(dir + "Tables.accdb"))
                         {
-                            var row = new GenRow(this, dataTabls, table, rec, subTable, subRec);
-                            GenErrorsCount += row.Keeper.Errors.Count;
-                            _rowsGen.Add(row.Id, row);
+                            dataTabls.AddDbStructs(db);
+                            AddEvent("Загрузка значений из исходных таблиц");
+                            dataTabls.LoadValues(db, true);
+                        }
+                        AddEvent("Загрузка и проверка генерирующих параметров");
+                        var generator = new ModuleGenerator(Logger, dataTabls, dir + "CalcParams.accdb", table, subTable);
+                        generator.Generate(dir + "Compiled.accdb", "GeneratedParams", "GeneratedSubParams");
+                        AddEvent("Генерация завершена", generator.GenErrorsCount + " ошибок");
+                        if (generator.GenErrorsCount != 0) ;
+                        {
+                            SetLogResults(generator.GenErrorsCount + " ошибок");
+                            AddCollectResult("Шаблон генерации содержит " + generator.GenErrorsCount + " ошибок");
                         }
                     }
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка при загрузке шаблона генерации", ex, templateFile);
-            }
-        }
-
-        //Список функций
-        internal FunsChecker FunsChecker { get; private set; }
-        internal GenFunctions Functions { get; private set; }
-
-        //Список таблиц с данными для генерации
-        internal TablsList DataTabls { get; private set; }
-        //Ряды таблицы с шаблоном генерации
-        private readonly DicI<GenRow> _rowsGen = new DicI<GenRow>();
-
-        //Количество ошибок при последней проверке шаблона генерации
-        public int GenErrorsCount { get; private set; }
-
-        //Сгенерировать 
-        public void Generate(string makedFile, //Файл сгенерированных таблиц
-                                       string makedTabl, //Главная сгенерированная таблица
-                                       string makedSubTabl = null) //Подчиненная сгенерированная таблица
-        {
-            try
-            {
-                AddEvent("Открытие рекордсетов для генерации");
-                using (var db = new DaoDb(makedFile))
-                {
-                    if (makedSubTabl != null)
-                        db.Execute("DELETE * FROM " + makedSubTabl);
-                    db.Execute("DELETE * FROM " + makedTabl);
-                    using (var rec = new DaoRec(db, makedTabl))
-                        using (var subRec = makedSubTabl == null ? null : new DaoRec(db, makedSubTabl))
-                            foreach (var row in _rowsGen.Values)
-                                if (row.Keeper.Errors.Count == 0)
-                                {
-                                    if (!row.RuleString.IsEmpty())
-                                        AddEvent("Генерация данных по шаблону", row.RuleString);
-                                    row.Generate(DataTabls, rec, subRec);
-                                }    
+                    catch (Exception ex)
+                    {
+                        AddError("Ошибка при генерации параметров", ex);
+                    }
                 }
-                
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка при генерации", ex, makedFile);
-            }
         }
     }
 }
