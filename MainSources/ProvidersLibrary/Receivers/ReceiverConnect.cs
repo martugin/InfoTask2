@@ -28,6 +28,7 @@ namespace ProvidersLibrary
         {
             if (_signals.ContainsKey(fullCode))
                 return _signals[fullCode];
+            Provider.IsPrepared = false;
             return _signals.Add(fullCode, new ReceiverSignal(this, fullCode, codeObject, dataType, signalInf));
         }
 
@@ -35,50 +36,39 @@ namespace ProvidersLibrary
         public void ClearSignals()
         {
             AddEvent("Очистка списка сигналов");
+            Provider.IsPrepared = false;
             _signals.Clear();
         }
 
-        //Приемник был подготовлен
-        private bool _isPrepared;
-
         //Запись значений в приемник
-        public bool WriteValues()
+        public void WriteValues() 
         {
-            if (!CheckPeriodIsDefined()) return false;
+            if (PeriodIsUndefined()) return;
+            if (Start(0, 80).Run(PutValues).IsSuccess) return;
 
-            using (Start(5, 80))
-                if (WriteValuesReceiver()) return true;
-
-            _isPrepared = false;
-            if (!ChangeProvider()) return false;
-            using (Start(80, 100))
-                return WriteValuesReceiver();
+            if (ChangeProvider())
+                using (Start(80, 100))
+                    PutValues();
         }
 
         //Запись значений в приемник
-        private bool WriteValuesReceiver()
+        private void PutValues()
         {
             try
             {
-                if (!Receiver.Connect())
-                    return false;
-                if (!_isPrepared)
-                {
-                    Receiver.Prepare();
-                    _isPrepared = true;
-                }
-                using (Start(0, PeriodBegin < PeriodEnd ? 30 : 100))
+                using (Start(0, 10))
+                    if (!Provider.Connect() || !Provider.Prepare()) return ;
+
+                using (Start(10, 100))
                 {
                     AddEvent("Запись значений в приемник");
                     Receiver.WriteValues();
                     AddEvent("Значения записаны в приемник");
                 }
-                return true;
             }
             catch (Exception ex)
             {
                 AddError("Ошибка при записи значений в приемник", ex);
-                return false;
             }
         }
     }

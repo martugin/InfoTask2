@@ -24,18 +24,9 @@ namespace ProvidersLibrary
         protected SqlProps SqlProps { get; private set; }
 
         //Проверка соединения
-        protected override bool ConnectProvider()
+        protected override void ConnectProvider()
         {
-            try
-            {
-                using (SqlDb.Connect(SqlProps))
-                    return true;
-            }
-            catch (Exception ex)
-            {
-                AddError("Не удалось соединиться с SQL-сервером", ex);
-                return false;
-            }
+            SqlDb.Connect(SqlProps);
         }
 
         //Возвращает выпадающий список для поля настройки 

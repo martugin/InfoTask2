@@ -391,17 +391,17 @@ namespace BaseLibraryTest
                                      "Ошибка: Err3; Source2; Err3Pars" + Environment.NewLine +
                                      "Предупреждение: War0; Source; War0Pars" + Environment.NewLine + 
                                      "Предупреждение: War1; Source; War1Pars", c.ErrorMessage());
-            Assert.AreEqual(CollectedErrorMessage, c.ErrorMessage());
+            Assert.AreEqual(CollectedError, c.ErrorMessage());
             Assert.AreEqual("Err2; Err2Pars" + Environment.NewLine +
                                      "Err3; Err3Pars" + Environment.NewLine +
                                      "War0; War0Pars" + Environment.NewLine +
                                      "War1; War1Pars", c.ErrorMessage(false, true, false));
-            Assert.AreEqual(CollectedErrorMessage, c.ErrorMessage());
+            Assert.AreEqual(CollectedError, c.ErrorMessage());
             Assert.AreEqual("Ошибка: Err2" + Environment.NewLine +
                                      "Ошибка: Err3" + Environment.NewLine +
                                      "Предупреждение: War0" + Environment.NewLine +
                                      "Предупреждение: War1", c.ErrorMessage(false, false));
-            Assert.AreEqual(CollectedErrorMessage, c.ErrorMessage());
+            Assert.AreEqual(CollectedError, c.ErrorMessage());
         }
 
         [TestMethod]
@@ -452,7 +452,7 @@ namespace BaseLibraryTest
                     throw new Exception("Er");
                 },
                 () => { AddCollectResult("Bad"); });
-            Assert.AreEqual("Ошибка: Ошибка", CollectedErrorMessage);
+            Assert.AreEqual("Ошибка: Ошибка", CollectedError);
             Assert.AreEqual("Bad", CollectedResults);
             Assert.IsTrue(c.IsFinished);
             Assert.AreEqual(CommandQuality.Error, c.Quality);

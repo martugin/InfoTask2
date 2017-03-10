@@ -23,10 +23,8 @@ namespace BaseLibrary
         //Качество команды
         private CommandQuality _quality = CommandQuality.Success;
         public CommandQuality Quality { get { lock (_qualityLock) return _quality; } }
-        //Команда с ошибкой
-        public bool IsError { get { return Quality == CommandQuality.Error; } }
-        //Команда совсем без ошибки
-        public bool IsSuccess { get { return Quality == CommandQuality.Success; } }
+        //Команда без ошибки
+        public bool IsSuccess { get { return Quality != CommandQuality.Error; } }
 
         //Добавить ошибку
         public virtual void AddError(CommandError err)

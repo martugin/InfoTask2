@@ -29,7 +29,7 @@ namespace ProvidersLibrary
         private BaseProvider _mainProvider;
         private BaseProvider _reserveProvider;
         //Текущий провайдер
-        public BaseProvider Provider { get; private set; }
+        internal BaseProvider Provider { get; private set; }
 
         //Присвоение основного и резервного провайдеров 
         public void JoinProviders(BaseProvider mainProvider, BaseProvider reserveProvider = null)
@@ -83,28 +83,12 @@ namespace ProvidersLibrary
             //return ProviderInf;
         }
 
-        //Подготовка соединения
-        public void Prepare()
-        {
-            try
-            {
-                if (Provider is BaseSource)
-                    ((BaseSource)Provider).Prepare();
-                if (Provider is BaseReceiver)
-                    ((BaseReceiver)Provider).Prepare();
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка подготовки провайдера", ex);
-            }
-        }
-
         //Проверяет, что в логгере задан период обработки
-        protected bool CheckPeriodIsDefined()
+        protected bool PeriodIsUndefined()
         {
-            if (PeriodBegin != Different.MinDate) return true;
+            if (PeriodBegin != Different.MinDate && PeriodBegin != Different.MaxDate) return false;
             AddError("Не задан период обработки");
-            return false;
+            return true;
         }
     }
 }

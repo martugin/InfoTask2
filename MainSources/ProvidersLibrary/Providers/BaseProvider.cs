@@ -27,6 +27,8 @@ namespace ProvidersLibrary
             get { return _inf; }
             set
             {
+                Disconnect();
+                IsPrepared = false;
                 _inf = value;
                 var dic = value.ToPropertyDicS();
                 dic.DefVal = "";
@@ -39,81 +41,74 @@ namespace ProvidersLibrary
         protected abstract string Hash { get; }
 
         //Открытие подключения, возвращает true, если соединение установлено
-        protected virtual bool ConnectProvider() { return true; }
+        protected virtual void ConnectProvider() { }
         //Закрытие подключения
         protected virtual void DisconnectProvider() { }
-        //Соединение было установлено
-        private bool _isConnected;
+        //Подготовка сигналов провайдера
+        protected virtual void PrepareProvider() { }
 
-        //Первичное подключение к провайдеру
+        //Соединение было установлено
+        protected internal bool IsConnected { get; set; }
+        //Сигналы провайдера подготовлены
+        protected internal bool IsPrepared { get; set; }
+
+        //Время в мс, которое нудно ожидать после неудачного соединения
+        protected virtual int ConnectErrorWaitingTime { get { return 300; } }
+
+        //Первичное подключение к провайдеру, true - соединение удачное
         protected internal bool Connect()
         {
-            if (_isConnected) return true;
-            try
-            {
-                if (ConnectProvider())
-                    return _isConnected = true;
-            }
-            catch (Exception ex)
-            {
-                AddWarning("Нет соединения с провайдером. Попытка повторного соединения", ex);
-            }
-
-            Procent = 30;
-            Thread.Sleep(300);
-            Disconnect();
-            Procent = 60;
-            Thread.Sleep(300);
-            Procent = 70;
-
-            try
-            {
-                if (ConnectProvider())
-                    return _isConnected = true;
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка соединения с провайдером", ex);
-            }
-            Procent = 90;
-            Disconnect();
-            return false;
+            if (IsConnected) return true;
+            return IsConnected = StartDanger(2, LoggerStability.Single, "Соединение с провайдером", false, ConnectErrorWaitingTime)
+                                                .Run(ConnectProvider, Disconnect).IsSuccess;
         }
 
         //Отключение от провайдера
         protected internal void Disconnect()
         {
-            try { DisconnectProvider();}
-            catch {}
-            _isConnected = false;
+            try
+            {
+                if (IsConnected)
+                {
+                    AddEvent("Закрытие соединения с провадером");
+                    Start().Run(DisconnectProvider);
+                }
+            }
+            catch (Exception ex)
+            {
+                AddError("Ошибка закрытия соединения с провайдером", ex);
+            }
+            IsConnected = false;
         }
 
-        //Повторное подключение
+        //Повторное подключение, true - соединение удачное
         protected internal bool Reconnect()
         {
-            if (_isConnected)
+            if (IsConnected)
             {
                 Disconnect();
-                Procent = 10;
-                Thread.Sleep(300);
-                Procent = 30;
+                Thread.Sleep(ConnectErrorWaitingTime);
             }
-            if (!Connect()) return false;
-            if (!(this is BaseSource)) return true;
-
-            AddEvent("Получение времени источника", 70);
-            return !((BaseSource)this).GetTime().IsDefault;
+            if (Connect() && this is BaseSource && Logger.Stability >= LoggerStability.Single)
+                return !((BaseSource)this).GetTime().IsDefault;
+            return false;
         }
 
+        //Подготовка провайдера, true - удачно
+        protected internal abstract bool Prepare();
+        protected bool BasePrepare()
+        {
+            if (IsPrepared) return true;
+            if (!Connect()) return false;
+            return IsPrepared = StartDanger(0, 100, 2, LoggerStability.Periodic, "Подготовка провайдера")
+                                .Run(PrepareProvider, () => Reconnect()).IsSuccess;
+        }
+        
         //Очистка ресурсов
         public virtual void Dispose()
         {
             Disconnect();
         }
-
-        //Текущий период расчета
-        protected DateTime PeriodBegin { get { return ProviderConnect.PeriodBegin; } }
-        protected DateTime PeriodEnd { get { return ProviderConnect.PeriodEnd; } }
 
         //Настройка
         #region

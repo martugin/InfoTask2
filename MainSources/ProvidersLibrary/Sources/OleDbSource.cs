@@ -10,12 +10,13 @@ namespace ProvidersLibrary
         protected OleDbConnection Connection { get; private set; }
 
         //Открытие соединения
-        protected override bool ConnectProvider()
+        protected override void ConnectProvider()
         {
             AddEvent("Открытие соединения с провайдером", Hash);
             Connection = new OleDbConnection(ConnectionString);
             Connection.Open();
-            return Connection.State == ConnectionState.Open;
+            if (Connection.State != ConnectionState.Open)
+                AddError("Ошибка при открытии соедиения");
         }
         
         //Открытие соединения

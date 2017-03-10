@@ -14,6 +14,9 @@ namespace BaseLibrary
         //Ссылка на логгер
         public Logger Logger { get; set; }
 
+        //Режим работы потока
+        public LoggerStability Stability { get { return Logger.Stability; } }
+
         //Контекст
         public virtual string Context { get { return ""; } }
 
@@ -21,6 +24,10 @@ namespace BaseLibrary
         public Command Start(double startProcent, double finishProcent)
         {
             return Logger.Start(startProcent, finishProcent);
+        }
+        public Command Start()
+        {
+            return Logger.Start();
         }
         //Завершение простоя команды
         public Command Finish(string results = "")
@@ -46,9 +53,9 @@ namespace BaseLibrary
             Logger.AddCollectResult(result);
         }
         //Итоговая ошибка комманды Collect
-        public string CollectedErrorMessage
+        public string CollectedError
         {
-            get { return Logger.CollectedErrorMessage; }
+            get { return Logger.CollectedError; }
         }
         //Результаты выполнения команды Collect
         public string CollectedResults
@@ -137,16 +144,15 @@ namespace BaseLibrary
         public DangerCommand StartDanger(double startProcent, double finishProcent,
                                         int repetitions, //Cколько раз повторять, если не удалась (вместе с первым)
                                         LoggerStability stability, //Минимальная LoggerStability, начиная с которой выполняется более одного повторения операции
-                                        string errMess, //Сообщение об ошибке 
-                                        string repeatMess, //Сообщение о повторе
+                                        string eventMess, //Сообщение о событии для записи в историю
                                         bool useThread = false, //Запускать опасную операцию в другом потоке, чтобы была возможность ее жестко прервать
                                         int errWaiting = 0)  //Cколько мс ждать при ошибке
         {
-            return Logger.StartDanger(startProcent, finishProcent, repetitions, stability, errMess, repeatMess, useThread, errWaiting);
+            return Logger.StartDanger(startProcent, finishProcent, repetitions, stability, eventMess, useThread, errWaiting);
         }
-        public DangerCommand StartDanger(int repetitions, LoggerStability stability, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
+        public DangerCommand StartDanger(int repetitions, LoggerStability stability, string eventMess, bool useThread = false, int errWaiting = 0)
         {
-            return Logger.StartDanger(repetitions, stability, errMess, repeatMess, useThread, errWaiting);
+            return Logger.StartDanger(repetitions, stability, eventMess, useThread, errWaiting);
         }
 
         //Добавляет событие в историю

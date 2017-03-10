@@ -1,5 +1,4 @@
 ﻿using System;
-using BaseLibrary;
 
 namespace ProvidersLibrary
 {
@@ -13,34 +12,32 @@ namespace ProvidersLibrary
         }
 
         //Подготовка приемника 
-        internal void Prepare()
+        protected internal override bool Prepare()
         {
             try
             {
-                AddEvent("Подготовка приемника");
-                ClearObjects();
+                AddEvent("Подготовка выходов");
+                ClearOuts();
                 foreach (var sig in ReceiverConnect.Signals.Values)
                 {
-                    var ob = AddObject(sig);
+                    var ob = AddOut(sig);
                     ob.Context = sig.CodeOuts;
                     ob.AddSignal(sig);
                 }
-                Procent = 30;
-                StartDanger(30, 100, 2, LoggerStability.Single, "Ошибка при подготовке приемника", "Повторная подготовка приемника")
-                    .Run(() => PrepareReceiver(), () => Reconnect());
+                using (Start(20, 100))
+                    return BasePrepare();
             }
             catch (Exception ex)
             {
                 AddError("Ошибка при подготовке источника", ex);
+                return false;
             }
         }
 
         //Очистка списков объектов
-        protected abstract void ClearObjects();
+        protected abstract void ClearOuts();
         //Добавить объект содержащий заданный сигнал
-        protected abstract ReceiverObject AddObject(ReceiverSignal sig);
-        //Подготовка источника
-        protected virtual void PrepareReceiver() { }
+        protected abstract ReceiverOut AddOut(ReceiverSignal sig);
 
         //Запись значений в приемник
         protected internal abstract void WriteValues();

@@ -9,7 +9,7 @@ namespace BaseLibrary
         internal DangerCommand(Logger logger, Command parent, double startProcent, double finishProcent, 
                                         int repetitions,
                                         LoggerStability stability, //Минимальная LoggerStability, начиная с которой выполняется более одного повторения операции
-                                        string errMess, string repeatMess,
+                                        string eventMess,
                                         bool useThread = false, 
                                         int errWaiting = 0)
             : base(logger, parent, startProcent, finishProcent)
@@ -17,8 +17,7 @@ namespace BaseLibrary
             _repetitions = Logger.Stability >= stability ? repetitions : 1;
             _useThread = useThread;
             _errWaiting = errWaiting;
-            _errMess = errMess;
-            _repeatMess = repeatMess;
+            _eventMess = eventMess;
         }
 
         //Cколько раз повторять, если не удалась (вместе с первым)
@@ -27,9 +26,8 @@ namespace BaseLibrary
         private readonly bool _useThread;
         //Cколько мс ждать при ошибке
         private readonly int _errWaiting;
-        //Сообщения об ошибке и о повторе
-        private readonly string _errMess; 
-        private readonly string _repeatMess; 
+        //Сообщение для истории
+        private readonly string _eventMess; 
 
         //При повторении операции случилась ошибка
         private bool _isCorrect;
@@ -50,22 +48,10 @@ namespace BaseLibrary
         //Запуск операции, обрамляемой данной командой
         public override Command Run(Action action)
         {
-            return Run(action, (Func<bool>) null);
+            return Run(action, null);
         }
-        public Command Run(Action action, Action erorrAction)
-        {
-            return Run(action, () => { erorrAction(); return true; });
-        }
-        public Command Run(Action action, Func<bool> erorrAction)
-        {
-            return Run(() => { action(); return true; }, erorrAction);
-        }
-        public Command Run(Func<bool> action, Action erorrAction)
-        {
-            return Run(action, () => { erorrAction(); return true; });
-        }
-        public Command Run(Func<bool> action, //операция
-                                       Func<bool> erorrAction) //операция, выполняемя между повторами, возвращает true при успешном завершении
+        public Command Run(Action action, //операция
+                                      Action erorrAction) //операция, выполняемя между повторами
         {
             for (int i = 1; i <= _repetitions; i++)
             {
@@ -103,7 +89,7 @@ namespace BaseLibrary
                 }
 
                 if (i == _repetitions) return Finish();
-                Parent.AddError(new CommandError(_repeatMess, null, "" , "", CommandQuality.Repeat));
+                Parent.AddError(new CommandError("Повтор. " + _eventMess, null, "", "", CommandQuality.Repeat));
                 Logger.CheckBreak();
                 while (Logger.Command != this)
                     Logger.Finish();
@@ -126,23 +112,21 @@ namespace BaseLibrary
         }
 
         //Запуск действия
-        private bool RunAction(Func<bool> action)
+        private bool RunAction(Action action)
         {
             try
             {
-                bool b = action(); //Если опустить присвоение, то не работает
-                _isCorrect &= b;
-                return _isCorrect;
+                action();
             }
             catch (BreakException) { throw; }
             catch (Exception ex)
             {
-                Logger.AddError(_errMess, ex);
+                Logger.AddError("Ошибка. " + _eventMess, ex);
                 Logger.CheckBreak();
                 while (Logger.Command != this)
                     Logger.Command.Finish();
-                return _isCorrect = false;
             }
+            return _isCorrect;
         }
     }
 }

@@ -5,6 +5,9 @@ namespace BaseLibrary
     //Интерфейс для Logger и ExternalLogger
     public interface ILogger
     {
+        //Режим работы потока
+        LoggerStability Stability { get; }
+
         //Добавить событие в историю
         void AddEvent(string description, string pars = "");
         void AddEvent(string description, string pars,
@@ -21,6 +24,7 @@ namespace BaseLibrary
 
         //Запуск простой комманды
         Command Start(double startProcent, double finishProcent);
+        Command Start();
         //Завершение текущей команды
         Command Finish(string results = "");
 
@@ -32,7 +36,7 @@ namespace BaseLibrary
         //Запись результатов в команду Collect
         void AddCollectResult(string result);
         //Итоговая ошибка комманды Collect
-        string CollectedErrorMessage { get; }
+        string CollectedError { get; }
         //Результаты выполнения команды Collect
         string CollectedResults { get; }
 
@@ -78,11 +82,10 @@ namespace BaseLibrary
         DangerCommand StartDanger(double startProcent, double finishProcent,
                 int repetitions, //Cколько раз повторять, если не удалась (вместе с первым)
                 LoggerStability stability, //Минимальная LoggerStability, начиная с которой выполняется более одного повторения операции
-                string errMess, //Сообщение об ошибке 
-                string repeatMess, //Сообщение о повторе
+                string eventMess, //Сообщение о событии для записи в историю
                 bool useThread = false, //Запускать опасную операцию в другом потоке, чтобы была возможность ее жестко прервать
                 int errWaiting = 0);  //Cколько мс ждать при ошибке
-        DangerCommand StartDanger(int repetitions, LoggerStability stability, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0);
+        DangerCommand StartDanger(int repetitions, LoggerStability stability, string eventMess, bool useThread = false, int errWaiting = 0);
 
         //Прервать выполнение
         void Break();

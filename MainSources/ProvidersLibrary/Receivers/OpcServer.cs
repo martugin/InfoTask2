@@ -41,24 +41,12 @@ namespace ProvidersLibrary
         protected int State { get { return Server.ServerState; } }
 
         //Проверка соединения
-        protected override bool ConnectProvider()
+        protected override void ConnectProvider()
         {
-            try
-            {
-                if (Node.IsEmpty()) Server.Connect(ServerName);
-                else Server.Connect(ServerName, Node);
-                if (State != 1)//Для Овации этой проверки не было !!!!!
-                {
-                    AddError("Ошибка соединения с OPC-сервером", null, "Состояние = " + State);
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка соединения с OPC-сервером", ex);
-                return false;
-            }
-            return true;
+            if (Node.IsEmpty()) Server.Connect(ServerName);
+            else Server.Connect(ServerName, Node);
+            if (State != 1) //Для Овации этой проверки не было !!!!!
+                AddError("Ошибка соединения с OPC-сервером", null, "Состояние = " + State);
         }
 
         //Разрыв соединения
@@ -102,7 +90,7 @@ namespace ProvidersLibrary
         private OPCGroup _group;
 
         //Очистка списков итемов
-        protected override void ClearObjects()
+        protected override void ClearOuts()
         {
             _items.Clear();
             _group = null;
@@ -110,7 +98,7 @@ namespace ProvidersLibrary
         }
 
         //Добавить итем содержащий заданный сигнал
-        protected override ReceiverObject AddObject(ReceiverSignal sig)
+        protected override ReceiverOut AddOut(ReceiverSignal sig)
         {
             var tag = GetOpcItemTag(sig.Inf);
             if (_items.ContainsKey(tag))
@@ -136,7 +124,7 @@ namespace ProvidersLibrary
         }
 
         //Добавление итемов на сервер
-        protected override void PrepareReceiver()
+        protected override void PrepareProvider()
         {
             if (_group == null) AddGroup("Gr" + (Server.OPCGroups.Count + 1));
             int n = _items.Count;
@@ -160,11 +148,11 @@ namespace ProvidersLibrary
                 _group.OPCItems.AddItems(n, ref itemArr, ref clientH, out serverH, out errorsArr);
                 int m = 1;
                 for (int j = 1; j <= n; j++)
-                    if (((int)errorsArr.GetValue(j)) == 0) m++;
+                    if ((int)errorsArr.GetValue(j) == 0) m++;
                 _itemsList = new OpcItem[m];
                 int k = 1;
                 for (int j = 1; j <= n; j++)
-                    if (((int)errorsArr.GetValue(j)) == 0)
+                    if ((int)errorsArr.GetValue(j) == 0)
                     {
                         _itemsList[k] = list[j];
                         _itemsList[k++].ServerHandler = (int)serverH.GetValue(j);
@@ -176,7 +164,7 @@ namespace ProvidersLibrary
         protected internal override void WriteValues()
         {
             if (_items.Count > 0)
-                StartDanger(2, LoggerStability.Single, "Ошибка записи значений в OPC-сервер", "Повторная запись в OPC-сервер", true, 500)
+                StartDanger(2, LoggerStability.Single, "Запись в OPC-сервер", true, 500)
                     .Run(() =>
                         {
                             int m = _itemsList == null ? 0 : _itemsList.Length;

@@ -25,7 +25,7 @@ namespace BaseLibrary
         internal Command Command { get; set; }
         
         //Режим работы потока
-        protected internal LoggerStability Stability { get; private set; }
+        public LoggerStability Stability { get; private set; }
 
         //Событие прерывания выполнения
         public event EventHandler<EventArgs> ExecutionFinished;
@@ -78,6 +78,10 @@ namespace BaseLibrary
         {
             return Command = new Command(this, Command, startProcent, finishProcent);
         }
+        public Command Start()
+        {
+            return Command = new Command(this, Command, Procent, Procent);
+        }
         //Завершение простой команды
         public Command Finish(string results = "")
         {
@@ -118,7 +122,7 @@ namespace BaseLibrary
         }
 
         //Итоговое сообщение об ошибке
-        public string CollectedErrorMessage { get; internal set; }
+        public string CollectedError { get; internal set; }
         //Результат выполнения комманды Collect
         public string CollectedResults { get; internal set; }
 
@@ -143,7 +147,7 @@ namespace BaseLibrary
         }
         public DateTime PeriodEnd
         {
-            get { return PeriodCommand == null ? Different.MinDate : PeriodCommand.End; }
+            get { return PeriodCommand == null ? Different.MaxDate : PeriodCommand.End; }
         }
         public string PeriodMode
         {
@@ -179,7 +183,7 @@ namespace BaseLibrary
         }
         public LogCommand StartLog(string name, string context = "", string pars = "")
         {
-            return StartLog(Procent, 100, name, context, pars);
+            return StartLog(Procent, Procent, name, context, pars);
         }
         //Завершение команды логирования
         public LogCommand FinishLog(string results = null)
@@ -205,7 +209,7 @@ namespace BaseLibrary
         }
         public IndicatorTextCommand StartIndicatorText(string text)
         {
-            return StartIndicatorText(Procent, 100, text);
+            return StartIndicatorText(Procent, Procent, text);
         }
         //Завершение команды, отображающей на форме индикатора текст 2-ого уровня
         public IndicatorTextCommand FinishIndicatorText()
@@ -224,7 +228,7 @@ namespace BaseLibrary
         }
         public KeepCommand StartKeep()
         {
-            return StartKeep(Procent, 100);
+            return StartKeep(Procent, Procent);
         }
         public KeepCommand FinishKeep()
         {
@@ -240,17 +244,17 @@ namespace BaseLibrary
         public DangerCommand StartDanger(double startProcent, double finishProcent, 
                                         int repetitions, //Cколько раз повторять, если не удалась (вместе с первым)
                                         LoggerStability stability, //Минимальная LoggerStability, начиная с которой выполняется более одного повторения операции
-                                        string errMess, //Сообщение об ошибке 
-                                        string repeatMess, //Сообщение о повторе
+                                        string eventMess, //Сообщение о событии для записи в историю
                                         bool useThread = false, //Запускать опасную операцию в другом потоке, чтобы была возможность ее жестко прервать
                                         int errWaiting = 0)  //Cколько мс ждать при ошибке
         {
-            Command = new DangerCommand(this, Command, startProcent, finishProcent, repetitions, stability, errMess, repeatMess, useThread, errWaiting);
+            AddEvent(eventMess);
+            Command = new DangerCommand(this, Command, startProcent, finishProcent, repetitions, stability, eventMess, useThread, errWaiting);
             return (DangerCommand) Command;
         }
-        public DangerCommand StartDanger(int repetitions, LoggerStability stability, string errMess, string repeatMess, bool useThread = false, int errWaiting = 0)
+        public DangerCommand StartDanger(int repetitions, LoggerStability stability, string eventMess, bool useThread = false, int errWaiting = 0)
         {
-            return StartDanger(Procent, 100, repetitions, stability, errMess, repeatMess, useThread, errWaiting);
+            return StartDanger(Procent, Procent, repetitions, stability, eventMess, useThread, errWaiting);
         }
 
         //-----

@@ -1,7 +1,7 @@
 ﻿namespace ProvidersLibrary
 {
     //Один параметр для записи в OPC
-    public class OpcItem : ReceiverObject
+    public class OpcItem : ReceiverOut
     {
         internal OpcItem(BaseReceiver receiver, string tag, int clientHandler)
             : base(receiver)

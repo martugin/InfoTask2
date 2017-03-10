@@ -22,7 +22,10 @@ namespace ProvidersLibrary
         //Возвращает TimeInterval(Different.MinDate, DateTime.Now) если источник не позволяет определять диапазон
         public TimeInterval GetTime()
         {
-            return Source.GetTime();
+            var ti = Source.GetTime();
+            if (ti.IsDefault && ChangeProvider())
+                return Source.GetTime();
+            return ti;
         }
 
         //Список сигналов, содержащих возвращаемые значения
@@ -44,6 +47,7 @@ namespace ProvidersLibrary
         {
             if (InitialSignals.ContainsKey(fullCode))
                 return InitialSignals[fullCode];
+            Provider.IsPrepared = false;
             var sig = needCut ? new UniformSignal(this, fullCode, codeObject, dataType, signalInf)
                                       : new InitialSignal(this, fullCode, codeObject, dataType, signalInf);
             _signals.Add(fullCode, sig);
@@ -60,6 +64,7 @@ namespace ProvidersLibrary
                 return CalcSignals[fullCode];
             if (!_initialSignals.ContainsKey(initialSignal))
                 throw new InstanceNotFoundException("Не найден исходный сигнал " + initialSignal);
+            Provider.IsPrepared = false;
             var calc = new CalcSignal(fullCode, codeObject, _initialSignals[initialSignal], formula);
             _signals.Add(fullCode, calc);
             return CalcSignals.Add(fullCode, calc);
@@ -69,15 +74,12 @@ namespace ProvidersLibrary
         public void ClearSignals()
         {
             AddEvent("Очистка списка сигналов");
+            Provider.IsPrepared = false;
             _signals.Clear();
             InitialSignals.Clear();
             CalcSignals.Clear();
-            _isPrepared = false;
         }
 
-        //Источник был подготовлен
-        private bool _isPrepared;
-        
         //Конец предыдущего периода расчета
         internal DateTime PrevPeriodEnd { get; private set; }
 
@@ -86,22 +88,20 @@ namespace ProvidersLibrary
         public ValuesCount GetValues()
         {
             var valuesCount = new ValuesCount();
-            if (!CheckPeriodIsDefined()) return valuesCount;
+            if (PeriodIsUndefined()) return valuesCount;
             try
             {
                 ClearSignalsValues(PeriodBegin != PrevPeriodEnd);
-                using (Start(5, 80))
+                using (Start(5, 75))
                 {
                     valuesCount += ReadValues();
                     if (!valuesCount.IsFail) return valuesCount;
                 }
-                _isPrepared = false;
+
                 if (!ChangeProvider()) return valuesCount;
+                ClearSignalsValues(true);
                 using (Start(80, 100))
-                {
-                    ClearSignalsValues(true);
                     return ReadValues();
-                }
             }
             catch (Exception ex)
             {
@@ -124,42 +124,35 @@ namespace ProvidersLibrary
             var vcount = new ValuesCount();
             try
             {
-                if (!Source.Connect()) 
-                    return new ValuesCount(VcStatus.Fail);
-                if (!_isPrepared)
-                {
-                    Source.Prepare();
-                    _isPrepared = true;
-                }
-
-                //Чтение среза
-                using (Start(0, PeriodBegin < PeriodEnd ? 30 : 100))
-                {
-                    AddEvent("Чтение среза значений");
+                using (Start(0, 5))
+                    if (!Provider.Connect() || !Provider.Prepare())
+                       return new ValuesCount(VcStatus.Fail);
+               
+                AddEvent("Чтение среза значений");
+                using (Start(5, PeriodBegin == PeriodEnd ? 90 : 30))
                     vcount += Source.ReadCut();
-                    Procent = 90;
-                    foreach (var sig in InitialSignals.Values)
-                        if (sig is UniformSignal)
-                            vcount.WriteCount += ((UniformSignal)sig).MakeBegin();
-                    AddEvent("Срез значений получен", vcount.ToString());
-                    if (vcount.Status == VcStatus.Fail) 
-                        return vcount;
-                }
+                foreach (var sig in InitialSignals.Values)
+                    if (sig is UniformSignal)
+                        vcount.WriteCount += ((UniformSignal) sig).MakeBegin();
+                AddEvent("Срез значений получен", vcount.ToString());
+                if (vcount.Status == VcStatus.Fail)
+                    return vcount;
                 
                 //Чтение изменений
                 if (PeriodBegin < PeriodEnd)
-                    using (Start(Procent, 90))
-                    {
-                        AddEvent("Чтение изменений значений");
-                        var changes = Source.ReadChanges();
-                        Procent = 90;
-                        foreach (var sig in InitialSignals.Values)
-                            if (sig is UniformSignal)
-                                changes.WriteCount += ((UniformSignal)sig).MakeEnd();
-                        AddEvent("Изменения значений получены", changes.ToString());
-                        vcount += changes;
-                        if (vcount.IsFail) return vcount;
-                    }
+                {
+                    AddEvent("Чтение изменений значений");
+                    ValuesCount changes;
+                    using (Start(30, 85))
+                       changes = Source.ReadChanges();
+                    foreach (var sig in InitialSignals.Values)
+                        if (sig is UniformSignal)
+                            changes.WriteCount += ((UniformSignal)sig).MakeEnd();
+                    AddEvent("Изменения значений получены", changes.ToString());
+                    vcount += changes;
+                    if (vcount.IsFail) return vcount;
+                    Procent = 90;
+                }
 
                 //Вычисление значений расчетных сигналов
                 if (CalcSignals.Count > 0)
@@ -258,7 +251,7 @@ namespace ProvidersLibrary
         {
             try
             {
-                if (!CheckPeriodIsDefined()) return;
+                if (PeriodIsUndefined()) return;
                 string dir = cloneDir;
                 if (!dir.EndsWith(@"\")) dir += @"\";
                 using (var db = new DaoDb(dir + @"Clone.accdb"))

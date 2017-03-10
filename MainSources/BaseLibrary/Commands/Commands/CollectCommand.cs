@@ -85,7 +85,7 @@ namespace BaseLibrary
         //Завершение команды
         protected internal override void FinishCommand(bool isBreaked)
         {
-            Logger.CollectedErrorMessage = ErrorMessage();
+            Logger.CollectedError = ErrorMessage();
             base.FinishCommand(isBreaked);
             Logger.CollectCommand = null;
         }

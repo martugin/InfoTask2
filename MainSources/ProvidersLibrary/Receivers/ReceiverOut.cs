@@ -3,9 +3,9 @@ using BaseLibrary;
 
 namespace ProvidersLibrary
 {
-    public abstract class ReceiverObject : IContextable 
+    public abstract class ReceiverOut : IContextable 
     {
-        protected ReceiverObject(BaseReceiver receiver)
+        protected ReceiverOut(BaseReceiver receiver)
         {
             Receiver = receiver;
         }

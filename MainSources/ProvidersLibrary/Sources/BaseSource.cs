@@ -21,8 +21,8 @@ namespace ProvidersLibrary
         {
             try
             {
-                AddEvent("Определение диапазона источника");
                 if (!Connect()) return TimeInterval.CreateDefault();
+                AddEvent("Определение диапазона источника");
                 var ti = GetTimeSource();
                 if (!ti.IsDefault)
                     AddEvent("Диапазон источника определен", ti.Begin + " - " + ti.End);
@@ -42,11 +42,11 @@ namespace ProvidersLibrary
         }
 
         //Подготовка источника
-        internal void Prepare()
+        protected internal override bool Prepare()
         {
             try
             {
-                AddEvent("Подготовка источника");
+                AddEvent("Подготовка выходов");
                 ClearOuts();
                 foreach (var sig in SourceConnect.InitialSignals.Values)
                 {
@@ -54,14 +54,18 @@ namespace ProvidersLibrary
                     ob.Context = sig.CodeOuts;
                     ob.AddSignal(sig);
                 }
-                StartDanger(30, 100, 2, LoggerStability.Single, "Ошибка при подготовке источника", "Повтор подготовки источника")
-                    .Run(() => PrepareSource(), () => Reconnect());
-                if (ErrPool == null)
-                    ErrPool = new MomErrPool(MakeErrFactory());
+                using (Start(20, 100))
+                {
+                    bool res = BasePrepare();
+                    if (ErrPool == null)
+                        ErrPool = new MomErrPool(MakeErrFactory());
+                    return res;    
+                }
             }
             catch (Exception ex)
             {
                 AddError("Ошибка при подготовке источника", ex);
+                return false;
             }
         }
 
@@ -69,8 +73,6 @@ namespace ProvidersLibrary
         protected abstract void ClearOuts();
         //Добавить объект содержащий заданный сигнал
         protected abstract SourceOut AddOut(InitialSignal sig);
-        //Подготовка источника
-        protected virtual void PrepareSource() {}
         
         //Создание фабрики ошибок
         protected virtual IMomErrFactory MakeErrFactory()
