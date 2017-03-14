@@ -75,8 +75,8 @@ namespace BaseLibrary
 
         public void Put(string field, DateTime val)
         {
-            if (val < Different.MinDate) _row[_cols[field]] = Different.MinDate;
-            else if (val > Different.MaxDate) _row[_cols[field]] = Different.MaxDate;
+            if (val < Static.MinDate) _row[_cols[field]] = Static.MinDate;
+            else if (val > Static.MaxDate) _row[_cols[field]] = Static.MaxDate;
             else _row[_cols[field]] = val;
         }
 

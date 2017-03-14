@@ -251,12 +251,12 @@ namespace BaseLibrary
         public DateTime GetTime(string field)
         {
             var v = GetValue(field);
-            return DBNull.Value.Equals(v) ? Different.MinDate : Convert.ToDateTime(v);
+            return DBNull.Value.Equals(v) ? Static.MinDate : Convert.ToDateTime(v);
         }
         public DateTime GetTime(int num)
         {
             var v = GetValue(num);
-            return DBNull.Value.Equals(v) ? Different.MinDate : Convert.ToDateTime(v);
+            return DBNull.Value.Equals(v) ? Static.MinDate : Convert.ToDateTime(v);
         }
         //Переводит значение поля field таблицы rec в дату, DbNull переводит в null
         public DateTime? GetTimeNull(string field)

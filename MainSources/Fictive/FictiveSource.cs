@@ -64,7 +64,7 @@ namespace Fictive
         }
 
         //Подготова источника
-        protected override void PrepareSource()
+        protected override void PrepareProvider()
         {
             OutsId.Clear();
             OutsId2.Clear();

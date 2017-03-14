@@ -19,7 +19,7 @@ namespace ProvidersLibrary
 
         //Получение диапазона времени источника
         //Возвращает Default интервал, если нет связи с источником
-        //Возвращает TimeInterval(Different.MinDate, DateTime.Now) если источник не позволяет определять диапазон
+        //Возвращает TimeInterval(Static.MinDate, DateTime.Now) если источник не позволяет определять диапазон
         public TimeInterval GetTime()
         {
             var ti = Source.GetTime();
@@ -80,35 +80,21 @@ namespace ProvidersLibrary
             CalcSignals.Clear();
         }
 
-        //Конец предыдущего периода расчета
-        internal DateTime PrevPeriodEnd { get; private set; }
-
         //Чтение значений из источника, возвращает true, если прочитались все значения или частично
         //В логгере дожны быть заданы начало и конец периода через CommandProgress
         public ValuesCount GetValues()
         {
-            var valuesCount = new ValuesCount();
-            if (PeriodIsUndefined()) return valuesCount;
-            try
+            var vc = new ValuesCount();
+            if (PeriodIsUndefined()) return vc;
+            using (Start(0, 80))
             {
-                ClearSignalsValues(PeriodBegin != PrevPeriodEnd);
-                using (Start(5, 75))
-                {
-                    valuesCount += ReadValues();
-                    if (!valuesCount.IsFail) return valuesCount;
-                }
+                vc += ReadValues();
+                if (!vc.IsFail) return vc;
+            }
 
-                if (!ChangeProvider()) return valuesCount;
-                ClearSignalsValues(true);
-                using (Start(80, 100))
-                    return ReadValues();
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка при чтении значений из источника", ex);
-                return new ValuesCount(VcStatus.Fail);
-            }
-            finally { PrevPeriodEnd = PeriodEnd; }
+            if (!ChangeProvider()) return vc;
+            using (Start(80, 100))
+                return ReadValues();
         }
 
         private void ClearSignalsValues(bool clearBegin)
@@ -124,12 +110,13 @@ namespace ProvidersLibrary
             var vcount = new ValuesCount();
             try
             {
-                using (Start(0, 5))
-                    if (!Provider.Connect() || !Provider.Prepare())
-                       return new ValuesCount(VcStatus.Fail);
-               
+                ClearSignalsValues(PeriodBegin != Source.PrevPeriodEnd);
+                using (Start(5, 10))
+                    if (!Source.Connect() || !Source.Prepare())
+                        return new ValuesCount(VcStatus.Fail);
+
                 AddEvent("Чтение среза значений");
-                using (Start(5, PeriodBegin == PeriodEnd ? 90 : 30))
+                using (Start(10, PeriodBegin == PeriodEnd ? 90 : 40))
                     vcount += Source.ReadCut();
                 foreach (var sig in InitialSignals.Values)
                     if (sig is UniformSignal)
@@ -137,17 +124,17 @@ namespace ProvidersLibrary
                 AddEvent("Срез значений получен", vcount.ToString());
                 if (vcount.Status == VcStatus.Fail)
                     return vcount;
-                
+
                 //Чтение изменений
                 if (PeriodBegin < PeriodEnd)
                 {
                     AddEvent("Чтение изменений значений");
                     ValuesCount changes;
-                    using (Start(30, 85))
-                       changes = Source.ReadChanges();
+                    using (Start(40, 85))
+                        changes = Source.ReadChanges();
                     foreach (var sig in InitialSignals.Values)
                         if (sig is UniformSignal)
-                            changes.WriteCount += ((UniformSignal)sig).MakeEnd();
+                            changes.WriteCount += ((UniformSignal) sig).MakeEnd();
                     AddEvent("Изменения значений получены", changes.ToString());
                     vcount += changes;
                     if (vcount.IsFail) return vcount;
@@ -174,7 +161,11 @@ namespace ProvidersLibrary
                 AddError("Ошибка при чтении значений из источника", ex);
                 return vcount.AddStatus(VcStatus.Fail);
             }
-            finally {AddErrorObjectsWarning();}
+            finally
+            {
+                AddErrorObjectsWarning();
+                Source.PrevPeriodEnd = PeriodEnd;
+            }
             return vcount;
         }
 

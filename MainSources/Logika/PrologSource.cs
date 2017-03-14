@@ -14,9 +14,10 @@ namespace Logika
         public override string Code { get { return "PrologSource"; } }
 
         //Проверка соединения с файлом
-        protected override bool ConnectProvider()
+        protected override void ConnectProvider()
         {
-            return DaoDb.Check(DbFile, new[] {"NODES", "ABONENTS"});
+            if (!DaoDb.Check(DbFile, new[] {"NODES", "ABONENTS"}))
+                AddError("Недопустимая база данных системы Пролог");
         }
 
         //Словарь выходов, первый ключ - код таблицы, второй ключ - id объекта

@@ -113,7 +113,7 @@ namespace BaseLibrary
         public void WriteStartSuper(ProgressCommand command)
         {
             _writer.Write(command.Name + ", ");
-            if (Logger.PeriodBegin != Different.MinDate)
+            if (Logger.PeriodBegin != Static.MinDate)
                 _writer.Write("Период: " + Logger.PeriodBegin + " - " + Logger.PeriodEnd + ", " + Logger.PeriodMode + ", ");
             _writer.WriteLine(command.StartTime);
         }

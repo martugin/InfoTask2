@@ -72,11 +72,11 @@ namespace Calculation
 
             if (isMom) //Одно значение
             {
-                DateTime t = Different.MinDate;
+                DateTime t = Static.MinDate;
                 foreach (var mean in mpar)
                     if (mean.Time > t)
                         t = mean.Time;
-                if (t == Different.MinDate) t = PeriodBegin;
+                if (t == Static.MinDate) t = PeriodBegin;
                 CalcScalarFun(mpar, () => action(mpar, cpar));
                 return ScalarRes.ToMom(t);
             }
@@ -85,10 +85,10 @@ namespace Calculation
             var rlist = MFactory.NewList(dataType);
             while (true)
             {
-                DateTime ctime = Different.MaxDate;
+                DateTime ctime = Static.MaxDate;
                 foreach (var list in par)
                     if (list.NextTime < ctime) ctime = list.NextTime;
-                if (ctime == Different.MaxDate) break;
+                if (ctime == Static.MaxDate) break;
 
                 for (int i = 0; i < par.Length; i++)
                 {

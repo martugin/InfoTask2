@@ -13,8 +13,8 @@ namespace BaseLibraryTest
         {
             get
             {
-                var dir = Different.GetRegistry(@"software\InfoTask", "InfoTask2Path");
-                if (dir == "") dir = Different.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
+                var dir = Static.GetRegistry(@"software\InfoTask", "InfoTask2Path");
+                if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
                 if (!dir.EndsWith(@"\")) dir += @"\";
                 var n = dir.LastIndexOf(@"\", dir.Length - 2, StringComparison.Ordinal);
                 return dir.Substring(0, n + 1);    
@@ -49,7 +49,7 @@ namespace BaseLibraryTest
             string s = TestRunDir + parentDir + "\\" + (newDir ?? dir);
             var d = new DirectoryInfo(s).Parent;
             if (!d.Exists) d.Create();
-            Different.CopyDir(f.FullName, s);
+            Static.CopyDir(f.FullName, s);
             return s;
         }
 

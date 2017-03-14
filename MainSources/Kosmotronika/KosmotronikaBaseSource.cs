@@ -10,22 +10,6 @@ namespace Provider
     //Базовый класс для источников космотроники
     public abstract class KosmotronikaBaseSource : OleDbSource
     {
-        //Проверка соединения
-        protected override bool CheckConnection()
-        {
-            if (Reconnect())
-            {
-                var ti = GetTime();
-                if (ti != null)
-                {
-                    CheckConnectionMessage = "Успешное соединение. Диапазон источника: " + ti.Begin + " - " + ti.End;
-                    return true;
-                }
-            }
-            AddError(CheckConnectionMessage = "Ошибка соединения с Ретро-сервером");
-            return false;
-        }
-
         //Получение времени архива ПТК
         protected override TimeInterval GetTimeSource()
         {

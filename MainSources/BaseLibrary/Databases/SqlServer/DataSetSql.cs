@@ -131,11 +131,11 @@ namespace BaseLibrary
 
         public DateTime GetTime(string field)
         {
-            return DBNull.Value.Equals(_row[field]) ? Different.MinDate : (DateTime)_row[field];
+            return DBNull.Value.Equals(_row[field]) ? Static.MinDate : (DateTime)_row[field];
         }
         public DateTime GetTime(int num)
         {
-            return DBNull.Value.Equals(_row[num]) ? Different.MinDate : (DateTime)_row[num];
+            return DBNull.Value.Equals(_row[num]) ? Static.MinDate : (DateTime)_row[num];
         }
 
         public DateTime? GetTimeNull(string field)
@@ -273,15 +273,15 @@ namespace BaseLibrary
         public void Put(string field, DateTime val)
         {
             _isChanged = true;
-            if (val < Different.MinDate) _row[field] = Different.MinDate;
-            else if (val > Different.MaxDate) _row[field] = Different.MaxDate;
+            if (val < Static.MinDate) _row[field] = Static.MinDate;
+            else if (val > Static.MaxDate) _row[field] = Static.MaxDate;
             else _row[field] = val;
         }
         public void Put(int num, DateTime val)
         {
             _isChanged = true;
-            if (val < Different.MinDate) _row[num] = Different.MinDate;
-            else if (val > Different.MaxDate) _row[num] = Different.MaxDate;
+            if (val < Static.MinDate) _row[num] = Static.MinDate;
+            else if (val > Static.MaxDate) _row[num] = Static.MaxDate;
             else _row[num] = val;
         }
 
@@ -289,16 +289,16 @@ namespace BaseLibrary
         {
             _isChanged = true;
             if (val == null) _row[field] = DBNull.Value;
-            else if ((DateTime)val < Different.MinDate) _row[field]  = Different.MinDate;
-            else if ((DateTime)val > Different.MaxDate) _row[field] = Different.MaxDate;
+            else if ((DateTime)val < Static.MinDate) _row[field]  = Static.MinDate;
+            else if ((DateTime)val > Static.MaxDate) _row[field] = Static.MaxDate;
             else Put(field, (DateTime)val);
         }
         public void Put(int num, DateTime? val)
         {
             _isChanged = true;
             if (val == null) _row[num] = DBNull.Value;
-            else if ((DateTime)val < Different.MinDate) _row[num] = Different.MinDate;
-            else if ((DateTime)val > Different.MaxDate) _row[num] = Different.MaxDate;
+            else if ((DateTime)val < Static.MinDate) _row[num] = Static.MinDate;
+            else if ((DateTime)val > Static.MaxDate) _row[num] = Static.MaxDate;
             else Put(num, (DateTime)val);
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using BaseLibrary;
 
 namespace ProvidersLibrary
 {
@@ -12,10 +13,11 @@ namespace ProvidersLibrary
         }
 
         //Подготовка приемника 
-        protected internal override bool Prepare()
+        protected internal bool Prepare()
         {
             try
             {
+                if (IsPrepared) return true;
                 AddEvent("Подготовка выходов");
                 ClearOuts();
                 foreach (var sig in ReceiverConnect.Signals.Values)
@@ -24,8 +26,10 @@ namespace ProvidersLibrary
                     ob.Context = sig.CodeOuts;
                     ob.AddSignal(sig);
                 }
-                using (Start(20, 100))
-                    return BasePrepare();
+                Procent = 20;
+                if (!Connect()) return false;
+                return IsPrepared = StartDanger(0, 100, 2, LoggerStability.Periodic, "Подготовка провайдера")
+                                    .Run(PrepareProvider, Reconnect).IsSuccess;
             }
             catch (Exception ex)
             {

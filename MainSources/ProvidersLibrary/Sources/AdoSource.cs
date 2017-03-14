@@ -30,7 +30,7 @@ namespace ProvidersLibrary
 
         //Чтение значений по блокам объектов c использованием стандартных функций
         protected ValuesCount ReadByParts(IEnumerable<SourceOut> objects, int partSize,
-                                                                       DateTime beg, DateTime en, bool isCut, string msg = null)
+                                                              DateTime beg, DateTime en, bool isCut, string msg = null)
         {
             return ReadByParts(objects, partSize, beg, en, isCut, QueryValues, DefineOut, msg);
         }
@@ -161,8 +161,8 @@ namespace ProvidersLibrary
         
         //Запрос рекордсета по одному блоку, возвращает запрошенный рекорсет, или null при неудаче
         protected abstract IRecordRead QueryValues(IList<SourceOut> part, //список объектов
-                                                            DateTime beg, DateTime en, //период считывания
-                                                            bool isCut); //считывается срез
+                                                                             DateTime beg, DateTime en, //период считывания
+                                                                             bool isCut); //считывается срез
         
         //Определение текущего считываемого объекта
         protected abstract SourceOut DefineOut(IRecordRead rec);

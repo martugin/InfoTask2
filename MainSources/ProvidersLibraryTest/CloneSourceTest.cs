@@ -89,7 +89,6 @@ namespace ProvidersLibraryTest
             Assert.IsTrue(connect.Signals.ContainsKey("ObConst.SigR"));
             Assert.IsTrue(connect.Signals.ContainsKey("ObConst.SigS"));
 
-            connect.Prepare();
             GetValues(connect, new DateTime(2016, 7, 8), new DateTime(2016, 7, 8, 1, 0, 0));
         }
     }

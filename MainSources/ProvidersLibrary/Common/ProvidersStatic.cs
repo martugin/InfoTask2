@@ -13,7 +13,7 @@
     //---------------------------------------------------------------------------------------------------------------------------
     
     //Общие функции для InfoTask и конвертеры 
-    public static class DifferentProviders
+    public static class ProvidersStatic
     {
         //Перевод из строки в ProviderType
         public static ProviderType ToProviderType(this string t)

@@ -17,7 +17,7 @@ namespace CommonTypes
         public FunsChecker(FunsCheckType listType)
         {
             bool isGenerate = listType == FunsCheckType.Gen;
-            using (var db = new DaoDb(DifferentIt.InfoTaskDir() + @"General\General.accdb"))
+            using (var db = new DaoDb(ItStatic.InfoTaskDir() + @"General\General.accdb"))
             {
                 var funsId = new DicI<FunCompile>();
                 var where = " WHERE (Functions.IsCompile = True)" + (isGenerate ? "AND (Functions.IsGen = True) " : " ");

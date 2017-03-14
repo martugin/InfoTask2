@@ -86,7 +86,7 @@ namespace ProvidersLibrary
         //Проверяет, что в логгере задан период обработки
         protected bool PeriodIsUndefined()
         {
-            if (PeriodBegin != Different.MinDate && PeriodBegin != Different.MaxDate) return false;
+            if (PeriodBegin != Static.MinDate && PeriodBegin != Static.MaxDate) return false;
             AddError("Не задан период обработки");
             return true;
         }

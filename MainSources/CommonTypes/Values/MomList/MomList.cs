@@ -34,7 +34,7 @@ namespace CommonTypes
         public int CurNum { get; set; }
         public DateTime NextTime { get
         {
-            if (CurNum >= Count - 1) return Different.MaxDate;
+            if (CurNum >= Count - 1) return Static.MaxDate;
             return TimeI(CurNum + 1);
         } 
         }

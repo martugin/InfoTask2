@@ -125,10 +125,10 @@ namespace CommonTypes
         public Node GetTimeConst(ITerminalNode terminal)
         {
             if (terminal == null || terminal.Symbol == null)
-                return MakeConstNode(null, Different.MinDate);
+                return MakeConstNode(null, Static.MinDate);
             var token = terminal.Symbol;
             var t = token.Text.ToDateTime();
-            if (t == Different.MinDate)
+            if (t == Static.MinDate)
                 AddError("Недопустимое выражение времени", token);
             return MakeConstNode(terminal, t);
         }

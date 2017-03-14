@@ -81,7 +81,7 @@
     <Compile Include="Commands\Logger\IContextable.cs" />
     <Compile Include="Common\Crypting.cs" />
     <Compile Include="Common\DialogCommand.cs" />
-    <Compile Include="Common\Different.cs" />
+    <Compile Include="Common\Static.cs" />
     <Compile Include="Databases\SqlServer\SqlBulk.cs" />
     <Compile Include="Databases\SqlServer\BulkStarter.cs" />
     <Compile Include="Databases\Access\DaoDb.cs" />

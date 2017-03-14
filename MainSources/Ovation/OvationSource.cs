@@ -36,18 +36,6 @@ namespace Provider
             }
         }
 
-        //Проверка соединения в настройке
-        protected override bool CheckConnection()
-        {
-            if (Reconnect())
-            {
-                CheckConnectionMessage = "Успешное соединение с Historian";
-                return true;
-            }
-            AddError(CheckConnectionMessage = "Ошибка соединения с Historian");
-            return false;
-        }
-
         //Словарь объектов по Id в Historian
         private readonly DicI<OvationOut> _outsId = new DicI<OvationOut>();
         //Объекты сообщений
@@ -110,10 +98,7 @@ namespace Provider
             sb.Append(") and").Append(TimeCondition(beg, en));
             var rec = new AdoReader(Connection, sb.ToString());
             if (en.Subtract(beg).TotalMinutes > 59 && !rec.HasRows)
-            {
                 AddWarning("Значения из источника не получены", null, beg + " - " + en +"; " + part.First().Context + " и др.");
-                return null;
-            }
             return rec;
         }
         

@@ -51,7 +51,7 @@ namespace BaseLibrary
             return Run(action, null);
         }
         public Command Run(Action action, //операция
-                                      Action erorrAction) //операция, выполняемя между повторами
+                                      Func<bool> erorrAction) //операция, выполняемя между повторами
         {
             for (int i = 1; i <= _repetitions; i++)
             {
@@ -60,12 +60,12 @@ namespace BaseLibrary
                 _isCorrect = true;
                 if (!_useThread) //однопоточный вариант
                 {
-                    if (RunAction(action)) 
+                    if (RunAction(() => { action(); return true; })) 
                         return Finish();
                 }
                 else //многопоточный
                 {
-                    var thread = new Thread(() => RunAction(action));
+                    var thread = new Thread(() => RunAction(() => { action(); return true; }));
                     thread.Start();
                     while (thread.ThreadState == ThreadState.Running)
                     {
@@ -89,7 +89,7 @@ namespace BaseLibrary
                 }
 
                 if (i == _repetitions) return Finish();
-                Parent.AddError(new CommandError("Повтор. " + _eventMess, null, "", "", CommandQuality.Repeat));
+                Parent.AddError(new CommandError(_eventMess + ". Повтор операции из-за ошибки", null, "", "", CommandQuality.Repeat));
                 Logger.CheckBreak();
                 while (Logger.Command != this)
                     Logger.Finish();
@@ -112,16 +112,18 @@ namespace BaseLibrary
         }
 
         //Запуск действия
-        private bool RunAction(Action action)
+        private bool RunAction(Func<bool> action)
         {
             try
             {
-                action();
+                bool b = action();
+                _isCorrect &= b;
             }
             catch (BreakException) { throw; }
             catch (Exception ex)
             {
-                Logger.AddError("Ошибка. " + _eventMess, ex);
+                _isCorrect = false;
+                Logger.AddError(_eventMess + ". Ошибка", ex);
                 Logger.CheckBreak();
                 while (Logger.Command != this)
                     Logger.Command.Finish();

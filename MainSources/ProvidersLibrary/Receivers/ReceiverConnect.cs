@@ -57,7 +57,7 @@ namespace ProvidersLibrary
             try
             {
                 using (Start(0, 10))
-                    if (!Provider.Connect() || !Provider.Prepare()) return ;
+                    if (!Receiver.Connect() || !Receiver.Prepare()) return ;
 
                 using (Start(10, 100))
                 {

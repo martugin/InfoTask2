@@ -16,12 +16,11 @@ namespace ProvidersLibrary
         protected override string Hash { get { return "DbFile=" + DbFile; } }
 
         //Проверка соединения с файлом
-        protected override bool ConnectProvider()
+        protected override void ConnectProvider()
         {
             using (var db = new DaoDb(DbFile))
                 db.ConnectDao();
             Thread.Sleep(50);
-            return true;
         }
     }
 }

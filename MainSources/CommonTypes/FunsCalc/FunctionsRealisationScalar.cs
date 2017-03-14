@@ -603,7 +603,7 @@ namespace CommonTypes
         public void Date_u(IMean[] par)
         {
             ScalarRes.Date = par[0].String.ToDateTime();
-            if (ScalarRes.Date == Different.MinDate)
+            if (ScalarRes.Date == Static.MinDate)
                 PutErr();
         }
 
@@ -625,7 +625,7 @@ namespace CommonTypes
 
         public void IsTime_u(IMean[] par)
         {
-            ScalarRes.Boolean = par[0].String.ToDateTime() != Different.MinDate;
+            ScalarRes.Boolean = par[0].String.ToDateTime() != Static.MinDate;
         }
         #endregion
 

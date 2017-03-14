@@ -14,10 +14,10 @@ namespace BaseLibraryTest
             var file = TestLib.TestRunDir + @"BaseLibrary\History\" + fileName + ".accdb";
             if (replace)
             {
-                DaoDb.FromTemplate(DifferentIt.HistoryTemplateFile, file, ReplaceByTemplate.Always);
+                DaoDb.FromTemplate(ItStatic.HistoryTemplateFile, file, ReplaceByTemplate.Always);
                 TestLib.CopyFile("BaseLibrary", "CorrectHistory.accdb", @"History\CorrectHistory.accdb");
             }
-            History = new AccessHistory(this, file, DifferentIt.HistoryTemplateFile);
+            History = new AccessHistory(this, file, ItStatic.HistoryTemplateFile);
         }
 
         [TestMethod]

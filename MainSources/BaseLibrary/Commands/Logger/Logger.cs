@@ -143,11 +143,11 @@ namespace BaseLibrary
         //Начало, конец и режим текущего периода обработки
         public DateTime PeriodBegin
         {
-            get { return PeriodCommand == null ? Different.MinDate : PeriodCommand.Begin; }
+            get { return PeriodCommand == null ? Static.MinDate : PeriodCommand.Begin; }
         }
         public DateTime PeriodEnd
         {
-            get { return PeriodCommand == null ? Different.MaxDate : PeriodCommand.End; }
+            get { return PeriodCommand == null ? Static.MaxDate : PeriodCommand.End; }
         }
         public string PeriodMode
         {
@@ -262,9 +262,12 @@ namespace BaseLibrary
         //Добавляет событие в историю
         public void AddEvent(string description, string pars = "")
         {
-            CheckBreak();
-            if (History != null) 
-                History.WriteEvent(description, pars);
+            if (Stability != LoggerStability.RealTimeFast)
+            {
+                CheckBreak();
+                if (History != null)
+                    History.WriteEvent(description, pars);    
+            }
         }
         //Добавляет событие в лог c указанием процентов текущей комманды
         public void AddEvent(string description, string pars, double procent)

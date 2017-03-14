@@ -13,7 +13,7 @@ namespace CommonTypes
             factory.AddGoodDescr(0);
             ErrPool = new MomErrPool(factory);
 
-            using (var rec = new AdoReader(DifferentIt.InfoTaskDir() + @"General\General.accdb",
+            using (var rec = new AdoReader(ItStatic.InfoTaskDir() + @"General\General.accdb",
                                            "SELECT FunctionsOverloads.*, Functions.Name, Functions.Synonym, Functions.Code, Functions.CalcType FROM Functions INNER JOIN FunctionsOverloads ON Functions.Id = FunctionsOverloads.FunctionId " +
                                            "WHERE " + FunsWhereCondition + " ORDER BY FunctionsOverloads.FunctionId, FunctionsOverloads.RunNumber"))
                 while (rec.Read())

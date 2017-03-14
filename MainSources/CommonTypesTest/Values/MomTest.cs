@@ -1,7 +1,7 @@
 ﻿using System;
+using BaseLibrary;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Different = BaseLibrary.Different;
 
 namespace CommonTypesTest
 {
@@ -50,7 +50,7 @@ namespace CommonTypesTest
             Assert.AreEqual("1", m.StringI(0));
 
             var mn = m.ToMean();
-            Assert.AreEqual(Different.MinDate, mn.Time);
+            Assert.AreEqual(Static.MinDate, mn.Time);
             Assert.IsNull(mn.Error);
             Assert.IsNull(mn.TotalError);
             Assert.AreEqual(true, mn.Boolean);
@@ -66,7 +66,7 @@ namespace CommonTypesTest
             Assert.IsNull(cv.TotalError);
             Assert.IsNotNull(mn.LastMom);
             Assert.AreEqual(true, mn.LastMom.Boolean);
-            Assert.AreEqual(Different.MinDate, mn.TimeI(0));
+            Assert.AreEqual(Static.MinDate, mn.TimeI(0));
             Assert.IsNull(mn.ErrorI(0));
             Assert.AreEqual(true, mn.BooleanI(0));
             Assert.AreEqual(1, mn.IntegerI(0));
@@ -183,7 +183,7 @@ namespace CommonTypesTest
             Assert.AreEqual("24", m.StringI(0));
 
             var mn = m.ToMean(err);
-            Assert.AreEqual(Different.MinDate, mn.Time);
+            Assert.AreEqual(Static.MinDate, mn.Time);
             Assert.IsNotNull(mn.Error);
             Assert.IsNotNull(mn.TotalError);
             Assert.AreEqual(2, mn.Error.Number);
@@ -197,7 +197,7 @@ namespace CommonTypesTest
             Assert.AreEqual(DataType.Integer, m.DataType);
             Assert.IsNotNull(mn.LastMom);
             Assert.AreEqual(24, mn.LastMom.Integer);
-            Assert.AreEqual(Different.MinDate, mn.TimeI(0));
+            Assert.AreEqual(Static.MinDate, mn.TimeI(0));
             Assert.IsNotNull(mn.ErrorI(0));
             Assert.AreEqual(2, mn.ErrorI(0).Number);
             Assert.AreEqual("Error", mn.ErrorI(0).Text);
@@ -415,7 +415,7 @@ namespace CommonTypesTest
             Assert.AreEqual(0, me.Integer);
             Assert.AreEqual(0.0, me.Real);
             Assert.AreEqual("0", me.String);
-            Assert.AreEqual(Different.MinDate, me.Date);
+            Assert.AreEqual(Static.MinDate, me.Date);
             Assert.AreEqual(1, me.Count);
             Assert.AreEqual(DataType.Real, me.DataType);
             me.Integer = 45;
@@ -563,7 +563,7 @@ namespace CommonTypesTest
             Assert.AreEqual(0, me.Integer);
             Assert.AreEqual(123.456, me.Real);
             Assert.AreEqual("123.456", me.String);
-            Assert.AreEqual(Different.MinDate, me.Date);
+            Assert.AreEqual(Static.MinDate, me.Date);
             Assert.AreEqual(1, me.Count);
             Assert.AreEqual(DataType.String, me.DataType);
             me.Integer = 45;
@@ -646,7 +646,7 @@ namespace CommonTypesTest
             Assert.AreEqual(0, me.Integer);
             Assert.AreEqual(0.0, me.Real);
             Assert.AreEqual("0", me.String);
-            Assert.AreEqual(Different.MinDate, me.Date);
+            Assert.AreEqual(Static.MinDate, me.Date);
             Assert.AreEqual(1, me.Count);
             Assert.AreEqual(DataType.Real, me.DataType);
             me.Integer = 45;

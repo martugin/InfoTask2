@@ -14,7 +14,7 @@ namespace ProvidersLibrary
     {
         public ProvidersFactory()
         {
-            var doc = XDocument.Load(DifferentIt.InfoTaskDir() + @"General\Config.xml");
+            var doc = XDocument.Load(ItStatic.InfoTaskDir() + @"General\Config.xml");
             foreach (var ncomp in doc.Element("Config").Element("Providers").Elements())
             {
                 var ccode = ncomp.GetName();

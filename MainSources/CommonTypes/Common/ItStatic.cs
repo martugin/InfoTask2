@@ -3,13 +3,13 @@
 namespace CommonTypes
 {
     //Общие функции для InfoTask и конвертеры 
-    public static class DifferentIt
+    public static class ItStatic
     {
         //Чтение из реестра пути к каталогу InfoTask, в возвращаемом пути \ на конце
         public static string InfoTaskDir()
         {
-            var dir = Different.GetRegistry(@"software\InfoTask", "InfoTask2Path");
-            if (dir == "") dir = Different.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
+            var dir = Static.GetRegistry(@"software\InfoTask", "InfoTask2Path");
+            if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
             if (!dir.EndsWith(@"\")) dir += @"\";
             return dir;
         }

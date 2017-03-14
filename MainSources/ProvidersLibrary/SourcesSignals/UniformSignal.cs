@@ -1,6 +1,6 @@
 ﻿using System;
+using BaseLibrary;
 using CommonTypes;
-using Different = BaseLibrary.Different;
 
 namespace ProvidersLibrary
 {
@@ -26,8 +26,8 @@ namespace ProvidersLibrary
         internal override void ClearMoments(bool clearBegin)
         {
             MList.Clear();
-            _endMom.Time = Different.MinDate;
-            if (clearBegin) _beginMom.Time = Different.MinDate;    
+            _endMom.Time = Static.MinDate;
+            if (clearBegin) _beginMom.Time = Static.MinDate;    
         }
 
         //Добавка мгновенного значения в список или клон
@@ -50,7 +50,7 @@ namespace ProvidersLibrary
         //Для сигнала был задан срез
         internal bool HasBegin
         {
-            get { return _beginMom.Time != Different.MinDate; }
+            get { return _beginMom.Time != Static.MinDate; }
         }
 
         //Добавляет значение среза на начало периода в список или клон, возвращает 1, если срез был получен, иначе 0
@@ -62,7 +62,7 @@ namespace ProvidersLibrary
         //Формирует значение на конец периода и дополняет значения в клоне до конца периода
         internal int MakeEnd()
         {
-            if (_endMom.Time != Different.MinDate)
+            if (_endMom.Time != Static.MinDate)
                 _beginMom.CopyAllFrom(_endMom);
             BufMom.CopyValueFrom(_endMom);
             BufMom.Time = Connect.PeriodEnd;

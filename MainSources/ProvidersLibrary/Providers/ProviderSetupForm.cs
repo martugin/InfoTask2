@@ -25,7 +25,7 @@ namespace ProvidersLibrary
                 //_provider = value;
                 //_namesDic = new Dictionary<string, string>();
                 //_infDic = _provider.Inf.ToPropertyDictionary();
-                //string config = DifferentIt.InfoTaskDir() + @"General\Config.accdb";
+                //string config = ItStatic.InfoTaskDir() + @"General\Config.accdb";
                 //using (var rec = new DaoRec(config, "SELECT SysSubTabl.SubParamNum, SysSubTabl.SubParamName, SysSubTabl.SubParamDescription, SysSubTabl.SubParamTag, SysSubTabl.SubParamRowSource " +
                 //                                    "FROM SysTabl INNER JOIN SysSubTabl ON SysTabl.ParamId = SysSubTabl.ParamId " +
                 //                                    "WHERE (SysTabl.ParamName='" + _provider.Code + "') AND (SysSubTabl.SubParamType='Property') ORDER BY SysSubTabl.SubParamNum"))
@@ -168,7 +168,7 @@ namespace ProvidersLibrary
         {
             //var dic = AddInf(_infDic);
             //string err = Provider.CheckSettings(dic);
-            //if (err.IsEmpty() || Different.MessageQuestion(err + Environment.NewLine + "Закрыть форму настроек?", "Недопустимые настройки"))
+            //if (err.IsEmpty() || Static.MessageQuestion(err + Environment.NewLine + "Закрыть форму настроек?", "Недопустимые настройки"))
             //{
             //    Provider.Inf = dic.ToPropertyString();
             //    Close();
@@ -188,7 +188,7 @@ namespace ProvidersLibrary
             //var dic = AddInf(_infDic);
             //string err = Provider.CheckSettings(dic);
             //if (!err.IsEmpty())
-            //    Different.MessageError(err, "Недопустимые настройки");
+            //    Static.MessageError(err, "Недопустимые настройки");
             //else
             //{
             //    Provider.Inf = dic.ToPropertyString();

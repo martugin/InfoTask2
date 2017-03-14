@@ -23,7 +23,7 @@ namespace CommonTypes
         }
         public virtual DateTime Date
         {
-            get { return Different.MinDate; }
+            get { return Static.MinDate; }
             internal set { }
         }
         public virtual string String
@@ -53,7 +53,7 @@ namespace CommonTypes
 
         public virtual DateTime Time
         {
-            get { return Different.MinDate; }
+            get { return Static.MinDate; }
             internal set {}
         }
         public DateTime TimeI(int i) { return Time; }
@@ -64,7 +64,7 @@ namespace CommonTypes
             get
             {
                 if (CurNum <= -1) return Time;
-                return Different.MaxDate; 
+                return Static.MaxDate; 
             }
         }
 

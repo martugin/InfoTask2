@@ -181,7 +181,7 @@ namespace BaseLibraryTest
                 Assert.IsFalse(rec.IsNull("RealField"));
                 Assert.AreEqual("Большой текст 3", rec.GetString("StringField1"));
                 Assert.AreEqual("Text3", rec.GetString("StringField2", "null"));
-                Assert.AreEqual(Different.MinDate, rec.GetTime("TimeField"));
+                Assert.AreEqual(Static.MinDate, rec.GetTime("TimeField"));
                 Assert.AreEqual(null, rec.GetTimeNull("TimeField"));
 
                 Assert.AreEqual(3, rec.GetInt(0));
@@ -196,7 +196,7 @@ namespace BaseLibraryTest
                 Assert.AreEqual("Text3", rec.GetString(4, "null"));
                 Assert.IsTrue(rec.GetBool(5));
                 Assert.AreEqual(true, rec.GetBoolNull(5));
-                Assert.AreEqual(Different.MinDate, rec.GetTime(6));
+                Assert.AreEqual(Static.MinDate, rec.GetTime(6));
                 Assert.AreEqual(null, rec.GetTimeNull(6));
 
                 Assert.IsTrue(rec.Read());

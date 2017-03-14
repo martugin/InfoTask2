@@ -34,7 +34,7 @@ namespace CommonTypesTest
             Assert.AreEqual(0, list.Count);
             Assert.AreEqual(DataType.Boolean, list.DataType);
             Assert.AreEqual(0, list.CurNum);
-            Assert.AreEqual(Different.MaxDate, list.NextTime);
+            Assert.AreEqual(Static.MaxDate, list.NextTime);
 
             var err = pool.MakeError(2, c);
             list.AddMom(RTime(0), false);
@@ -61,14 +61,14 @@ namespace CommonTypesTest
             Assert.AreEqual(RTime(1), list.Time);
             list.CurNum = 3;
             Assert.AreEqual(3, list.CurNum);
-            Assert.AreEqual(Different.MaxDate, list.NextTime);
+            Assert.AreEqual(Static.MaxDate, list.NextTime);
             Assert.AreEqual(true, list.Boolean);
             Assert.AreEqual("1", list.String);
             Assert.IsNull(list.Error);
             Assert.AreEqual(RTime(3), list.Time);
             list.CurNum = 4;
             Assert.AreEqual(4, list.CurNum);
-            Assert.AreEqual(Different.MaxDate, list.NextTime);
+            Assert.AreEqual(Static.MaxDate, list.NextTime);
             list.CurNum = 2;
             Assert.AreEqual(2, list.CurNum);
             Assert.AreEqual(RTime(3), list.NextTime);
@@ -139,11 +139,11 @@ namespace CommonTypesTest
 
             m = list.ToMeanI(0);
             Assert.AreEqual(false, m.Boolean);
-            Assert.AreEqual(Different.MinDate, m.Time);
+            Assert.AreEqual(Static.MinDate, m.Time);
             Assert.IsNull(m.Error);
             m = list.ToMeanI(1, err);
             Assert.AreEqual(false, m.Boolean);
-            Assert.AreEqual(Different.MinDate, m.Time);
+            Assert.AreEqual(Static.MinDate, m.Time);
             Assert.IsNotNull(m.Error);
             Assert.AreEqual(2, m.Error.Number);
             m = list.ToMomI(2);
@@ -173,12 +173,12 @@ namespace CommonTypesTest
             Assert.AreEqual(0, list.Integer);
             Assert.IsNull(list.Error);
             m = list.ToMean();
-            Assert.AreEqual(Different.MinDate, m.Time);
+            Assert.AreEqual(Static.MinDate, m.Time);
             Assert.AreEqual(false, m.Boolean);
             Assert.AreEqual(0, m.Integer);
             Assert.IsNull(m.Error);
             m = list.ToMean(err);
-            Assert.AreEqual(Different.MinDate, m.Time);
+            Assert.AreEqual(Static.MinDate, m.Time);
             Assert.AreEqual(false, m.Boolean);
             Assert.AreEqual(0, m.Integer);
             Assert.IsNotNull(m.Error);
@@ -222,7 +222,7 @@ namespace CommonTypesTest
             Assert.AreEqual(0, list.Count);
             Assert.AreEqual(DataType.Integer, list.DataType);
             Assert.AreEqual(0, list.CurNum);
-            Assert.AreEqual(Different.MaxDate, list.NextTime);
+            Assert.AreEqual(Static.MaxDate, list.NextTime);
 
             var err1 = pool.MakeError(1, c);
             var err2 = pool.MakeError(2, c);

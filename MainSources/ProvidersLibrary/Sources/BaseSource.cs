@@ -1,7 +1,6 @@
 ﻿using System;
 using BaseLibrary;
 using CommonTypes;
-using Different = BaseLibrary.Different;
 
 namespace ProvidersLibrary
 {
@@ -16,7 +15,7 @@ namespace ProvidersLibrary
 
         //Получение диапазона времени источника
         //Возвращает Default интервал, если нет связи с источником
-        //Возвращает TimeInterval(Different.MinDate, DateTime.Now) если источник не позволяет определять диапазон
+        //Возвращает TimeInterval(Static.MinDate, DateTime.Now) если источник не позволяет определять диапазон
         protected internal TimeInterval GetTime()
         {
             try
@@ -38,11 +37,11 @@ namespace ProvidersLibrary
         //Получение времени источника 
         protected virtual TimeInterval GetTimeSource()
         {
-            return new TimeInterval(Different.MinDate, DateTime.Now);
+            return new TimeInterval(Static.MinDate, DateTime.Now);
         }
 
         //Подготовка источника
-        protected internal override bool Prepare()
+        protected internal bool Prepare()
         {
             try
             {
@@ -54,13 +53,13 @@ namespace ProvidersLibrary
                     ob.Context = sig.CodeOuts;
                     ob.AddSignal(sig);
                 }
-                using (Start(20, 100))
-                {
-                    bool res = BasePrepare();
-                    if (ErrPool == null)
-                        ErrPool = new MomErrPool(MakeErrFactory());
-                    return res;    
-                }
+                Procent = 20;
+                if (!Connect()) return false;
+                IsPrepared = StartDanger(0, 100, 2, LoggerStability.Periodic, "Подготовка провайдера")
+                                    .Run(PrepareProvider, Reconnect).IsSuccess;
+                if (ErrPool == null)
+                    ErrPool = new MomErrPool(MakeErrFactory());
+                return IsPrepared;    
             }
             catch (Exception ex)
             {
@@ -94,5 +93,8 @@ namespace ProvidersLibrary
         protected internal virtual ValuesCount ReadCut() { return new ValuesCount(); }
         //Чтение изменений, возврашает количество прочитанных и сформированных значений
         protected internal abstract ValuesCount ReadChanges();
+
+        //Конец предыдущего периода чтения значений
+        internal DateTime PrevPeriodEnd { get; set; }
     }
 }

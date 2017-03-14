@@ -59,7 +59,7 @@
     <Compile Include="Antlr\ConstNode.cs" />
     <Compile Include="Antlr\ParsingError.cs" />
     <Compile Include="Antlr\ParsingKeeper.cs" />
-    <Compile Include="Common\DifferentIt.cs" />
+    <Compile Include="Common\ItStatic.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="ErrMoms\ErrDescr.cs" />
     <Compile Include="ErrMoms\MomErr.cs" />

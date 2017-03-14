@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonProviders\CloneOut.cs" />
-    <Compile Include="Common\DifferentProviders.cs" />
+    <Compile Include="Common\ProvidersStatic.cs" />
     <Compile Include="Common\ProviderConfig.cs" />
     <Compile Include="Common\ProvidersFactory.cs" />
     <Compile Include="Receivers\DebugOpcServer.cs" />

@@ -42,7 +42,7 @@ namespace InfoTaskClientTest
 
         public void SetProcessUsual()
         {
-            TimedProcessEndTime = Different.MinDate;
+            TimedProcessEndTime = Static.MinDate;
             ProcessIsTimed = false;
         }
 

@@ -5,7 +5,6 @@ using System.Text;
 using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
-using Different = BaseLibrary.Different;
 
 namespace Provider
 {
@@ -20,7 +19,7 @@ namespace Provider
         //Получение диапазона архива по блокам истории
         protected override TimeInterval GetTimeSource()
         {
-            DateTime mind = Different.MaxDate, maxd = Different.MinDate;
+            DateTime mind = Static.MaxDate, maxd = Static.MinDate;
             using (var rec = new AdoReader(SqlProps, "SELECT FromDate, ToDate FROM v_HistoryBlock ORDER BY FromDate, ToDate DESC"))
                 while (rec.Read())
                 {
@@ -29,7 +28,7 @@ namespace Provider
                     if (fromd < mind) mind = fromd;
                     if (maxd < tod) maxd = tod;
                 }
-            if (mind == Different.MaxDate && maxd == Different.MinDate)
+            if (mind == Static.MaxDate && maxd == Static.MinDate)
                 return TimeInterval.CreateDefault();
             return new TimeInterval(mind, maxd);
         }

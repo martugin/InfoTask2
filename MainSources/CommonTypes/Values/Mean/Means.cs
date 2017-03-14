@@ -395,7 +395,7 @@ namespace CommonTypes
 
         internal override void MakeDefaultValue()
         {
-            Date = Different.MinDate;
+            Date = Static.MinDate;
         }
     }
 

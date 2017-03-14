@@ -62,18 +62,6 @@ namespace ProvidersLibrary
             return !inf["OPCServerName"].IsEmpty() ? "" : "Не задано имя OPC-сервера";
         }
 
-        //Проверка соединения
-        protected override bool CheckConnection()
-        {
-            if (Reconnect())
-            {
-                CheckConnectionMessage = "Успешное соединение";
-                return true;
-            }
-            AddError(CheckConnectionMessage = "Ошибка соединения с OPC-сервером");
-            return false;
-        }
-
         //Список доступных OPC-серверов (не работает, а работает на VisualBasic)
         public List<string> ServersList(string node = null)
         {

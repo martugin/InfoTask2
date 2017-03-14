@@ -47,7 +47,7 @@ namespace Fictive
         }
 
         //Подготока источника
-        protected override void PrepareSource()
+        protected override void PrepareProvider()
         {
             foreach (var ob in _objects.Values)
                 ob.IsInitialized = true;

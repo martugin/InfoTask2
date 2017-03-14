@@ -34,13 +34,13 @@ namespace BaseLibrary
         //Является интервалом по умолчанию
         public bool IsDefault
         {
-            get { return Begin == Different.MinDate && End == Different.MaxDate; }
+            get { return Begin == Static.MinDate && End == Static.MaxDate; }
         }
 
         //Возвращает временной интервал по умолчанию
         public static TimeInterval CreateDefault()
         {
-            return new TimeInterval(Different.MinDate, Different.MaxDate);
+            return new TimeInterval(Static.MinDate, Static.MaxDate);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
+using BaseLibrary;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Different = BaseLibrary.Different;
 
 namespace CommonTypesTest
 {
@@ -26,7 +26,7 @@ namespace CommonTypesTest
 
             var m = MFactory.NewMean(true);
             Assert.IsNull(m.Error);
-            Assert.AreEqual(Different.MinDate, m.Time);
+            Assert.AreEqual(Static.MinDate, m.Time);
             Assert.IsNull(m.TotalError);
             Assert.AreEqual(true, m.Boolean);
             Assert.AreEqual(1, m.Integer);
@@ -44,11 +44,11 @@ namespace CommonTypesTest
             Assert.AreEqual(1.0, m.RealI(0));
             Assert.AreEqual("1", m.StringI(0));
             Assert.IsNull(m.ErrorI(0));
-            Assert.AreEqual(Different.MinDate, m.TimeI(0));
+            Assert.AreEqual(Static.MinDate, m.TimeI(0));
 
             m = m.ToMean();
             Assert.IsNull(m.Error);
-            Assert.AreEqual(Different.MinDate, m.Time);
+            Assert.AreEqual(Static.MinDate, m.Time);
             Assert.IsNull(m.TotalError);
             Assert.AreEqual(true, m.Boolean);
             Assert.AreEqual(1, m.Integer);
@@ -61,10 +61,10 @@ namespace CommonTypesTest
             Assert.AreEqual(1.0, m.RealI(0));
             Assert.AreEqual("1", m.StringI(0));
             Assert.IsNull(m.ErrorI(0));
-            Assert.AreEqual(Different.MinDate, m.TimeI(0));
+            Assert.AreEqual(Static.MinDate, m.TimeI(0));
 
-            var m1 = m.ToMom(Different.MaxDate);
-            Assert.AreEqual(Different.MaxDate, m1.Time);
+            var m1 = m.ToMom(Static.MaxDate);
+            Assert.AreEqual(Static.MaxDate, m1.Time);
             Assert.IsNull(m1.Error);
             Assert.IsNull(m1.TotalError);
             Assert.AreEqual(true, m1.Boolean);
@@ -82,7 +82,7 @@ namespace CommonTypesTest
             Assert.AreEqual(1.0, m1.RealI(0));
             Assert.AreEqual("1", m1.StringI(0));
             Assert.IsNull(m1.ErrorI(0));
-            Assert.AreEqual(Different.MaxDate, m1.TimeI(0));
+            Assert.AreEqual(Static.MaxDate, m1.TimeI(0));
 
             m = MFactory.NewMean(false, err);
             Assert.IsNotNull(m.Error);
@@ -110,7 +110,7 @@ namespace CommonTypesTest
             Assert.IsNotNull(m.ErrorI(0));
             Assert.AreEqual(2, m.ErrorI(0).Number);
             Assert.AreEqual("Error", m.ErrorI(0).Text);
-            Assert.AreEqual(Different.MinDate, m.TimeI(0));
+            Assert.AreEqual(Static.MinDate, m.TimeI(0));
 
             var err1 = pool.MakeError(1, c);
             m = MFactory.NewMean(DataType.Boolean, 1, err1);
@@ -148,7 +148,7 @@ namespace CommonTypesTest
             Assert.AreEqual(24, m.Integer);
             Assert.AreEqual(24.0, m.Real);
             Assert.AreEqual("24", m.String);
-            Assert.AreEqual(Different.MinDate, m.Date);
+            Assert.AreEqual(Static.MinDate, m.Date);
             Assert.AreEqual(1, m.Count);
             Assert.AreEqual(DataType.Integer, m.DataType);
             var v = m.Value;
@@ -161,7 +161,7 @@ namespace CommonTypesTest
             Assert.AreEqual(24, m.IntegerI(0));
             Assert.AreEqual(24.0, m.RealI(0));
             Assert.AreEqual("24", m.StringI(0));
-            Assert.AreEqual(Different.MinDate, m.TimeI(0));
+            Assert.AreEqual(Static.MinDate, m.TimeI(0));
 
             var e = pool.MakeError(4, c);
             var me = m.ToMean(e);
@@ -173,7 +173,7 @@ namespace CommonTypesTest
             Assert.AreEqual(24, me.Integer);
             Assert.AreEqual(24.0, me.Real);
             Assert.AreEqual("24", me.String);
-            Assert.AreEqual(Different.MinDate, me.Date);
+            Assert.AreEqual(Static.MinDate, me.Date);
             Assert.AreEqual(1, me.Count);
             Assert.AreEqual(DataType.Integer, me.DataType);
             Assert.IsNotNull(me.ErrorI(0));
@@ -182,7 +182,7 @@ namespace CommonTypesTest
             Assert.AreEqual(24, me.IntegerI(0));
             Assert.AreEqual(24.0, me.RealI(0));
             Assert.AreEqual("24", me.StringI(0));
-            Assert.AreEqual(Different.MinDate, me.TimeI(0));
+            Assert.AreEqual(Static.MinDate, me.TimeI(0));
 
             me = m.ToMeanI(0, e);
             Assert.IsNotNull(me.Error);
@@ -193,13 +193,13 @@ namespace CommonTypesTest
             Assert.AreEqual(24, me.Integer);
             Assert.AreEqual(24.0, me.Real);
             Assert.AreEqual("24", me.String);
-            Assert.AreEqual(Different.MinDate, me.Date);
+            Assert.AreEqual(Static.MinDate, me.Date);
             Assert.AreEqual(1, me.Count);
             Assert.AreEqual(DataType.Integer, me.DataType);
             
 
-            var m1 = m.ToMom(Different.MaxDate, e);
-            Assert.AreEqual(Different.MaxDate, m1.Time);
+            var m1 = m.ToMom(Static.MaxDate, e);
+            Assert.AreEqual(Static.MaxDate, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);
             Assert.AreEqual(4, m1.Error.Number);
@@ -276,7 +276,7 @@ namespace CommonTypesTest
             Assert.AreEqual(33, m.Integer);
             Assert.AreEqual(33.4, m.Real);
             Assert.AreEqual("33,4", m.String);
-            Assert.AreEqual(Different.MinDate, m.Date);
+            Assert.AreEqual(Static.MinDate, m.Date);
             Assert.AreEqual(1, m.Count);
             Assert.AreEqual(DataType.Real, m.DataType);
             var v = m.Value;
@@ -291,7 +291,7 @@ namespace CommonTypesTest
             Assert.AreEqual("33,4", m.StringI(0));
 
             var mo = m.ToMom();
-            Assert.AreEqual(Different.MinDate, mo.Time);
+            Assert.AreEqual(Static.MinDate, mo.Time);
             Assert.IsNull(mo.Error);
             Assert.AreEqual(true, mo.Boolean);
             Assert.AreEqual(33, mo.Integer);
@@ -305,8 +305,8 @@ namespace CommonTypesTest
             Assert.AreEqual(33.4, mo.RealI(0));
             Assert.AreEqual("33,4", mo.StringI(0));
 
-            var m1 = m.ToMom(Different.MinDate, err);
-            Assert.AreEqual(Different.MinDate, m1.Time);
+            var m1 = m.ToMom(Static.MinDate, err);
+            Assert.AreEqual(Static.MinDate, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);
             Assert.AreEqual(2, m1.Error.Number);
@@ -369,13 +369,13 @@ namespace CommonTypesTest
 
             var m = MFactory.NewMean("333");
             Assert.IsNull(m.Error);
-            Assert.AreEqual(Different.MinDate, m.Time);
+            Assert.AreEqual(Static.MinDate, m.Time);
             Assert.IsNull(m.TotalError);
             Assert.AreEqual(true, m.Boolean);
             Assert.AreEqual(333, m.Integer);
             Assert.AreEqual(333.0, m.Real);
             Assert.AreEqual("333", m.String);
-            Assert.AreEqual(Different.MinDate, m.Date);
+            Assert.AreEqual(Static.MinDate, m.Date);
             Assert.AreEqual(1, m.Count);
             Assert.AreEqual(DataType.String, m.DataType);
             var v = m.Value;
@@ -388,17 +388,17 @@ namespace CommonTypesTest
             Assert.AreEqual(333, m.IntegerI(0));
             Assert.AreEqual(333.0, m.RealI(0));
             Assert.AreEqual("333", m.StringI(0));
-            Assert.AreEqual(Different.MaxDate, m.NextTime);
+            Assert.AreEqual(Static.MaxDate, m.NextTime);
             m.CurNum = -1;
-            Assert.AreEqual(Different.MinDate, m.NextTime);
+            Assert.AreEqual(Static.MinDate, m.NextTime);
             m.CurNum = 0;
             Assert.AreEqual(true, m.Boolean);
             Assert.AreEqual(333, m.Integer);
             Assert.AreEqual(333.0, m.Real);
             Assert.AreEqual("333", m.String);
 
-            var m1 = m.ToMom(Different.MaxDate, err);
-            Assert.AreEqual(Different.MaxDate, m1.Time);
+            var m1 = m.ToMom(Static.MaxDate, err);
+            Assert.AreEqual(Static.MaxDate, m1.Time);
             Assert.IsNotNull(m1.Error);
             Assert.IsNotNull(m1.TotalError);
             Assert.AreEqual(2, m1.Error.Number);
@@ -465,13 +465,13 @@ namespace CommonTypesTest
             var pool = MakeErrPool();
             var err = pool.MakeError(2, c);
 
-            var m = MFactory.NewMean(Different.MaxDate);
+            var m = MFactory.NewMean(Static.MaxDate);
             Assert.IsNull(m.Error);
             Assert.IsNull(m.TotalError);
             Assert.AreEqual(false, m.Boolean);
             Assert.AreEqual(0, m.Integer);
             Assert.AreEqual(0.0, m.Real);
-            Assert.AreEqual(Different.MaxDate, m.Date);
+            Assert.AreEqual(Static.MaxDate, m.Date);
             Assert.AreEqual(1, m.Count);
             Assert.AreEqual(DataType.Time, m.DataType);
             var v = m.Value;
@@ -482,10 +482,10 @@ namespace CommonTypesTest
             Assert.AreEqual(false, m.BooleanI(0));
             Assert.AreEqual(0, m.IntegerI(0));
             Assert.AreEqual(0.0, m.RealI(0));
-            Assert.AreEqual(Different.MaxDate, m.DateI(0));
+            Assert.AreEqual(Static.MaxDate, m.DateI(0));
 
             var mo = m.ToMom(err);
-            Assert.AreEqual(Different.MinDate, mo.Time);
+            Assert.AreEqual(Static.MinDate, mo.Time);
             Assert.IsNotNull(mo.Error);
             Assert.IsNotNull(mo.TotalError);
             Assert.AreEqual(2, mo.Error.Number);
@@ -494,7 +494,7 @@ namespace CommonTypesTest
             Assert.AreEqual(false, mo.Boolean);
             Assert.AreEqual(0, mo.Integer);
             Assert.AreEqual(0.0, mo.Real);
-            Assert.AreEqual(Different.MaxDate, mo.Date);
+            Assert.AreEqual(Static.MaxDate, mo.Date);
             Assert.AreEqual(1, mo.Count);
             Assert.AreEqual(DataType.Time, mo.DataType);
             Assert.IsTrue(mo.ValueEquals(m));
@@ -513,7 +513,7 @@ namespace CommonTypesTest
             Assert.AreEqual(false, m1.Boolean);
             Assert.AreEqual(0, m1.Integer);
             Assert.AreEqual(0.0, m1.Real);
-            Assert.AreEqual(Different.MaxDate, m1.Date);
+            Assert.AreEqual(Static.MaxDate, m1.Date);
             Assert.AreEqual(1, m1.Count);
             Assert.AreEqual(DataType.Time, m1.DataType);
             Assert.IsTrue(m1.ValueEquals(m));

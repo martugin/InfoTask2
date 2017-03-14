@@ -42,6 +42,8 @@ namespace ProvidersLibraryTest
         public void Signals()
         {
             var connect = MakeFictiveConnect("Signals");
+            DateTime beg = RTime(1), en = RTime(2);
+
             var source = (FictiveSource)connect.Provider;
             Assert.AreEqual("TestSource", connect.Name);
             Assert.AreEqual("Fictive", connect.Complect);
@@ -114,7 +116,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(29, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
 
-            connect.Prepare();
+            GetValues(connect, beg, en);
             Assert.AreEqual(3, source.Outs.Count);
             Assert.AreEqual(3, source.OutsId.Count);
             Assert.AreEqual(3, source.Outs2.Count);
@@ -392,7 +394,7 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(3, source.Outs2.Count);
             Assert.AreEqual(3, source.OutsId2.Count);
             Assert.IsNotNull(source.OperatorOut);
-            connect.Prepare();
+            connect.GetValues();
             Assert.AreEqual(4, source.Outs.Count);
             Assert.AreEqual(4, source.OutsId.Count);
             Assert.AreEqual(3, source.Outs2.Count);

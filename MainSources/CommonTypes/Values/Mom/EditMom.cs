@@ -9,7 +9,7 @@ namespace CommonTypes
         public EditMom(DataType dtype)
         {
             _mean = (Mean)MFactory.NewMean(dtype);
-            Time = Different.MinDate;
+            Time = Static.MinDate;
         }
         public EditMom(DataType dtype, DateTime time) : this(dtype)
         {
@@ -75,7 +75,7 @@ namespace CommonTypes
             get
             {
                 if (CurNum <= -1) return Time;
-                return Different.MaxDate;
+                return Static.MaxDate;
             }
         }
 

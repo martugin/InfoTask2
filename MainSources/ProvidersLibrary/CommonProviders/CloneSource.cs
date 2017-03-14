@@ -25,28 +25,14 @@ namespace ProvidersLibrary
         }
 
         //Проверка соединения
-        protected override bool ConnectProvider()
+        protected override void ConnectProvider()
         {
-            return DaoDb.Check(CloneFile, "InfoTaskClone");
-        }
-
-        //Проверка соединения
-        protected override bool CheckConnection()
-        {
-            if (!Reconnect())
-            {
-                AddError(CheckConnectionMessage = "Файл не найден или не является файлом клона");
-                return false;
-            }
+            if (!DaoDb.Check(CloneFile, "InfoTaskClone"))
+                AddError("Недопустимый фал клона", null , CloneFile);
             if (SysTabl.ValueS(CloneFile, "CloneComplect") != SourceConnect.Complect)
-            {
                 AddError(CheckConnectionMessage = "Файл является клоном для другого, несовместимого источника");
-                return false;
-            }
-            CheckConnectionMessage = "Успешное соединение";
-            return true;
         }
-
+        
         protected internal override string CheckSettings(DicS<string> infDic)
         {
             if (infDic["CloneDir"].IsEmpty())
@@ -102,7 +88,7 @@ namespace ProvidersLibrary
         }
 
         //Отметка в клоне считывемых сигналов, получение Id сигналов
-        protected override void PrepareSource()
+        protected override void PrepareProvider()
         {
             AddEvent("Отметка в клоне считывемых сигналов");
             using (var rec = new DaoRec(CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))

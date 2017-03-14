@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Data;
 using System.Text;
 using BaseLibrary;
 using CommonTypes;
@@ -47,23 +46,7 @@ namespace Provider
                 return dic.ToPropertyString();
             }
         }
-
-        //Проверка соединения
-        protected override bool CheckConnection()
-        {
-            try
-            {
-                if (Reconnect() && Connection.State == ConnectionState.Open)
-                {
-                    CheckConnectionMessage += "Успешное соединение с архивом WINCC";
-                    return true;
-                }
-                CheckConnectionMessage += "Не удалось соединиться с архивом WINCC";
-            }
-            catch { CheckConnectionMessage += "Не удалось соединиться с архивом WINCC"; }
-            return false;
-        }
-
+        
         //Проверка настроек
         protected override string CheckSettings(DicS<string> inf)
         {

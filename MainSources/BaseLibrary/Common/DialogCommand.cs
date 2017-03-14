@@ -107,7 +107,7 @@ namespace BaseLibrary
             if (op.FileName.IsEmpty()) return initial;
             if (FileTables != null && !DaoDb.Check(op.FileName, FileTables))
             {
-                Different.MessageError(ErrorMessage, op.FileName);
+                Static.MessageError(ErrorMessage, op.FileName);
                 return initial;
             }
             return op.FileName;
@@ -134,7 +134,7 @@ namespace BaseLibrary
                 if (TemplateFile != null)
                 {
                     var f = new FileInfo(op.FileName);
-                    if (!f.Exists || Different.MessageQuestion("По указанному пути файл уже существует. Заменить файл на новый?"))
+                    if (!f.Exists || Static.MessageQuestion("По указанному пути файл уже существует. Заменить файл на новый?"))
                     {
                         if (f.Directory != null && !f.Directory.Exists) 
                             f.Directory.Create();

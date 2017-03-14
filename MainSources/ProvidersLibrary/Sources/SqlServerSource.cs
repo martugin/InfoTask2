@@ -54,17 +54,5 @@ namespace ProvidersLibrary
             if (inf["Database"].IsEmpty()) err += "Не задано имя базы данных" + Environment.NewLine;
             return err;
         }
-
-        //Проверка соединения
-        protected override bool CheckConnection()
-        {
-            if (Reconnect())
-            {
-                CheckConnectionMessage = "Успешное соединение";
-                return true;
-            }
-            AddError(CheckConnectionMessage = "Не удалось соединиться с SQL-сервером");
-            return false;
-        }
     }
 }

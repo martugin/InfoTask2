@@ -46,7 +46,6 @@ namespace ProvidersLibrary
         protected virtual void DisconnectProvider() { }
         //Подготовка сигналов провайдера
         protected virtual void PrepareProvider() { }
-
         //Соединение было установлено
         protected internal bool IsConnected { get; set; }
         //Сигналы провайдера подготовлены
@@ -64,7 +63,7 @@ namespace ProvidersLibrary
         }
 
         //Отключение от провайдера
-        protected internal void Disconnect()
+        protected internal bool Disconnect()
         {
             try
             {
@@ -79,6 +78,7 @@ namespace ProvidersLibrary
                 AddError("Ошибка закрытия соединения с провайдером", ex);
             }
             IsConnected = false;
+            return true;
         }
 
         //Повторное подключение, true - соединение удачное
@@ -94,16 +94,6 @@ namespace ProvidersLibrary
             return false;
         }
 
-        //Подготовка провайдера, true - удачно
-        protected internal abstract bool Prepare();
-        protected bool BasePrepare()
-        {
-            if (IsPrepared) return true;
-            if (!Connect()) return false;
-            return IsPrepared = StartDanger(0, 100, 2, LoggerStability.Periodic, "Подготовка провайдера")
-                                .Run(PrepareProvider, () => Reconnect()).IsSuccess;
-        }
-        
         //Очистка ресурсов
         public virtual void Dispose()
         {
@@ -113,9 +103,29 @@ namespace ProvidersLibrary
         //Настройка
         #region
         //Проверка соединения в форме настроек возвращает true, если соединение успешное
-        protected virtual bool CheckConnection() { return true; }
+        //Проверка соединения
+        protected bool CheckConnection()
+        {
+            if (Reconnect())
+            {
+                if (!(this is BaseSource))
+                {
+                    CheckConnectionMessage = "Успешное соединение";
+                    return true;
+                }
+                var ti = ((BaseSource)this).GetTime();
+                if (ti != null && !ti.IsDefault)
+                {
+                    CheckConnectionMessage = "Успешное соединение" + (ti.Begin == Static.MinDate ? "" : ". Диапазон источника: " + ti.Begin + " - " + ti.End);
+                    return true;
+                }
+            }
+            AddError(CheckConnectionMessage = "Ошибка соединения");
+            return false;
+        }
         //Cтрока для вывода сообщения о последней проверке соединения
         protected internal string CheckConnectionMessage { get; protected set; }
+
         //Проверка корректности настроек, возвращает строку с ошибками, на входе словарь настроек
         protected internal virtual string CheckSettings(DicS<string> infDic) { return ""; }
 

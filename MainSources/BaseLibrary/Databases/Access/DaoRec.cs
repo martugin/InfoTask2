@@ -171,16 +171,16 @@ namespace BaseLibrary
             return (int)Convert.ToInt32(v);
         }
 
-        //Переводит значение поля field таблицы rec в дату, DbNull переводит в Different.MinDate
+        //Переводит значение поля field таблицы rec в дату, DbNull переводит в Static.MinDate
         public DateTime GetTime(string field)
         {
             var v = _fields[field].Value;
-            return DBNull.Value.Equals(v) ? Different.MinDate : (DateTime)Convert.ToDateTime(v);
+            return DBNull.Value.Equals(v) ? Static.MinDate : (DateTime)Convert.ToDateTime(v);
         }
         public DateTime GetTime(int num)
         {
             var v = _fieldsNum[num].Value;
-            return DBNull.Value.Equals(v) ? Different.MinDate : (DateTime)Convert.ToDateTime(v);
+            return DBNull.Value.Equals(v) ? Static.MinDate : (DateTime)Convert.ToDateTime(v);
         }
         //Переводит значение поля field таблицы rec в дату, DbNull переводит в null
         public DateTime? GetTimeNull(string field)
