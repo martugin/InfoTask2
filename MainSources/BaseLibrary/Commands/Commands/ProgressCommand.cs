@@ -37,7 +37,7 @@ namespace BaseLibrary
             set
             {
                 base.Procent = value; 
-                if (Indicator != null)
+                if (Indicator != null && Indicator.Procent != Procent)
                     Indicator.ChangeProcent(value);
             }
         }

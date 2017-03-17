@@ -52,7 +52,7 @@
             this.butIndicator.TabIndex = 1;
             this.butIndicator.Text = "Indicator";
             this.butIndicator.UseVisualStyleBackColor = true;
-            this.butIndicator.Click += new System.EventHandler(this.button1_Click);
+            this.butIndicator.Click += new System.EventHandler(this.butIndicator_Click);
             // 
             // Form1
             // 

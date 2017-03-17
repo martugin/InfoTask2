@@ -5,19 +5,17 @@ using ComClients;
 
 namespace InfoTaskClientTest
 {
-    //It клиент с добавкой тестовых методов
+    //Класс для тестового отображения формы индикатора
     public class TestItClient : ItClient
     {
-        public TestItClient(bool useTestIndicator)
+        public TestItClient()
         {
-            if (useTestIndicator)
-                Logger.Indicator = new TestIndicator();
-            Logger.History = new TestHistory(Logger);
+            Logger.Indicator = new AppIndicator();
         }
 
         public void TestMethod()
         {
-            var t = new Thread((StartProcess));
+            var t = new Thread(StartProcess);
             t.Start();
         }
 
@@ -46,7 +44,7 @@ namespace InfoTaskClientTest
                 Thread.Sleep(1000);
             });
         }
-
+        
         public void RunTestForm()
         {
             StartPeriod(new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
@@ -109,84 +107,6 @@ namespace InfoTaskClientTest
             Finish();
             Finish();
             Finish();
-        }
-
-        public void RunTestIndicator()
-        {
-            StartPeriod(new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
-            StartProgress("Process");
-            StartLog(0, 20, "Command", "SSS");
-            StartIndicatorText("Text");
-            Thread.Sleep(10);
-            SetProcent(50);
-            Thread.Sleep(10);
-            StartLog(20, 40, "Another");
-            StartIndicatorText(0, 50, "More");
-            Thread.Sleep(10);
-            StartIndicatorText(50, 100, "More More");
-            Thread.Sleep(10);
-            StartLog(40, 70, "Third", "3");
-            Thread.Sleep(10);
-            StartIndicatorText(30, 60, "ThirdText");
-            Thread.Sleep(10);
-            StartIndicatorText(60, 100, "ThirdMore");
-            Thread.Sleep(10);
-            StartLog(70, 100, "Last", "UUU", "Par");
-            Thread.Sleep(10);
-            SetProcent(40);
-            Thread.Sleep(10);
-            StartIndicatorText(70, 100, "Last");
-            Thread.Sleep(10);
-            Logger.StartPeriod(new DateTime(2017, 1, 1, 11, 0, 0), new DateTime(2017, 1, 1, 12, 0, 0), "Mode");
-            Logger.StartProgress("Process", "", new DateTime(2017, 1, 1, 12, 0, 0));
-            StartLog("Log");
-            StartIndicatorText(0, 50, "ProgressText");
-            Thread.Sleep(10);
-            SetProcent(50);
-            Thread.Sleep(10);
-            StartIndicatorText(50, 100, "ProgressMore");
-            Thread.Sleep(10);
-            SetProcent(50);
-            Thread.Sleep(10);
-            Finish();
-            Finish();
-            FinishPeriod();
-            StartProgress("Process", "");
-            StartLog(0, 50, "Com", "xxx", "P");
-            StartIndicatorText(0, 50, "Text");
-            Thread.Sleep(10);
-            SetProcent(50);
-            Thread.Sleep(10);
-            StartIndicatorText(50, 100, "TextText");
-            Thread.Sleep(10);
-            SetProcent(50);
-            Thread.Sleep(10);
-            StartLog(50, 100, "Com", "yyy", "P2");
-            StartIndicatorText(0, 50, "TextTextText");
-            Thread.Sleep(10);
-            SetProcent(50);
-            Thread.Sleep(10);
-            StartIndicatorText(50, 100, "TextTextTextText");
-            Thread.Sleep(10);
-            SetProcent(50);
-            Thread.Sleep(10);
-            Finish();
-            Finish();
-            Finish();
-        }
-
-        public void RunBreak()
-        {
-            Logger.StartCollect(false, true).Run(() => 
-                Logger.StartProgress("T", "N").Run(() => 
-                    Logger.StartLog(20, 60, "Log").Run(() =>
-                    {
-                        Logger.Procent = 50;
-                        Break();
-                        Thread.Sleep(1000);
-                        AddEvent("Text");
-                        Logger.Procent = 75;
-                    })));
         }
     }
 }

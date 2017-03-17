@@ -32,9 +32,9 @@ namespace Experiments
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void butIndicator_Click(object sender, EventArgs e)
         {
-            var client = new TestItClient(false);
+            var client = new TestItClient();
             client.RunTestForm();
         }
     }

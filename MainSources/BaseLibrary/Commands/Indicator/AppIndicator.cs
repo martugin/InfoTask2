@@ -11,6 +11,7 @@ namespace BaseLibrary
         void ShowTimedIndicator();
         void HideIndicator();
         void ChangeProcent(double procent);
+        double Procent { get; }
         void SetTimedProcess(DateTime endTime);
         void SetProcessUsual();
         void ChangeTabloText(int num, string text);
@@ -68,9 +69,13 @@ namespace BaseLibrary
             Invoke(_textedForm, () => _textedForm.Hide());
         }
 
+        //Текущий процент индикатора
+        public double Procent { get; private set; }
+
         //Обработка события изменения уровня индикатора
         public void ChangeProcent(double procent)
         {
+            Procent = procent;
             int p = Convert.ToInt32(procent);
             Invoke(_timedForm, () => { _timedForm.Procent.Value = p; });
             Invoke(_textedForm, () => { _textedForm.Procent.Value = p; });

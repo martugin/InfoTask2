@@ -1,118 +1,207 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Threading;
+using BaseLibrary;
+using BaseLibraryTest;
+using ComClients;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InfoTaskClientTest
 {
     [TestClass]
-    public class ItClientTest
+    public class ItClientTest : ItClient
     {
-        [TestMethod]
-        public void Run()
+        public ItClientTest()
         {
-            var it = new TestItClient(true);
-            it.RunTestIndicator();
-            var ind = (TestIndicator)it.Logger.Indicator;
-            Assert.AreEqual(82, ind.Events.Count);
-            //ind.Compare(0, "ShowTimed");
-            //ind.Compare(1, "PeriodBegin", "01.01.2017 10:00:00");
-            //ind.Compare(2, "PeriodEnd", "01.01.2017 11:00:00");
-            //ind.Compare(3, "PeriodMode");
-            //ind.Compare(4, "ProcessUsual");
-            //ind.Compare(5, "Text0", null);
-            //ind.Compare(6, "Text1",  "Command (SSS)");
-            //ind.Compare(7, "Text2", null);
-            //ind.Compare(8, "Text2", "Text");
-            //ind.Compare(9, "Procent", "10");
-            //ind.Compare(10, "Text2");
-            //ind.Compare(11, "Procent", "20");
-            //ind.Compare(12, "Text1");
-            //ind.Compare(13, "Text1", "Another");
-            //ind.Compare(14, "Text2", "More");
-            //ind.Compare(15, "Text2");
-            //ind.Compare(16, "Procent", "30");
-            //ind.Compare(17, "Text2", "More More");
-            //ind.Compare(18, "Text2");
-            //ind.Compare(19, "Procent", "40");
-            //ind.Compare(20, "Text1");
-            //ind.Compare(21, "Text1", "Third (3)");
-            //ind.Compare(23, "Text2", "ThirdText");
-            //ind.Compare(24, "Text2");
-            //ind.Compare(26, "Text2", "ThirdMore");
-            //ind.Compare(27, "Text2");
-            //ind.Compare(28, "Procent", "70");
-            //ind.Compare(29, "Text1");
-            //ind.Compare(30, "Text1", "Last (UUU)");
-            //ind.Compare(31, "Procent", "82");
-            //ind.Compare(32, "Procent", "91");
-            //ind.Compare(33, "Text2", "Last");
-            //ind.Compare(34, "Text2");
-            //ind.Compare(35, "Procent", "100");
-            //ind.Compare(36, "Text1");
-            //ind.Compare(38, "Hide");
-            //ind.Compare(39, "Procent", "0");
-            //ind.Compare(40, "ShowTimed");
-            //ind.Compare(41, "PeriodBegin", "01.01.2017 11:00:00");
-            //ind.Compare(42, "PeriodEnd", "01.01.2017 12:00:00");
-            //ind.Compare(43, "PeriodMode", "Mode");
-            //ind.Compare(44, "ProcessTimed", "01.01.2017 12:00:00");
-            //ind.Compare(45, "Text1", "Log");
-            //ind.Compare(46, "Text2", "ProgressText");
-            //ind.Compare(47, "Procent", "25");
-            //ind.Compare(48, "Text2");
-            //ind.Compare(49, "Procent", "50");
-            //ind.Compare(50, "Text2", "ProgressMore");
-            //ind.Compare(51, "Procent", "75");
-            //ind.Compare(52, "Text2");
-            //ind.Compare(53, "Procent", "100");
-            //ind.Compare(54, "Text1");
-            //ind.Compare(55, "Hide");
-            //ind.Compare(56, "Procent", "0");
-            //ind.Compare(57, "ShowTexted");
-            //ind.Compare(58, "Text0", "Заголовок");
-            //ind.Compare(59, "ProcessUsual");
-            //ind.Compare(60, "Text1", "Com (xxx)");
-            //ind.Compare(61, "Text2", "Text");
-            //ind.Compare(62, "Procent", "12,5");
-            //ind.Compare(63, "Text2");
-            //ind.Compare(64, "Procent", "25");
-            //ind.Compare(65, "Text2", "TextText");
-            //ind.Compare(66, "Procent", "37,5");
-            //ind.Compare(67, "Text2");
-            //ind.Compare(68, "Procent", "50");
-            //ind.Compare(69, "Text1");
-            //ind.Compare(70, "Text1", "Com (yyy)");
-            //ind.Compare(71, "Text2", "TextTextText");
-            //ind.Compare(72, "Procent", "62,5");
-            //ind.Compare(73, "Text2");
-            //ind.Compare(74, "Procent", "75");
-            //ind.Compare(75, "Text2", "TextTextTextText");
-            //ind.Compare(76, "Procent", "87,5");
-            //ind.Compare(77, "Text2");
-            //ind.Compare(78, "Procent", "100");
-            //ind.Compare(79, "Text1");
-            //ind.Compare(80, "Text0");
-            //ind.Compare(81, "Hide");
+            Logger.Indicator = new TestIndicator();
+            Logger.History = new TestHistory(Logger);
+        }
+
+        public void MakeIndicatorEvents()
+        {
+            StartPeriod(new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
+            StartProgress("Process");
+            StartLog(0, 20, "Command", "SSS");
+            StartIndicatorText(0, 100, "Text");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            StartLog(20, 40, "Another");
+            StartIndicatorText(0, 50, "More");
+            Thread.Sleep(10);
+            StartIndicatorText(50, 100, "More More");
+            Thread.Sleep(10);
+            StartLog(40, 70, "Third", "3");
+            Thread.Sleep(10);
+            StartIndicatorText(30, 60, "ThirdText");
+            Thread.Sleep(10);
+            StartIndicatorText(60, 100, "ThirdMore");
+            Thread.Sleep(10);
+            StartLog(70, 100, "Last", "UUU", "Par");
+            Thread.Sleep(10);
+            SetProcent(40);
+            Thread.Sleep(10);
+            StartIndicatorText(70, 100, "Last");
+            Thread.Sleep(10);
+            Logger.StartPeriod(new DateTime(2017, 1, 1, 11, 0, 0), new DateTime(2017, 1, 1, 12, 0, 0), "Mode");
+            Logger.StartProgress("Process", "", new DateTime(2017, 1, 1, 12, 0, 0));
+            StartLog(0, 100, "Log");
+            StartIndicatorText(0, 50, "ProgressText");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            StartIndicatorText(50, 100, "ProgressMore");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            Finish();
+            Finish();
+            FinishPeriod();
+            StartProgress("Process", "");
+            StartLog(0, 50, "Com", "xxx", "P");
+            StartIndicatorText(0, 50, "Text");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            StartIndicatorText(50, 100, "TextText");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            StartLog(50, 100, "Com", "yyy", "P2");
+            StartIndicatorText(0, 50, "TextTextText");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            StartIndicatorText(50, 100, "TextTextTextText");
+            Thread.Sleep(10);
+            SetProcent(50);
+            Thread.Sleep(10);
+            Finish();
+            Finish();
+            Finish();
         }
 
         [TestMethod]
-        public void RunBreak()
+        public void Indicator()
         {
-            var it = new TestItClient(true);
-            it.RunBreak();
-            var ind = (TestIndicator)it.Logger.Indicator;
-            //Assert.AreEqual(13, ind.Events.Count);
-            //ind.Compare(0, "ShowTexted");
-            //ind.Compare(1, "Text0", "T");
-            //ind.Compare(2, "Text1", null);
-            //ind.Compare(3, "Text2", null);
-            //ind.Compare(4, "ProcessUsual");
-            //ind.Compare(5, "Procent", "20");
-            //ind.Compare(6, "Text1", "Log");
-            //ind.Compare(7, "Procent", "40");
-            //ind.Compare(8, "Procent", "60");
-            //ind.Compare(9, "Text1");
-            //ind.Compare(10, "Procent", "100");
-            //ind.Compare(11, "Text0");
-            //ind.Compare(12, "Hide");
+            MakeIndicatorEvents();
+            var ind = (TestIndicator)Logger.Indicator;
+            Assert.AreEqual(83, ind.Events.Count);
+            ind.Compare("ShowTimed");
+            ind.Compare("PeriodBegin", "01.01.2017 10:00:00");
+            ind.Compare("PeriodEnd", "01.01.2017 11:00:00");
+            ind.Compare("PeriodMode");
+            ind.Compare("Text0", "Process");
+            ind.Compare("ProcessUsual");
+            ind.Compare("Procent", "0");
+            ind.Compare("Text1", "Command (SSS)");
+            ind.Compare("Text2", "Text");
+            ind.Compare("Procent", "10");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "20");
+            ind.Compare("Text1");
+            ind.Compare("Text1", "Another");
+            ind.Compare("Text2", "More");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "30");
+            ind.Compare("Text2", "More More");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "40");
+            ind.Compare("Text1");
+            ind.Compare("Text1", "Third (3)");
+            ind.Compare("Procent", "49");
+            ind.Compare("Text2", "ThirdText");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "58");
+            ind.Compare("Text2", "ThirdMore");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "70");
+            ind.Compare("Text1");
+            ind.Compare("Text1", "Last (UUU)");
+            ind.Compare("Procent", "82");
+            ind.Compare("Procent", "91");
+            ind.Compare("Text2", "Last");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "100");
+            ind.Compare("Text1");
+            ind.Compare("Text0");
+            ind.Compare("HideIndicator");
+            ind.Compare("Procent", "0");
+            ind.Compare("ShowTimed");
+            ind.Compare("PeriodBegin", "01.01.2017 11:00:00");
+            ind.Compare("PeriodEnd", "01.01.2017 12:00:00");
+            ind.Compare("PeriodMode", "Mode");
+            ind.Compare("Text0", "Process");
+            ind.Compare("ProcessTimed", "01.01.2017 12:00:00");
+            ind.Compare("Procent", "0");
+            ind.Compare("Text1", "Log");
+            ind.Compare("Text2", "ProgressText");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "25");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "50");
+            ind.Compare("Text2", "ProgressMore");
+            ind.Compare("Procent", "75");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "100");
+            ind.Compare("Text1");
+            ind.Compare("Hide");
+            ind.Compare("Procent", "0");
+            ind.Compare("ShowTexted");
+            ind.Compare("Text0", "Заголовок");
+            ind.Compare("ProcessUsual");
+            ind.Compare("Text1", "Com (xxx)");
+            ind.Compare("Text2", "Text");
+            ind.Compare("Procent", "12,5");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "25");
+            ind.Compare("Text2", "TextText");
+            ind.Compare("Procent", "37,5");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "50");
+            ind.Compare("Text1");
+            ind.Compare("Text1", "Com (yyy)");
+            ind.Compare("Text2", "TextTextText");
+            ind.Compare("Procent", "62,5");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "75");
+            ind.Compare("Text2", "TextTextTextText");
+            ind.Compare("Procent", "87,5");
+            ind.Compare("Text2");
+            ind.Compare("Procent", "100");
+            ind.Compare("Text1");
+            ind.Compare("Text0");
+            ind.Compare("Hide");
+        }
+
+        [TestMethod]
+        public void BreakIndicator()
+        {
+            Logger.StartCollect(false, true).Run(() =>
+                Logger.StartProgress("T", "N").Run(() =>
+                    Logger.StartLog(20, 60, "Log").Run(() =>
+                    {
+                        Logger.Procent = 50;
+                        Break();
+                        Thread.Sleep(1000);
+                        AddEvent("Text");
+                        Logger.Procent = 75;
+                    })));
+   
+            var ind = (TestIndicator)Logger.Indicator;
+            Assert.AreEqual(13, ind.Events.Count);
+            ind.Compare("ShowTexted");
+            ind.Compare("Text0", "T");
+            ind.Compare("Text1", null);
+            ind.Compare("Text2", null);
+            ind.Compare("ProcessUsual");
+            ind.Compare("Procent", "20");
+            ind.Compare("Text1", "Log");
+            ind.Compare("Procent", "40");
+            ind.Compare("Procent", "60");
+            ind.Compare("Text1");
+            ind.Compare("Procent", "100");
+            ind.Compare("Text0");
+            ind.Compare("Hide");
         }
     }
 }

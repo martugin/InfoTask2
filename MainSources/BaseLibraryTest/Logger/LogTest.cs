@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using BaseLibrary;
-using InfoTaskClientTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BaseLibraryTest
