@@ -11,7 +11,7 @@ namespace InfoTaskClientTest
             var it = new TestItClient(true);
             it.RunTestIndicator();
             var ind = (TestIndicator)it.Logger.Indicator;
-            //Assert.AreEqual(82, ind.Events.Count);
+            Assert.AreEqual(82, ind.Events.Count);
             //ind.Compare(0, "ShowTimed");
             //ind.Compare(1, "PeriodBegin", "01.01.2017 10:00:00");
             //ind.Compare(2, "PeriodEnd", "01.01.2017 11:00:00");
