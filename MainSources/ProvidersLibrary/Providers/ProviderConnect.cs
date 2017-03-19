@@ -32,7 +32,7 @@ namespace ProvidersLibrary
         internal BaseProvider Provider { get; private set; }
 
         //Присвоение основного и резервного провайдеров 
-        public void JoinProviders(BaseProvider mainProvider, BaseProvider reserveProvider = null)
+        public void JoinProvider(BaseProvider mainProvider, BaseProvider reserveProvider = null)
         {
             Provider = _mainProvider = mainProvider;
             if (mainProvider != null)

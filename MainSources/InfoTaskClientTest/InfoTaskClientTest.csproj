@@ -45,7 +45,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client\ItClientTest.cs" />
+    <Compile Include="Client\LoggerClientTest.cs" />
     <Compile Include="Client\TestItClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

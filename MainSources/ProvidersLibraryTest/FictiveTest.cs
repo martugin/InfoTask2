@@ -20,7 +20,7 @@ namespace ProvidersLibraryTest
             FictiveSource source2 = null;
             if (makeReserve)
                 source2 = (FictiveSource)factory.CreateProvider("FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"ProvidersLibrary\Fictive" + prefix + ".accdb");
-            connect.JoinProviders(source, source2);
+            connect.JoinProvider(source, source2);
             return connect;
         }
 

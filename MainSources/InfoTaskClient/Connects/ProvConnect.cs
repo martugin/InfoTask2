@@ -3,19 +3,19 @@
 namespace ComClients
 {
     //Интерфейс для ProvConnect
-    public interface IProvConnect : ILoggerClient
+    public interface IProvConnect 
     {
         //Код соединения
         string Name { get; }
         //Комплект провайдеров
         string Complect { get; }
         //Присвоение основного и резервного провайдера 
-        void JoinProviders(string mainCode, string mainInf, string reserveCode = null, string reserveInf = null);
+        void JoinProvider(string mainCode, string mainInf, string reserveCode = null, string reserveInf = null);
     }
 
     //-------------------------------------------------------------------------------------------------------------
     //Базовый класс для соединений с провайдерами через COM
-    public abstract class ProvConnect : LoggerClient, IProvConnect
+    public abstract class ProvConnect : IProvConnect
     {
         protected ProvConnect(ProviderConnect providerConnect, ProvidersFactory factory)
         {
@@ -36,14 +36,14 @@ namespace ComClients
         public string Complect { get { return ProviderConnect.Complect; } }
 
         //Присвоение основного и резервного провайдера 
-        public void JoinProviders(string mainCode, string mainInf, //Код и настройки основного провайдера
-                                               string reserveCode = null, string reserveInf = null) //Код и настройки резервного провайдера
+        public void JoinProvider(string mainCode, string mainInf, //Код и настройки основного провайдера
+                                             string reserveCode = null, string reserveInf = null) //Код и настройки резервного провайдера
         {
             RunSyncCommand(() =>
                 {
                     var main = Factory.CreateProvider(mainCode, mainInf);
                     var reserve = reserveCode == null ? null : Factory.CreateProvider(reserveCode, reserveInf);
-                    ProviderConnect.JoinProviders(main, reserve);
+                    ProviderConnect.JoinProvider(main, reserve);
                 });
         }
     }
