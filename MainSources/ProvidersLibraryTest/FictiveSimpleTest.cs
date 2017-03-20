@@ -18,7 +18,7 @@ namespace ProvidersLibraryTest
             FictiveSimpleSource source2 = null;
             if (makeReserve)
                 source2 = (FictiveSimpleSource)factory.CreateProvider("FictiveSimpleSource", "Label=p2");
-            connect.JoinProviders(source, source2);
+            connect.JoinProvider(source, source2);
             return connect;
         }
 

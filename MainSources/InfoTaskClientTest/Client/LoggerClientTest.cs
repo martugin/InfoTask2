@@ -8,9 +8,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace InfoTaskClientTest
 {
     [TestClass]
-    public class ItClientTest : ItClient
+    public class LoggerClientTest : ItClient
     {
-        public ItClientTest()
+        public LoggerClientTest()
         {
             Logger.Indicator = new TestIndicator();
             Logger.History = new TestHistory(Logger);
@@ -85,7 +85,7 @@ namespace InfoTaskClientTest
         {
             MakeIndicatorEvents();
             var ind = (TestIndicator)Logger.Indicator;
-            Assert.AreEqual(83, ind.Events.Count);
+            Assert.AreEqual(86, ind.Events.Count);
             ind.Compare("ShowTimed");
             ind.Compare("PeriodBegin", "01.01.2017 10:00:00");
             ind.Compare("PeriodEnd", "01.01.2017 11:00:00");
@@ -124,7 +124,7 @@ namespace InfoTaskClientTest
             ind.Compare("Procent", "100");
             ind.Compare("Text1");
             ind.Compare("Text0");
-            ind.Compare("HideIndicator");
+            ind.Compare("Hide");
             ind.Compare("Procent", "0");
             ind.Compare("ShowTimed");
             ind.Compare("PeriodBegin", "01.01.2017 11:00:00");
@@ -135,7 +135,6 @@ namespace InfoTaskClientTest
             ind.Compare("Procent", "0");
             ind.Compare("Text1", "Log");
             ind.Compare("Text2", "ProgressText");
-            ind.Compare("Text2");
             ind.Compare("Procent", "25");
             ind.Compare("Text2");
             ind.Compare("Procent", "50");
@@ -144,11 +143,13 @@ namespace InfoTaskClientTest
             ind.Compare("Text2");
             ind.Compare("Procent", "100");
             ind.Compare("Text1");
+            ind.Compare("Text0");
             ind.Compare("Hide");
             ind.Compare("Procent", "0");
             ind.Compare("ShowTexted");
-            ind.Compare("Text0", "Заголовок");
+            ind.Compare("Text0", "Process");
             ind.Compare("ProcessUsual");
+            ind.Compare("Procent", "0");
             ind.Compare("Text1", "Com (xxx)");
             ind.Compare("Text2", "Text");
             ind.Compare("Procent", "12,5");
@@ -188,12 +189,11 @@ namespace InfoTaskClientTest
                     })));
    
             var ind = (TestIndicator)Logger.Indicator;
-            Assert.AreEqual(13, ind.Events.Count);
+            Assert.AreEqual(12, ind.Events.Count);
             ind.Compare("ShowTexted");
             ind.Compare("Text0", "T");
-            ind.Compare("Text1", null);
-            ind.Compare("Text2", null);
             ind.Compare("ProcessUsual");
+            ind.Compare("Procent", "0");
             ind.Compare("Procent", "20");
             ind.Compare("Text1", "Log");
             ind.Compare("Procent", "40");

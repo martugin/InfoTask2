@@ -44,12 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clients\ILoggerClient.cs" />
     <Compile Include="Connects\ProvConnect.cs" />
     <Compile Include="Connects\ReceivConnect.cs" />
     <Compile Include="Connects\SourConnect.cs" />
     <Compile Include="Clients\ItClient.cs" />
-    <Compile Include="Clients\LoggerClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Signals\RealTimeSignal.cs" />
     <Compile Include="Signals\ReceivSignal.cs" />

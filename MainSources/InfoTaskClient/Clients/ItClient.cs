@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 using BaseLibrary;
 using CommonTypes;
 using Generator;
@@ -9,7 +10,7 @@ namespace ComClients
 {
     //Интерфейс для ItClient
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface IItClient : ILoggerClient
+    public interface IItClient
     {
         //Инициализация
         void Initialize(string appCode, //Код приложения
@@ -25,6 +26,62 @@ namespace ComClients
                                                         string complect); //Комплект
         ReceivConnect CreateReceivConnect(string name, //Имя соединения
                                                               string complect); //Комплект
+
+        void AddEvent(string text, //Описание
+                              string pars = ""); //Дополнительная информация
+
+        void AddWarning(string text, //Описание
+                                   string pars = ""); //Дополнительная информация
+
+        void AddError(string text, //Описание
+                               string pars = ""); //Дополнительная информация
+
+        //Задать процент текущей команды
+        void SetProcent(double procent);
+
+        //Запуск простой комманды
+        void Start(double startProcent, double finishProcent); //Процент индикатора относительно команды родителя
+        //Завершение текущей команды
+        void Finish(string results = "");
+
+        //Запуск команды логирования
+        void StartLog(double startProcent, double finishProcent, //Процент индикатора относительно команды родителя
+                             string name, //Имя команды
+                             string pars = "", //Дополнительная информация
+                             string context = ""); //Контекст выполнения команды
+        void StartLog(string name, string pars = "", string context = "");
+        //Завершение текущей команды логирования
+        void FinishLog(string results = null);
+
+        //Запуск команды, задающей период обработки
+        void StartPeriod(DateTime beg, DateTime en, string mode = "");
+        //Завершение команды, задающей период обработки
+        void FinishPeriod();
+
+        //Запуск команды отображения индикатора
+        void StartProgress(string name, //Имя команды
+                                     string pars = ""); //Дополнительная информация
+        //Звершение текущей команды отображения индикатора
+        void FinishProgress();
+
+        //Запуск команды отображения текста индикатора 2-ого уровня
+        void StartIndicatorText(double startProcent, double finishProcent, string text);
+        void StartIndicatorText(string text);
+        //Завершение текущей команды отображения текста индикатора 2-ого уровня
+        void FinishIndicatorText();
+
+        //Прервать выполнение
+        void Break();
+    }
+
+    //------------------------------------------------------------------------------------------------
+
+    //Интерфейс событий для LoggerClient
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    public interface ILoggerClientEvents
+    {
+        [DispId(1)]
+        void Finished();
     }
 
     //------------------------------------------------------------------------------------------------------------------------------
@@ -32,8 +89,14 @@ namespace ComClients
     //Клиент работы с функциями InfoTask, написанными на C#, вызываемыми из внешних приложений через COM
     [ClassInterface(ClassInterfaceType.None),
     ComSourceInterfaces(typeof(ILoggerClientEvents))]
-    public class ItClient : LoggerClient , IItClient
+    public class ItClient :  IItClient
     {
+        protected ItClient()
+        {
+            Logger = new Logger {Indicator = new AppIndicator()};
+            Logger.ExecutionFinished += OnExecutionFinished;
+        }
+
         //Инициализация
         public void Initialize(string appCode, //Код приложения
                                         string project) //Код проекта
@@ -42,7 +105,24 @@ namespace ComClients
             Project = project;
             Logger.History = new AccessHistory(Logger, ItStatic.LocalDataProjectDir(project) + @"History\" + appCode + @"\History.accdb", ItStatic.HistoryTemplateFile);
         }
-        
+
+        //Закрытие клиента
+        public void Close()
+        {
+            try
+            {
+                Logger.ExecutionFinished -= OnExecutionFinished;
+                if (Logger.History != null)
+                    Logger.History.Close();
+            }
+            catch { }
+            Thread.Sleep(100);
+            GC.Collect();
+            IsClosed = true;
+        }
+        //Клиент уже был закрыт
+        protected bool IsClosed { get; private set; }
+
         //Инициализация для запуска в тестах
         internal void InitializeTest()
         {
@@ -93,5 +173,142 @@ namespace ComClients
         {
             get { return _factory ?? (_factory = new ProvidersFactory()); }
         }
+
+
+        //Работа с логгером
+        #region Logger
+        protected internal Logger Logger { get; private set; }
+
+        //Событие, сообщающее внешнему приложению, что выполнение было прервано
+        public delegate void EvDelegate();
+        public event EvDelegate Finished;
+
+        //Обработка события прерывания
+        private void OnExecutionFinished(object sender, EventArgs e)
+        {
+            if (Finished != null) Finished();
+        }
+
+        //Добавить событие в историю
+        public void AddEvent(string text, //Описание
+                                        string pars = "") //Дополнительная информация
+        {
+            Logger.AddEvent(text, pars);
+        }
+
+        //Добавить предупреждение в историю
+        public void AddWarning(string text, //Описание
+                                            string pars = "") //Дополнительная информация
+        {
+            Logger.AddWarning(text, null, pars);
+        }
+
+        //Добавить предупреждение в историю
+        public void AddError(string text, //Описание
+                                        string pars = "") //Дополнительная информация
+        {
+            Logger.AddError(text, null, pars);
+        }
+
+        //Установить процент текущей комманды
+        public void SetProcent(double procent)
+        {
+            Logger.Procent = procent;
+        }
+
+        //Запуск простой команды
+        public void Start(double startProcent, double finishProcent)
+        {
+            Logger.Start(startProcent, finishProcent);
+        }
+
+        //Завершение комманды
+        public void Finish(string results = null)
+        {
+            Logger.Finish(results);
+        }
+
+        //Запуск команды для записи в History
+        public void StartLog(string name,  //Имя команды
+                                       string pars = "",  //Дополнительная информация
+                                       string context = "") //Контекст выполнения команды
+        {
+            Logger.StartLog(name, pars, context);
+        }
+        public void StartLog(double startProcent, double finishProcent, string name, string pars = "", string context = "")
+        {
+            Logger.StartLog(startProcent, finishProcent, name, pars, context);
+        }
+        //Завершение текущей команды логирования
+        public void FinishLog(string results = null)
+        {
+            Logger.FinishLog(results);
+        }
+
+        //Запуск команды, задающей период обработки
+        public void StartPeriod(DateTime beg, DateTime en, string mode = "")
+        {
+            Logger.StartPeriod(beg, en, mode);
+        }
+        //Завершение команды, задающей период обработки
+        public void FinishPeriod()
+        {
+            Logger.FinishPeriod();
+        }
+
+        //Запуск команды для записи в SuperHistory
+        public void StartProgress(string name,  //Имя команды
+                                               string pars = "")  //Дополнительная информация
+        {
+            Logger.StartProgress(name, pars);
+        }
+
+        //Звершение текущей команды отображения индикатора
+        public void FinishProgress()
+        {
+            Logger.FinishProgress();
+        }
+
+        //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
+        public void StartIndicatorText(string text)
+        {
+            Logger.StartIndicatorText(text);
+        }
+        public void StartIndicatorText(double startProcent, double finishProcent, string text)
+        {
+            Logger.StartIndicatorText(startProcent, finishProcent, text);
+        }
+        //Завершение текущей команды отображения текста индикатора 2-ого уровня
+        public void FinishIndicatorText()
+        {
+            Logger.FinishIndicatorText();
+        }
+
+        //Прервать выполнение
+        public void Break()
+        {
+            Logger.Break();
+        }
+
+        //Запускает команду и дожидается ее завершения
+        protected void RunSyncCommand(Action action)
+        {
+            Logger.StartCollect(false, true).Run(action);
+        }
+        //Запускает команду. Оповещение о завершении команды через событие Finished
+        protected void RunAsyncCommand(Action action)
+        {
+            new Thread(() => Logger.StartCollect(false, true).Run(action)).Start();
+        }
+        //То же самое. только с запуском вложенной PeriodCommand
+        protected void RunSyncCommand(DateTime beg, DateTime en, Action action)
+        {
+            RunSyncCommand(() => { StartPeriod(beg, en); action(); });
+        }
+        protected void RunAsyncCommand(DateTime beg, DateTime en, Action action)
+        {
+            RunAsyncCommand(() => { StartPeriod(beg, en); action(); });
+        }
+        #endregion
     }
 }

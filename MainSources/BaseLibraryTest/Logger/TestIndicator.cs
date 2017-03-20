@@ -48,7 +48,7 @@ namespace BaseLibraryTest
         {
             TextedIndicatorIsVisible = false;
             TimedIndicatorIsVisible = false;
-            AddEvent("HideIndicator");
+            AddEvent("Hide");
         }
 
         public double Procent { get; private set; }

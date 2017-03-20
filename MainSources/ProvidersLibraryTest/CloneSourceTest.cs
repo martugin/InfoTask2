@@ -15,7 +15,7 @@ namespace ProvidersLibraryTest
             TestLib.CopyDir(@"ProvidersLibrary", "TestClone", "Clone" + prefix);
             var factory = new ProvidersFactory();
             var connect = factory.CreateConnect(ProviderType.Source, "TestSource", "Clones", new Logger());
-            connect.JoinProviders(factory.CreateProvider("CloneSource", "CloneDir=" + TestLib.TestRunDir + @"ProvidersLibrary\Clone" + prefix));
+            connect.JoinProvider(factory.CreateProvider("CloneSource", "CloneDir=" + TestLib.TestRunDir + @"ProvidersLibrary\Clone" + prefix));
             return (SourceConnect)connect;
         }
 
