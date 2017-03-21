@@ -28,7 +28,7 @@ namespace ProvidersLibrary
         protected override void ConnectProvider()
         {
             if (!DaoDb.Check(CloneFile, "InfoTaskClone"))
-                AddError("Недопустимый фал клона", null , CloneFile);
+                AddError("Недопустимый файл клона", null , CloneFile);
             if (SysTabl.ValueS(CloneFile, "CloneComplect") != SourceConnect.Complect)
                 AddError(CheckConnectionMessage = "Файл является клоном для другого, несовместимого источника");
         }

@@ -6,11 +6,11 @@ using CommonTypes;
 using Generator;
 using ProvidersLibrary;
 
-namespace ComClients
+namespace ComLaunchers
 {
-    //Интерфейс для ItClient
+    //Интерфейс для ItLauncher
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface IItClient
+    public interface IItLauncher
     {
         //Инициализация
         void Initialize(string appCode, //Код приложения
@@ -22,17 +22,21 @@ namespace ComClients
         void GenerateParams(string moduleDir);
 
         //Создание соединения
-        SourConnect CreateSourConnect(string name, //Имя соединения
-                                                        string complect); //Комплект
-        ReceivConnect CreateReceivConnect(string name, //Имя соединения
+        ISourConnect CreateSourConnect(string name, //Имя соединения
+                                                         string complect); //Комплект
+        IReceivConnect CreateReceivConnect(string name, //Имя соединения
                                                               string complect); //Комплект
 
+        //Прервать выполнение
+        void Break();
+
+        //Добавить событие в историю
         void AddEvent(string text, //Описание
                               string pars = ""); //Дополнительная информация
-
+        //Добавить предупреждение в историю
         void AddWarning(string text, //Описание
                                    string pars = ""); //Дополнительная информация
-
+        //Добавить ошибку в историю
         void AddError(string text, //Описание
                                string pars = ""); //Дополнительная информация
 
@@ -40,12 +44,12 @@ namespace ComClients
         void SetProcent(double procent);
 
         //Запуск простой комманды
-        void Start(double startProcent, double finishProcent); //Процент индикатора относительно команды родителя
+        void StartProcent(double startProcent, double finishProcent); //Процент индикатора относительно команды родителя
         //Завершение текущей команды
         void Finish(string results = "");
 
         //Запуск команды логирования
-        void StartLog(double startProcent, double finishProcent, //Процент индикатора относительно команды родителя
+        void StartLogProcent(double startProcent, double finishProcent, //Процент индикатора относительно команды родителя
                              string name, //Имя команды
                              string pars = "", //Дополнительная информация
                              string context = ""); //Контекст выполнения команды
@@ -65,13 +69,10 @@ namespace ComClients
         void FinishProgress();
 
         //Запуск команды отображения текста индикатора 2-ого уровня
-        void StartIndicatorText(double startProcent, double finishProcent, string text);
+        void StartIndicatorTextProcent(double startProcent, double finishProcent, string text);
         void StartIndicatorText(string text);
         //Завершение текущей команды отображения текста индикатора 2-ого уровня
         void FinishIndicatorText();
-
-        //Прервать выполнение
-        void Break();
     }
 
     //------------------------------------------------------------------------------------------------
@@ -89,9 +90,9 @@ namespace ComClients
     //Клиент работы с функциями InfoTask, написанными на C#, вызываемыми из внешних приложений через COM
     [ClassInterface(ClassInterfaceType.None),
     ComSourceInterfaces(typeof(ILoggerClientEvents))]
-    public class ItClient :  IItClient
+    public class ItLauncher :  IItLauncher
     {
-        protected ItClient()
+        public ItLauncher()
         {
             Logger = new Logger {Indicator = new AppIndicator()};
             Logger.ExecutionFinished += OnExecutionFinished;
@@ -121,7 +122,7 @@ namespace ComClients
             IsClosed = true;
         }
         //Клиент уже был закрыт
-        protected bool IsClosed { get; private set; }
+        protected internal bool IsClosed { get; private set; }
 
         //Инициализация для запуска в тестах
         internal void InitializeTest()
@@ -132,9 +133,9 @@ namespace ComClients
         }
 
         //Код приложения
-        protected string AppCode { get; private set; }
+        protected internal string AppCode { get; private set; }
         //Код проекта
-        protected string Project { get; private set; }
+        protected internal string Project { get; private set; }
 
         //Генератор параметров, синглетон
         private TablGenerator _generator;
@@ -144,24 +145,24 @@ namespace ComClients
         {
             if (_generator == null)
                 _generator = new TablGenerator(Logger);
-            RunSyncCommand(() => _generator.GenerateParams(moduleDir));
+            Logger.RunSyncCommand(() => _generator.GenerateParams(moduleDir));
         }
 
         //Создание соединения-источника
-        public SourConnect CreateSourConnect(string name, string complect)
+        public ISourConnect CreateSourConnect(string name, string complect)
         {
             SourceConnect s = null;
-            RunSyncCommand(() => { 
-                s = (SourceConnect) Factory.CreateConnect(ProviderType.Source, name, complect, Logger);
+            Logger.RunSyncCommand(() => { 
+                s = (SourceConnect)Factory.CreateConnect(ProviderType.Source, name, complect, Logger);
             });
             return new SourConnect(s, Factory);
         }
 
         //Создание соединения-приемника
-        public ReceivConnect CreateReceivConnect(string name, string complect)
+        public IReceivConnect CreateReceivConnect(string name, string complect)
         {
             ReceiverConnect r = null;
-            RunSyncCommand(() => {
+            Logger.RunSyncCommand(() => {
                 r = (ReceiverConnect)Factory.CreateConnect(ProviderType.Receiver, name, complect, Logger);
             });
             return new ReceivConnect(r, Factory);
@@ -174,10 +175,15 @@ namespace ComClients
             get { return _factory ?? (_factory = new ProvidersFactory()); }
         }
 
-
         //Работа с логгером
         #region Logger
         protected internal Logger Logger { get; private set; }
+
+        //Прервать выполнение
+        public void Break()
+        {
+            Logger.Break();
+        }
 
         //Событие, сообщающее внешнему приложению, что выполнение было прервано
         public delegate void EvDelegate();
@@ -217,7 +223,7 @@ namespace ComClients
         }
 
         //Запуск простой команды
-        public void Start(double startProcent, double finishProcent)
+        public void StartProcent(double startProcent, double finishProcent)
         {
             Logger.Start(startProcent, finishProcent);
         }
@@ -235,7 +241,7 @@ namespace ComClients
         {
             Logger.StartLog(name, pars, context);
         }
-        public void StartLog(double startProcent, double finishProcent, string name, string pars = "", string context = "")
+        public void StartLogProcent(double startProcent, double finishProcent, string name, string pars = "", string context = "")
         {
             Logger.StartLog(startProcent, finishProcent, name, pars, context);
         }
@@ -274,7 +280,7 @@ namespace ComClients
         {
             Logger.StartIndicatorText(text);
         }
-        public void StartIndicatorText(double startProcent, double finishProcent, string text)
+        public void StartIndicatorTextProcent(double startProcent, double finishProcent, string text)
         {
             Logger.StartIndicatorText(startProcent, finishProcent, text);
         }
@@ -282,32 +288,6 @@ namespace ComClients
         public void FinishIndicatorText()
         {
             Logger.FinishIndicatorText();
-        }
-
-        //Прервать выполнение
-        public void Break()
-        {
-            Logger.Break();
-        }
-
-        //Запускает команду и дожидается ее завершения
-        protected void RunSyncCommand(Action action)
-        {
-            Logger.StartCollect(false, true).Run(action);
-        }
-        //Запускает команду. Оповещение о завершении команды через событие Finished
-        protected void RunAsyncCommand(Action action)
-        {
-            new Thread(() => Logger.StartCollect(false, true).Run(action)).Start();
-        }
-        //То же самое. только с запуском вложенной PeriodCommand
-        protected void RunSyncCommand(DateTime beg, DateTime en, Action action)
-        {
-            RunSyncCommand(() => { StartPeriod(beg, en); action(); });
-        }
-        protected void RunAsyncCommand(DateTime beg, DateTime en, Action action)
-        {
-            RunAsyncCommand(() => { StartPeriod(beg, en); action(); });
         }
         #endregion
     }

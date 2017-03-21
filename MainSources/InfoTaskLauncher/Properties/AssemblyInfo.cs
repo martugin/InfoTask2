@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("InfoTaskClient")]
+[assembly: AssemblyTitle("InfoTaskLauncher")]
 [assembly: AssemblyDescription("Библиотека для вызова библиотек InfoTask через COM")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("InfoTask")]
-[assembly: AssemblyProduct("InfoTaskClient")]
+[assembly: AssemblyProduct("InfoTaskLauncher")]
 [assembly: AssemblyCopyright("Copyright © InfoTask 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(true)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
-[assembly: Guid("8fa2829c-a317-4635-9b2b-66c64daf5161")]
+[assembly: Guid("9958d5b9-7feb-45de-8f3f-486b382e8fa1")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //
@@ -36,4 +36,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("2.0.0.0")]
 
 [assembly: InternalsVisibleTo("BaseLibraryTest")]
-[assembly: InternalsVisibleTo("InfoTaskClientTest")]
+[assembly: InternalsVisibleTo("InfoTaskLauncherTest")]

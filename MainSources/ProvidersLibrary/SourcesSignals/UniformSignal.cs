@@ -7,8 +7,8 @@ namespace ProvidersLibrary
     //Сигнал, значение которого считывается из источника, с работой со срезами
     public class UniformSignal : InitialSignal
     {
-        public UniformSignal(SourceConnect connect, string code, string codeOut, DataType dataType, string signalInf)
-            : base(connect, code, codeOut, dataType, signalInf)
+        public UniformSignal(SourceConnect connect, string code, DataType dataType, string infObject, string infOut, string infProp)
+            : base(connect, code, dataType, infObject, infOut, infProp)
         {
             _prevMom = new EditMom(dataType);
             _beginMom = new EditMom(dataType);

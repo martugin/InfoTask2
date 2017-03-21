@@ -2,15 +2,15 @@
 using System.Threading;
 using BaseLibrary;
 using BaseLibraryTest;
-using ComClients;
+using ComLaunchers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace InfoTaskClientTest
+namespace InfoTaskLouncherTest
 {
     [TestClass]
-    public class LoggerClientTest : ItClient
+    public class LoggerLauncherTest : ItLauncher
     {
-        public LoggerClientTest()
+        public LoggerLauncherTest()
         {
             Logger.Indicator = new TestIndicator();
             Logger.History = new TestHistory(Logger);
@@ -20,36 +20,36 @@ namespace InfoTaskClientTest
         {
             StartPeriod(new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
             StartProgress("Process");
-            StartLog(0, 20, "Command", "SSS");
-            StartIndicatorText(0, 100, "Text");
+            StartLogProcent(0, 20, "Command", "SSS");
+            StartIndicatorTextProcent(0, 100, "Text");
             Thread.Sleep(10);
             SetProcent(50);
             Thread.Sleep(10);
-            StartLog(20, 40, "Another");
-            StartIndicatorText(0, 50, "More");
+            StartLogProcent(20, 40, "Another");
+            StartIndicatorTextProcent(0, 50, "More");
             Thread.Sleep(10);
-            StartIndicatorText(50, 100, "More More");
+            StartIndicatorTextProcent(50, 100, "More More");
             Thread.Sleep(10);
-            StartLog(40, 70, "Third", "3");
+            StartLogProcent(40, 70, "Third", "3");
             Thread.Sleep(10);
-            StartIndicatorText(30, 60, "ThirdText");
+            StartIndicatorTextProcent(30, 60, "ThirdText");
             Thread.Sleep(10);
-            StartIndicatorText(60, 100, "ThirdMore");
+            StartIndicatorTextProcent(60, 100, "ThirdMore");
             Thread.Sleep(10);
-            StartLog(70, 100, "Last", "UUU", "Par");
+            StartLogProcent(70, 100, "Last", "UUU", "Par");
             Thread.Sleep(10);
             SetProcent(40);
             Thread.Sleep(10);
-            StartIndicatorText(70, 100, "Last");
+            StartIndicatorTextProcent(70, 100, "Last");
             Thread.Sleep(10);
             Logger.StartPeriod(new DateTime(2017, 1, 1, 11, 0, 0), new DateTime(2017, 1, 1, 12, 0, 0), "Mode");
             Logger.StartProgress("Process", "", new DateTime(2017, 1, 1, 12, 0, 0));
-            StartLog(0, 100, "Log");
-            StartIndicatorText(0, 50, "ProgressText");
+            StartLogProcent(0, 100, "Log");
+            StartIndicatorTextProcent(0, 50, "ProgressText");
             Thread.Sleep(10);
             SetProcent(50);
             Thread.Sleep(10);
-            StartIndicatorText(50, 100, "ProgressMore");
+            StartIndicatorTextProcent(50, 100, "ProgressMore");
             Thread.Sleep(10);
             SetProcent(50);
             Thread.Sleep(10);
@@ -57,21 +57,21 @@ namespace InfoTaskClientTest
             Finish();
             FinishPeriod();
             StartProgress("Process", "");
-            StartLog(0, 50, "Com", "xxx", "P");
-            StartIndicatorText(0, 50, "Text");
+            StartLogProcent(0, 50, "Com", "xxx", "P");
+            StartIndicatorTextProcent(0, 50, "Text");
             Thread.Sleep(10);
             SetProcent(50);
             Thread.Sleep(10);
-            StartIndicatorText(50, 100, "TextText");
+            StartIndicatorTextProcent(50, 100, "TextText");
             Thread.Sleep(10);
             SetProcent(50);
             Thread.Sleep(10);
-            StartLog(50, 100, "Com", "yyy", "P2");
-            StartIndicatorText(0, 50, "TextTextText");
+            StartLogProcent(50, 100, "Com", "yyy", "P2");
+            StartIndicatorTextProcent(0, 50, "TextTextText");
             Thread.Sleep(10);
             SetProcent(50);
             Thread.Sleep(10);
-            StartIndicatorText(50, 100, "TextTextTextText");
+            StartIndicatorTextProcent(50, 100, "TextTextTextText");
             Thread.Sleep(10);
             SetProcent(50);
             Thread.Sleep(10);

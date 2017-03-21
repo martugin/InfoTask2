@@ -74,9 +74,9 @@
       <Project>{267562A7-4B4A-4B81-B417-33C57CD869FE}</Project>
       <Name>Generator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\InfoTaskClient\InfoTaskClient.csproj">
-      <Project>{841ADF86-BCE5-40F7-B55F-C082B5A5CD98}</Project>
-      <Name>InfoTaskClient</Name>
+    <ProjectReference Include="..\InfoTaskLauncher\InfoTaskLauncher.csproj">
+      <Project>{BD29E947-8542-4B33-B209-87F5A98593A8}</Project>
+      <Name>InfoTaskLauncher</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

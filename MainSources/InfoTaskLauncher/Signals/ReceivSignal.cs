@@ -1,13 +1,32 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
-namespace ComClients
+namespace ComLaunchers
 {
+    //Интерфейс для ReceivSignal
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    public interface IReceivSignal
+    {
+        string Code { get; }
+        string DataType { get; }
+        string Inf { get; }
+
+        bool Boolean { get; set; }
+        int Integer { get; set; }
+        double Real { get; set; }
+        DateTime Date { get; set; }
+        string String { get; set; }
+    }
+    
+    //-------------------------------------------------------------------------------------------------
+
     //Сигнал приемника для внешнего использования через COM
     //Обертка над ReceiverSignal
-    public class ReceivSignal
+    [ClassInterface(ClassInterfaceType.None)]
+    public class ReceivSignal : IReceivSignal
     {
         internal ReceivSignal(ReceiverSignal signal)
         {

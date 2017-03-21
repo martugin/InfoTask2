@@ -12,7 +12,7 @@ namespace ProvidersLibrary
 
         //Ссылка на приемник
         protected BaseReceiver Receiver { get; private set; }
-        //Код объекта - контекст для формирования ошибок
+        //Код выхода - контекст для формирования ошибок
         public string Context { get; internal set; }
 
         //Основной сигнал объекта

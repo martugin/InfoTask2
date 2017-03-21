@@ -8,9 +8,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using BaseLibrary;
-using ComClients;
+using ComLaunchers;
 using CommonTypes;
-using InfoTaskClientTest;
+using InfoTaskLouncherTest;
 using Provider;
 using ProvidersLibrary;
 
@@ -34,8 +34,8 @@ namespace Experiments
 
         private void butIndicator_Click(object sender, EventArgs e)
         {
-            var client = new TestItClient();
-            client.RunTestForm();
+            var launcher = new TestItLauncher();
+            launcher.RunTestForm();
         }
     }
 }

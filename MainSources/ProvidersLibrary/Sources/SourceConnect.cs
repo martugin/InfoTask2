@@ -15,7 +15,7 @@ namespace ProvidersLibrary
         public override ProviderType Type { get { return ProviderType.Source;}}
 
         //Текущий провайдер источника
-        private BaseSource Source { get { return (BaseSource) Provider; } }
+        internal BaseSource Source { get { return (BaseSource) Provider; } }
 
         //Получение диапазона времени источника
         //Возвращает Default интервал, если нет связи с источником
@@ -40,32 +40,34 @@ namespace ProvidersLibrary
 
         //Добавить исходный сигнал
         public InitialSignal AddInitialSignal(string fullCode, //Полный код сигнала
-                                                                string codeObject, //Код объекта
-                                                                DataType dataType, //Тип данных
-                                                                string signalInf, //Настройки сигнала
-                                                                bool needCut) //Нужно считывать срез значений
+                                                               DataType dataType, //Тип данных
+                                                               string infObject, //Свойства объекта
+                                                               string infOut, //Свойства выхода относительно объекта
+                                                               string infProp, //Свойства сигнала относительно выхода
+                                                               bool needCut) //Нужно считывать срез значений
         {
             if (InitialSignals.ContainsKey(fullCode))
                 return InitialSignals[fullCode];
             Provider.IsPrepared = false;
-            var sig = needCut ? new UniformSignal(this, fullCode, codeObject, dataType, signalInf)
-                                      : new InitialSignal(this, fullCode, codeObject, dataType, signalInf);
+            var sig = needCut ? new UniformSignal(this, fullCode, dataType, infObject, infOut, infProp)
+                                      : new InitialSignal(this, fullCode, dataType, infObject, infOut, infProp);
             _signals.Add(fullCode, sig);
             return InitialSignals.Add(fullCode, sig);
         }
         
         //Добавить расчетный сигнал
         public CalcSignal AddCalcSignal(string fullCode, //Полный код сигнала
-                                                         string codeObject, //Код объекта
-                                                         string initialSignal, //Код исходного сигнала
+                                                         string objectCode, //Код объекта
+                                                         string initialSignalCode, //Код исходного сигнала без кода объекта
                                                          string formula) //Формула
         {
             if (CalcSignals.ContainsKey(fullCode))
                 return CalcSignals[fullCode];
-            if (!_initialSignals.ContainsKey(initialSignal))
-                throw new InstanceNotFoundException("Не найден исходный сигнал " + initialSignal);
+            string icode = objectCode + "." + initialSignalCode;
+            if (!_initialSignals.ContainsKey(icode))
+                throw new InstanceNotFoundException("Не найден исходный сигнал " + icode);
             Provider.IsPrepared = false;
-            var calc = new CalcSignal(fullCode, codeObject, _initialSignals[initialSignal], formula);
+            var calc = new CalcSignal(fullCode, _initialSignals[icode], formula);
             _signals.Add(fullCode, calc);
             return CalcSignals.Add(fullCode, calc);
         }
@@ -194,7 +196,7 @@ namespace ProvidersLibrary
                 if (CloneErrorsRec != null)
                 {
                     CloneErrorsRec.AddNew();
-                    CloneErrorsRec.Put("CodeObject", codeObject);
+                    CloneErrorsRec.Put("OutContext", codeObject);
                     CloneErrorsRec.Put("ErrorDescription", err);
                     CloneErrorsRec.Update();
                 }
@@ -219,6 +221,7 @@ namespace ProvidersLibrary
         private void ReadCloneSignalsId(DaoDb cloneDb)
         {
             AddEvent("Чтение Id сигналов клона");
+            ClearSignals();
             using (var rec = new DaoRec(cloneDb, "Signals"))
                 while (rec.Read())
                 {

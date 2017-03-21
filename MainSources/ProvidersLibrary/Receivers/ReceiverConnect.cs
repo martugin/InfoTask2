@@ -14,7 +14,7 @@ namespace ProvidersLibrary
         public override ProviderType Type { get { return ProviderType.Receiver; } }
 
         //Текущий провайдер источника
-        private BaseReceiver Receiver { get { return (BaseReceiver)Provider; } }
+        internal BaseReceiver Receiver { get { return (BaseReceiver)Provider; } }
 
         //Словарь сигналов приемников, ключи - коды
         private readonly DicS<ReceiverSignal> _signals = new DicS<ReceiverSignal>();
@@ -22,14 +22,15 @@ namespace ProvidersLibrary
 
         //Добавить сигнал
         public ReceiverSignal AddSignal(string fullCode, //Полный код сигнала
-                                                         string codeObject, //Код объекта
                                                          DataType dataType, //Тип данных
-                                                         string signalInf) //Настройки сигнала
+                                                         string infObject, //Свойства объекта
+                                                         string infOut, //Свойства выхода относительно объекта
+                                                         string infProp) //Свойства сигнала относительно выхода
         {
             if (_signals.ContainsKey(fullCode))
                 return _signals[fullCode];
             Provider.IsPrepared = false;
-            return _signals.Add(fullCode, new ReceiverSignal(this, fullCode, codeObject, dataType, signalInf));
+            return _signals.Add(fullCode, new ReceiverSignal(this, fullCode, dataType, infObject, infOut, infProp));
         }
 
         //Очистка списка сигналов

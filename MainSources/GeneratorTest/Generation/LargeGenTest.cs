@@ -1,6 +1,6 @@
 ﻿using BaseLibrary;
 using BaseLibraryTest;
-using ComClients;
+using ComLaunchers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneratorTest
@@ -11,17 +11,17 @@ namespace GeneratorTest
         [TestMethod]
         public void GenModuleLarge()
         {
-            var client = new ItClient();
-            client.Initialize("Test", "GenerationLarge");
-            Generate(client, "ModuleLarge");
-            Generate(client, "ApdControl");
+            var launcher = new ItLauncher();
+            launcher.Initialize("Test", "GenerationLarge");
+            Generate(launcher, "ModuleLarge");
+            Generate(launcher, "ApdControl");
         }
 
-        private void Generate(ItClient client, string dirName)
+        private void Generate(ItLauncher launcher, string dirName)
         {
             TestLib.CopyDir("Generator", dirName);
             var dir = TestLib.TestRunDir + @"Generator\" + dirName + @"\";
-            client.GenerateParams(dir);
+            launcher.GenerateParams(dir);
             using (var db1 = new DaoDb(dir + "Compiled.accdb"))
                 using (var db2 = new DaoDb(dir + "CorrectCompiled.accdb"))
                 {

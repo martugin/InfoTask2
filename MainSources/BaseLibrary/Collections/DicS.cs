@@ -88,10 +88,11 @@ namespace BaseLibrary
         public ICollection<T> Values { get { return _dic.Values; } } 
         
         //Добавляет все элементы из другого словаря, replace - заменять если ключи совпадают
-        public void AddDic(DicS<T> dicI2, bool replace = true)
+        public DicS<T> AddDic(DicS<T> dicI2, bool replace = true)
         {
             foreach (var d in dicI2.Dic)
                 Add(d.Key, d.Value, replace);
+            return this;
         }
     }
 }

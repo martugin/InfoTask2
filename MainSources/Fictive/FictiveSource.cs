@@ -38,7 +38,7 @@ namespace Fictive
         {
             var table = sig.Inf.Get("Table");
             bool isErr = sig.Inf.Get("IsErrorObject") == "True";
-            var code = sig.CodeOuts;
+            var code = sig.Inf.Get("ObjectCode");
             switch (table)
             {
                 case "MomValues":

@@ -29,27 +29,27 @@ namespace Fictive
         }
 
         //Словарь объектов, ключи - номера
-        private readonly DicI<FictiveOut> _objects = new DicI<FictiveOut>();
-        internal DicI<FictiveOut> Objects { get { return _objects; } }
+        private readonly DicI<FictiveOut> _outs = new DicI<FictiveOut>();
+        internal DicI<FictiveOut> Outs { get { return _outs; } }
 
         //Добавить объект в провайдер
         protected override SourceOut AddOut(InitialSignal sig)
         {
             var num = sig.Inf.GetInt("NumObject");
-            if (_objects.ContainsKey(num)) return _objects[num];
-            return _objects.Add(num, new FictiveOut(this, sig.Inf.GetInt("ValuesInterval")));
+            if (_outs.ContainsKey(num)) return _outs[num];
+            return _outs.Add(num, new FictiveOut(this, sig.Inf.GetInt("ValuesInterval")));
         }
 
         //Очистка списков объектов
         protected override void ClearOuts()
         {
-            _objects.Clear();
+            _outs.Clear();
         }
 
         //Подготока источника
         protected override void PrepareProvider()
         {
-            foreach (var ob in _objects.Values)
+            foreach (var ob in _outs.Values)
                 ob.IsInitialized = true;
         }
         
@@ -67,7 +67,7 @@ namespace Fictive
         protected override ValuesCount ReadCut()
         {
             var vc = new ValuesCount();
-            foreach (var ob in _objects.Values)
+            foreach (var ob in _outs.Values)
                 vc.WriteCount += ob.MakeUniformValues(PeriodBegin, PeriodBegin, true);
             return vc;
         }
@@ -80,7 +80,7 @@ namespace Fictive
             }
 
             var vc = new ValuesCount();
-            foreach (var ob in _objects.Values)
+            foreach (var ob in _outs.Values)
                 vc.WriteCount += ob.MakeUniformValues(PeriodBegin, PeriodEnd, false);
             return vc;
         }

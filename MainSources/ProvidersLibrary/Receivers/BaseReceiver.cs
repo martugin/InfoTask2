@@ -23,7 +23,7 @@ namespace ProvidersLibrary
                 foreach (var sig in ReceiverConnect.Signals.Values)
                 {
                     var ob = AddOut(sig);
-                    ob.Context = sig.CodeOuts;
+                    ob.Context = sig.CodeOut;
                     ob.AddSignal(sig);
                 }
                 Procent = 20;

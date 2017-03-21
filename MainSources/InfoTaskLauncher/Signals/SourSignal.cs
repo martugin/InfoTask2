@@ -1,13 +1,38 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
-namespace ComClients
+namespace ComLaunchers
 {
+    //Интерфейс для SourSignal
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    public interface ISourSignal
+    {
+        string Code { get; }
+        string DataType { get; }
+        string Inf { get; }
+
+        int MomsCount { get; }
+        DateTime Time(int i);
+        int ErrQuality(int i);
+        int ErrNumber(int i);
+        string ErrText(int i);
+
+        bool Boolean(int i);
+        int Integer(int i);
+        double Real(int i);
+        DateTime Date(int i);
+        string String(int i);
+    }
+
+    //--------------------------------------------------------------------------------------------------------
+
     //Сигнал источника для внешнего использования через COM
     //Обертка над SourceSignal
-    public class SourSignal
+    [ClassInterface(ClassInterfaceType.None)]
+    public class SourSignal : ISourSignal
     {
         internal SourSignal(SourceSignal signal)
         {

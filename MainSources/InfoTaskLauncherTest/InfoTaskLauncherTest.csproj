@@ -6,11 +6,11 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2CDB0D40-5A76-4FE2-8FBA-25F8D3E481EB}</ProjectGuid>
+    <ProjectGuid>{4365333D-C73F-422E-A7A0-BF138B7186BB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InfoTaskClientTest</RootNamespace>
-    <AssemblyName>InfoTaskClientTest</AssemblyName>
+    <RootNamespace>InfoTaskLauncherTest</RootNamespace>
+    <AssemblyName>InfoTaskLauncherTest</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -45,8 +45,9 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client\LoggerClientTest.cs" />
-    <Compile Include="Client\TestItClient.cs" />
+    <Compile Include="Launcher\FictiveTest.cs" />
+    <Compile Include="Launcher\LoggerLauncherTest.cs" />
+    <Compile Include="Launcher\TestItLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,9 +59,37 @@
       <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
       <Name>BaseLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\InfoTaskClient\InfoTaskClient.csproj">
-      <Project>{841ADF86-BCE5-40F7-B55F-C082B5A5CD98}</Project>
-      <Name>InfoTaskClient</Name>
+    <ProjectReference Include="..\Calculation\Calculation.csproj">
+      <Project>{A4B84B9B-4130-4066-971D-3D597C141097}</Project>
+      <Name>Calculation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonTypesTest\CommonTypesTest.csproj">
+      <Project>{68174E6C-46D0-400B-A07E-C96D602817D3}</Project>
+      <Name>CommonTypesTest</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
+      <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
+      <Name>CommonTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fictive\Fictive.csproj">
+      <Project>{D64B5872-98C2-444A-A449-9FFD2D881D9A}</Project>
+      <Name>Fictive</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Generator\Generator.csproj">
+      <Project>{267562A7-4B4A-4B81-B417-33C57CD869FE}</Project>
+      <Name>Generator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InfoTaskLauncher\InfoTaskLauncher.csproj">
+      <Project>{BD29E947-8542-4B33-B209-87F5A98593A8}</Project>
+      <Name>InfoTaskLauncher</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProvidersLibrary\ProvidersLibrary.csproj">
+      <Project>{819FEFDE-4840-45CD-BF58-B528821E3098}</Project>
+      <Name>ProvidersLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tablik\Tablik.csproj">
+      <Project>{2828EE50-3906-40D8-BBAC-2B75F9BEE24E}</Project>
+      <Name>Tablik</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

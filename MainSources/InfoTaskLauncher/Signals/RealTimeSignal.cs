@@ -1,7 +1,7 @@
 ﻿using System;
 using CommonTypes;
 
-namespace ComClients
+namespace ComLaunchers
 {
     //Сигнал источника реального времени для внешнего использования через COM
     public class RealTimeSignal

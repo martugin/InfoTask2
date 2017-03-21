@@ -1,6 +1,6 @@
 ﻿using BaseLibrary;
 using BaseLibraryTest;
-using ComClients;
+using ComLaunchers;
 using CommonTypes;
 using Generator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -64,7 +64,7 @@ namespace GeneratorTest
         {
             TestLib.CopyDir("Generator", "Module");
             
-            var client = new ItClient();
+            var client = new ItLauncher();
             string dir = TestLib.TestRunDir + @"Generator\Module\";
             client.GenerateParams(dir);
             

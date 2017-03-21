@@ -52,13 +52,13 @@ namespace ProvidersLibraryTest
             Assert.AreEqual("FictiveSource", source.Code);
             Assert.AreEqual("Источник: TestSource, FictiveSource", source.Context);
 
-            connect.AddInitialSignal("Ob1.StateSignal", "Ob1", DataType.Integer, "Table=MomValues;NumObject=1;Signal=State", true);
-            connect.AddInitialSignal("Ob1.ValueSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Value", true);
-            connect.AddInitialSignal("Ob1.BoolSignal", "Ob1", DataType.Boolean, "Table=MomValues;NumObject=1;Signal=Bool", true);
-            connect.AddInitialSignal("Ob1.IntSignal", "Ob1", DataType.Integer, "Table=MomValues;NumObject=1;Signal=Int", true);
-            connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real", true);
-            connect.AddInitialSignal("Ob1.TimeSignal", "Ob1", DataType.Time, "Table=MomValues;NumObject=1;Signal=Time", true);
-            connect.AddInitialSignal("Ob1.StringSignal", "Ob1", DataType.String, "Table=MomValues;NumObject=1;Signal=String", true);
+            connect.AddInitialSignal("Ob1.StateSignal", DataType.Integer, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=State", true);
+            connect.AddInitialSignal("Ob1.ValueSignal", DataType.Real, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=Value", true);
+            connect.AddInitialSignal("Ob1.BoolSignal", DataType.Boolean, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=Bool", true);
+            connect.AddInitialSignal("Ob1.IntSignal", DataType.Integer, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=Int", true);
+            connect.AddInitialSignal("Ob1.RealSignal", DataType.Real, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=Real", true);
+            connect.AddInitialSignal("Ob1.TimeSignal", DataType.Time, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=Time", true);
+            connect.AddInitialSignal("Ob1.StringSignal", DataType.String, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=String", true);
             Assert.AreEqual(7, connect.Signals.Count);
             Assert.AreEqual(7, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
@@ -70,48 +70,48 @@ namespace ProvidersLibraryTest
             Assert.AreEqual("State", connect.Signals["Ob1.StateSignal"].Inf["Signal"]);
             Assert.AreEqual(0, connect.Signals["Ob1.StateSignal"].MomList.Count);
 
-            connect.AddInitialSignal("Ob2.StateSignal", "Ob2", DataType.Integer, "Table=MomValues;NumObject=2;Signal=State", true);
-            connect.AddInitialSignal("Ob2.ValueSignal", "Ob2", DataType.Real, "Table=MomValues;NumObject=2;Signal=Value", true);
-            connect.AddInitialSignal("Ob2.BoolSignal", "Ob2", DataType.Boolean, "Table=MomValues;NumObject=2;Signal=Bool", true);
-            connect.AddInitialSignal("Ob2.IntSignal", "Ob2", DataType.Integer, "Table=MomValues;NumObject=2;Signal=Int", true);
-            connect.AddInitialSignal("Ob2.RealSignal", "Ob2", DataType.Real, "Table=MomValues;NumObject=2;Signal=Real", true);
-            connect.AddInitialSignal("Ob2.TimeSignal", "Ob2", DataType.Time, "Table=MomValues;NumObject=2;Signal=Time", true);
-            connect.AddInitialSignal("Ob2.StringSignal", "Ob2", DataType.String, "Table=MomValues;NumObject=2;Signal=String", true);
+            connect.AddInitialSignal("Ob2.StateSignal", DataType.Integer, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=State", true);
+            connect.AddInitialSignal("Ob2.ValueSignal", DataType.Real, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=Value", true);
+            connect.AddInitialSignal("Ob2.BoolSignal", DataType.Boolean, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=Bool", true);
+            connect.AddInitialSignal("Ob2.IntSignal", DataType.Integer, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=Int", true);
+            connect.AddInitialSignal("Ob2.RealSignal", DataType.Real, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=Real", true);
+            connect.AddInitialSignal("Ob2.TimeSignal", DataType.Time, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=Time", true);
+            connect.AddInitialSignal("Ob2.StringSignal", DataType.String, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=String", true);
             Assert.AreEqual(14, connect.Signals.Count);
             Assert.AreEqual(14, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
 
-            connect.AddInitialSignal("Ob3.StateSignal", "Ob3", DataType.Integer, "Table=MomValues;NumObject=3;Signal=State", true);
-            connect.AddInitialSignal("Ob3.ValueSignal", "Ob3", DataType.Real, "Table=MomValues;NumObject=3;Signal=Value", true);
-            connect.AddInitialSignal("Ob3.BoolSignal", "Ob3", DataType.Boolean, "Table=MomValues;NumObject=3;Signal=Bool", true);
-            connect.AddInitialSignal("Ob3.IntSignal", "Ob3", DataType.Integer, "Table=MomValues;NumObject=3;Signal=Int", true);
-            connect.AddInitialSignal("Ob3.RealSignal", "Ob3", DataType.Real, "Table=MomValues;NumObject=3;Signal=Real", true);
-            connect.AddInitialSignal("Ob3.TimeSignal", "Ob3", DataType.Time, "Table=MomValues;NumObject=3;Signal=Time", true);
-            connect.AddInitialSignal("Ob3.StringSignal", "Ob3", DataType.String, "Table=MomValues;NumObject=3;Signal=String", true);
+            connect.AddInitialSignal("Ob3.StateSignal", DataType.Integer, "Table=MomValues;ObjectCode=Ob3;NumObject=3", "", "Signal=State", true);
+            connect.AddInitialSignal("Ob3.ValueSignal", DataType.Real, "Table=MomValues;ObjectCode=Ob3;NumObject=3", "", "Signal=Value", true);
+            connect.AddInitialSignal("Ob3.BoolSignal", DataType.Boolean, "Table=MomValues;ObjectCode=Ob3;NumObject=3", "", "Signal=Bool", true);
+            connect.AddInitialSignal("Ob3.IntSignal", DataType.Integer, "Table=MomValues;ObjectCode=Ob3;NumObject=3", "", "Signal=Int", true);
+            connect.AddInitialSignal("Ob3.RealSignal", DataType.Real, "Table=MomValues;ObjectCode=Ob3;NumObject=3", "", "Signal=Real", true);
+            connect.AddInitialSignal("Ob3.TimeSignal", DataType.Time, "Table=MomValues;ObjectCode=Ob3;NumObject=3", "", "Signal=Time", true);
+            connect.AddInitialSignal("Ob3.StringSignal", DataType.String, "Table=MomValues;ObjectCode=Ob3;NumObject=3", "", "Signal=String", true);
             Assert.AreEqual(21, connect.Signals.Count);
             Assert.AreEqual(21, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
 
-            connect.AddInitialSignal("ObX.ValueSignal", "ObX", DataType.Real, "Table=MomValues2;NumObject=5;Signal=Value", true);
-            connect.AddInitialSignal("ObX.Value2Signal", "ObX", DataType.Real, "Table=MomValues2;NumObject=5;Signal=Value2", true);
+            connect.AddInitialSignal("ObX.ValueSignal", DataType.Real, "Table=MomValues2;ObjectCode=ObX;NumObject=5", "", "Signal=Value", true);
+            connect.AddInitialSignal("ObX.Value2Signal", DataType.Real, "Table=MomValues2;ObjectCode=ObX;NumObject=5", "", "Signal=Value2", true);
             Assert.AreEqual(23, connect.Signals.Count);
             Assert.AreEqual(23, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
 
-            connect.AddInitialSignal("ObY.ValueSignal", "ObY", DataType.Real, "Table=MomValues2;NumObject=6;Signal=Value", true);
-            connect.AddInitialSignal("ObY.Value2Signal", "ObY", DataType.Real, "Table=MomValues2;NumObject=6;Signal=Value2", true);
+            connect.AddInitialSignal("ObY.ValueSignal", DataType.Real, "Table=MomValues2;ObjectCode=ObY;NumObject=6", "", "Signal=Value", true);
+            connect.AddInitialSignal("ObY.Value2Signal", DataType.Real, "Table=MomValues2;ObjectCode=ObY;NumObject=6", "", "Signal=Value2", true);
             Assert.AreEqual(25, connect.Signals.Count);
             Assert.AreEqual(25, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
 
-            connect.AddInitialSignal("ObZ.ValueSignal", "ObZ", DataType.Real, "Table=MomValues2;NumObject=7;Signal=Value", true);
-            connect.AddInitialSignal("ObZ.Value2Signal", "ObZ", DataType.Real, "Table=MomValues2;NumObject=7;Signal=Value2", true);
+            connect.AddInitialSignal("ObZ.ValueSignal", DataType.Real, "Table=MomValues2;ObjectCode=ObZ;NumObject=7", "", "Signal=Value", true);
+            connect.AddInitialSignal("ObZ.Value2Signal", DataType.Real, "Table=MomValues2;ObjectCode=ObZ;NumObject=7", "", "Signal=Value2", true);
             Assert.AreEqual(27, connect.Signals.Count);
             Assert.AreEqual(27, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
 
-            connect.AddInitialSignal("Operator.CommandText", "Operator", DataType.String, "Table=MomOperator;NumObject=8;Signal=CommandText", false);
-            connect.AddInitialSignal("Operator.CommandNumber", "Operator", DataType.Integer, "Table=MomOperator;NumObject=8;Signal=CommandNumber", false);
+            connect.AddInitialSignal("Operator.CommandText", DataType.String, "Table=MomOperator;ObjectCode=Operator;NumObject=8", "", "Signal=CommandText", false);
+            connect.AddInitialSignal("Operator.CommandNumber", DataType.Integer, "Table=MomOperator;ObjectCode=Operator;NumObject=8", "", "Signal=CommandNumber", false);
             Assert.AreEqual(29, connect.Signals.Count);
             Assert.AreEqual(29, connect.InitialSignals.Count);
             Assert.AreEqual(0, connect.CalcSignals.Count);
@@ -158,36 +158,36 @@ namespace ProvidersLibraryTest
         public void ReadByParts()
         {
             var connect = MakeFictiveConnect("ByParts");
-            var sig1 = connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real", true);
-            var sig2 = connect.AddInitialSignal("Ob2.BoolSignal", "Ob2", DataType.Boolean, "Table=MomValues;NumObject=2;Signal=Bool", true);
-            var sig3 = connect.AddInitialSignal("Ob3.IntSignal", "Ob3", DataType.Integer, "Table=MomValues;NumObject=3;Signal=Int", true);
-            var sig4 = connect.AddInitialSignal("Ob4.TimeSignal", "Ob4", DataType.Time, "Table=MomValues;NumObject=4;Signal=Time", true);
-            var sig5 = connect.AddInitialSignal("ObX.ValueSignal", "ObX", DataType.Real, "Table=MomValues2;NumObject=5;Signal=Value", true);
-            var sig6 = connect.AddInitialSignal("ObY.ValueSignal", "ObY", DataType.Real, "Table=MomValues2;NumObject=6;Signal=Value", true);
-            var sig7 = connect.AddInitialSignal("ObZ.ValueSignal2", "ObZ", DataType.Real, "Table=MomValues2;NumObject=7;Signal=Value2", true);
-            var sig8 = connect.AddInitialSignal("Operator.CommandText", "Operator", DataType.String, "Table=MomOperator;NumObject=8;Signal=CommandText", false);
-            var sig9 = connect.AddInitialSignal("Operator.CommandNumber", "Operator", DataType.Integer, "Table=MomOperator;NumObject=8;Signal=CommandNumber", false);
+            var sig1 = connect.AddInitialSignal("Ob1.RealSignal", DataType.Real, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=Real", true);
+            var sig2 = connect.AddInitialSignal("Ob2.BoolSignal", DataType.Boolean, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=Bool", true);
+            var sig3 = connect.AddInitialSignal("Ob3.IntSignal", DataType.Integer, "Table=MomValues;ObjectCode=Ob3;NumObject=3", "", "Signal=Int", true);
+            var sig4 = connect.AddInitialSignal("Ob4.TimeSignal", DataType.Time, "Table=MomValues;ObjectCode=Ob4;NumObject=4", "", "Signal=Time", true);
+            var sig5 = connect.AddInitialSignal("ObX.ValueSignal", DataType.Real, "Table=MomValues2;ObjectCode=ObX;NumObject=5", "", "Signal=Value", true);
+            var sig6 = connect.AddInitialSignal("ObY.ValueSignal", DataType.Real, "Table=MomValues2;ObjectCode=ObY;NumObject=6", "", "Signal=Value", true);
+            var sig7 = connect.AddInitialSignal("ObZ.ValueSignal2", DataType.Real, "Table=MomValues2;ObjectCode=ObZ;NumObject=7", "", "Signal=Value2", true);
+            var sig8 = connect.AddInitialSignal("Operator.CommandText", DataType.String, "Table=MomOperator;ObjectCode=Operator;NumObject=8", "", "Signal=CommandText", false);
+            var sig9 = connect.AddInitialSignal("Operator.CommandNumber", DataType.Integer, "Table=MomOperator;ObjectCode=Operator;NumObject=8", "", "Signal=CommandNumber", false);
             
             Assert.AreEqual(9, connect.Signals.Count);
             Assert.AreEqual(9, connect.InitialSignals.Count);
             Assert.AreEqual("Ob1.RealSignal", sig1.Code);
-            Assert.AreEqual("Ob1", sig1.CodeOuts);
+            Assert.AreEqual("Table=MomValues;ObjectCode=Ob1;NumObject=1", sig1.CodeOut);
             Assert.AreEqual("Ob2.BoolSignal", sig2.Code);
-            Assert.AreEqual("Ob2", sig2.CodeOuts);
+            Assert.AreEqual("Table=MomValues;ObjectCode=Ob2;NumObject=2", sig2.CodeOut);
             Assert.AreEqual("Ob3.IntSignal", sig3.Code);
-            Assert.AreEqual("Ob3", sig3.CodeOuts);
+            Assert.AreEqual("Table=MomValues;ObjectCode=Ob3;NumObject=3", sig3.CodeOut);
             Assert.AreEqual("Ob4.TimeSignal", sig4.Code);
-            Assert.AreEqual("Ob4", sig4.CodeOuts);
+            Assert.AreEqual("Table=MomValues;ObjectCode=Ob4;NumObject=4", sig4.CodeOut);
             Assert.AreEqual("ObX.ValueSignal", sig5.Code);
-            Assert.AreEqual("ObX", sig5.CodeOuts);
+            Assert.AreEqual("Table=MomValues2;ObjectCode=ObX;NumObject=5", sig5.CodeOut);
             Assert.AreEqual("ObY.ValueSignal", sig6.Code);
-            Assert.AreEqual("ObY", sig6.CodeOuts);
+            Assert.AreEqual("Table=MomValues2;ObjectCode=ObY;NumObject=6", sig6.CodeOut);
             Assert.AreEqual("ObZ.ValueSignal2", sig7.Code);
-            Assert.AreEqual("ObZ", sig7.CodeOuts);
+            Assert.AreEqual("Table=MomValues2;ObjectCode=ObZ;NumObject=7", sig7.CodeOut);
             Assert.AreEqual("Operator.CommandText", sig8.Code);
-            Assert.AreEqual("Operator", sig8.CodeOuts);
+            Assert.AreEqual("Table=MomOperator;ObjectCode=Operator;NumObject=8", sig8.CodeOut);
             Assert.AreEqual("Operator.CommandNumber", sig9.Code);
-            Assert.AreEqual("Operator", sig9.CodeOuts);
+            Assert.AreEqual("Table=MomOperator;ObjectCode=Operator;NumObject=8", sig9.CodeOut);
 
             GetValues(connect, RTime(0), RTime(10));
             Assert.IsNotNull(sig1.MomList);
@@ -407,12 +407,12 @@ namespace ProvidersLibraryTest
         {
             var connect = MakeFictiveConnect("Cut");
             var source = (FictiveSource)connect.Provider;
-            var sigR = (UniformSignal)connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real", true);
-            var sigS = (UniformSignal)connect.AddInitialSignal("Ob2.StringSignal", "Ob2", DataType.String, "Table=MomValues;NumObject=2;Signal=String", true);
-            var sigI = (UniformSignal)connect.AddInitialSignal("Ob2.IntSignal", "Ob2", DataType.Integer, "Table=MomValues;NumObject=2;Signal=Int", true);
-            var sigX = (UniformSignal)connect.AddInitialSignal("ObX.ValueSignal", "ObX", DataType.Real, "Table=MomValues2;NumObject=5;Signal=Value", true);
-            var sigT = connect.AddInitialSignal("Operator.CommandText", "Operator", DataType.String, "Table=MomOperator;NumObject=8;Signal=CommandText", false);
-            var sigN = connect.AddInitialSignal("Operator.CommandNumber", "Operator", DataType.Integer, "Table=MomOperator;NumObject=8;Signal=CommandNumber", false);
+            var sigR = (UniformSignal)connect.AddInitialSignal("Ob1.RealSignal", DataType.Real, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=Real", true);
+            var sigS = (UniformSignal)connect.AddInitialSignal("Ob2.StringSignal", DataType.String, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=String", true);
+            var sigI = (UniformSignal)connect.AddInitialSignal("Ob2.IntSignal", DataType.Integer, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=Int", true);
+            var sigX = (UniformSignal)connect.AddInitialSignal("ObX.ValueSignal", DataType.Real, "Table=MomValues2;ObjectCode=ObX;NumObject=5", "", "Signal=Value", true);
+            var sigT = connect.AddInitialSignal("Operator.CommandText", DataType.String, "Table=MomOperator;ObjectCode=Operator;NumObject=8", "", "Signal=CommandText", false);
+            var sigN = connect.AddInitialSignal("Operator.CommandNumber", DataType.Integer, "Table=MomOperator;ObjectCode=Operator;NumObject=8", "", "Signal=CommandNumber", false);
             Assert.AreEqual(6, connect.Signals.Count);
             Assert.AreEqual(6, connect.InitialSignals.Count);
 
@@ -712,8 +712,8 @@ namespace ProvidersLibraryTest
         public void Recursive()
         {
             var connect = MakeFictiveConnect("Recursive");
-            var sigR = (UniformSignal)connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real", true);
-            var sigI = (UniformSignal)connect.AddInitialSignal("Ob2.IntSignal", "Ob2", DataType.Integer, "Table=MomValues;NumObject=2;Signal=Int;IsErrorObject=True", true);
+            var sigR = (UniformSignal)connect.AddInitialSignal("Ob1.RealSignal", DataType.Real, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=Real", true);
+            var sigI = (UniformSignal)connect.AddInitialSignal("Ob2.IntSignal", DataType.Integer, "Table=MomValues;ObjectCode=Ob2;NumObject=2;IsErrorObject=True", "", "Signal=Int", true);
             Assert.AreEqual(2, connect.Signals.Count);
             Assert.AreEqual(2, connect.InitialSignals.Count);
 
@@ -734,10 +734,9 @@ namespace ProvidersLibraryTest
             connect.ClearSignals();
             Assert.AreEqual(0, connect.Signals.Count);
             Assert.AreEqual(0, connect.InitialSignals.Count);
-            connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real;IsErrorObject=True", true);
-            connect.AddInitialSignal("Ob2.IntSignal", "Ob2", DataType.Integer, "Table=MomValues;NumObject=2;Signal=Int;IsErrorObject=True", true);
-            connect.AddInitialSignal("Ob3.RealSignal", "Ob3", DataType.Boolean, "Table=MomValues;NumObject=3;Signal=Bool;IsErrorObject=True", true);
-            connect.AddInitialSignal("Ob4.IntSignal", "Ob4", DataType.String, "Table=MomValues;NumObject=4;Signal=String;IsErrorObject=True", true);
+            connect.AddInitialSignal("Ob2.IntSignal", DataType.Integer, "Table=MomValues;ObjectCode=Ob2;NumObject=2;IsErrorObject=True", "", "Signal=Int", true);
+            connect.AddInitialSignal("Ob3.RealSignal", DataType.Boolean, "Table=MomValues;ObjectCode=Ob3;NumObject=3;IsErrorObject=True", "", "Signal=Bool", true);
+            connect.AddInitialSignal("Ob4.IntSignal", DataType.String, "Table=MomValues;ObjectCode=Ob4;NumObject=4;IsErrorObject=True", "", "Signal=String", true);
 
             vc = GetValues(connect, RTime(0), RTime(2));
             Assert.AreEqual(VcStatus.NoSuccess, vc.Status);
@@ -745,10 +744,10 @@ namespace ProvidersLibraryTest
             Assert.AreEqual(0, vc.WriteCount);
 
             connect.ClearSignals();
-            sigR = (UniformSignal)connect.AddInitialSignal("Ob1.RealSignal", "Ob1", DataType.Real, "Table=MomValues;NumObject=1;Signal=Real", true);
-            sigI = (UniformSignal)connect.AddInitialSignal("Ob2.IntSignal", "Ob2", DataType.Integer, "Table=MomValues;NumObject=2;Signal=Int;IsErrorObject=True", true);
-            var sigB = (UniformSignal)connect.AddInitialSignal("Ob3.RealSignal", "Ob3", DataType.Boolean, "Table=MomValues;NumObject=3;Signal=Bool", true);
-            var sigS = (UniformSignal)connect.AddInitialSignal("Ob4.IntSignal", "Ob4", DataType.String, "Table=MomValues;NumObject=4;Signal=String;IsErrorObject=True", true);
+            sigR = (UniformSignal)connect.AddInitialSignal("Ob1.RealSignal", DataType.Real, "Table=MomValues;ObjectCode=Ob1;NumObject=1:", "", "Signal=Real", true);
+            sigI = (UniformSignal)connect.AddInitialSignal("Ob2.IntSignal", DataType.Integer, "Table=MomValues;ObjectCode=Ob2;NumObject=2;IsErrorObject=True", "", "Signal=Int", true);
+            var sigB = (UniformSignal)connect.AddInitialSignal("Ob3.RealSignal", DataType.Boolean, "Table=MomValues;ObjectCode=Ob3;NumObject=3", "", "Signal=Bool", true);
+            var sigS = (UniformSignal)connect.AddInitialSignal("Ob4.IntSignal", DataType.String, "Table=MomValues;ObjectCode=Ob4;NumObject=4;IsErrorObject=True", "", "Signal=String", true);
 
             vc = GetValues(connect, RTime(0), RTime(2));
             Assert.AreEqual(VcStatus.Partial, vc.Status);

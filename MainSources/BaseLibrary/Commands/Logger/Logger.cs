@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace BaseLibrary
 {
@@ -125,6 +126,26 @@ namespace BaseLibrary
         public string CollectedError { get; internal set; }
         //Результат выполнения комманды Collect
         public string CollectedResults { get; internal set; }
+
+        //Запускает команду Collect и дожидается ее завершения
+        public void RunSyncCommand(Action action)
+        {
+            StartCollect(false, true).Run(action);
+        }
+        //Запускает команду Collect. Оповещение о завершении команды через событие Finished
+        public void RunAsyncCommand(Action action)
+        {
+            new Thread(() => StartCollect(false, true).Run(action)).Start();
+        }
+        //То же самое. только с запуском вложенной PeriodCommand
+        public void RunSyncCommand(DateTime beg, DateTime en, Action action)
+        {
+            RunSyncCommand(() => { StartPeriod(beg, en); action(); });
+        }
+        public void RunAsyncCommand(DateTime beg, DateTime en, Action action)
+        {
+            RunAsyncCommand(() => { StartPeriod(beg, en); action(); });
+        }
 
         //-----
 

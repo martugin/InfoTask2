@@ -68,7 +68,6 @@
             this.Text2.Name = "Text2";
             this.Text2.Size = new System.Drawing.Size(342, 20);
             this.Text2.TabIndex = 10;
-            this.Text2.Text = "***";
             this.Text2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // TextedIndicatorForm
@@ -79,8 +78,8 @@
             this.ControlBox = false;
             this.Controls.Add(this.Text2);
             this.Controls.Add(this.Text1);
-            this.Controls.Add(this.Text0);
             this.Controls.Add(this.Procent);
+            this.Controls.Add(this.Text0);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "TextedIndicatorForm";
             this.Text = "InfoTask";

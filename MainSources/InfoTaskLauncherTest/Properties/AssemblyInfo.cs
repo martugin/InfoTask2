@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Общие сведения об этой сборке предоставляются следующим набором 
 // атрибутов. Отредактируйте значения этих атрибутов, чтобы изменить
 // общие сведения об этой сборке.
-[assembly: AssemblyTitle("InfoTaskClientTest")]
+[assembly: AssemblyTitle("InfoTaskLauncherTest")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("InfoTaskClientTest")]
+[assembly: AssemblyProduct("InfoTaskLauncherTest")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
-[assembly: Guid("506664fe-8986-41cb-9821-dbcb8ad2a673")]
+[assembly: Guid("9300965c-a426-4b83-8f5a-6e6c7cac877f")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //
@@ -35,3 +35,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: InternalsVisibleTo("Experiments")]
+[assembly: InternalsVisibleTo("GeneratorTest")]
