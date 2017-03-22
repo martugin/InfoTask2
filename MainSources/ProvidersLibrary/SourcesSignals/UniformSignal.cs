@@ -66,7 +66,8 @@ namespace ProvidersLibrary
                 _beginMom.CopyAllFrom(_endMom);
             BufMom.CopyValueFrom(_endMom);
             BufMom.Time = Connect.PeriodEnd;
-            return IdInClone == 0 ? 0 : PutClone(BufMom, false);
+            if (IdInClone == 0) return 0;
+            return PutClone(BufMom, true);
         }
 
         //Запись значения в клон
@@ -79,16 +80,19 @@ namespace ProvidersLibrary
             var recCut = isReal ? Connect.CloneCutRec : Connect.CloneStrCutRec;
             int nwrite = 0;
 
-            var d1 = Connect.RemoveMinultes(mom.Time);
-            var d = Connect.RemoveMinultes(_prevMom.Time).AddMinutes(10);
-            while (d <= d1)
+            if (_prevMom.Time >= Connect.PeriodBegin)
             {
-                if (d != mom.Time)
+                var d1 = Connect.RemoveMinultes(mom.Time);
+                var d = Connect.RemoveMinultes(_prevMom.Time).AddMinutes(10);
+                while (d <= d1)
                 {
-                    PutCloneRec(_prevMom, recCut, true, d);
-                    nwrite++;
-                }
-                d = d.AddMinutes(10);
+                    if (d != mom.Time)
+                    {
+                        PutCloneRec(_prevMom, recCut, true, d);
+                        nwrite++;
+                    }
+                    d = d.AddMinutes(10);
+                }    
             }
             if (!onlyCut)
             {

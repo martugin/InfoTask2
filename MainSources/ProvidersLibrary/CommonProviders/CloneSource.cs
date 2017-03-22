@@ -80,8 +80,8 @@ namespace ProvidersLibrary
                 while (rec.Read())
                 {
                     int quality = rec.GetInt("Quality");
-                    int num = rec.GetInt("NumError");
-                    string text = rec.GetString("TextError");
+                    int num = rec.GetInt("ErrNum");
+                    string text = rec.GetString("ErrText");
                     factory.AddDescr(num, text, quality);
                 }
             return factory;
@@ -98,12 +98,12 @@ namespace ProvidersLibrary
                     var id = rec.GetInt("SignalId");
                     if (_objects.ContainsKey(code))
                     {
-                        rec.Put("Otm", true);
+                        rec.Put("OtmReadClone", true);
                         var ob = _objects[code];
                         _objectsId.Add(id, ob);
                         _objectsList.Add(ob);
                     }
-                    else rec.Put("Otm", false);
+                    else rec.Put("OtmReadClone", false);
                 }
         }
 
@@ -116,7 +116,7 @@ namespace ProvidersLibrary
             string table = "Moment" + (_isStrTable ? "Str" : "") + "Values" + (isCut ? "Cut" : "");
             string timeField = (isCut ? "Cut" : "") + "Time";
             return new DaoRec(CloneFile, "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
-                                                             " WHERE (Signals.Otm=True) AND (" + table + "." + timeField + ">=" + beg.ToAccessString() + ") AND (" + table + "." + timeField + "<=" + en.ToAccessString() + ")");
+                                                             " WHERE (Signals.OtmReadClone=True) AND (" + table + "." + timeField + ">=" + beg.ToAccessString() + ") AND (" + table + "." + timeField + "<=" + en.ToAccessString() + ")");
         }
 
         //Определение объекта строки значений

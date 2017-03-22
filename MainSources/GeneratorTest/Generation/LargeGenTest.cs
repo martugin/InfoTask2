@@ -22,12 +22,7 @@ namespace GeneratorTest
             TestLib.CopyDir("Generator", dirName);
             var dir = TestLib.TestRunDir + @"Generator\" + dirName + @"\";
             launcher.GenerateParams(dir);
-            using (var db1 = new DaoDb(dir + "Compiled.accdb"))
-                using (var db2 = new DaoDb(dir + "CorrectCompiled.accdb"))
-                {
-                    TestLib.CompareTables(db1, db2, "GeneratedParams", "ParamId");
-                    TestLib.CompareTables(db1, db2, "GeneratedSubParams", "SubParamId");
-                }
+            TestLib.CompareGeneratedParams(dir + "Compiled.accdb", dir + "CorrectCompiled.accdb");
         }
     }
 }

@@ -35,9 +35,9 @@ namespace GeneratorTest
             using (var db1 = new DaoDb(s + (copyRes ? "Res" : "Template") + ".accdb"))
                 using (var db2 = new DaoDb(s + "Correct" + ".accdb"))
                 {
-                    TestLib.CompareTables(db1, db2, tablName);
+                    TestLib.CompareTables(db1, db2, tablName, "Id");
                     if (subTablName != null)
-                        TestLib.CompareTables(db1, db2, subTablName);
+                        TestLib.CompareTables(db1, db2, subTablName, "Id");
                 }
         }
 
@@ -63,17 +63,10 @@ namespace GeneratorTest
         public void GenCalcParams()
         {
             TestLib.CopyDir("Generator", "Module");
-            
             var client = new ItLauncher();
             string dir = TestLib.TestRunDir + @"Generator\Module\";
             client.GenerateParams(dir);
-            
-            using (var db1 = new DaoDb(dir + "Compiled.accdb"))
-                using (var db2 = new DaoDb(dir + "CorrectCompiled.accdb"))
-                {
-                    TestLib.CompareTables(db1, db2, "GeneratedParams", "ParamId");
-                    TestLib.CompareTables(db1, db2, "GeneratedSubParams", "SubParamId");
-                }
+            TestLib.CompareGeneratedParams(dir + "Compiled.accdb", dir + "CorrectCompiled.accdb");
         }
     }
 }

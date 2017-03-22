@@ -54,13 +54,17 @@ namespace BaseLibraryTest
         }
 
         //Сравнение двух таблиц на полное совпадение, 
-        public static bool CompareTables(DaoDb db1, DaoDb db2, string tableName1, string idField = "Id", string tableName2 = null, params string[] exeptionFields)
+        public static bool CompareTables(DaoDb db1, DaoDb db2, //Базы данных для сравнения
+                                                          string tableName, //Имяы таблицы
+                                                          string idField, string idField2 = null, string idField3 = null, //Ключевые поля для сравнения
+                                                          string tableName2 = null,  //Имя таблицы во второй базе, если отличается
+                                                          params string[] exeptionFields) //Поля, исключаемые из сравнения
         {
             var exFields = new SetS();
             foreach (var f in exeptionFields)
                 exFields.Add(f);
-            using (var rec1 = new DaoRec(db1, "SELECT * FROM " + tableName1 + " ORDER BY " + idField))
-                using (var rec2 = new DaoRec(db2, "SELECT * FROM " + (tableName2 ?? tableName1) + " ORDER BY " + idField))
+            using (var rec1 = new DaoRec(db1, "SELECT * FROM " + tableName + " ORDER BY " + idField + (idField2 == null ? "" : ", " + idField2) + (idField3 == null ? "" : ", " + idField3)))
+                using (var rec2 = new DaoRec(db2, "SELECT * FROM " + (tableName2 ?? tableName) + " ORDER BY " + idField + (idField2 == null ? "" : ", " + idField2) + (idField3 == null ? "" : ", " + idField3)))
                 {
                     rec1.Read();
                     while (rec2.Read())
@@ -75,9 +79,52 @@ namespace BaseLibraryTest
                 }
             return true;
         }
-        public static bool CompareTables(string file1, string file2, string tableName1, string idField = "Id", string tableName2 = null, params string[] exeptionFields)
+        public static bool CompareTables(string file1, string file2, string tableName, string idField, string idField2 = null, string idField3 = null, string tableName2 = null, params string[] exeptionFields)
         {
-            return CompareTables(new DaoDb(file1), new DaoDb(file2), tableName1, idField, tableName2, exeptionFields);
+            return CompareTables(new DaoDb(file1), new DaoDb(file2), tableName, idField, idField2, idField3, tableName2, exeptionFields);
         }
+
+        //Сравнение фалов конкретных типов 
+        #region CompareFiles
+        //Сравнение файлов истории
+        public static void CompareHistories(string file1, string file2)
+        {
+            using (var db1 = new DaoDb(file1))
+                using (var db2 = new DaoDb(file2))
+                {
+                    CompareTables(db1, db2, "SuperHistory", "SuperHistoryId", null, null, null, "Time", "ProcessLength");
+                    CompareTables(db1, db2, "History", "HistoryId", null, null, null, "Time", "ProcessLength");
+                    CompareTables(db1, db2, "SubHistory", "Id", null, null, null, "Time", "FromStart");
+                    CompareTables(db1, db2, "ErrorsList", "Id", null, null, null, "Time");
+                }
+        }
+
+        //Сравнение клонов
+        public static void CompareClones(string file1, string file2)
+        {
+            using (var db1 = new DaoDb(file1))
+                using (var db2 = new DaoDb(file2))
+                {
+                    CompareTables(db1, db2, "Signals", "SignalId");
+                    CompareTables(db1, db2, "ErrorsObjects", "OutContext");
+                    CompareTables(db1, db2, "MomentErrors", "ErrNum");
+                    CompareTables(db1, db2, "MomentValues", "SignalId", "Time");
+                    CompareTables(db1, db2, "MomentStrValues", "SignalId", "Time");
+                    CompareTables(db1, db2, "MomentValuesCut", "SignalId", "Time");
+                    CompareTables(db1, db2, "MomentStrValuesCut", "SignalId", "Time");
+                }
+        }
+
+        //Сравнение фалов со сгенерированными параметрами
+        public static void CompareGeneratedParams(string file1, string file2)
+        {
+            using (var db1 = new DaoDb(file1))
+                using (var db2 = new DaoDb(file2))
+                {
+                    CompareTables(db1, db2, "GeneratedParams", "ParamId");
+                    CompareTables(db1, db2, "GeneratedSubParams", "SubParamId");
+                }
+        }
+        #endregion
     }
 }

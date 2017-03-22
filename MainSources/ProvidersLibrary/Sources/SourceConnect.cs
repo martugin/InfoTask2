@@ -185,7 +185,7 @@ namespace ProvidersLibrary
         private readonly DicS<string> _errorObjects = new DicS<string>();
 
         //Добавляет объект в ErrorsObjects
-        internal void AddErrorObject(string codeObject,  //Код сигнала
+        internal void AddErrorOut(string codeObject,  //Код сигнала
                                                      string errText,        //Сообщение об ошибке
                                                      Exception ex = null)  //Исключение
         {
@@ -218,16 +218,20 @@ namespace ProvidersLibrary
         }
 
         //Чтение Id сигналов клона
-        private void ReadCloneSignalsId(DaoDb cloneDb)
+        private void ReadCloneSignals(DaoDb cloneDb)
         {
-            AddEvent("Чтение Id сигналов клона");
+            AddEvent("Чтение сигналов клона");
             ClearSignals();
             using (var rec = new DaoRec(cloneDb, "Signals"))
                 while (rec.Read())
                 {
-                    var code = rec.GetString("FullCode");
-                    if (_signals.ContainsKey(code) && _signals[code] is UniformSignal)
-                        ((UniformSignal)_signals[code]).IdInClone = rec.GetInt("SignalId");
+                    var sig = (UniformSignal)AddInitialSignal(rec.GetString("FullCode"), 
+                                                                                   rec.GetString("DataType").ToDataType(), 
+                                                                                   rec.GetString("InfObject"), 
+                                                                                   rec.GetString("InfOut"), 
+                                                                                   rec.GetString("InfProp"), 
+                                                                                   rec.GetBool("NeedCut"));
+                    sig.IdInClone = rec.GetInt("SignalId");
                 }
         }
 
@@ -250,7 +254,7 @@ namespace ProvidersLibrary
                 if (!dir.EndsWith(@"\")) dir += @"\";
                 using (var db = new DaoDb(dir + @"Clone.accdb"))
                 {
-                    ReadCloneSignalsId(db);
+                    ReadCloneSignals(db);
                     using (CloneRec = new DaoRec(db, "MomentValues"))
                     using (CloneCutRec = new DaoRec(db, "MomentValuesCut"))
                     using (CloneStrRec = new DaoRec(db, "MomentStrValues"))

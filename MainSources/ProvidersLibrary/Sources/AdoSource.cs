@@ -152,7 +152,7 @@ namespace ProvidersLibrary
                 }
                 catch (Exception ex)
                 {
-                    SourceConnect.AddErrorObject(ob == null ? "" : ob.Context, "Ошибка при чтении значений из рекордсета", ex);
+                    SourceConnect.AddErrorOut(ob == null ? "" : ob.Context, "Ошибка при чтении значений из рекордсета", ex);
                     vc.AddStatus(VcStatus.NoSuccess);
                 }
             }

@@ -97,7 +97,7 @@ namespace ProvidersLibrary
         }
 
         //Разбиение списка объектов на блоки
-        private List<List<SourceOut>> MakeParts(IEnumerable<SourceOut> objects, //Список объектов
+        private List<List<SourceOut>> MakeParts(IEnumerable<SourceOut> outs, //Список выходов
                                                                           int partSize, //Размер одного блока
                                                                           bool isCut, //Выполняется считываение среза
                                                                           out int n) //Общее количество считываемых объектов  
@@ -107,7 +107,7 @@ namespace ProvidersLibrary
             var parts = new List<List<SourceOut>>();
             int i = 0;
             List<SourceOut> part = null;
-            foreach (var ob in objects)
+            foreach (var ob in outs)
                 if (!isCut || !ob.HasBegin)
                 {
                     n++;
@@ -143,7 +143,7 @@ namespace ProvidersLibrary
                             AddWarning("Значения по блоку объектов не прочитаны");
                             return valuesCount;
                         }
-                        AddEvent("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов", p.Count + " объектов");
+                        AddEvent("Чтение " + (isCut ? "среза" : "изменений") + " значений сигналов", p.Count + " выходов");
                         var vc = new ValuesCount();
                         try
                         {
@@ -170,7 +170,7 @@ namespace ProvidersLibrary
                                 queue.Enqueue(p.GetRange(0, m));
                                 queue.Enqueue(p.GetRange(m, part.Count - m));
                             }
-                            else SourceConnect.AddErrorObject(p[0].Context, KeepedError);
+                            else SourceConnect.AddErrorOut(p[0].Context, KeepedError);
                         }
                     }
             }

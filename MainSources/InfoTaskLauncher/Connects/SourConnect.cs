@@ -133,6 +133,7 @@ namespace ComLaunchers
         {
             Logger.RunSyncCommand(periodBegin, periodEnd, () => Connect.GetValues());
         }
+
         //Чтение значений из источника. Выполняется асинхронно, программа после вызова метода сразу освобождается 
         //Система узнает о завершении чтения через событие Finished
         public void GetValuesAsync(DateTime periodBegin, DateTime periodEnd)
@@ -140,10 +141,18 @@ namespace ComLaunchers
             Logger.RunAsyncCommand(periodBegin, periodEnd, () => Connect.GetValues());
         }
 
-        //Создание клона источника, всегда выполняется асинхронно
+        //Создание клона источника, всегда выполняется синхронно
         public void MakeClone(DateTime periodBegin, //Начало периода клона
                                           DateTime periodEnd, //Конец периода клона
                                           string cloneDir) //Каталог клона
+        {
+            Logger.RunSyncCommand(periodBegin, periodEnd, () => Connect.MakeClone(cloneDir));
+        }
+
+        //Создание клона источника, выполняется асинхронно
+        public void MakeCloneAsync(DateTime periodBegin, //Начало периода клона
+                                                   DateTime periodEnd, //Конец периода клона
+                                                   string cloneDir) //Каталог клона
         {
             Logger.RunAsyncCommand(periodBegin, periodEnd, () => Connect.MakeClone(cloneDir));
         }

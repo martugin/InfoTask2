@@ -85,10 +85,7 @@ namespace BaseLibraryTest
 
             string cfile = TestLib.TestRunDir + @"BaseLibrary\History\CorrectHistory.accdb";
             string file = TestLib.TestRunDir + @"BaseLibrary\History\History.accdb";
-            TestLib.CompareTables(cfile, file, "SuperHistory", "SuperHistoryId", null, "Time", "ProcessLength");
-            TestLib.CompareTables(cfile, file, "History", "HistoryId", null, "Time", "ProcessLength");
-            TestLib.CompareTables(cfile, file, "SubHistory", "Id", null, "Time", "FromStart");
-            TestLib.CompareTables(cfile, file, "ErrorsList", "Id", null, "Time");
+            TestLib.CompareHistories(cfile, file);
         }
     }
 }

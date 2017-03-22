@@ -39,8 +39,8 @@ namespace CommonTypes
         public void ToRecordset(DaoRec rec, bool addNew = true)
         {
             if (addNew) rec.AddNew();
-            rec.Put("NumError", Number);
-            rec.Put("TextError", Text);
+            rec.Put("ErrNum", Number);
+            rec.Put("ErrText", Text);
             rec.Put("Quality", (int)Quality);
         }
     }
