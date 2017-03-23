@@ -6,9 +6,9 @@ using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для ReceivSignal
+    //Интерфейс для RReceivSignal
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface IReceivSignal
+    public interface ReceivSignal
     {
         string Code { get; }
         string DataType { get; }
@@ -26,9 +26,9 @@ namespace ComLaunchers
     //Сигнал приемника для внешнего использования через COM
     //Обертка над ReceiverSignal
     [ClassInterface(ClassInterfaceType.None)]
-    public class ReceivSignal : IReceivSignal
+    public class RReceivSignal : ReceivSignal
     {
-        internal ReceivSignal(ReceiverSignal signal)
+        internal RReceivSignal(ReceiverSignal signal)
         {
             _signal = signal;
         }

@@ -63,9 +63,10 @@ namespace GeneratorTest
         public void GenCalcParams()
         {
             TestLib.CopyDir("Generator", "Module");
-            var client = new ItLauncher();
+            var launcher = new ItLauncher();
+            launcher.Initialize("Test", "Gen");
             string dir = TestLib.TestRunDir + @"Generator\Module\";
-            client.GenerateParams(dir);
+            launcher.GenerateParams(dir);
             TestLib.CompareGeneratedParams(dir + "Compiled.accdb", dir + "CorrectCompiled.accdb");
         }
     }

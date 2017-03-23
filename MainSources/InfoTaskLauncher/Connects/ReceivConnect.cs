@@ -6,9 +6,9 @@ using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для ReceivConnect
+    //Интерфейс для RReceivConnect
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface IReceivConnect
+    public interface ReceivConnect
     {
         //Код соединения
         string Name { get; }
@@ -21,7 +21,7 @@ namespace ComLaunchers
         void ClearSignals();
 
         //Добавить сигнал
-        ReceivSignal AddSignal(string fullCode, //Полный код сигнала
+        RReceivSignal AddSignal(string fullCode, //Полный код сигнала
                                             string dataType, //Тип данных
                                             string infObject, //Свойства объекта
                                             string infOut, //Свойства выхода относительно объекта
@@ -36,9 +36,9 @@ namespace ComLaunchers
     //-----------------------------------------------------------------------------------------------------
     //Соединение с приемником для взаимодействия через COM
     [ClassInterface(ClassInterfaceType.None)]
-    public class ReceivConnect : IReceivConnect
+    public class RReceivConnect : ReceivConnect
     {
-        internal ReceivConnect(ReceiverConnect connect, ProvidersFactory factory)
+        internal RReceivConnect(ReceiverConnect connect, ProvidersFactory factory)
         {
             Connect = connect;
             _factory = factory;
@@ -78,13 +78,13 @@ namespace ComLaunchers
         }
 
         //Добавить сигнал
-        public ReceivSignal AddSignal(string fullCode, //Полный код сигнала
+        public RReceivSignal AddSignal(string fullCode, //Полный код сигнала
                                                       string dataType, //Тип данных
                                                       string infObject, //Свойства объекта
                                                       string infOut, //Свойства выхода относительно объекта
                                                       string infProp) //Свойства сигнала относительно выхода
         {
-            return new ReceivSignal(Connect.AddSignal(fullCode, dataType.ToDataType(), infObject, infOut, infProp));
+            return new RReceivSignal(Connect.AddSignal(fullCode, dataType.ToDataType(), infObject, infOut, infProp));
         }
 
         //Запись значений в приемник

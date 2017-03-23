@@ -8,18 +8,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace InfoTaskLauncherTest
 {
     [TestClass]
-    public class FictiveTest
+    public class LauncherFictiveTest
     {
         [TestMethod]
         public void FictiveSimple()
         {
             var launcher = new ItLauncher();
-            launcher.Initialize("Test", "TestProject");
-            Assert.AreEqual("Test", launcher.AppCode);
-            Assert.AreEqual("TestProject", launcher.Project);
+            launcher.Initialize("LauncherFictiveTest", "FictiveSimple");
+            Assert.AreEqual("LauncherFictiveTest", launcher.AppCode);
+            Assert.AreEqual("FictiveSimple", launcher.Project);
             Assert.IsFalse(launcher.IsClosed);
 
-            var con = (SourConnect)launcher.CreateSourConnect("Sour", "Fictive");
+            var con = (RSourConnect)launcher.CreateSourConnect("Sour", "Fictive");
             Assert.IsNotNull(con);
             Assert.AreEqual("Sour", con.Name);
             Assert.AreEqual("Fictive", con.Complect);
@@ -170,10 +170,10 @@ namespace InfoTaskLauncherTest
         {
             TestLib.CopyDir("ProvidersLibrary", "FictiveSimpleClone");
             var launcher = new ItLauncher();
-            launcher.Initialize("Test", "TestProject");
+            launcher.Initialize("LauncherFictiveTest", "FictiveSimpleClone");
             Assert.IsFalse(launcher.IsClosed);
 
-            var con = (SourConnect)launcher.CreateSourConnect("Sour", "Fictive");
+            var con = (RSourConnect)launcher.CreateSourConnect("Sour", "Fictive");
             con.JoinProvider("FictiveSimpleSource", "Label=fic");
             var cloneDir = TestLib.TestRunDir + @"ProvidersLibrary\FictiveSimpleClone";
             con.MakeClone(new DateTime(2017, 1, 1), new DateTime(2017, 1, 1, 0, 10, 0), cloneDir);
@@ -193,8 +193,8 @@ namespace InfoTaskLauncherTest
         {
             TestLib.CopyFile("ProvidersLibrary", "Fictive.accdb", "FictiveLauncher.accdb");
             var launcher = new ItLauncher();
-            launcher.Initialize("Test", "TestProject");
-            var con = (SourConnect)launcher.CreateSourConnect("Sour", "Fictive");
+            launcher.Initialize("LauncherFictiveTest", "Fictive");
+            var con = (RSourConnect)launcher.CreateSourConnect("Sour", "Fictive");
             con.JoinProvider("FictiveSource", "DbFile=" + TestLib.TestRunDir + @"ProvidersLibrary\FictiveLauncher.accdb");
 
             var source = (FictiveSource)con.Connect.Source;
@@ -335,8 +335,8 @@ namespace InfoTaskLauncherTest
             Thread.Sleep(500);
             TestLib.CopyFile("ProvidersLibrary", "Fictive.accdb", @"FictiveClone\Fictive.accdb");
             var launcher = new ItLauncher();
-            launcher.Initialize("Test", "TestProject");
-            var con = (SourConnect)launcher.CreateSourConnect("Sour", "Fictive");
+            launcher.Initialize("LauncherFictiveTest", "FictiveClone");
+            var con = (RSourConnect)launcher.CreateSourConnect("Sour", "Fictive");
             string cloneDir = TestLib.TestRunDir + @"ProvidersLibrary\FictiveClone\";
             con.JoinProvider("FictiveSource", "DbFile=" + cloneDir + "Fictive.accdb");
             

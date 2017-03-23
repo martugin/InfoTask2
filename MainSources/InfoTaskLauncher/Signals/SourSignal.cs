@@ -6,9 +6,9 @@ using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для SourSignal
+    //Интерфейс для RSourSignal
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface ISourSignal
+    public interface SourSignal
     {
         string Code { get; }
         string DataType { get; }
@@ -32,9 +32,9 @@ namespace ComLaunchers
     //Сигнал источника для внешнего использования через COM
     //Обертка над SourceSignal
     [ClassInterface(ClassInterfaceType.None)]
-    public class SourSignal : ISourSignal
+    public class RSourSignal : SourSignal
     {
-        internal SourSignal(SourceSignal signal)
+        internal RSourSignal(SourceSignal signal)
         {
             _signal = signal;
         }

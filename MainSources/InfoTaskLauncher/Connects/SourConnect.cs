@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows.Forms;
 using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для SourConnect
+    //Интерфейс для RSourConnect
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface ISourConnect
+    public interface SourConnect
     {
         //Код соединения
         string Name { get; }
@@ -28,7 +30,7 @@ namespace ComLaunchers
         void ClearSignals();
         
         //Добавить исходный сигнал
-        SourSignal AddInitialSignal(string fullCode, //Полный код сигнала
+        RSourSignal AddInitialSignal(string fullCode, //Полный код сигнала
                                                    string dataType, //Тип данных
                                                    string infObject, //Свойства объекта
                                                    string infOut, //Свойства выхода относительно объекта
@@ -36,7 +38,7 @@ namespace ComLaunchers
                                                    bool needCut = true); //Нужно считывать срез значений
         
         //Добавить расчетный сигнал
-        SourSignal AddCalcSignal(string fullCode, //Полный код сигнала
+        RSourSignal AddCalcSignal(string fullCode, //Полный код сигнала
                                                string objectCode, //Код объекта
                                                string initialSignalCode, //Код исходного сигнала без кода объекта
                                                string formula); //Формул
@@ -51,14 +53,16 @@ namespace ComLaunchers
         void MakeClone(DateTime periodBegin, //Начало периода клона
                                 DateTime periodEnd, //Конец периода клона
                                 string cloneDir); //Каталог клона
+        //Асинхронное создание клона
+        void MakeCloneAsync(DateTime periodBegin, DateTime periodEnd, string cloneDir);
     }
 
     //-----------------------------------------------------------------------------------------------------
     //Соединение с источником для взаимодействия через COM
     [ClassInterface(ClassInterfaceType.None)]
-    public class SourConnect : ISourConnect
+    public class RSourConnect : SourConnect
     {
-        internal SourConnect(SourceConnect connect, ProvidersFactory factory)
+        internal RSourConnect(SourceConnect connect, ProvidersFactory factory)
         {
             Connect = connect;
             _factory = factory;
@@ -109,23 +113,23 @@ namespace ComLaunchers
         }
 
         //Добавить исходный сигнал
-        public SourSignal AddInitialSignal(string fullCode, //Полный код сигнала
+        public RSourSignal AddInitialSignal(string fullCode, //Полный код сигнала
                                                                string dataType, //Тип данных
                                                                string infObject, //Свойства объекта
                                                                string infOut, //Свойства выхода относительно объекта
                                                                string infProp, //Свойства сигнала относительно выхода
                                                                bool needCut = true) //Нужно считывать срез значений
         {
-            return new SourSignal(Connect.AddInitialSignal(fullCode, dataType.ToDataType(), infObject, infOut, infProp, needCut));
+            return new RSourSignal(Connect.AddInitialSignal(fullCode, dataType.ToDataType(), infObject, infOut, infProp, needCut));
         }
 
         //Добавить расчетный сигнал
-        public SourSignal AddCalcSignal(string fullCode, //Полный код сигнала
+        public RSourSignal AddCalcSignal(string fullCode, //Полный код сигнала
                                                          string objectCode, //Код объекта
                                                          string initialSignalCode, //Код исходного сигнала без кода объекта
                                                          string formula) //Формул
         {
-            return new SourSignal(Connect.AddCalcSignal(fullCode, objectCode, initialSignalCode, formula));
+            return new RSourSignal(Connect.AddCalcSignal(fullCode, objectCode, initialSignalCode, formula));
         }
         
         //Чтение значений из источника. Программа, вызвавшая метод, занята пока чтение не завершится
@@ -146,7 +150,7 @@ namespace ComLaunchers
                                           DateTime periodEnd, //Конец периода клона
                                           string cloneDir) //Каталог клона
         {
-            Logger.RunSyncCommand(periodBegin, periodEnd, () => Connect.MakeClone(cloneDir));
+            Logger.RunSyncCommand(periodBegin, periodEnd, () => RunMakeClone(cloneDir));
         }
 
         //Создание клона источника, выполняется асинхронно
@@ -154,7 +158,23 @@ namespace ComLaunchers
                                                    DateTime periodEnd, //Конец периода клона
                                                    string cloneDir) //Каталог клона
         {
-            Logger.RunAsyncCommand(periodBegin, periodEnd, () => Connect.MakeClone(cloneDir));
+            Logger.RunAsyncCommand(periodBegin, periodEnd, () => RunMakeClone(cloneDir));
+        }
+
+        private void RunMakeClone(string cloneDir)
+        {
+            using (Logger.StartProgress("Создание клона"))
+                using (Logger.StartLog(0, 100, "Создание клона источника", Connect.Name))
+                {
+                    Logger.Procent = 20;
+                    Thread.Sleep(2000);
+                    Logger.Procent = 50;
+                    Thread.Sleep(2000);
+                    Logger.Procent = 70;
+                    Thread.Sleep(2000);
+                    Logger.Procent = 80;
+                    Connect.MakeClone(cloneDir);
+                }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace BaseLibrary
 {
@@ -28,15 +29,6 @@ namespace BaseLibrary
         //Режим работы потока
         public LoggerStability Stability { get; private set; }
 
-        //Событие прерывания выполнения
-        public event EventHandler<EventArgs> ExecutionFinished;
-        //Вызов события прерывания
-        internal void CallExecutionFinished()
-        {
-            if (ExecutionFinished != null)
-                ExecutionFinished(this, new EventArgs());
-        }
-        
         //Три уровня текста на форме индикатора
         //Текст нулевого уровня задается в ProgressCommand
         //Текст первого уровня задается в LogCommand
@@ -122,10 +114,23 @@ namespace BaseLibrary
             CollectedResults = result;
         }
 
+        //Событие прерывания выполнения
+        public event EventHandler<EventArgs> ExecutionFinished;
+        //Вызов события прерывания
+        internal void CallExecutionFinished()
+        {
+            if (!IsAsynchCommandStarted) return;
+            IsAsynchCommandStarted = false;
+            if (ExecutionFinished != null)
+                ExecutionFinished(this, new EventArgs());
+        }
+
         //Итоговое сообщение об ошибке
         public string CollectedError { get; internal set; }
         //Результат выполнения комманды Collect
         public string CollectedResults { get; internal set; }
+        //Команда запущена асинхронно
+        internal bool IsAsynchCommandStarted { get; set; }
 
         //Запускает команду Collect и дожидается ее завершения
         public void RunSyncCommand(Action action)
@@ -135,6 +140,7 @@ namespace BaseLibrary
         //Запускает команду Collect. Оповещение о завершении команды через событие Finished
         public void RunAsyncCommand(Action action)
         {
+            IsAsynchCommandStarted = true;
             new Thread(() => StartCollect(false, true).Run(action)).Start();
         }
         //То же самое. только с запуском вложенной PeriodCommand

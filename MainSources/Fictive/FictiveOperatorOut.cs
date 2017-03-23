@@ -4,9 +4,9 @@ using ProvidersLibrary;
 namespace Fictive
 {
     //Объект для фиктивных действий оператора
-    internal class OutFictiveOperator : SourceOut
+    internal class FictiveOperatorOut : SourceOut
     {
-        internal OutFictiveOperator(BaseSource source) 
+        internal FictiveOperatorOut(BaseSource source) 
             : base(source) { }
 
         //Текст команды

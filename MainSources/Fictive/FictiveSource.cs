@@ -31,7 +31,7 @@ namespace Fictive
         internal readonly DicI<FictiveSmallOut> OutsId2 = new DicI<FictiveSmallOut>();
         internal readonly DicS<FictiveSmallOut> Outs2 = new DicS<FictiveSmallOut>();
         //Объект действий оператора
-        internal OutFictiveOperator OperatorOut;
+        internal FictiveOperatorOut OperatorOut;
 
         //Добавление объекта
         protected override SourceOut AddOut(InitialSignal sig)
@@ -42,13 +42,15 @@ namespace Fictive
             switch (table)
             {
                 case "MomValues":
-                    if (Outs.ContainsKey(code)) return Outs[code];
-                    return Outs.Add(code, new FictiveOut(this, isErr));
+                    return Outs.ContainsKey(code) 
+                        ? Outs[code] 
+                        : Outs.Add(code, new FictiveOut(this, isErr));
                 case "MomValues2":
-                    if (Outs2.ContainsKey(code)) return Outs2[code];
-                    return Outs2.Add(code, new FictiveSmallOut(this));
+                    return Outs2.ContainsKey(code) 
+                        ? Outs2[code] 
+                        : Outs2.Add(code, new FictiveSmallOut(this));
                 case "MomOperator":
-                    return OperatorOut ?? (OperatorOut = new OutFictiveOperator(this));
+                    return OperatorOut ?? (OperatorOut = new FictiveOperatorOut(this));
             }
             return null;
         }

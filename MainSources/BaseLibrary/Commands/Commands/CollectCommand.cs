@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace BaseLibrary
 {
@@ -70,7 +71,6 @@ namespace BaseLibrary
                 while (Logger.Command != this)
                     Logger.Command.FinishCommand(true);
                 FinishCommand(true);
-                Logger.CallExecutionFinished();
                 Logger.WasBreaked = false;
                 return this;
             }
@@ -79,7 +79,7 @@ namespace BaseLibrary
                 AddError(new CommandError("Ошибка", ex));
             }
             if (finishAction != null) finishAction();
-            return Finish();
+            return Finish(); 
         }
 
         //Завершение команды
@@ -88,6 +88,7 @@ namespace BaseLibrary
             Logger.CollectedError = ErrorMessage();
             base.FinishCommand(isBreaked);
             Logger.CollectCommand = null;
+            Logger.CallExecutionFinished();
         }
 
         //Совокупное сообщение об ошибках

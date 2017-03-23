@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 using BaseLibrary;
 using CommonTypes;
 using Generator;
@@ -18,13 +19,16 @@ namespace ComLaunchers
         //Закрытие клиента
         void Close();
 
+        //Путь к каталогу InfoTask
+        string InfoTaskDir { get; }
+
         //Генерация параметров
         void GenerateParams(string moduleDir);
 
         //Создание соединения
-        ISourConnect CreateSourConnect(string name, //Имя соединения
+        SourConnect CreateSourConnect(string name, //Имя соединения
                                                          string complect); //Комплект
-        IReceivConnect CreateReceivConnect(string name, //Имя соединения
+        ReceivConnect CreateReceivConnect(string name, //Имя соединения
                                                               string complect); //Комплект
 
         //Прервать выполнение
@@ -132,6 +136,9 @@ namespace ComLaunchers
             Logger.History = new TestHistory(Logger);
         }
 
+        //Путь к каталогу InfoTask
+        public string InfoTaskDir { get { return ItStatic.InfoTaskDir(); } }
+
         //Код приложения
         protected internal string AppCode { get; private set; }
         //Код проекта
@@ -149,23 +156,23 @@ namespace ComLaunchers
         }
 
         //Создание соединения-источника
-        public ISourConnect CreateSourConnect(string name, string complect)
+        public SourConnect CreateSourConnect(string name, string complect)
         {
             SourceConnect s = null;
             Logger.RunSyncCommand(() => { 
                 s = (SourceConnect)Factory.CreateConnect(ProviderType.Source, name, complect, Logger);
             });
-            return new SourConnect(s, Factory);
+            return new RSourConnect(s, Factory);
         }
 
         //Создание соединения-приемника
-        public IReceivConnect CreateReceivConnect(string name, string complect)
+        public ReceivConnect CreateReceivConnect(string name, string complect)
         {
             ReceiverConnect r = null;
             Logger.RunSyncCommand(() => {
                 r = (ReceiverConnect)Factory.CreateConnect(ProviderType.Receiver, name, complect, Logger);
             });
-            return new ReceivConnect(r, Factory);
+            return new RReceivConnect(r, Factory);
         }
 
         //Фабрика провайдеров
@@ -194,7 +201,7 @@ namespace ComLaunchers
         {
             if (Finished != null) Finished();
         }
-
+        
         //Добавить событие в историю
         public void AddEvent(string text, //Описание
                                         string pars = "") //Дополнительная информация
