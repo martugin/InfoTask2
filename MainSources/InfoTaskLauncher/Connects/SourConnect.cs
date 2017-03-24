@@ -165,16 +165,7 @@ namespace ComLaunchers
         {
             using (Logger.StartProgress("Создание клона"))
                 using (Logger.StartLog(0, 100, "Создание клона источника", Connect.Name))
-                {
-                    Logger.Procent = 20;
-                    Thread.Sleep(2000);
-                    Logger.Procent = 50;
-                    Thread.Sleep(2000);
-                    Logger.Procent = 70;
-                    Thread.Sleep(2000);
-                    Logger.Procent = 80;
                     Connect.MakeClone(cloneDir);
-                }
         }
     }
 }

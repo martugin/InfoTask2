@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace BaseLibrary
@@ -38,6 +39,7 @@ namespace BaseLibrary
         //Высвечивает форму индикатора
         private static void ShowIndicatorForm(Form form)
         {
+            Thread.Sleep(20);
             Application.EnableVisualStyles();
             form.Show();
             Invoke(form, () =>
@@ -51,22 +53,23 @@ namespace BaseLibrary
         //Обработка событий показать форму индикатора
         public void ShowTextedIndicator()
         {
-            if (_textedForm == null)
-                _textedForm = new TextedIndicatorForm();
+            _textedForm = new TextedIndicatorForm();
             ShowIndicatorForm(_textedForm);
         }
         public void ShowTimedIndicator()
         {
-            if (_timedForm == null)
-                _timedForm = new TimedIndicatorForm();
+            _timedForm = new TimedIndicatorForm();
             ShowIndicatorForm(_timedForm);
         }
 
         //Обработка события скрыть форму индикатора
         public void HideIndicator()
         {
-            Invoke(_timedForm, () => _timedForm.Hide());
-            Invoke(_textedForm, () => _textedForm.Hide());
+            Thread.Sleep(20);
+            if (_timedForm != null)
+                Invoke(_timedForm, () => _timedForm.Hide());
+            if (_textedForm != null)
+                Invoke(_textedForm, () => _textedForm.Hide());
         }
 
         //Текущий процент индикатора

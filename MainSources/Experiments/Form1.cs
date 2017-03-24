@@ -37,5 +37,20 @@ namespace Experiments
             var launcher = new TestItLauncher();
             launcher.RunTestForm();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var it = new ItLauncher();
+            it.Finished += OnFinished;
+            it.Initialize("Experiments", "TestProject");
+            var con = it.CreateSourConnect("Source", "Fictive");
+            con.JoinProvider("FictiveSimpleSource", "Label=FictiveTest");
+            con.MakeCloneAsync(new DateTime(2017, 1, 1), new DateTime(2017, 1, 1, 0, 10, 0), ItStatic.InfoTaskDir() + @"LocalData\RunItLauncher\Clone");
+        }
+
+        private void OnFinished()
+        {
+            MessageBox.Show("Finish");
+        }
     }
 }

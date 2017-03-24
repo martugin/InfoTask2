@@ -343,7 +343,7 @@ namespace InfoTaskLauncherTest
             con.MakeClone(new DateTime(2016, 7, 8), new DateTime(2016, 7, 8, 0, 30, 0), cloneDir);
             launcher.Close();
             Assert.IsTrue(launcher.IsClosed);
-            //TestLib.CompareClones(cloneDir + @"\Clone.accdb", cloneDir + @"\CorrectClone.accdb");
+            TestLib.CompareClones(cloneDir + @"\Clone.accdb", cloneDir + @"\CorrectClone.accdb");
         }
     }
 }
