@@ -67,29 +67,79 @@
   </Projects>
   <LocalData>
     <!--Каталог локальных данных проектов-->
-    <_КодПроекта>
-      <!--Каталог локальных данных конкретного проекта-->
+    <History>
+      <!--Файлы истории (значения)-->
       <Constructor>
+        <_КодПроектаHistory.accdb>История одного проекта в конструкторе</_КодПроектаHistory.accdb>
+      </Constructor>
+      <Analyzer>
+        <_КодПроектаHistory.accdb>История одного проекта в анализаторе</_КодПроектаHistory.accdb>
+      </Analyzer>
+      <Comm>
+        <_КодПроектаHistory.accdb>История коммуникатора</_КодПроектаHistory.accdb>
+      </Comm>
+      <Server>
+        <_КодПроекта_НомерПотокаHistory.accdb>История работы потока</_КодПроекта_НомерПотокаHistory.accdb>
+        <ServerHistory.accdb>История работы сервера, не относящаяся к конкретному потоку</ServerHistory.accdb>
+      </Server>
+      <Client>
+        <!--История клиента-->
+        <_КодПроектаHistory.accdb>История клиента, включая администрирование и формирование отчетов</_КодПроектаHistory.accdb>
+      </Client>
+      <ReporterExcel>
+        <!--История построителя отчетов Excel-->
+        <ExcelServerHistory.accdb>История сервера отчетов</ExcelServerHistory.accdb>
+        <_КодПроектаHistory.accdb>История конструктора отчетов</_КодПроектаHistory.accdb>
+        <_КодКлиента_КодПроекта_History.accdb>История построения отчетов на сервере для одного клиента</_КодКлиента_КодПроекта_History.accdb>
+      </ReporterExcel>
+      <ReporterWord>
+        <!--История построителя отчетов Word-->
+      </ReporterWord>
+      <ReporterWeb>
+        <!--История построителя web-отчетов-->
+      </ReporterWeb>
+    </History>
+    <SpecialProjects>
+      <CommProject>
+        <!--Проект коммуникатора-->
+        <ProjectProperties.xml>Файл свойств проекта (исходный)</ProjectProperties.xml>
+        <SignalsSource>
+          <!--Каталог списков сигналов источников (порожденный)-->
+          <_КодСоединения.accdb>Файл списка сигналов одного источника, шаблон Projects\Signals.accdb</_КодСоединения.accdb>
+          <_КодСоединенияModule>
+            <!--Библиотечный модуль расчетных сигналов источника-->
+            <!--Основная структура файлов как у обычного модуля-->
+            <!--Шаблон: Projects\Module-->
+          </_КодСоединенияModule>
+        </SignalsSource>
+        <SignalsReceiver>
+          <!--Каталог списков сигналов приемника (порожденный)-->
+          <_КодСоединения.accdb>Файл списка сигналов одного приемника, шаблон Projects\Signals.accdb</_КодСоединения.accdb>
+        </SignalsReceiver>
+      </CommProject>
+    </SpecialProjects>
+    <Constructor>
+      <_КодПроекта>
         <!--Локальные данные конструктора по одному проекту-->
         <!--Шаблон LocalData\Constructor-->
-        <ConstructorProjectData.accdb>Локальные настройки конструктора, общие для проекта (настройки)</ConstructorProjectData.accdb>
         <ConnectProperties.xml>Значения настроек соединений конструктора для проекта (настройки)</ConnectProperties.xml>
+        <ConstructorProjectData.accdb>Локальные настройки конструктора, общие для проекта (настройки)</ConstructorProjectData.accdb>
         <HandInput>
           <!--Значения отладочного ручного ввода (значения)-->
           <_КодСоединенияValues.accdb>Значения ручного ввода для одного соединения</_КодСоединенияValues.accdb>
         </HandInput>
         <Imit>
           <!--Файлы имитации-->
-          <_КодИсточника_Imit.accdb>Файл имитации значений сигналов источника (значения)</_КодИсточника_Imit.accdb>
-          <_КодМодуля_Imit.accdb>Файл имитации значений порожденных параметров (значения)</_КодМодуля_Imit.accdb>
+          <_КодИсточникаImit.accdb>Файл имитации значений сигналов источника (значения)</_КодИсточникаImit.accdb>
+          <_КодМодуляImit.accdb>Файл имитации значений порожденных параметров (значения)</_КодМодуляImit.accdb>
         </Imit>
         <Result>
           <!--Результаты отладочного расчета (значения)-->
-          <_КодМодуля.accdb>Результаты отладочного расчета по модулю, включая значения сигналов</_КодМодуля.accdb>
+          <_КодМодуляResult.accdb>Результаты отладочного расчета по модулю, включая значения сигналов</_КодМодуляResult.accdb>
         </Result>
         <Archives>
           <!--Результаты отладочного расчета (значения)-->
-          <_КодМодуля_Archive.accdb>Результаты отладочного периодического расчета по модулю, шаблон Providers\CalcArchive.accdb</_КодМодуля_Archive.accdb>
+          <_КодМодуляArchive.accdb>Результаты отладочного периодического расчета по модулю, шаблон Providers\CalcArchive.accdb</_КодМодуляArchive.accdb>
         </Archives>
         <Comm>
           <!--Файлы данных коммуникаторов (настройки, порожденный)-->
@@ -102,9 +152,12 @@
             <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
           </_КодПриемника>
         </Comm>
-      </Constructor>
-      <Analyzer>
-        <!--Локальные данный анализатора-->
+      </_КодПроекта>
+    </Constructor>
+    <Analyzer>
+      <_КодПроекта>
+        <!--Локальные данные анализатора по одному проекту-->
+        <!--Шаблон LocalData\Analyzer (добавляется к скопированному из LocalData\Constructor)-->
         <AnalyzerProjectData.accdb>Локальные настройки анализатора, общие для проекта (настройки)</AnalyzerProjectData.accdb>
         <Modules>
           <!--Сформированные ведомости-->
@@ -115,6 +168,11 @@
           <_КомМодуля_Ved.accdb>Файл сформированной ведомости Access, по целому набору</_КомМодуля_Ved.accdb>
           <_КомМодуля_КодЗадачи_Ved.accdb>Файл сформированной ведомости Access, по одной задаче</_КомМодуля_КодЗадачи_Ved.accdb>
         </Ved>
+      </_КодПроекта>
+    </Analyzer>
+    <Calibrator>
+      <_КодПроекта>
+        <!--Локальные данные калибратора по одному проекту-->
         <Comm>
           <!--Файлы данных коммуникаторов (настройки, порожденный)-->
           <_КодИсточника>
@@ -122,9 +180,11 @@
             <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
           </_КодИсточника>
         </Comm>
-      </Analyzer>
-      <Server>
-        <!--Данные сервера-->
+      </_КодПроекта>
+    </Calibrator>
+    <Server>
+      <_КодПроекта>
+        <!--Данные сервера по одному проекту-->
         <ServerData.xml>Настройки сервера, общие для проекта (настройки)</ServerData.xml>
         <Threads>
           <!--Настройки потоков расчета-->
@@ -166,9 +226,11 @@
             <_ДатаФормирования.xml>Данные сформированного WEB-отчета</_ДатаФормирования.xml>
           </_КодОтчета>
         </ReportsJournal>
-      </Server>
-      <Client>
-        <!--Настройки клиента-->
+      </_КодПроекта>
+    </Server>
+    <Client>
+      <_КодПроекта>
+        <!--Настройки клиента для одного проекта-->
         <TreeSettings.xml>Настройка отображения главного дерева клиента</TreeSettings.xml>
         <FormingData.xml>Параметры последнего формирования для всех отчетов</FormingData.xml>
         <Groups>
@@ -176,95 +238,20 @@
           <_КодГруппы.xml>Свойства группы формирования отчетов</_КодГруппы.xml>
           <GroupFormingData.xml>Параметры последнего формирования для всех групп отчетов</GroupFormingData.xml>
         </Groups>
-      </Client>
-      <History>
-        <!--Файлы истории (значения)-->
-        <Threads>
-          <!--История потоков расчета-->
-          <_History_НомерПотока.accdb>История работы потока</_History_НомерПотока.accdb>
-          <ServerHistory.accdb>История работы сервера, не относящаяся к конкретному потоку</ServerHistory.accdb>
-        </Threads>
-        <Analyzer>
-          <!--История анализатора-->
-          <TablikHistory.accdb>История компиляции и генерации </TablikHistory.accdb>
-          <CalcHistory.accdb>История расчетов</CalcHistory.accdb>
-          <AnalyzerHistory.accdb>Общая история анализатора</AnalyzerHistory.accdb>
-        </Analyzer>
-        <Constructor>
-          <!--История конструктора-->
-          <TablikHistory.accdb>История компиляции и генерации </TablikHistory.accdb>
-          <CalcHistory.accdb>История расчетов</CalcHistory.accdb>
-          <ConstructorHistory.accdb>Общая история конструктора</ConstructorHistory.accdb>
-        </Constructor>
-        <Client>
-          <!--История клиента-->
-          <ClientHistory.accdb>История клиента, включая администрирование и формирование отчетов</ClientHistory.accdb>
-        </Client>
-        <ReporterExcel>
-          <!--История построителя отчетов Excel-->
-          <ExcelServerHistory.accdb>История сервера отчетов</ExcelServerHistory.accdb>
-          <ExcelConstructorHistory.accdb>История конструктора отчетов</ExcelConstructorHistory.accdb>
-          <_КодКлиента_ExcelHistory.accdb>История построения отчетов на сервере для одного клиента</_КодКлиента_ExcelHistory.accdb>
-        </ReporterExcel>
-        <ReporterWord>
-          <!--История построителя отчетов Word-->
-          <WordServerHistory.accdb>История сервера отчетов</WordServerHistory.accdb>
-          <WordConstructorHistory.accdb>История конструктора отчетов</WordConstructorHistory.accdb>
-          <_КодКлиента_WordHistory.accdb>История построения отчетов на сервере для одного клиента</_КодКлиента_WordHistory.accdb>
-        </ReporterWord>
-        <ReporterWord>
-          <!--История построителя web-отчетов-->
-          <WebServerHistory.accdb>История сервера отчетов</WebServerHistory.accdb>
-          <WebConstructorHistory.accdb>История конструктора отчетов</WebConstructorHistory.accdb>
-          <_КодКлиента_WebHistory.accdb>История построения отчетов на сервере для одного клиента</_КодКлиента_WebHistory.accdb>
-        </ReporterWord>
-        <Comm>
-          <!--История коммуникаторов-->
-          <_КодКоммуникатора_History.accdb>История коммуникатора</_КодКоммуникатора_History.accdb>
-        </Comm>
-      </History>
-      <Calibrator>
-        <!--Локальные данные калибратора по одному проекту-->
-        <Comm>
-          <!--Файлы данных коммуникаторов (настройки, порожденный)-->
-          <_КодИсточника>
-            <!--Временные файлы коммуникатора источника-->
-            <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
-          </_КодИсточника>
-        </Comm>
-      </Calibrator>
-      <Comm>
-        <!--Файлы данных коммуникаторов (настройки, порожденный)-->
-        <_КодИсточника>
-          <!--Временные файлы коммуникатора источника-->
-          <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
-        </_КодИсточника>
-        <_КодПриемника>
-          <!--Временные файлы коммуникатора приемника-->
-          <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
-        </_КодПриемника>
-      </Comm>
-    </_КодПроекта>
+      </_КодПроекта>
+    </Client>
+    <Comm>
+      <!--Файлы данных коммуникаторов (настройки, порожденный)-->
+      <_КодИсточника>
+        <!--Временные файлы коммуникатора источника-->
+        <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
+      </_КодИсточника>
+      <_КодПриемника>
+        <!--Временные файлы коммуникатора приемника-->
+        <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
+      </_КодПриемника>
+    </Comm>
   </LocalData>
-  <SpecialProjects>
-    <CommProject>
-      <!--Проект коммуникатора-->
-      <ProjectProperties.xml>Файл свойств проекта (исходный)</ProjectProperties.xml>
-      <SignalsSource>
-        <!--Каталог списков сигналов источников (порожденный)-->
-        <_КодСоединения.accdb>Файл списка сигналов одного источника, шаблон Projects\Signals.accdb</_КодСоединения.accdb>
-        <_КодСоединенияModule>
-          <!--Библиотечный модуль расчетных сигналов источника-->
-          <!--Основная структура файлов как у обычного модуля-->
-          <!--Шаблон: Projects\Module-->
-        </_КодСоединенияModule>
-      </SignalsSource>
-      <SignalsReceiver>
-        <!--Каталог списков сигналов приемника (порожденный)-->
-        <_КодСоединения.accdb>Файл списка сигналов одного приемника, шаблон Projects\Signals.accdb</_КодСоединения.accdb>
-      </SignalsReceiver>
-    </CommProject>
-  </SpecialProjects>
   <Клон>
     <!--Структура каталога клона-->
     <Signals.accdb>Файл списка сигналов одного источника или приемника, шаблон Projects\Signals.accdb</Signals.accdb>
