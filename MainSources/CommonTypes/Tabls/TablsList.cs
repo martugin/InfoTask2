@@ -27,7 +27,7 @@ namespace CommonTypes
             return s;
         }
 
-        //Добавляет структуры всех таблиз базы фомата Tbl_*_sub*
+        //Добавляет структуры всех таблиц базы фомата Tbl_*_sub*
         public void AddDbStructs(DaoDb db) //База данных
         {
             db.ConnectDao();
