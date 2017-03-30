@@ -15,12 +15,12 @@ namespace BaseLibraryTest
         //Открытие тестовых баз с копированием 
         private DaoDb CopyDb(string prefix)
         {
-            return new DaoDb(TestLib.CopyFile("BaseLibrary", "DbDao.accdb", "Dao" + prefix + ".accdb"));
+            return new DaoDb(TestLib.CopyFile("Libraries", "DbDao.accdb", "Dao" + prefix + ".accdb"));
         }
         //Путь к файлу
         private string File(string prefix)
         {
-            return TestLib.TestRunDir + @"BaseLibrary\Dao" + prefix + ".accdb";
+            return TestLib.TestRunDir + @"Libraries\Dao" + prefix + ".accdb";
         }
 
         [TestMethod]
@@ -121,7 +121,7 @@ namespace BaseLibraryTest
             string file = File("Static");
             string fileWrong = File("Static2");
             string fileCopy = File("Copy");
-            string fileTmp = TestLib.TestRunDir + @"BaseLibrary\TmpDaoStatic.accdb";
+            string fileTmp = TestLib.TestRunDir + @"Libraries\TmpDaoStatic.accdb";
             db.Dispose();
             Assert.IsNull(db.Database);
             Assert.IsNull(db.Connection);
