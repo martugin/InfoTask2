@@ -11,7 +11,7 @@ namespace BaseLibraryTest
         //Открытие тестовых баз с копированием 
         private string CopyFile(string prefix)
         {
-            return TestLib.CopyFile("BaseLibrary", "DbDao.accdb", "SysTabl" + prefix + ".accdb");
+            return TestLib.CopyFile("Libraries", "DbDao.accdb", "SysTabl" + prefix + ".accdb");
         }
 
         [TestMethod]

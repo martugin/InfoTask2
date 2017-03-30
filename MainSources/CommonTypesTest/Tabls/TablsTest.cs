@@ -12,12 +12,12 @@ namespace CommonTypesTest
         //Открытие тестовых баз с копированием 
         private DaoDb CopyDb(string prefix)
         {
-            return new DaoDb(TestLib.CopyFile("CommonTypes", "TablsData.accdb", "Tabls" + prefix + ".accdb"));
+            return new DaoDb(TestLib.CopyFile("Libraries", "TablsData.accdb", "Tabls" + prefix + ".accdb"));
         }
         //Путь к файлу
         private string File(string prefix)
         {
-            return TestLib.TestRunDir + @"CommonTypes\Tabls" + prefix + ".accdb";
+            return TestLib.TestRunDir + @"Libraries\Tabls" + prefix + ".accdb";
         }
         
         [TestMethod]

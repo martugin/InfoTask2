@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BaseLibrary;
+using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BaseLibraryTest
@@ -13,17 +14,20 @@ namespace BaseLibraryTest
         {
             get
             {
-                var dir = Static.GetRegistry(@"software\InfoTask", "InfoTask2Path");
-                if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
+                var dir = new DirectoryInfo(ItStatic.InfoTaskDir()).Parent.FullName;
                 if (!dir.EndsWith(@"\")) dir += @"\";
-                var n = dir.LastIndexOf(@"\", dir.Length - 2, StringComparison.Ordinal);
-                return dir.Substring(0, n + 1);    
+                return dir;
+                //var dir = Static.GetRegistry(@"software\InfoTask", "InfoTask2Path");
+                //if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
+                //if (!dir.EndsWith(@"\")) dir += @"\";
+                //var n = dir.LastIndexOf(@"\", dir.Length - 2, StringComparison.Ordinal);
+                //return dir.Substring(0, n + 1);    
             }
         }
         //Путь к каталогу TestRun
         public static string TestRunDir
         {
-            get { return InfoTaskDevelopDir + @"TestsRun\"; }
+            get { return InfoTaskDevelopDir + @"Debug\TestsRun\"; }
         }
         
         //Копирует файл из Tests в TestsRun, возвращает полный путь к итоговому файлу

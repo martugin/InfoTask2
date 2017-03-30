@@ -11,8 +11,10 @@ namespace BaseLibraryTest
          //Открытие файла истории
          private void OpenHistory(string fileName, bool replace)
          {
-             var file = TestLib.TestRunDir + @"BaseLibrary\History\" + fileName + ".txt";
-             var efile = TestLib.TestRunDir + @"BaseLibrary\History\" + fileName + "Errors.txt";
+             TestLib.CopyFile("Libraries", "CorrectHistory.txt", @"History\CorrectHistory.txt");
+             TestLib.CopyFile("Libraries", "CorrectHistoryErrors.txt", @"History\CorrectHistoryErrors.txt");
+             var file = TestLib.TestRunDir + @"Libraries\History\" + fileName + ".txt";
+             var efile = TestLib.TestRunDir + @"Libraries\History\" + fileName + "Errors.txt";
              if (replace)
              {
                  new FileInfo(file).Delete();
@@ -82,8 +84,8 @@ namespace BaseLibraryTest
              });
              History.Close();
 
-             string cfile = TestLib.TestRunDir + @"BaseLibrary\History\CorrectHistory.txt";
-             string file = TestLib.TestRunDir + @"BaseLibrary\History\History.txt";
+             string cfile = TestLib.TestRunDir + @"Libraries\History\CorrectHistory.txt";
+             string file = TestLib.TestRunDir + @"Libraries\History\History.txt";
          }
     }
 }

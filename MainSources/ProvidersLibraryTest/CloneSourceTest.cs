@@ -12,10 +12,10 @@ namespace ProvidersLibraryTest
     {
         private SourceConnect MakeCloneConnect(string prefix)
         {
-            TestLib.CopyDir(@"ProvidersLibrary", "TestClone", "Clone" + prefix);
+            TestLib.CopyDir(@"Providers\Fictive", "TestClone", "Clone" + prefix);
             var factory = new ProvidersFactory();
             var connect = factory.CreateConnect(ProviderType.Source, "TestSource", "Clones", new Logger());
-            connect.JoinProvider(factory.CreateProvider("CloneSource", "CloneDir=" + TestLib.TestRunDir + @"ProvidersLibrary\Clone" + prefix));
+            connect.JoinProvider(factory.CreateProvider("CloneSource", "CloneDir=" + TestLib.TestRunDir + @"Providers\Fictive\Clone" + prefix));
             return (SourceConnect)connect;
         }
 
@@ -40,8 +40,8 @@ namespace ProvidersLibraryTest
             Assert.IsNotNull(connect.Logger);
             Assert.AreEqual(0, connect.CalcSignals.Count);
             Assert.AreEqual(0, connect.Signals.Count);
-            
-            Assert.AreEqual(TestLib.TestRunDir + @"ProvidersLibrary\CloneProps\Clone.accdb", source.CloneFile);
+
+            Assert.AreEqual(TestLib.TestRunDir + @"Providers\Fictive\CloneProps\Clone.accdb", source.CloneFile);
             Assert.AreEqual("Источник: TestSource", connect.Context);
             Assert.AreEqual(source, connect.Provider);
             Assert.IsTrue(source.Connect());

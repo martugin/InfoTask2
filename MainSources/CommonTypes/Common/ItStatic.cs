@@ -12,7 +12,7 @@ namespace CommonTypes
         {
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             var dir = fi.Directory.Parent;
-            if (dir.Name == "Providers") dir = dir.Parent;
+            if (dir.Name == "Providers" || dir.Name == "TestsRun") dir = dir.Parent;
             string s = dir.FullName;
             if (!s.EndsWith(@"\")) s += @"\";
             return s;
