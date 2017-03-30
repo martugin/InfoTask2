@@ -225,12 +225,12 @@ namespace ProvidersLibrary
             using (var rec = new DaoRec(cloneDb, "Signals"))
                 while (rec.Read())
                 {
-                    var sig = (UniformSignal)AddInitialSignal(rec.GetString("FullCode"), 
-                                                                                   rec.GetString("DataType").ToDataType(), 
-                                                                                   rec.GetString("InfObject"), 
-                                                                                   rec.GetString("InfOut"), 
-                                                                                   rec.GetString("InfProp"), 
-                                                                                   rec.GetBool("NeedCut"));
+                    var sig = AddInitialSignal(rec.GetString("FullCode"), 
+                                                           rec.GetString("DataType").ToDataType(), 
+                                                           rec.GetString("InfObject"), 
+                                                           rec.GetString("InfOut"), 
+                                                           rec.GetString("InfProp"), 
+                                                           rec.GetBool("NeedCut"));
                     sig.IdInClone = rec.GetInt("SignalId");
                 }
         }

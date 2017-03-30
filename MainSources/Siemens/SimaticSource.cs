@@ -56,21 +56,21 @@ namespace Provider
         }
 
         //Словари сигналов, ключи полные коды и Id
-        private readonly DicI<SimaticOut> _outsId = new DicI<SimaticOut>();
+        internal readonly DicI<SimaticOut> OutsId = new DicI<SimaticOut>();
 
         //Добавить объект в провайдер
         protected override SourceOut AddOut(InitialSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
-            return _outsId.ContainsKey(id) 
-                ? _outsId[id] 
-                : _outsId.Add(id, new SimaticOut(this, sig.Inf["Archive"], sig.Inf["Tag"], id));
+            return OutsId.ContainsKey(id) 
+                ? OutsId[id] 
+                : OutsId.Add(id, new SimaticOut(this, sig.Inf["Archive"], sig.Inf["Tag"], id));
         }
         
         //Очистка списка сигналов
         protected override void ClearOuts()
         {
-            _outsId.Clear();
+            OutsId.Clear();
         }
 
         //Создание фабрики ошибок
@@ -111,18 +111,18 @@ namespace Provider
         //Определение текущего считываемого выхода
         protected override SourceOut DefineOut(IRecordRead rec)
         {
-            return _outsId[rec.GetInt(0)];
+            return OutsId[rec.GetInt(0)];
         }
         
         //Чтение среза
         protected override ValuesCount ReadCut()
         {
-            return ReadByParts(_outsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
+            return ReadByParts(OutsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
         }
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadByParts(_outsId.Values, 500);
+            return ReadByParts(OutsId.Values, 500);
         }
     }
 }

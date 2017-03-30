@@ -37,11 +37,11 @@ namespace Provider
         }
 
         //Словарь объектов по Id в Historian
-        private readonly DicI<OvationOut> _outsId = new DicI<OvationOut>();
+        internal readonly DicI<OvationOut> OutsId = new DicI<OvationOut>();
         //Объекты сообщений
-        private OvationMsgOut _alarmOut;
-        private OvationMsgOut _soeOut;
-        private OvationMsgOut _textOut;
+        internal OvationMsgOut AlarmOut;
+        internal OvationMsgOut SoeOut;
+        internal OvationMsgOut TextOut;
 
         //Добавить выход в провайдер
         protected override SourceOut AddOut(InitialSignal sig)
@@ -50,26 +50,26 @@ namespace Provider
             switch (obType)
             {
                 case "ALARM":
-                    return _alarmOut ?? (_alarmOut = new OvationMsgOut(this, "ALARM"));
+                    return AlarmOut ?? (AlarmOut = new OvationMsgOut(this, "ALARM"));
                 case "SOE":
-                    return _soeOut ?? (_soeOut = new OvationMsgOut(this, "SOE"));
+                    return SoeOut ?? (SoeOut = new OvationMsgOut(this, "SOE"));
                 case "TEXT":
-                    return _textOut ?? (_textOut = new OvationMsgOut(this, "TEXT"));
+                    return TextOut ?? (TextOut = new OvationMsgOut(this, "TEXT"));
             }
 
             int id = sig.Inf.GetInt("Id");
-            return _outsId.ContainsKey(id) 
-                ? _outsId[id] 
-                : _outsId.Add(id, new OvationOut(this, id));
+            return OutsId.ContainsKey(id) 
+                ? OutsId[id] 
+                : OutsId.Add(id, new OvationOut(this, id));
         }
 
         //Удалить все выходы
         protected override void ClearOuts()
         {
-            _outsId.Clear();
-            _alarmOut = null;
-            _soeOut = null;
-            _textOut = null;
+            OutsId.Clear();
+            AlarmOut = null;
+            SoeOut = null;
+            TextOut = null;
         }
 
         //Создание фабрики ошибок
@@ -105,7 +105,7 @@ namespace Provider
         //Определение текущего считываемого выхода
         protected override SourceOut DefineOut(IRecordRead rec)
         {
-            return _outsId[rec.GetInt("Id")];
+            return OutsId[rec.GetInt("Id")];
         }
 
         //Запросы значений по сигналам сообщений разного типа
@@ -141,10 +141,10 @@ namespace Provider
         {
             var vc = new ValuesCount();
             using (Start(0, 50)) //Срез по 4 минутам
-                vc += ReadByParts(_outsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
+                vc += ReadByParts(OutsId.Values, 200, PeriodBegin.AddMinutes(-4), PeriodBegin, true);
             if (vc.IsFail) return vc;
             using (Start(50, 100)) //Срез по 61 минуте
-                vc += ReadByParts(_outsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
+                vc += ReadByParts(OutsId.Values, 200, PeriodBegin.AddMinutes(-61), PeriodBegin.AddMinutes(-4), true);
             return vc;
         }
 
@@ -153,14 +153,14 @@ namespace Provider
         {
             var vc = new ValuesCount();
             using (Start(0, 70))
-                vc += ReadByParts(_outsId.Values, 200);
+                vc += ReadByParts(OutsId.Values, 200);
 
             using (Start(70, 80))
-                vc += ReadOneOut(_alarmOut, QueryAlarmValues, "Чтение сигнализационных сообщений");
+                vc += ReadOneOut(AlarmOut, QueryAlarmValues, "Чтение сигнализационных сообщений");
             using (Start(80, 90))
-                vc += ReadOneOut(_soeOut, QuerySoeValues, "Чтение событий");
+                vc += ReadOneOut(SoeOut, QuerySoeValues, "Чтение событий");
             using (Start(90, 100))
-                vc += ReadOneOut(_textOut, QueryTextValues, "Чтение текстовых сообщений");
+                vc += ReadOneOut(TextOut, QueryTextValues, "Чтение текстовых сообщений");
             return vc;
         }
     }

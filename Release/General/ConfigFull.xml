@@ -26,11 +26,16 @@
           </RetroServerName>
         </ProviderProps>
       </KosmotronikaRetroSource>
+      <KosmotronikaArchDbSource ProviderType="Источник" Description="OLE DB Provider ПТК Космотроника">
+        <ProviderProps>
+          <ArchiveDir PropNum="1" Description="Путь к каталогу архива" DefaultValue="">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ArchiveDir>
+          <Location PropNum="2" Description="Временной сдвиг" DefaultValue="0"></Location>
+        </ProviderProps>
+      </KosmotronikaArchDbSource>
       <KosmotronikaSQLComm ProviderType="Коммуникатор" Description="База данных SQL" ProviderFile="Providers\Kosmotronika\KosmotronikaSQLComm.accde">
         <ProviderProps>
-          <TemplateName PropNum="1" Description="Шаблон списка сигналов" DefaultValue="InfoTask">
-            <PropOptions RowSourceType="Value List" RowSource="InfoTask;ArhAnalyzer;Минимальный" />
-          </TemplateName>
           <SQLServer PropNum="2" Description="Имя SQL-сервера" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
           </SQLServer>
@@ -48,9 +53,6 @@
       </KosmotronikaSQLComm>
       <KosmotronikaDBFComm ProviderType="Коммуникатор" Description="База данных DBF" ProviderFile="Providers\Kosmotronika\KosmotronikaDBFComm.accde">
         <ProviderProps>
-          <TemplateName PropNum="1" Description="Шаблон списка сигналов" DefaultValue="InfoTask">
-            <PropOptions RowSourceType="Value List" RowSource="InfoTask;ArhAnalyzer;Минимальный" />
-          </TemplateName>
           <DbfDir PropNum="2" Description="Каталог таблиц Dbf" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFolder([Form], &quot;PropValue&quot;, &quot;Каталог DBF&quot;)" />
           </DbfDir>

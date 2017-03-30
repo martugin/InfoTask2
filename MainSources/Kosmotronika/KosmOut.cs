@@ -7,6 +7,14 @@ namespace Provider
     //Структура для индекса словаря сигналов
     internal struct OutIndex
     {
+        public OutIndex(int sn, int numType, int appartment, int numOut)
+        {
+            Sn = sn;
+            NumType = numType;
+            Appartment = appartment;
+            Out = numOut;
+        }
+
         //Системный номер
         internal int Sn;
         //Номер типа
@@ -33,7 +41,7 @@ namespace Provider
         //Добавить к выходу сигнал, если такого еще не было
         protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
-            switch (sig.Inf["Prop"])
+            switch (sig.Inf["Prop"].ToUpper())
             {
                 case "ND":
                     return StateSignal = StateSignal ?? sig;
