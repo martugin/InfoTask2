@@ -64,6 +64,8 @@ namespace ProvidersTest
         {
             var con = MakeProviders(true);
             var prov = (KosmotronikaRetroSource)con.Provider;
+            Assert.IsFalse(prov.IsConnected);
+            Assert.IsFalse(prov.IsPrepared);
             Assert.AreEqual(0, con.Signals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.AreEqual(0, con.InitialSignals.Count);
@@ -75,9 +77,9 @@ namespace ProvidersTest
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.AreEqual(0, con.InitialSignals.Count);
 
-            con.AddInitialSignal("01MKA10CE001XQ01.1_Пар", DataType.Real, "SysNum=10827;NumType=1;Appartment=0", "NumOut=1", "", true);
-            con.AddInitialSignal("01MKA10CE001XQ01.НД", DataType.Integer, "SysNum=10827;NumType=1;Appartment=0", "NumOut=1", "Prop=ND", true);
-            con.AddInitialSignal("01MKA10CE001XQ01.ПОК", DataType.Integer, "SysNum=10827;NumType=1;Appartment=0", "NumOut=1", "Prop=POK", true);
+            con.AddInitialSignal("01MKA10CE001XQ01.1_Пар", DataType.Real, "SysNum=10827;NumType=1;Appartment=0", "NumOut=1");
+            con.AddInitialSignal("01MKA10CE001XQ01.НД", DataType.Integer, "SysNum=10827;NumType=1;Appartment=0", "NumOut=1", "Prop=ND");
+            con.AddInitialSignal("01MKA10CE001XQ01.ПОК", DataType.Integer, "SysNum=10827;NumType=1;Appartment=0", "NumOut=1", "Prop=POK");
             Assert.AreEqual(3, con.Signals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.AreEqual(3, con.InitialSignals.Count);
@@ -85,14 +87,14 @@ namespace ProvidersTest
             Assert.IsTrue(con.Signals.ContainsKey("01MKA10CE001XQ01.НД"));
             Assert.IsTrue(con.Signals.ContainsKey("01MKA10CE001XQ01.ПОК"));
             
-            con.AddInitialSignal("02MKA10CE001XQ01.1_Пар", DataType.Real, "SysNum=11581;NumType=1;Appartment=0", "NumOut=1", "", true);
+            con.AddInitialSignal("02MKA10CE001XQ01.1_Пар", DataType.Real, "SysNum=11581;NumType=1;Appartment=0", "NumOut=1");
             Assert.AreEqual(4, con.Signals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.AreEqual(4, con.InitialSignals.Count);
             Assert.IsTrue(con.Signals.ContainsKey("02MKA10CE001XQ01.1_Пар"));
 
-            con.AddInitialSignal("01MKA10CE001XQ01.8_Сост", DataType.Integer, "SysNum=10827;NumType=1;Appartment=0", "NumOut=8", "", true);
-            con.AddInitialSignal("02MKA10CE001XQ01.8_Сост", DataType.Integer, "SysNum=11581;NumType=1;Appartment=0", "NumOut=8", "", true);
+            con.AddInitialSignal("01MKA10CE001XQ01.8_Сост", DataType.Integer, "SysNum=10827;NumType=1;Appartment=0", "NumOut=8");
+            con.AddInitialSignal("02MKA10CE001XQ01.8_Сост", DataType.Integer, "SysNum=11581;NumType=1;Appartment=0", "NumOut=8");
             Assert.AreEqual(6, con.Signals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.AreEqual(6, con.InitialSignals.Count);
@@ -121,15 +123,17 @@ namespace ProvidersTest
             Assert.IsTrue(con.Signals.ContainsKey("Оператор.ExtCommand"));
             Assert.IsTrue(con.Signals.ContainsKey("Оператор.Point"));
 
-            con.AddInitialSignal("01LCW12AA001YB.3_Сост", DataType.Integer, "SysNum=34000;NumType=6;Appartment=0", "NumOut=3", "", true);
-            con.AddInitialSignal("01LCW12AA001YB.7_Сост", DataType.Integer, "SysNum=34000;NumType=6;Appartment=0", "NumOut=7", "", true);
+            con.AddInitialSignal("01LCW12AA001YB.3_Сост", DataType.Integer, "SysNum=34000;NumType=6;Appartment=0", "NumOut=3");
+            con.AddInitialSignal("01LCW12AA001YB.7_Сост", DataType.Integer, "SysNum=34000;NumType=6;Appartment=0", "NumOut=7");
             Assert.AreEqual(17, con.Signals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.AreEqual(17, con.InitialSignals.Count);
             Assert.IsTrue(con.Signals.ContainsKey("01LCW12AA001YB.3_Сост"));
             Assert.IsTrue(con.Signals.ContainsKey("01LCW12AA001YB.7_Сост"));
 
+            Assert.IsFalse(prov.IsPrepared);
             prov.Prepare(false);
+            Assert.IsTrue(prov.IsPrepared);
             Assert.AreEqual(2, prov.Analogs.Count);
             Assert.AreEqual(4, prov.Outs.Count);
             Assert.IsNotNull(prov.OperatorOut);
@@ -224,6 +228,15 @@ namespace ProvidersTest
             Assert.IsNotNull(prov.OperatorOut.ExtCommandSignal);
             Assert.IsNotNull(prov.OperatorOut.PointSignal);
             Assert.AreEqual("ObjectType=Operator", prov.OperatorOut.Context);
+
+            con.ClearSignals();
+            Assert.IsFalse(prov.IsPrepared);
+            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.CalcSignals.Count);
+            Assert.AreEqual(0, con.InitialSignals.Count);
+            Assert.AreEqual(0, prov.Outs.Count);
+            Assert.AreEqual(0, prov.Analogs.Count);
+            Assert.IsNull(prov.OperatorOut);
         }
     }
 }

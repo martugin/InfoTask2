@@ -43,6 +43,8 @@ namespace ProvidersTest
             Assert.IsFalse(prov.IsPrepared);
 
             var ti = con.GetTime();
+            Assert.IsTrue(prov.IsConnected);
+            Assert.IsFalse(prov.IsPrepared);
             Assert.AreEqual(Static.MinDate, ti.Begin);
 
             con.AddInitialSignal("T941M_412.t1", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=t1", false);
@@ -70,13 +72,24 @@ namespace ProvidersTest
             Assert.IsTrue(con.Signals.ContainsKey("T941M_412.Q"));
             Assert.IsTrue(con.Signals.ContainsKey("T941M_412.Tи"));
 
+            Assert.IsFalse(prov.IsPrepared);
             prov.Prepare(false);
+            Assert.IsTrue(prov.IsPrepared);
             Assert.IsTrue(prov.IsConnected);
+            Assert.IsTrue(prov.IsPrepared);
             Assert.AreEqual(1, prov.Outs.Count);
             Assert.AreEqual(1, prov.OutsId.Count);
             Assert.IsTrue(prov.Outs.ContainsKey("T941M"));
             Assert.IsTrue(prov.Outs["T941M"].ContainsKey(412));
             Assert.IsTrue(prov.OutsId.ContainsKey(412));
+
+            con.ClearSignals();
+            Assert.IsFalse(prov.IsPrepared);
+            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.CalcSignals.Count);
+            Assert.AreEqual(0, con.InitialSignals.Count);
+            Assert.AreEqual(0, prov.Outs.Count);
+            Assert.AreEqual(0, prov.OutsId.Count);
         }
 
         private DateTime D(int h)
@@ -127,6 +140,8 @@ namespace ProvidersTest
             using (con.StartPeriod(D(0), D(24), "Single"))
             {
                 con.GetValues();
+                Assert.IsTrue(con.Source.IsConnected);
+                Assert.IsTrue(con.Source.IsPrepared);
                 var sig = con.Signals["T941M_412.t1"];
                 CheckTimeAndErr(sig);
                 CheckValue(71.65745, sig, 0);

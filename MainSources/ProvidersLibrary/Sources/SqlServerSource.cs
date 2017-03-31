@@ -10,7 +10,7 @@ namespace ProvidersLibrary
         //Загрузка свойств из словаря
         protected override void ReadInf(DicS<string> dic)
         {
-            bool e = dic["IndentType"].ToUpper() != "WINDOWS";
+            bool e = dic["IdentType"].ToUpper() != "WINDOWS";
             string server = dic["SQLServer"], db = dic["Database"];
             SqlProps = new SqlProps(server, db, e, dic["Login"], dic["Password"]);
         }

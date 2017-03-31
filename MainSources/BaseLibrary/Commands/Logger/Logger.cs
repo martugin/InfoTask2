@@ -105,13 +105,15 @@ namespace BaseLibrary
         //Завершение команды, колекционирущей ошибки
         public CollectCommand FinishCollect(string results = null)
         {
-            if (results != null) CollectedResults = results;
+            if (results != null && CollectCommand != null) 
+                CollectedResults = CollectCommand.AddResult(results);
             return (CollectCommand)FinishCommand(CollectCommand);
         }
         //Присвоить результат команды Collect
         public void AddCollectResult(string result)
         {
-            CollectedResults = result;
+            if (CollectCommand != null)
+                CollectedResults = CollectCommand.AddResult(result);
         }
 
         //Событие прерывания выполнения

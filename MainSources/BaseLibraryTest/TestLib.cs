@@ -32,13 +32,11 @@ namespace BaseLibraryTest
         }
 
         //Строка настроек провайдера для соединения с тестовым SQL Server
-        public static string TestSqlInf
+        public static string TestSqlInf(string dbName)
         {
-            get
-            {
-                using (var sys = new SysTabl(TestRunDir + "TestsSettings.accdb"))
-                    return SqlParam(sys, "SqlServer") + ";" + SqlParam(sys, "IdentType") + ";" + SqlParam(sys, "Login") + ";" + SqlParam(sys, "Password") + ";";  
-            }
+            using (var sys = new SysTabl(TestRunDir + "TestsSettings.accdb"))
+                return SqlParam(sys, "SqlServer") + ";" + SqlParam(sys, "IdentType") + ";" + SqlParam(sys, "Login") + ";" + SqlParam(sys, "Password") + ";DataBase=" + dbName;  
+         
         }
         private static string SqlParam(SysTabl sys, string name)
         {

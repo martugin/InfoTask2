@@ -42,9 +42,9 @@ namespace ProvidersLibrary
         public InitialSignal AddInitialSignal(string fullCode, //Полный код сигнала
                                                                DataType dataType, //Тип данных
                                                                string infObject, //Свойства объекта
-                                                               string infOut, //Свойства выхода относительно объекта
-                                                               string infProp, //Свойства сигнала относительно выхода
-                                                               bool needCut) //Нужно считывать срез значений
+                                                               string infOut = "", //Свойства выхода относительно объекта
+                                                               string infProp = "", //Свойства сигнала относительно выхода
+                                                               bool needCut = true) //Нужно считывать срез значений
         {
             if (InitialSignals.ContainsKey(fullCode))
                 return InitialSignals[fullCode];
@@ -76,7 +76,8 @@ namespace ProvidersLibrary
         public void ClearSignals()
         {
             AddEvent("Очистка списка сигналов");
-            Provider.IsPrepared = false;
+            Source.IsPrepared = false;
+            Source.ClearOuts();
             _signals.Clear();
             InitialSignals.Clear();
             CalcSignals.Clear();

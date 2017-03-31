@@ -4,6 +4,7 @@ using BaseLibraryTest;
 using ComLaunchers;
 using Fictive;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ProvidersLibrary;
 
 namespace InfoTaskLauncherTest
 {
@@ -23,6 +24,7 @@ namespace InfoTaskLauncherTest
             Assert.IsNotNull(con);
             Assert.AreEqual("Sour", con.Name);
             Assert.AreEqual("Fictive", con.Complect);
+            Assert.AreEqual(ProviderType.Source, con.Type);
             con.JoinProvider("FictiveSimpleSource", "Label=fic");
             var source = (FictiveSimpleSource)con.Connect.Source;
             Assert.IsNotNull(source);
@@ -37,6 +39,7 @@ namespace InfoTaskLauncherTest
             var sigBool = con.AddInitialSignal("Out1.Bool", "bool", "NumObject=1;ValuesInterval=30000", "", "Signal=Bool");
             Assert.AreEqual("Out1.Bool", sigBool.Code);
             Assert.AreEqual("Логич", sigBool.DataType);
+            Assert.AreEqual("NUMOBJECT=1;VALUESINTERVAL=30000;SIGNAL=Bool;", sigBool.Inf);
             var sigInt = con.AddInitialSignal("Out1.Int", "int", "NumObject=1;ValuesInterval=30000", "", "Signal=Int");
             Assert.AreEqual("Out1.Int", sigInt.Code);
             Assert.AreEqual("Целое", sigInt.DataType);

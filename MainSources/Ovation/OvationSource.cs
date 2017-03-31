@@ -46,7 +46,7 @@ namespace Provider
         //Добавить выход в провайдер
         protected override SourceOut AddOut(InitialSignal sig)
         {
-            var obType = sig.Inf.Get("ObjectType");
+            var obType = sig.Inf.Get("ObjectType").ToUpper();
             switch (obType)
             {
                 case "ALARM":

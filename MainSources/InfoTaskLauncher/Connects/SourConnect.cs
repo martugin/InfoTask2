@@ -93,7 +93,7 @@ namespace ComLaunchers
         }
 
         //Тип провайдера
-        protected ProviderType Type { get { return ProviderType.Source;}}
+        protected internal ProviderType Type { get { return ProviderType.Source;}}
 
         //Получение диапазона времени источника
         public void GetTime()

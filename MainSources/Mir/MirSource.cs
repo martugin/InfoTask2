@@ -14,6 +14,7 @@ namespace Provider
         public override string Code { get { return "MirSource"; } }
         
         //Словари выходов, ключи коды и IdChanell
+        //Выход с одним и тем же кодом может встречаться несколько раз под разными Id
         internal readonly DicS<MirOut> Outs = new DicS<MirOut>();
         internal readonly DicI<MirOut> OutsId = new DicI<MirOut>();
         
