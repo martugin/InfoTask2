@@ -41,7 +41,7 @@ namespace ProvidersLibrary
         }
 
         //Подготовка источника
-        protected internal bool Prepare()
+        protected internal bool Prepare(bool connectBefore = true)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace ProvidersLibrary
                     ob.AddSignal(sig);
                 }
                 Procent = 20;
-                if (!Connect()) return false;
+                if (connectBefore && !Connect()) return false;
                 IsPrepared = StartDanger(0, 100, 2, LoggerStability.Periodic, "Подготовка провайдера")
                                     .Run(PrepareProvider, Reconnect).IsSuccess;
                 if (ErrPool == null)
@@ -69,7 +69,7 @@ namespace ProvidersLibrary
         }
 
         //Очистка списков объектов
-        protected abstract void ClearOuts();
+        protected internal abstract void ClearOuts();
         //Добавить объект содержащий заданный сигнал
         protected abstract SourceOut AddOut(InitialSignal sig);
         

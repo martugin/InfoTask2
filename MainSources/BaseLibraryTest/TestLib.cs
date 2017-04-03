@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Remoting.Messaging;
 using BaseLibrary;
+using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BaseLibraryTest
@@ -13,19 +15,34 @@ namespace BaseLibraryTest
         {
             get
             {
-                var dir = Static.GetRegistry(@"software\InfoTask", "InfoTask2Path");
-                if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
+                var dir = new DirectoryInfo(ItStatic.InfoTaskDir()).Parent.FullName;
                 if (!dir.EndsWith(@"\")) dir += @"\";
-                var n = dir.LastIndexOf(@"\", dir.Length - 2, StringComparison.Ordinal);
-                return dir.Substring(0, n + 1);    
+                return dir;
+                //var dir = Static.GetRegistry(@"software\InfoTask", "InfoTask2Path");
+                //if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
+                //if (!dir.EndsWith(@"\")) dir += @"\";
+                //var n = dir.LastIndexOf(@"\", dir.Length - 2, StringComparison.Ordinal);
+                //return dir.Substring(0, n + 1);    
             }
         }
         //Путь к каталогу TestRun
         public static string TestRunDir
         {
-            get { return InfoTaskDevelopDir + @"TestsRun\"; }
+            get { return InfoTaskDevelopDir + @"Debug\TestsRun\"; }
         }
-        
+
+        //Строка настроек провайдера для соединения с тестовым SQL Server
+        public static string TestSqlInf(string dbName)
+        {
+            using (var sys = new SysTabl(TestRunDir + "TestsSettings.accdb"))
+                return SqlParam(sys, "SqlServer") + ";" + SqlParam(sys, "IdentType") + ";" + SqlParam(sys, "Login") + ";" + SqlParam(sys, "Password") + ";DataBase=" + dbName;  
+         
+        }
+        private static string SqlParam(SysTabl sys, string name)
+        {
+            return name + "=" + sys.SubValue("SQLServerSettings", name);
+        }
+
         //Копирует файл из Tests в TestsRun, возвращает полный путь к итоговому файлу
         //Копируется файл Tests + dir + file в TestsRun + dir + newFile
         public static string CopyFile(string dir, //каталог
@@ -84,7 +101,7 @@ namespace BaseLibraryTest
             return CompareTables(new DaoDb(file1), new DaoDb(file2), tableName, idField, idField2, idField3, tableName2, exeptionFields);
         }
 
-        //Сравнение фалов конкретных типов 
+        //Сравнение файлов конкретных типов 
         #region CompareFiles
         //Сравнение файлов истории
         public static void CompareHistories(string file1, string file2)

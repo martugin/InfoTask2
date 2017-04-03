@@ -11,12 +11,12 @@ namespace BaseLibraryTest
         //Открытие тестовых баз с копированием 
         private DaoDb CopyDb(string prefix)
         {
-            return new DaoDb(TestLib.CopyFile("BaseLibrary", "DbDao.accdb", "Rec" + prefix + ".accdb"));
+            return new DaoDb(TestLib.CopyFile("Libraries", "DbDao.accdb", "Rec" + prefix + ".accdb"));
         }
         //Путь к файлу
         private string File(string prefix)
         {
-            return TestLib.TestRunDir + @"BaseLibrary\Rec" + prefix + ".accdb";
+            return TestLib.TestRunDir + @"Libraries\Rec" + prefix + ".accdb";
         }
 
         [TestMethod]

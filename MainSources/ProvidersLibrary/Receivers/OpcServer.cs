@@ -78,7 +78,7 @@ namespace ProvidersLibrary
         private OPCGroup _group;
 
         //Очистка списков итемов
-        protected override void ClearOuts()
+        protected internal override void ClearOuts()
         {
             _items.Clear();
             _group = null;

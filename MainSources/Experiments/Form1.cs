@@ -52,5 +52,10 @@ namespace Experiments
         {
             MessageBox.Show("Finish");
         }
+
+        private void butItDir_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(ItStatic.InfoTaskDir());
+        }
     }
 }

@@ -25,10 +25,7 @@ _ReSharper*/
 
 /Debug
 /Setup
-/TestsRun
-
-/Installers/KernelBootstrapper/InfoTaskKernelSetup.msi 
-/Installers/ReporterBootstrapper/ReporterSetup.msi
+/TestsBig
 
 *.ldb
 *.laccdb

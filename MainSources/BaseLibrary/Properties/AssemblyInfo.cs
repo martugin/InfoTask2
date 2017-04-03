@@ -36,6 +36,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("2.0.0.0")]
 
 [assembly: InternalsVisibleTo("BaseLibraryTest")]
-[assembly: InternalsVisibleTo("ProvidersLibraryTest")]
-[assembly: InternalsVisibleTo("InfoTaskClientTest")]
+[assembly: InternalsVisibleTo("InfoTaskLauncherTest")]
+[assembly: InternalsVisibleTo("ProvidersTest")]
 [assembly: InternalsVisibleTo("Experiments")]

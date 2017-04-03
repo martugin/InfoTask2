@@ -34,21 +34,21 @@ namespace Provider
         }
 
         //Словарь выходов по TagName
-        private readonly Dictionary<string, WonderwareOut> _outs = new Dictionary<string, WonderwareOut>();
+        internal readonly Dictionary<string, WonderwareOut> Outs = new Dictionary<string, WonderwareOut>();
 
         //Добавить выход в провайдер
         protected override SourceOut AddOut(InitialSignal sig)
         {
             string tag = sig.Inf["TagName"];
-            if (!_outs.ContainsKey(tag))
-                _outs.Add(tag, new WonderwareOut(this, tag));
-            return _outs[tag];
+            if (!Outs.ContainsKey(tag))
+                Outs.Add(tag, new WonderwareOut(this, tag));
+            return Outs[tag];
         }
 
         //Очистка списка сигналов
         protected override void ClearOuts()
         {
-            _outs.Clear();
+            Outs.Clear();
         }
 
         //Создание фабрики ошибок
@@ -102,13 +102,13 @@ namespace Provider
         protected override SourceOut DefineOut(IRecordRead rec)
         {
             string code = rec.GetString("TagName");
-            return _outs.ContainsKey(code) ? _outs[code] : null;
+            return Outs.ContainsKey(code) ? Outs[code] : null;
         }
         
         //Чтение данных из Historian за период
         protected override ValuesCount ReadChanges()
         {
-            return ReadByParts(_outs.Values, 500);
+            return ReadByParts(Outs.Values, 500);
         }
     }
 }
