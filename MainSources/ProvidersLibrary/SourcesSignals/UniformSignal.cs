@@ -36,11 +36,14 @@ namespace ProvidersLibrary
         {
             BufMom.Time = time;
             BufMom.Error = err;
-            if (time <= Connect.PeriodBegin && _beginMom.Time <= time)
-                _beginMom.CopyAllFrom(BufMom);
+            if (time <= Connect.PeriodBegin)
+            {
+                if (_beginMom.Time <= time)
+                    _beginMom.CopyAllFrom(BufMom);
+            }
             else if (time <= Connect.PeriodEnd)
             {
-                if (_endMom.Time <= time) 
+                if (_endMom.Time <= time)
                     _endMom.CopyAllFrom(BufMom);
                 return PutMom(BufMom);
             }

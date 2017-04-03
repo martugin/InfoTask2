@@ -108,15 +108,18 @@ namespace ProvidersLibrary
         }
 
         //Читать из таблицы строковых значений
-        private bool _isStrTable;
+        private bool _useStrTable;
+        //Читать из таблицы срезов
+        private bool _useCutTable;
 
         //Запрос значений из клона
         protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
-            string table = "Moment" + (_isStrTable ? "Str" : "") + "Values" + (isCut ? "Cut" : "");
-            string timeField = (isCut ? "Cut" : "") + "Time";
-            return new DaoRec(CloneFile, "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
-                                                             " WHERE (Signals.OtmReadClone=True) AND (" + table + "." + timeField + ">=" + beg.ToAccessString() + ") AND (" + table + "." + timeField + "<=" + en.ToAccessString() + ")");
+            string table = "Moment" + (_useStrTable ? "Str" : "") + "Values" + (_useCutTable ? "Cut" : "");
+            string timeField = (_useCutTable ? "Cut" : "") + "Time";
+            var stSql = "SELECT " + table + ".* FROM Signals INNER JOIN " + table + " ON Signals.SignalId=" + table + ".SignalId" +
+                        " WHERE (Signals.OtmReadClone=True) AND (" + table + "." + timeField + ">=" + beg.ToAccessString() + ") AND (" + table + "." + timeField + "<=" + en.ToAccessString() + ")";
+            return new DaoRec(CloneFile, stSql);
         }
 
         //Определение объекта строки значений
@@ -124,26 +127,30 @@ namespace ProvidersLibrary
         {
             return ObjectsId[rec.GetInt("SignalId")];
         }
-
+        
         //Чтение среза
         protected internal override ValuesCount ReadCut()
         {
             var vc = new ValuesCount();
             DateTime d = SourceConnect.RemoveMinultes(PeriodBegin);
             AddEvent("Чтение среза действительных значений из таблицы изменений");
-            _isStrTable = false;
-            vc += ReadWhole(ObjectsList, d, PeriodBegin, false);
+            _useStrTable = false;
+            _useCutTable = false;
+            vc += ReadWhole(ObjectsList, d, PeriodBegin, true);
             if (vc.IsFail) return vc;
             AddEvent("Чтение среза действительных значений из таблицы срезов");
-            _isStrTable = false;
+            _useStrTable = false;
+            _useCutTable = true;
             vc += ReadWhole(ObjectsList, d.AddSeconds(-1), PeriodBegin.AddSeconds(1), true);
             if (vc.IsFail) return vc;
             AddEvent("Чтение среза строковых значений из таблицы изменений");
-            _isStrTable = true;
-            vc += ReadWhole(ObjectsList, d, PeriodBegin, false);
+            _useStrTable = true;
+            _useCutTable = false;
+            vc += ReadWhole(ObjectsList, d, PeriodBegin, true);
             if (vc.IsFail) return vc;
             AddEvent("Чтение среза строковых значений из таблицы срезов");
-            _isStrTable = true;
+            _useStrTable = true;
+            _useCutTable = true;
             vc += ReadWhole(ObjectsList, d.AddSeconds(-1), PeriodBegin.AddSeconds(1), true);
             return vc;
         }
@@ -153,11 +160,13 @@ namespace ProvidersLibrary
         {
             var vc = new ValuesCount();
             AddEvent("Чтение изменений действительных значений");
-            _isStrTable = false;
+            _useStrTable = false;
+            _useCutTable = false;
             vc += ReadWhole(ObjectsList);
             if (vc.IsFail) return vc;
             AddEvent("Чтение изменений строковых значений");
-            _isStrTable = true;
+            _useStrTable = true;
+            _useCutTable = false;
             vc += ReadWhole(ObjectsList);
             return vc;
         }
