@@ -277,7 +277,7 @@ namespace ProvidersLibrary
             int m = time.Minute;
             int k = m / 10;
             var d = time.AddMinutes(-time.Minute).AddSeconds(-time.Second).AddMilliseconds(-time.Millisecond);
-            return d.AddMinutes(k * m);
+            return d.AddMinutes(k * 10);
         }
         #endregion
     }
