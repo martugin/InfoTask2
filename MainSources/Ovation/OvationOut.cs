@@ -21,7 +21,7 @@ namespace Provider
         //Добавить к объекту сигнал, если такого еще не было
         protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
-            if (sig.Inf["Prop"] == "STAT")
+            if (sig.Inf["Prop"].ToUpper() == "STAT")
                 return StateSignal = StateSignal ?? sig;
             return ValueSignal = ValueSignal ?? sig;
         }

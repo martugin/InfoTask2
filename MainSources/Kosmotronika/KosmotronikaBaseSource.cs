@@ -24,43 +24,37 @@ namespace Provider
         }
         
         //Словарь выходов. Один элемент словаря - один выход
-        private readonly Dictionary<OutIndex, KosmOut> _outs = new Dictionary<OutIndex, KosmOut>();
+        internal readonly Dictionary<OutIndex, KosmOut> Outs = new Dictionary<OutIndex, KosmOut>();
         //Словарь аналоговых выходов
-        private readonly Dictionary<OutIndex, KosmOut> _analogs = new Dictionary<OutIndex, KosmOut>();
+        internal readonly Dictionary<OutIndex, KosmOut> Analogs = new Dictionary<OutIndex, KosmOut>();
         //Выход действий оператора
-        private KosmOperatorOut _operatorOut;
+        internal KosmOperatorOut OperatorOut;
 
         //Очистка списка сигналов
         protected override void ClearOuts()
         {
-            _outs.Clear();
-            _analogs.Clear();
-            _operatorOut = null;
+            Outs.Clear();
+            Analogs.Clear();
+            OperatorOut = null;
         }
 
         //Добавляет один сигнал в список
         protected override SourceOut AddOut(InitialSignal sig)
         {
             if (sig.Inf.Get("ObjectType") == "Operator")
-                return _operatorOut ?? (_operatorOut = new KosmOperatorOut(this));
-            
-            var ind = new OutIndex
-            {
-                Sn = sig.Inf.GetInt("SysNum"),
-                NumType = sig.Inf.GetInt("NumType"),
-                Appartment = sig.Inf.GetInt("Appartment"),
-                Out = sig.Inf.GetInt("NumOut")
-            };
+                return OperatorOut ?? (OperatorOut = new KosmOperatorOut(this));
+
+            var ind = new OutIndex(sig.Inf.GetInt("SysNum"), sig.Inf.GetInt("NumType"), sig.Inf.GetInt("Appartment"), sig.Inf.GetInt("NumOut"));
             KosmOut obj;
             if (ind.Out == 1 && (ind.NumType == 1 || ind.NumType == 3 || ind.NumType == 32))
             {
-                if (_analogs.ContainsKey(ind)) obj = _analogs[ind];
-                else _analogs.Add(ind, obj = new KosmOut(this, ind));
+                if (Analogs.ContainsKey(ind)) obj = Analogs[ind];
+                else Analogs.Add(ind, obj = new KosmOut(this, ind));
             }
             else
             {
-                if (_outs.ContainsKey(ind)) obj = _outs[ind];
-                else _outs.Add(ind, obj = new KosmOut(this, ind));
+                if (Outs.ContainsKey(ind)) obj = Outs[ind];
+                else Outs.Add(ind, obj = new KosmOut(this, ind));
             }
             return obj;
         }
@@ -106,16 +100,10 @@ namespace Provider
         protected override SourceOut DefineOut(IRecordRead rec)
         {
             int dn = this is KosmotronikaRetroSource ? 1 : 0;
-            var ind = new OutIndex
-            {
-                Sn = rec.GetInt(0),
-                NumType = rec.GetInt(1),
-                Appartment = rec.GetInt(2),
-                Out = IsAnalog ? 1 : rec.GetInt(5+dn)
-            };
-            if (IsAnalog && _analogs.ContainsKey(ind))
-                return _analogs[ind];
-            return _outs.ContainsKey(ind) ? _outs[ind] : null;
+            var ind = new OutIndex(rec.GetInt(0), rec.GetInt(1), rec.GetInt(2), IsAnalog ? 1 : rec.GetInt(5 + dn));
+            if (IsAnalog && Analogs.ContainsKey(ind))
+                return Analogs[ind];
+            return Outs.ContainsKey(ind) ? Outs[ind] : null;
         }
 
         //Запрос значений действий оператора
@@ -132,12 +120,12 @@ namespace Provider
             var vc = new ValuesCount();
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                vc += ReadByParts(_analogs.Values, PartSize, PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
+                vc += ReadByParts(Analogs.Values, PartSize, PeriodBegin, PeriodEnd, true, "Срез данных по аналоговым сигналам");
             if (vc.IsFail) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), 100))
-                vc += ReadByParts(_outs.Values, PartSize, PeriodBegin, PeriodEnd, true, "Срез данных по выходам");
+                vc += ReadByParts(Outs.Values, PartSize, PeriodBegin, PeriodEnd, true, "Срез данных по выходам");
             return vc;
         }
 
@@ -147,30 +135,30 @@ namespace Provider
             var vc = new ValuesCount();
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                vc += ReadByParts(_analogs.Values, PartSize, "Изменения значений по аналоговым сигналам");
+                vc += ReadByParts(Analogs.Values, PartSize, "Изменения значений по аналоговым сигналам");
             if (vc.IsFail) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), OutsProcent()))
-                vc += ReadByParts(_outs.Values, PartSize, "Изменения значений по выходам");
+                vc += ReadByParts(Outs.Values, PartSize, "Изменения значений по выходам");
             if (vc.IsFail) return vc;
 
             using (Start(OutsProcent(), 100))
-                vc += ReadOneOut(_operatorOut, QueryValuesOperator);
+                vc += ReadOneOut(OperatorOut, QueryValuesOperator);
             return vc;
         }
 
         private double AnalogsProcent()
         {
-            int op = _operatorOut == null ? 0 : 1;
-            if (_outs.Count + _analogs.Count + op == 0) return 0;
-            return _analogs.Count * 100.0 / (_outs.Count + _analogs.Count + op);
+            int op = OperatorOut == null ? 0 : 1;
+            if (Outs.Count + Analogs.Count + op == 0) return 0;
+            return Analogs.Count * 100.0 / (Outs.Count + Analogs.Count + op);
         }
         private double OutsProcent()
         {
-            int op = _operatorOut == null ? 0 : 1;
-            if (_outs.Count + _analogs.Count + op == 0) return 0;
-            return (_analogs.Count + _outs.Count) * 100.0 / (_outs.Count + _analogs.Count + op);
+            int op = OperatorOut == null ? 0 : 1;
+            if (Outs.Count + Analogs.Count + op == 0) return 0;
+            return (Analogs.Count + Outs.Count) * 100.0 / (Outs.Count + Analogs.Count + op);
         }
     }
 }

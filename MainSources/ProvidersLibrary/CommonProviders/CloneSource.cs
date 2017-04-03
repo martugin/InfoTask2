@@ -52,23 +52,23 @@ namespace ProvidersLibrary
         }
 
         //Словари объектов, каждый содержит один сигнал, ключи - SignalId в клоне и коды
-        private readonly DicI<CloneOut> _objectsId = new DicI<CloneOut>();
-        private readonly DicS<CloneOut> _objects = new DicS<CloneOut>();
+        internal readonly DicI<CloneOut> ObjectsId = new DicI<CloneOut>();
+        internal readonly DicS<CloneOut> Objects = new DicS<CloneOut>();
         //Список объектов
-        private readonly List<SourceOut> _objectsList = new List<SourceOut>();
+        internal readonly List<SourceOut> ObjectsList = new List<SourceOut>();
 
         //Добавляет объект, содержащий один сигнал
         protected override SourceOut AddOut(InitialSignal sig)
         {
-            return _objects.Add(sig.Code, new CloneOut(this));
+            return Objects.Add(sig.Code, new CloneOut(this));
         }
 
         //Очистка списка объектов
-        protected override void ClearOuts()
+        protected internal override void ClearOuts()
         {
-            _objectsId.Clear();
-            _objects.Clear();
-            _objectsList.Clear();
+            ObjectsId.Clear();
+            Objects.Clear();
+            ObjectsList.Clear();
         }
 
         //Создание фабрики ошибок
@@ -91,17 +91,17 @@ namespace ProvidersLibrary
         protected override void PrepareProvider()
         {
             AddEvent("Отметка в клоне считывемых сигналов");
-            using (var rec = new DaoRec(CloneFile, "SELECT SignalId, FullCode, Otm FROM Signals"))
+            using (var rec = new DaoRec(CloneFile, "SELECT SignalId, FullCode, OtmReadClone FROM Signals"))
                 while (rec.Read())
                 {
                     string code = rec.GetString("FullCode");
                     var id = rec.GetInt("SignalId");
-                    if (_objects.ContainsKey(code))
+                    if (Objects.ContainsKey(code))
                     {
                         rec.Put("OtmReadClone", true);
-                        var ob = _objects[code];
-                        _objectsId.Add(id, ob);
-                        _objectsList.Add(ob);
+                        var ob = Objects[code];
+                        ObjectsId.Add(id, ob);
+                        ObjectsList.Add(ob);
                     }
                     else rec.Put("OtmReadClone", false);
                 }
@@ -122,7 +122,7 @@ namespace ProvidersLibrary
         //Определение объекта строки значений
         protected override SourceOut DefineOut(IRecordRead rec)
         {
-            return _objectsId[rec.GetInt("SignalId")];
+            return ObjectsId[rec.GetInt("SignalId")];
         }
 
         //Чтение среза
@@ -132,19 +132,19 @@ namespace ProvidersLibrary
             DateTime d = SourceConnect.RemoveMinultes(PeriodBegin);
             AddEvent("Чтение среза действительных значений из таблицы изменений");
             _isStrTable = false;
-            vc += ReadWhole(_objectsList, d, PeriodBegin, false);
+            vc += ReadWhole(ObjectsList, d, PeriodBegin, false);
             if (vc.IsFail) return vc;
             AddEvent("Чтение среза действительных значений из таблицы срезов");
             _isStrTable = false;
-            vc += ReadWhole(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
+            vc += ReadWhole(ObjectsList, d.AddSeconds(-1), PeriodBegin.AddSeconds(1), true);
             if (vc.IsFail) return vc;
             AddEvent("Чтение среза строковых значений из таблицы изменений");
             _isStrTable = true;
-            vc += ReadWhole(_objectsList, d, PeriodBegin, false);
+            vc += ReadWhole(ObjectsList, d, PeriodBegin, false);
             if (vc.IsFail) return vc;
             AddEvent("Чтение среза строковых значений из таблицы срезов");
             _isStrTable = true;
-            vc += ReadWhole(_objectsList, d.AddSeconds(-1), d.AddSeconds(1), true);
+            vc += ReadWhole(ObjectsList, d.AddSeconds(-1), PeriodBegin.AddSeconds(1), true);
             return vc;
         }
 
@@ -154,11 +154,11 @@ namespace ProvidersLibrary
             var vc = new ValuesCount();
             AddEvent("Чтение изменений действительных значений");
             _isStrTable = false;
-            vc += ReadWhole(_objectsList);
+            vc += ReadWhole(ObjectsList);
             if (vc.IsFail) return vc;
             AddEvent("Чтение изменений строковых значений");
             _isStrTable = true;
-            vc += ReadWhole(_objectsList);
+            vc += ReadWhole(ObjectsList);
             return vc;
         }
     }

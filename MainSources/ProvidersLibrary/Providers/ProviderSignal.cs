@@ -17,6 +17,7 @@ namespace ProvidersLibrary
             DataType = dataType;
             CodeOut = infObject + (infOut.IsEmpty() ? "" : ";" + infOut);
             Inf = infObject.ToPropertyDicS().AddDic(infOut.ToPropertyDicS()).AddDic(infProp.ToPropertyDicS());
+            Inf.DefVal = "";
         }
 
         //Полный код сигнала

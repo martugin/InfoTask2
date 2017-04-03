@@ -30,6 +30,8 @@ namespace ProvidersLibrary
         //Возвращает количество реально добавленных значений 
         internal virtual int AddMom(DateTime time, MomErr err)
         {
+            if (BufMom.Time == time && time == Connect.PeriodBegin)
+                return 0;
             BufMom.Time = time;
             BufMom.Error = err;
             if (time >= Connect.PeriodBegin && time <= Connect.PeriodEnd)

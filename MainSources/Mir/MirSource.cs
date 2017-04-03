@@ -14,29 +14,30 @@ namespace Provider
         public override string Code { get { return "MirSource"; } }
         
         //Словари выходов, ключи коды и IdChanell
-        private readonly DicS<MirOut> _outs = new DicS<MirOut>();
-        private readonly DicI<MirOut> _outsId = new DicI<MirOut>();
+        //Выход с одним и тем же кодом может встречаться несколько раз под разными Id
+        internal readonly DicS<MirOut> Outs = new DicS<MirOut>();
+        internal readonly DicI<MirOut> OutsId = new DicI<MirOut>();
         
         //Очистка списка выходов
         protected override void ClearOuts()
         {
-            _outs.Clear();
-            _outsId.Clear();
+            Outs.Clear();
+            OutsId.Clear();
         }
 
         //Добавить выход в провайдер
         protected override SourceOut AddOut(InitialSignal sig)
         {
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
-            return !_outs.ContainsKey(ocode) 
-                ? _outs.Add(ocode, new MirOut(this)) 
-                : _outs[ocode];
+            return !Outs.ContainsKey(ocode) 
+                ? Outs.Add(ocode, new MirOut(this)) 
+                : Outs[ocode];
         }
         
         //Подготовка провайдера, чтение значений IDCHANNEL
         protected override void PrepareProvider()
         {
-            _outsId.Clear();
+            OutsId.Clear();
             using (var rec = new AdoReader(SqlProps, "SELECT OBJECTS.NAME_OBJECT, DEVICES.NAME_DEVICE, LIB_CHANNELS.NAME_TYPE, LIB_CHANNELS.UNIT, CHANNELS.IDCHANNEL, LIB_CHANNELS.TABLE_NAME " +
             "FROM CHANNELS INNER JOIN DEVICES ON CHANNELS.IDDEVICE = DEVICES.IDDEVICE INNER JOIN " +
             "LIB_CHANNELS ON dbo.CHANNELS.IDTYPE_CHANNEL = dbo.LIB_CHANNELS.IDTYPE_CHANNEL INNER JOIN " +
@@ -48,11 +49,11 @@ namespace Provider
                 {
                     string ocode = rec.GetString("NAME_OBJECT") + "." + rec.GetString("NAME_DEVICE") + "." + rec.GetString("NAME_TYPE");
                     var id = rec.GetInt("IDCHANNEL");
-                    if (_outs.ContainsKey(ocode))
+                    if (Outs.ContainsKey(ocode))
                     {
-                        var ob = _outs[ocode];
+                        var ob = Outs[ocode];
                         ob.IdChannel = id;
-                        _outsId.Add(id, ob);
+                        OutsId.Add(id, ob);
                     }
                 }
         }
@@ -68,19 +69,19 @@ namespace Provider
         //Определение текущего считываемого выхода
         protected override SourceOut DefineOut(IRecordRead rec)
         {
-            return _outsId[rec.GetInt("IDCHANNEL")];
+            return OutsId[rec.GetInt("IDCHANNEL")];
         }
 
         //Чтение среза
         protected override ValuesCount ReadCut()
         {
-            return ReadWhole(_outs.Values, PeriodBegin.AddMinutes(-30), PeriodBegin, true);
+            return ReadWhole(Outs.Values, PeriodBegin.AddMinutes(-30), PeriodBegin, true);
         }
 
         //Чтение изменений
         protected override ValuesCount ReadChanges()
         {
-            return ReadWhole(_outs.Values);
+            return ReadWhole(Outs.Values);
         }
     }
 }

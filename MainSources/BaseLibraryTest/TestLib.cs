@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Remoting.Messaging;
 using BaseLibrary;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -29,7 +30,19 @@ namespace BaseLibraryTest
         {
             get { return InfoTaskDevelopDir + @"Debug\TestsRun\"; }
         }
-        
+
+        //Строка настроек провайдера для соединения с тестовым SQL Server
+        public static string TestSqlInf(string dbName)
+        {
+            using (var sys = new SysTabl(TestRunDir + "TestsSettings.accdb"))
+                return SqlParam(sys, "SqlServer") + ";" + SqlParam(sys, "IdentType") + ";" + SqlParam(sys, "Login") + ";" + SqlParam(sys, "Password") + ";DataBase=" + dbName;  
+         
+        }
+        private static string SqlParam(SysTabl sys, string name)
+        {
+            return name + "=" + sys.SubValue("SQLServerSettings", name);
+        }
+
         //Копирует файл из Tests в TestsRun, возвращает полный путь к итоговому файлу
         //Копируется файл Tests + dir + file в TestsRun + dir + newFile
         public static string CopyFile(string dir, //каталог
@@ -88,7 +101,7 @@ namespace BaseLibraryTest
             return CompareTables(new DaoDb(file1), new DaoDb(file2), tableName, idField, idField2, idField3, tableName2, exeptionFields);
         }
 
-        //Сравнение фалов конкретных типов 
+        //Сравнение файлов конкретных типов 
         #region CompareFiles
         //Сравнение файлов истории
         public static void CompareHistories(string file1, string file2)

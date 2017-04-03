@@ -21,29 +21,29 @@ namespace Logika
         }
 
         //Словарь выходов, первый ключ - код таблицы, второй ключ - id объекта
-        private readonly DicS<DicI<PrologOut>> _outs = new DicS<DicI<PrologOut>>();
+        internal readonly DicS<DicI<PrologOut>> Outs = new DicS<DicI<PrologOut>>();
         //Словарь выходов ключ - id объекта
-        private readonly DicI<PrologOut> _outsId = new DicI<PrologOut>();
+        internal readonly DicI<PrologOut> OutsId = new DicI<PrologOut>();
 
         //Добавить выход в источник
         protected override SourceOut AddOut(InitialSignal sig)
         {
             int id = sig.Inf.GetInt("NodeId");
-            if (_outsId.ContainsKey(id))
-                return _outsId[id];
+            if (OutsId.ContainsKey(id))
+                return OutsId[id];
             string tableName = sig.Inf["TableName"];
-            if (!_outs.ContainsKey(tableName))
-                _outs.Add(tableName, new DicI<PrologOut>());
+            if (!Outs.ContainsKey(tableName))
+                Outs.Add(tableName, new DicI<PrologOut>());
             var ob = new PrologOut(this);
-            _outs[tableName].Add(id, ob);
-            return _outsId.Add(id, ob);
+            Outs[tableName].Add(id, ob);
+            return OutsId.Add(id, ob);
         }
 
         //Очистка списка выходов
         protected override void ClearOuts()
         {
-            _outs.Clear();
-            _outsId.Clear();
+            Outs.Clear();
+            OutsId.Clear();
         }
 
         //Имя текущей считываемой таблицы
@@ -53,13 +53,13 @@ namespace Logika
         protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             return new DaoRec(DbFile, "SELECT * FROM " + _tableName + "_ARCHIVE " +
-                                      "WHERE (TYPE = 1) AND (Время >= " + beg.ToAccessString() + ") AND (Время <= " + en.ToAccessString() + ")"); 
+                                      "WHERE (TYPE = 0) AND (Время >= " + beg.ToAccessString() + ") AND (Время <= " + en.ToAccessString() + ")"); 
         }
 
         //Определение текущего выхода
         protected override SourceOut DefineOut(IRecordRead rec)
         {
-            return _outsId[rec.GetInt("PARENT_ID")];
+            return OutsId[rec.GetInt("PARENT_ID")];
         }
 
         //Чтение значений, срез считывается вместе с изменениями
@@ -68,7 +68,7 @@ namespace Logika
             var vc = new ValuesCount();
             DateTime beg = PeriodBegin.AddMinutes(-PeriodBegin.Minute).AddSeconds(-PeriodBegin.Second - 1);
             DateTime en = PeriodEnd.AddSeconds(1);
-            foreach (var tabl in _outs.Dic)
+            foreach (var tabl in Outs.Dic)
             {
                 _tableName = tabl.Key;
                 vc += ReadWhole(tabl.Value.Values, beg, en, false);

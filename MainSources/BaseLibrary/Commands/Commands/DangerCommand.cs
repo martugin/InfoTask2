@@ -39,7 +39,7 @@ namespace BaseLibrary
         {
             _isCorrect &= err.Quality != CommandQuality.Error;
             AddQuality(_lastRepeat ? err.Quality : CommandQuality.Repeat);
-            if (_lastRepeat)
+            if (_lastRepeat && Parent!= null)
                 Parent.AddError(err);
             else if (Logger.History != null)
                 Logger.History.WriteError(err);
@@ -89,7 +89,8 @@ namespace BaseLibrary
                 }
 
                 if (i == _repetitions) return Finish();
-                Parent.AddError(new CommandError(_eventMess + ". Повтор операции из-за ошибки", null, "", "", CommandQuality.Repeat));
+                if (Parent != null)
+                    Parent.AddError(new CommandError(_eventMess + ". Повтор операции из-за ошибки", null, "", "", CommandQuality.Repeat));
                 Logger.CheckBreak();
                 while (Logger.Command != this)
                     Logger.Finish();
