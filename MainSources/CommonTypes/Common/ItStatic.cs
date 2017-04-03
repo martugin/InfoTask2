@@ -1,4 +1,6 @@
-﻿using BaseLibrary;
+﻿using System.IO;
+using System.Reflection;
+using BaseLibrary;
 
 namespace CommonTypes
 {
@@ -8,10 +10,17 @@ namespace CommonTypes
         //Чтение из реестра пути к каталогу InfoTask, в возвращаемом пути \ на конце
         public static string InfoTaskDir()
         {
-            var dir = Static.GetRegistry(@"software\InfoTask", "InfoTask2Path");
-            if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
-            if (!dir.EndsWith(@"\")) dir += @"\";
-            return dir;
+            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            var dir = fi.Directory.Parent;
+            if (dir.Name == "Providers" || dir.Name == "TestsRun") dir = dir.Parent;
+            string s = dir.FullName;
+            if (!s.EndsWith(@"\")) s += @"\";
+            return s;
+
+            //var dir = Static.GetRegistry(@"software\InfoTask", "InfoTask2Path");
+            //if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
+            //if (!dir.EndsWith(@"\")) dir += @"\";
+            //return dir;
         }
         
         //Каталог шаблонов
@@ -23,13 +32,14 @@ namespace CommonTypes
         //Путь к шаблону файла истории
         public static string HistoryTemplateFile
         {
-            get { return TemplatesDir + @"LocalData\History\History.accdb"; }
+            get { return TemplatesDir + @"LocalData\History.accdb"; }
         }
 
-        //Возвращает путь к каталогу проекта в LocalData
-        public static string LocalDataProjectDir(string project) //Код проекта
+        //Путь к локальным данным проекта
+        public static string LocalProjectDir(string app, //Приложение
+                                                              string project) //Проект
         {
-            return InfoTaskDir() + @"LocalData\" + project + @"\";
+            return InfoTaskDir() + @"LocalData\" + app + @"\" + project + @"\";
         }
 
         //Возвращает тип ошибки как строку
@@ -206,7 +216,7 @@ namespace CommonTypes
             return dt;
         }
 
-        //Перевод из строки в тип приложения
+        //Перевод из строки в код приложения
         public static ApplicationType ToApplicationType(this string m)
         {
             if (m == null) return ApplicationType.Error;
@@ -235,7 +245,7 @@ namespace CommonTypes
             return ApplicationType.Error;
         }
 
-        //Перевод из режима расчета в строку
+        //Перевод из кода приложения в строку
         public static string ToRussian(this ApplicationType m)
         {
             switch (m)

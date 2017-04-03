@@ -19,6 +19,10 @@ namespace ComLaunchers
         //Закрытие клиента
         void Close();
 
+        //Ошибка и результат последней операции
+        string ErrMess { get; }
+        string ResultMess { get; }
+
         //Путь к каталогу InfoTask
         string InfoTaskDir { get; }
 
@@ -108,7 +112,7 @@ namespace ComLaunchers
         {
             AppCode = appCode;
             Project = project;
-            Logger.History = new AccessHistory(Logger, ItStatic.LocalDataProjectDir(project) + @"History\" + appCode + @"\History.accdb", ItStatic.HistoryTemplateFile);
+            Logger.History = new AccessHistory(Logger, ItStatic.InfoTaskDir() + @"LocalData\History\" + appCode + @"\" + project + @"\History.accdb", ItStatic.HistoryTemplateFile);
         }
 
         //Закрытие клиента
@@ -135,6 +139,10 @@ namespace ComLaunchers
             Project = "TestProject";
             Logger.History = new TestHistory(Logger);
         }
+
+        //Ошибка и результат последней операции
+        public string ErrMess { get { return Logger.CollectedError; } }
+        public string ResultMess { get { return Logger.CollectedResults; } }
 
         //Путь к каталогу InfoTask
         public string InfoTaskDir { get { return ItStatic.InfoTaskDir(); } }

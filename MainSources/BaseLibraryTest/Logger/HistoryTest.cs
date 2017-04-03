@@ -11,11 +11,11 @@ namespace BaseLibraryTest
         //Открытие файла истории
         private void OpenHistory(string fileName, bool replace)
         {
-            var file = TestLib.TestRunDir + @"BaseLibrary\History\" + fileName + ".accdb";
+            var file = TestLib.TestRunDir + @"Libraries\History\" + fileName + ".accdb";
             if (replace)
             {
                 DaoDb.FromTemplate(ItStatic.HistoryTemplateFile, file, ReplaceByTemplate.Always);
-                TestLib.CopyFile("BaseLibrary", "CorrectHistory.accdb", @"History\CorrectHistory.accdb");
+                TestLib.CopyFile("Libraries", "CorrectHistory.accdb", @"History\CorrectHistory.accdb");
             }
             History = new AccessHistory(this, file, ItStatic.HistoryTemplateFile);
         }
@@ -83,8 +83,8 @@ namespace BaseLibraryTest
                 });
             History.Close();
 
-            string cfile = TestLib.TestRunDir + @"BaseLibrary\History\CorrectHistory.accdb";
-            string file = TestLib.TestRunDir + @"BaseLibrary\History\History.accdb";
+            string cfile = TestLib.TestRunDir + @"Libraries\History\CorrectHistory.accdb";
+            string file = TestLib.TestRunDir + @"Libraries\History\History.accdb";
             TestLib.CompareHistories(cfile, file);
         }
     }

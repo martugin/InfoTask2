@@ -15,11 +15,11 @@ namespace ProvidersLibraryTest
         {
             var factory = new ProvidersFactory();
             var connect = (SourceConnect)factory.CreateConnect(ProviderType.Source, "TestSource", "Fictive", new Logger());
-            TestLib.CopyFile("ProvidersLibrary", "Fictive.accdb", "Fictive" + prefix + ".accdb");
-            var source = (FictiveSource)factory.CreateProvider("FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"ProvidersLibrary\Fictive" + prefix + ".accdb");
+            TestLib.CopyFile(@"Providers\Fictive", "Fictive.accdb", "Fictive" + prefix + ".accdb");
+            var source = (FictiveSource)factory.CreateProvider("FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\Fictive" + prefix + ".accdb");
             FictiveSource source2 = null;
             if (makeReserve)
-                source2 = (FictiveSource)factory.CreateProvider("FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"ProvidersLibrary\Fictive" + prefix + ".accdb");
+                source2 = (FictiveSource)factory.CreateProvider("FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\Fictive" + prefix + ".accdb");
             connect.JoinProvider(source, source2);
             return connect;
         }
