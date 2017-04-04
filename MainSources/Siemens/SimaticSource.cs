@@ -22,8 +22,6 @@ namespace Provider
         {
             _serverName = dic["SQLServer"];
         }
-        //Хэш
-        protected override string Hash { get { return "SQLServer=" + _serverName; } }
 
         //Строка соединения
         protected override string ConnectionString

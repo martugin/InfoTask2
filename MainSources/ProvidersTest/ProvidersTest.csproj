@@ -45,10 +45,12 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clone\CloneSourceTest.cs" />
+    <Compile Include="Fictive\CloneSourceTest.cs" />
+    <Compile Include="Fictive\CloneTest.cs" />
     <Compile Include="Fictive\FictiveSimpleTest.cs" />
     <Compile Include="Fictive\FictiveTest.cs" />
     <Compile Include="Kosmotronika\KosmSiganlsTest.cs" />
+    <Compile Include="Kosmotronika\KosmValuesTest.cs" />
     <Compile Include="Logika\LogikaTest.cs" />
     <Compile Include="Mir\MirTest.cs" />
     <Compile Include="Ovation\OvationSignalsTest.cs" />

@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using BaseLibrary;
-using BaseLibraryTest;
+﻿using BaseLibrary;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Provider;
@@ -209,6 +207,16 @@ namespace ProvidersTest
             Assert.IsNull(prov.AlarmOut);
             Assert.IsNull(prov.SoeOut);
             Assert.IsNull(prov.TextOut);
+
+            prov = (OvationSource)new ProvidersFactory().CreateProvider("OvationSource", "DataSource=DropNo");
+            con.JoinProvider(prov);
+            Assert.IsFalse(prov.IsConnected);
+            Assert.IsFalse(prov.IsPrepared);
+            Assert.IsFalse(prov.Connect());
+            Assert.IsFalse(prov.IsConnected);
+            Assert.IsFalse(prov.IsPrepared);
+            prov.Disconnect();
+            Assert.IsFalse(prov.IsConnected);
         }
     }
 }

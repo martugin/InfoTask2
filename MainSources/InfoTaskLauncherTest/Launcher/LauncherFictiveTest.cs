@@ -15,7 +15,7 @@ namespace InfoTaskLauncherTest
         public void FictiveSimple()
         {
             var launcher = new ItLauncher();
-            launcher.Initialize("LauncherFictiveTest", "FictiveSimple");
+            launcher.InitializeTest("LauncherFictiveTest", "FictiveSimple");
             Assert.AreEqual("LauncherFictiveTest", launcher.AppCode);
             Assert.AreEqual("FictiveSimple", launcher.Project);
             Assert.IsFalse(launcher.IsClosed);

@@ -180,6 +180,7 @@ namespace ProvidersTest
             Assert.AreEqual(0, connect.CalcSignals.Count);
             
             var sigBit = connect.AddCalcSignal("Ob.Bit2", "Ob", "Int", "Bit;1;2");
+            connect.AddCalcSignal("Ob.Bit2", "Ob", "Int", "Bit;1;2");
             var sigBitOr = connect.AddCalcSignal("Ob.Bit1Or2", "Ob", "Int", "BitOr;2;1;2");
             var sigBitAnd = connect.AddCalcSignal("Ob.Bit1And2", "Ob", "Int", "BitAnd;2;1;2");
             var sigFirst = connect.AddCalcSignal("Ob.First", "Ob", "Real", "First;1;5");

@@ -37,8 +37,6 @@ namespace ProvidersLibrary
         }
         //Загрузка свойств из словаря
         protected abstract void ReadInf(DicS<string> dic);
-        //Хэш для идентификации настройки провайдера
-        protected abstract string Hash { get; }
 
         //Открытие подключения, возвращает true, если соединение установлено
         protected virtual void ConnectProvider() { }

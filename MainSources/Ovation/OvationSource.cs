@@ -17,7 +17,6 @@ namespace Provider
         //Код провайдера
         public override string Code { get { return "OvationSource"; } }
 
-        protected override string Hash { get { return "OvationHistorian=" + _dataSource; } }
         //Настройки провайдера
         protected override void ReadInf(DicS<string> dic)
         {

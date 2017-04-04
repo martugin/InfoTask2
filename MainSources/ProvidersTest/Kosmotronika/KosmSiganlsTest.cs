@@ -57,6 +57,16 @@ namespace ProvidersTest
             Assert.IsNotNull(prov2.Logger);
             Assert.IsFalse(prov2.IsConnected);
             Assert.IsFalse(prov2.IsPrepared);
+
+            prov = (KosmotronikaRetroSource)new ProvidersFactory().CreateProvider("KosmotronikaRetroSource", "RetroServerName=RetroServerNo");
+            con.JoinProvider(prov);
+            Assert.IsFalse(prov.IsConnected);
+            Assert.IsFalse(prov.IsPrepared);
+            Assert.IsTrue(prov.Connect());
+            Assert.IsTrue(prov.IsConnected);
+            Assert.IsFalse(prov.IsPrepared);
+            prov.Disconnect();
+            Assert.IsFalse(prov.IsConnected);
         }
 
         [TestMethod]

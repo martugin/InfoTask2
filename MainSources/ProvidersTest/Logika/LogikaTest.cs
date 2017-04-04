@@ -90,6 +90,12 @@ namespace ProvidersTest
             Assert.AreEqual(0, con.InitialSignals.Count);
             Assert.AreEqual(0, prov.Outs.Count);
             Assert.AreEqual(0, prov.OutsId.Count);
+
+            prov = (PrologSource)new ProvidersFactory().CreateProvider("PrologSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\НеТотProlog.mdb");
+            con.JoinProvider(prov);
+            Assert.IsFalse(prov.IsConnected);
+            prov.Connect();
+            Assert.IsFalse(prov.IsConnected);
         }
 
         private DateTime D(int h)
