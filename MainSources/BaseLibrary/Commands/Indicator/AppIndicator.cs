@@ -27,7 +27,11 @@ namespace BaseLibrary
         private static void Invoke(Form form, Action action)
         {
             if (form != null)
+            {
                 form.Invoke(new FormDelegate(() => { action(); form.Refresh(); }));
+                //Thread.Sleep(100);
+                //form.Invoke(new FormDelegate(() => { action(); form.Refresh(); }));
+            }
         }
         private delegate void FormDelegate();
 
@@ -80,8 +84,14 @@ namespace BaseLibrary
         {
             Procent = procent;
             int p = Convert.ToInt32(procent);
-            Invoke(_timedForm, () => { _timedForm.Procent.Value = p; });
-            Invoke(_textedForm, () => { _textedForm.Procent.Value = p; });
+            Invoke(_timedForm, () =>
+            {
+                _timedForm.Procent.Value = p <= 90 ? 10 + p : p; 
+            });
+            Invoke(_textedForm, () =>
+            {
+                _textedForm.Procent.Value = p <= 90 ? 10 + p : p; 
+            });
         }
 
         public void SetTimedProcess(DateTime endTime) { }

@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using BaseLibrary;
@@ -56,6 +57,42 @@ namespace Experiments
         private void butItDir_Click(object sender, EventArgs e)
         {
             MessageBox.Show(ItStatic.InfoTaskDir());
+        }
+
+        private void butJustIndicator_Click(object sender, EventArgs e)
+        {
+            var launcher = new TestItLauncher();
+            launcher.RunJustIndicator();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = 100;
+            progressBar1.Value = 0;
+            Thread.Sleep(1000);
+            progressBar1.Value = 5;
+            Thread.Sleep(100);
+            progressBar1.Value = 6;
+            Thread.Sleep(1000);
+            progressBar1.Value = 30;
+            Thread.Sleep(100);
+            progressBar1.Value = 31;
+            Application.DoEvents();
+            Thread.Sleep(1000);
+            Refresh();
+            progressBar1.Value = 60;
+            Thread.Sleep(100);
+            progressBar1.Value = 61;
+            Application.DoEvents();
+            Thread.Sleep(1000);
+            progressBar1.Value = 80;
+            Thread.Sleep(100);
+            progressBar1.Value = 81;
+            Application.DoEvents();
+            Thread.Sleep(1000);
+            progressBar1.Value = 0;
+            Application.DoEvents();
         }
     }
 }

@@ -6,7 +6,10 @@ namespace BaseLibrary
     public class TimeInterval
     {
         public TimeInterval()
-        { }
+        {
+            Begin = Static.MinDate;
+            End = Static.MaxDate;
+        }
 
         public TimeInterval(DateTime begin, DateTime end)
         {
