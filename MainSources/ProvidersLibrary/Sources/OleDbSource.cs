@@ -12,7 +12,7 @@ namespace ProvidersLibrary
         //Открытие соединения
         protected override void ConnectProvider()
         {
-            AddEvent("Открытие соединения с провайдером", Hash);
+            AddEvent("Открытие соединения с провайдером", ConnectionString);
             Connection = new OleDbConnection(ConnectionString);
             Connection.Open();
             if (Connection.State != ConnectionState.Open)

@@ -13,8 +13,6 @@ namespace ProvidersLibrary
 
         //Файл клона
         internal string CloneFile { get; private set; }
-        //Кэш для идентификации соединения
-        protected override string Hash { get { return "Db=" + CloneFile; } }
 
         //Чтение настроек провайдера
         protected override void ReadInf(DicS<string> dic)

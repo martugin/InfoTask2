@@ -133,10 +133,10 @@ namespace ComLaunchers
         protected internal bool IsClosed { get; private set; }
 
         //Инициализация для запуска в тестах
-        internal void InitializeTest()
+        internal void InitializeTest(string appCode, string project)
         {
-            AppCode = "Test";
-            Project = "TestProject";
+            AppCode = appCode;
+            Project = project;
             Logger.History = new TestHistory(Logger);
         }
 
