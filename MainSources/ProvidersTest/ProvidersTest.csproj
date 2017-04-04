@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9AD7123F-7DCB-4A9A-908A-53E0CCC5E496}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ProvidersTest</RootNamespace>
+    <AssemblyName>ProvidersTest</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Debug\TestsRun\TestsDlls\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
+      <Visible>False</Visible>
+    </CodeAnalysisDependentAssemblyPaths>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Clone\CloneSourceTest.cs" />
+    <Compile Include="Fictive\FictiveSimpleTest.cs" />
+    <Compile Include="Fictive\FictiveTest.cs" />
+    <Compile Include="Kosmotronika\KosmSiganlsTest.cs" />
+    <Compile Include="Logika\LogikaTest.cs" />
+    <Compile Include="Mir\MirTest.cs" />
+    <Compile Include="Ovation\OvationSignalsTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Siemens\SimaticSignalsTest.cs" />
+    <Compile Include="Wonderware\WonderwareTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BaseLibraryTest\BaseLibraryTest.csproj">
+      <Project>{D7B4D56D-F810-4AEB-ABE2-359327730790}</Project>
+      <Name>BaseLibraryTest</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
+      <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
+      <Name>BaseLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
+      <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
+      <Name>CommonTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fictive\Fictive.csproj">
+      <Project>{D64B5872-98C2-444A-A449-9FFD2D881D9A}</Project>
+      <Name>Fictive</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kosmotronika\Kosmotronika.csproj">
+      <Project>{59936548-81AE-4A69-986C-C3DA8883988B}</Project>
+      <Name>Kosmotronika</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logika\Logika.csproj">
+      <Project>{1EE14391-9039-426D-8463-F3373C490A6B}</Project>
+      <Name>Logika</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mir\Mir.csproj">
+      <Project>{2632994B-9C7F-45C2-B216-49186B11E352}</Project>
+      <Name>Mir</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ovation\Ovation.csproj">
+      <Project>{B69AA18D-2920-4A14-88DE-D715C2219BA7}</Project>
+      <Name>Ovation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProvidersLibrary\ProvidersLibrary.csproj">
+      <Project>{819FEFDE-4840-45CD-BF58-B528821E3098}</Project>
+      <Name>ProvidersLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Siemens\Siemens.csproj">
+      <Project>{37989224-CC06-4653-8FC3-C4874BB38EFC}</Project>
+      <Name>Siemens</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Wonderware\Wonderware.csproj">
+      <Project>{17DD3C7D-97D6-4F5B-A4A4-2826012E164C}</Project>
+      <Name>Wonderware</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

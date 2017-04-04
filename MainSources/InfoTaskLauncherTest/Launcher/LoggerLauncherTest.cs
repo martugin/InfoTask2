@@ -185,6 +185,8 @@ namespace InfoTaskLouncherTest
                         Break();
                         Thread.Sleep(1000);
                         AddEvent("Text");
+                        AddWarning("Warning", "Pars");
+                        AddError("Error", "Pars");
                         Logger.Procent = 75;
                     })));
    

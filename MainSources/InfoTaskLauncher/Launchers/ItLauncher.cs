@@ -112,7 +112,7 @@ namespace ComLaunchers
         {
             AppCode = appCode;
             Project = project;
-            Logger.History = new AccessHistory(Logger, ItStatic.LocalDataProjectDir(project) + @"History\" + appCode + @"\History.accdb", ItStatic.HistoryTemplateFile);
+            Logger.History = new AccessHistory(Logger, ItStatic.InfoTaskDir() + @"LocalData\History\" + appCode + @"\" + project + @"\History.accdb", ItStatic.HistoryTemplateFile);
         }
 
         //Закрытие клиента

@@ -36,3 +36,4 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Experiments")]
 [assembly: InternalsVisibleTo("InfoTaskLauncherTest")]
+[assembly: InternalsVisibleTo("ProvidersTest")]

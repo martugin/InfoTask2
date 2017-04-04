@@ -64,7 +64,7 @@ namespace ProvidersLibrary
         }
 
         //Очистка списка объектов
-        protected override void ClearOuts()
+        protected internal override void ClearOuts()
         {
             _objectsId.Clear();
             _objects.Clear();

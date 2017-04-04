@@ -37,7 +37,8 @@ namespace ProvidersLibrary
         public void ClearSignals()
         {
             AddEvent("Очистка списка сигналов");
-            Provider.IsPrepared = false;
+            Receiver.IsPrepared = false;
+            Receiver.ClearOuts();
             _signals.Clear();
         }
 

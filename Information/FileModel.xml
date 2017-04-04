@@ -69,6 +69,7 @@
     <!--Каталог локальных данных проектов-->
     <History>
       <!--Файлы истории (значения)-->
+      <!--Шаблон каждого файла LocalData\History\History.accdb-->
       <Constructor>
         <_КодПроектаHistory.accdb>История одного проекта в конструкторе</_КодПроектаHistory.accdb>
       </Constructor>
@@ -102,6 +103,7 @@
     <SpecialProjects>
       <CommProject>
         <!--Проект коммуникатора-->
+        <!--Шаблон: Projects\Project-->
         <ProjectProperties.xml>Файл свойств проекта (исходный)</ProjectProperties.xml>
         <SignalsSource>
           <!--Каталог списков сигналов источников (порожденный)-->
@@ -119,6 +121,7 @@
       </CommProject>
     </SpecialProjects>
     <Constructor>
+      <ConstructorData.accdb>Файл данных конструктора</ConstructorData.accdb>
       <_КодПроекта>
         <!--Локальные данные конструктора по одному проекту-->
         <!--Шаблон LocalData\Constructor-->
@@ -155,6 +158,7 @@
       </_КодПроекта>
     </Constructor>
     <Analyzer>
+      <AnalyzerData.accdb>Файл данных анализатора</AnalyzerData.accdb>
       <_КодПроекта>
         <!--Локальные данные анализатора по одному проекту-->
         <!--Шаблон LocalData\Analyzer (добавляется к скопированному из LocalData\Constructor)-->
@@ -171,6 +175,7 @@
       </_КодПроекта>
     </Analyzer>
     <Calibrator>
+      <CalibratorData.accdb>Файл данных калибратора</CalibratorData.accdb>
       <_КодПроекта>
         <!--Локальные данные калибратора по одному проекту-->
         <Comm>
@@ -251,6 +256,9 @@
         <ConnectUserProperties.accdb>Свойства форм - списков объетов</ConnectUserProperties.accdb>
       </_КодПриемника>
     </Comm>
+    <RAS>
+      <!--Локальные данные приложений РАС-->
+    </RAS>
   </LocalData>
   <Клон>
     <!--Структура каталога клона-->

@@ -32,24 +32,27 @@ namespace Provider
         //Добавить сигнал
         protected override InitialSignal AddNewSignal(InitialSignal sig)
         {
-            if (sig.Inf["Prop"] == "NumWS")
-                return NumWsSignal = NumWsSignal ?? sig;
-            if (sig.Inf["Prop"] == "Mode")
-                return ModeSignal = ModeSignal ?? sig;
-            if (sig.Inf["Prop"] == "Code")
-                return CodeSignal = CodeSignal ?? sig;
-            if (sig.Inf["Prop"] == "SN")
-                return SnSignal = SnSignal ?? sig;
-            if (sig.Inf["Prop"] == "NumType")
-                return NumTypeSignal = NumTypeSignal ?? sig;
-            if (sig.Inf["Prop"] == "Appartment")
-                return AppartmentSignal = AppartmentSignal ?? sig;
-            if (sig.Inf["Prop"] == "Params")
-                return ParamsSignal = ParamsSignal ?? sig;
-            if (sig.Inf["Prop"] == "ExtCommand")
-                return ExtCommandSignal = ExtCommandSignal ?? sig;
-            if (sig.Inf["Prop"] == "Point")
-                return PointSignal = PointSignal ?? sig;
+            switch (sig.Inf["Prop"].ToLower())
+            {
+                case "numws":
+                    return NumWsSignal = NumWsSignal ?? sig;
+                case "mode":
+                    return ModeSignal = ModeSignal ?? sig;
+                case "code":
+                    return CodeSignal = CodeSignal ?? sig;
+                case "sn":
+                    return SnSignal = SnSignal ?? sig;
+                case "numtype":
+                    return NumTypeSignal = NumTypeSignal ?? sig;
+                case "appartment":
+                    return AppartmentSignal = AppartmentSignal ?? sig;
+                case "params":
+                    return ParamsSignal = ParamsSignal ?? sig;
+                case "extcommand":
+                    return ExtCommandSignal = ExtCommandSignal ?? sig;
+                case "point":
+                    return PointSignal = PointSignal ?? sig;
+            }
             return null;
         }
 

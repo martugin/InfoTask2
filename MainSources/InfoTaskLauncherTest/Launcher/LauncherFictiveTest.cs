@@ -4,6 +4,7 @@ using BaseLibraryTest;
 using ComLaunchers;
 using Fictive;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ProvidersLibrary;
 
 namespace InfoTaskLauncherTest
 {
@@ -23,6 +24,7 @@ namespace InfoTaskLauncherTest
             Assert.IsNotNull(con);
             Assert.AreEqual("Sour", con.Name);
             Assert.AreEqual("Fictive", con.Complect);
+            Assert.AreEqual(ProviderType.Source, con.Type);
             con.JoinProvider("FictiveSimpleSource", "Label=fic");
             var source = (FictiveSimpleSource)con.Connect.Source;
             Assert.IsNotNull(source);
@@ -37,6 +39,7 @@ namespace InfoTaskLauncherTest
             var sigBool = con.AddInitialSignal("Out1.Bool", "bool", "NumObject=1;ValuesInterval=30000", "", "Signal=Bool");
             Assert.AreEqual("Out1.Bool", sigBool.Code);
             Assert.AreEqual("Логич", sigBool.DataType);
+            Assert.AreEqual("NUMOBJECT=1;VALUESINTERVAL=30000;SIGNAL=Bool;", sigBool.Inf);
             var sigInt = con.AddInitialSignal("Out1.Int", "int", "NumObject=1;ValuesInterval=30000", "", "Signal=Int");
             Assert.AreEqual("Out1.Int", sigInt.Code);
             Assert.AreEqual("Целое", sigInt.DataType);
@@ -168,14 +171,14 @@ namespace InfoTaskLauncherTest
         [TestMethod]
         public void FictiveSimpleClone()
         {
-            TestLib.CopyDir("ProvidersLibrary", "FictiveSimpleClone");
+            TestLib.CopyDir(@"Providers\Fictive", "FictiveSimpleClone");
             var launcher = new ItLauncher();
             launcher.Initialize("LauncherFictiveTest", "FictiveSimpleClone");
             Assert.IsFalse(launcher.IsClosed);
 
             var con = (RSourConnect)launcher.CreateSourConnect("Sour", "Fictive");
             con.JoinProvider("FictiveSimpleSource", "Label=fic");
-            var cloneDir = TestLib.TestRunDir + @"ProvidersLibrary\FictiveSimpleClone";
+            var cloneDir = TestLib.TestRunDir + @"Providers\Fictive\FictiveSimpleClone";
             con.MakeClone(new DateTime(2017, 1, 1), new DateTime(2017, 1, 1, 0, 10, 0), cloneDir);
             launcher.Close();
             Assert.IsTrue(launcher.IsClosed);
@@ -191,11 +194,11 @@ namespace InfoTaskLauncherTest
         [TestMethod]
         public void Fictive()
         {
-            TestLib.CopyFile("ProvidersLibrary", "Fictive.accdb", "FictiveLauncher.accdb");
+            TestLib.CopyFile(@"Providers\Fictive", "Fictive.accdb", "FictiveLauncher.accdb");
             var launcher = new ItLauncher();
             launcher.Initialize("LauncherFictiveTest", "Fictive");
             var con = (RSourConnect)launcher.CreateSourConnect("Sour", "Fictive");
-            con.JoinProvider("FictiveSource", "DbFile=" + TestLib.TestRunDir + @"ProvidersLibrary\FictiveLauncher.accdb");
+            con.JoinProvider("FictiveSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\FictiveLauncher.accdb");
 
             var source = (FictiveSource)con.Connect.Source;
             Assert.IsNotNull(source);
@@ -331,13 +334,13 @@ namespace InfoTaskLauncherTest
         [TestMethod]
         public void FictiveClone()
         {
-            TestLib.CopyDir("ProvidersLibrary", "FictiveClone");
+            TestLib.CopyDir(@"Providers\Fictive", "FictiveClone");
             Thread.Sleep(500);
-            TestLib.CopyFile("ProvidersLibrary", "Fictive.accdb", @"FictiveClone\Fictive.accdb");
+            TestLib.CopyFile(@"Providers\Fictive", "Fictive.accdb", @"FictiveClone\Fictive.accdb");
             var launcher = new ItLauncher();
             launcher.Initialize("LauncherFictiveTest", "FictiveClone");
             var con = (RSourConnect)launcher.CreateSourConnect("Sour", "Fictive");
-            string cloneDir = TestLib.TestRunDir + @"ProvidersLibrary\FictiveClone\";
+            string cloneDir = TestLib.TestRunDir + @"Providers\Fictive\FictiveClone\";
             con.JoinProvider("FictiveSource", "DbFile=" + cloneDir + "Fictive.accdb");
             
             con.MakeClone(new DateTime(2016, 7, 8), new DateTime(2016, 7, 8, 0, 30, 0), cloneDir);

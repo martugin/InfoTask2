@@ -31,6 +31,7 @@
             this.butXml = new System.Windows.Forms.Button();
             this.butIndicator = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.butItDir = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // butXml
@@ -66,11 +67,23 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // butItDir
+            // 
+            this.butItDir.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butItDir.Location = new System.Drawing.Point(12, 64);
+            this.butItDir.Name = "butItDir";
+            this.butItDir.Size = new System.Drawing.Size(119, 46);
+            this.butItDir.TabIndex = 3;
+            this.butItDir.Text = "InfoTaskDir";
+            this.butItDir.UseVisualStyleBackColor = true;
+            this.butItDir.Click += new System.EventHandler(this.butItDir_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(528, 287);
+            this.Controls.Add(this.butItDir);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.butIndicator);
             this.Controls.Add(this.butXml);
@@ -85,6 +98,7 @@
         private System.Windows.Forms.Button butXml;
         private System.Windows.Forms.Button butIndicator;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button butItDir;
     }
 }
 
