@@ -24,12 +24,6 @@ namespace ProvidersLibrary
         //Чтение дополнительных настроек
         protected virtual void ReadAdditionalInf(DicS<string> dic) { }
 
-        //Хэш для идентификации настройки провайдера
-        protected override string Hash
-        {
-            get { return "OPCServer=" + ServerName + ";Node=" + Node; }
-        }
-
         //Тип OPC-сервера
         public string ServerName { get; set; }
         //Имя компьютера

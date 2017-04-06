@@ -18,7 +18,6 @@ namespace Fictive
         {
             Label = dic["Label"];
         }
-        protected override string Hash { get { return "Fictive: " + Label; } }
         //Метка правйдера, чтобы различать экземпляры
         internal string Label { get; private set; }
         

@@ -17,8 +17,6 @@ namespace Provider
             _location = dic.GetInt("Location");
         }
 
-        protected override string Hash { get { return "ArchDbArchive=" + _dataSource; } }
-
         //Имя ретро-сервера или путь к архиву
         private string _dataSource;
         //Временной сдвиг

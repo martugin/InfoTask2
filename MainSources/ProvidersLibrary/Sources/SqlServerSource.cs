@@ -15,11 +15,6 @@ namespace ProvidersLibrary
             SqlProps = new SqlProps(server, db, e, dic["Login"], dic["Password"]);
         }
 
-        protected override string Hash
-        {
-            get { return "SQLServer=" + SqlProps.ServerName + ";Database=" + SqlProps.DatabaseName; }
-        }
-
         //Настройки SQL Server
         protected SqlProps SqlProps { get; private set; }
 

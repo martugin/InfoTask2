@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace BaseLibrary
 {
@@ -98,6 +97,10 @@ namespace BaseLibrary
                                                               bool isCollect) //Формировать общую ошибку
         {
             FinishCommand(CollectCommand);
+            FinishCommand(PeriodCommand);
+            FinishCommand(ProgressCommand);
+            FinishCommand(LogCommand);
+            FinishCommand(IndicatorTextCommand);
             CollectedResults = null;
             Command = CollectCommand = new CollectCommand(this, Command, isWriteHistory, isCollect);
             return CollectCommand;
@@ -161,6 +164,9 @@ namespace BaseLibrary
         public PeriodCommand StartPeriod(DateTime begin, DateTime end, string mode = "") //Начало, конец, режим
         {
             FinishCommand(PeriodCommand);
+            FinishCommand(ProgressCommand);
+            FinishCommand(LogCommand);
+            FinishCommand(IndicatorTextCommand);
             Command = PeriodCommand = new PeriodCommand(this, Command, begin, end, mode);
             return PeriodCommand;
         }
@@ -191,6 +197,8 @@ namespace BaseLibrary
                                                                   DateTime? endTime = null) //Если не null, то время конца обратного отсчета
         {
             FinishCommand(ProgressCommand);
+            FinishCommand(LogCommand);
+            FinishCommand(IndicatorTextCommand);
             Command = ProgressCommand = new ProgressCommand(this, Command, name, pars, endTime);
             return ProgressCommand;
         }
@@ -207,6 +215,7 @@ namespace BaseLibrary
         public LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
         {
             FinishCommand(LogCommand);
+            FinishCommand(IndicatorTextCommand);
             Command = LogCommand = new LogCommand(this, Command, startProcent, finishProcent, name, context, pars);
             return LogCommand;
         }

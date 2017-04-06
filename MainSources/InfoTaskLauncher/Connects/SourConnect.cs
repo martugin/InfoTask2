@@ -100,7 +100,7 @@ namespace ComLaunchers
         {
             Logger.RunSyncCommand(() => {_interval = Connect.GetTime();});
         }
-        private TimeInterval _interval;
+        private TimeInterval _interval = new TimeInterval();
 
         //Диапазон времени источника
         public DateTime BeginTime { get { return _interval.Begin; } }

@@ -13,7 +13,6 @@ namespace ProvidersLibrary
         {
             DbFile = dic.Get("DbFile");
         }
-        protected override string Hash { get { return "DbFile=" + DbFile; } }
 
         //Проверка соединения с файлом
         protected override void ConnectProvider()

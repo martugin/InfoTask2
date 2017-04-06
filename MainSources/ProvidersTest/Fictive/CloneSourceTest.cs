@@ -258,7 +258,7 @@ namespace ProvidersTest
             GetValues(con, D(12), D(20));
             var mlist = con.Signals["Ob.SigB"].MomList;
             Assert.AreEqual(5, mlist.Count);
-            Assert.AreEqual(D(12), mlist.TimeI(0));
+            Assert.AreEqual(D(11), mlist.TimeI(0));
             Assert.AreEqual(true, mlist.BooleanI(0));
             Assert.IsNull(mlist.ErrorI(0));
             Assert.AreEqual(D(18), mlist.TimeI(3));
@@ -272,7 +272,7 @@ namespace ProvidersTest
 
             mlist = con.Signals["Ob.SigI"].MomList;
             Assert.AreEqual(5, mlist.Count);
-            Assert.AreEqual(D(12), mlist.TimeI(0));
+            Assert.AreEqual(D(11), mlist.TimeI(0));
             Assert.AreEqual(1, mlist.IntegerI(0));
             Assert.IsNull(mlist.ErrorI(0));
             Assert.AreEqual(D(16), mlist.TimeI(2));
@@ -284,7 +284,7 @@ namespace ProvidersTest
 
             mlist = con.Signals["Ob.SigS"].MomList;
             Assert.AreEqual(2, mlist.Count);
-            Assert.AreEqual(D(12), mlist.TimeI(0));
+            Assert.AreEqual(D(7), mlist.TimeI(0));
             Assert.AreEqual("b", mlist.StringI(0));
             Assert.IsNull(mlist.ErrorI(0));
             Assert.AreEqual(D(14), mlist.TimeI(1));
@@ -295,7 +295,7 @@ namespace ProvidersTest
 
             mlist = con.Signals["Ob.SigT"].MomList;
             Assert.AreEqual(2, mlist.Count);
-            Assert.AreEqual(D(12), mlist.TimeI(0));
+            Assert.AreEqual(D(4, 28), mlist.TimeI(0));
             Assert.AreEqual(D(10), mlist.DateI(0));
             Assert.IsNull(mlist.ErrorI(0));
             Assert.AreEqual(D(14, 16), mlist.TimeI(1));
@@ -306,7 +306,7 @@ namespace ProvidersTest
 
             mlist = con.Signals["ObConst.SigI"].MomList;
             Assert.AreEqual(1, mlist.Count);
-            Assert.AreEqual(D(12), mlist.TimeI(0));
+            Assert.AreEqual(D(0), mlist.TimeI(0));
             Assert.AreEqual(10, mlist.IntegerI(0));
             Assert.IsNotNull(mlist.ErrorI(0));
             Assert.AreEqual(ErrQuality.Warning, mlist.ErrorI(0).Quality);
@@ -314,8 +314,8 @@ namespace ProvidersTest
 
             mlist = con.Signals["ObConst.SigS"].MomList;
             Assert.AreEqual(1, mlist.Count);
-            Assert.AreEqual(D(12), mlist.TimeI(0));
-            Assert.AreEqual("sss", mlist.IntegerI(0));
+            Assert.AreEqual(D(0), mlist.TimeI(0));
+            Assert.AreEqual("sss", mlist.StringI(0));
             Assert.IsNull(mlist.ErrorI(0));
         }
     }

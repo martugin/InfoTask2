@@ -50,6 +50,7 @@
     <Compile Include="Fictive\FictiveSimpleTest.cs" />
     <Compile Include="Fictive\FictiveTest.cs" />
     <Compile Include="Kosmotronika\KosmSiganlsTest.cs" />
+    <Compile Include="Kosmotronika\KosmValuesTest.cs" />
     <Compile Include="Logika\LogikaTest.cs" />
     <Compile Include="Mir\MirTest.cs" />
     <Compile Include="Ovation\OvationSignalsTest.cs" />
@@ -103,9 +104,7 @@
       <Name>Wonderware</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Clone\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
