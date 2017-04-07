@@ -152,7 +152,7 @@ namespace ProvidersLibrary
                     foreach (var sig in CalcSignals.Values)
                     {
                         sig.Calculate();
-                        calc += sig.MomList.Count;
+                        calc += sig.Value.Count;
                     }
                     AddEvent("Значения расчетных сигналов прочитаны", calc + " значений сформировано");
                     vcount.WriteCount += calc;
@@ -251,9 +251,7 @@ namespace ProvidersLibrary
             try
             {
                 if (PeriodIsUndefined()) return;
-                string dir = cloneDir;
-                if (!dir.EndsWith(@"\")) dir += @"\";
-                using (var db = new DaoDb(dir + @"Clone.accdb"))
+                using (var db = new DaoDb(cloneDir.EndDir() + "Clone.accdb"))
                 {
                     ReadCloneSignals(db);
                     using (CloneRec = new DaoRec(db, "MomentValues"))

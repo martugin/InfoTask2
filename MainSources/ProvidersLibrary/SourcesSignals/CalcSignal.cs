@@ -43,43 +43,43 @@ namespace ProvidersLibrary
             if (funName.StartsWith("Bit")) DataType = DataType.Boolean;
             else if (funName == "Average") DataType = DataType.Real;
             else DataType = _initialSignal.DataType;
-            MList = MFactory.NewList(DataType);
+            MomList = MFactory.NewList(DataType);
         }
 
         //Взятие бита, pars[0] - номер бита
         public void Bit()
         {
             int bit = _pars[0].Integer;
-            var moms = _initialSignal.MomList;
+            var moms = _initialSignal.Value;
             for (int i = 0; i < moms.Count; i++)
-                MList.AddMom(moms.TimeI(i), moms.IntegerI(i).GetBit(bit), moms.ErrorI(i));
+                MomList.AddMom(moms.TimeI(i), moms.IntegerI(i).GetBit(bit), moms.ErrorI(i));
         }
 
         //Взятие битов и сложение по Or, pars - номера битов
         public void BitOr()
         {
-            var moms = _initialSignal.MomList;
+            var moms = _initialSignal.Value;
             for (int i = 0; i < moms.Count; i++)
             {
                 var v = moms.IntegerI(i);
                 bool res = false;
                 foreach (var par in _pars)
                     res |= v.GetBit(par.Integer);
-                MList.AddMom(moms.TimeI(i), res, moms.ErrorI(i));
+                MomList.AddMom(moms.TimeI(i), res, moms.ErrorI(i));
             }
         }
 
         //Взятие битов и сложение по And, pars - номера битов
         public void BitAnd()
         {
-            var moms = _initialSignal.MomList;
+            var moms = _initialSignal.Value;
             for (int i = 0; i < moms.Count; i++)
             {
                 var v = moms.IntegerI(i);
                 bool res = true;
                 foreach (var par in _pars)
                     res &= v.GetBit(par.Integer);
-                MList.AddMom(moms.TimeI(i), res, moms.ErrorI(i));
+                MomList.AddMom(moms.TimeI(i), res, moms.ErrorI(i));
             }
         }
 
@@ -133,7 +133,7 @@ namespace ProvidersLibrary
         private void Agregate(Action<EditMom, MomList, int, DateTime> fun)
         {
             double seglen = _pars[0].Real, segshift = _pars.Length < 2 ? 0 : _pars[1].Real * seglen;
-            var moms = _initialSignal.MomList;
+            var moms = _initialSignal.Value;
             if (moms.Count == 0) return;
             var mlist = MFactory.NewList(DataType);
             //Добавляем в список границы сегментов
@@ -165,7 +165,7 @@ namespace ProvidersLibrary
                 while (i < mlist.Count && mlist.TimeI(i) <= t)
                     fun(me, mlist, i++, t);
                 if (i > 0 && mlist.TimeI(i-1) == t) i--;
-                MList.AddMom(me);
+                MomList.AddMom(me);
             }
         }
 

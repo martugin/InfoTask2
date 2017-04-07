@@ -57,8 +57,9 @@
     <Compile Include="Commands\Commands\CommandsEnums.cs" />
     <Compile Include="Commands\Commands\KeepCommand.cs" />
     <Compile Include="Commands\Commands\PeriodCommand.cs" />
-    <Compile Include="Commands\History\TestHistory.cs" />
     <Compile Include="Commands\Indicator\AppIndicator.cs" />
+    <Compile Include="Commands\Indicator\IIndicator.cs" />
+    <Compile Include="Commands\Indicator\ServiceIndicator.cs" />
     <Compile Include="Commands\Indicator\TextedIndicatorForm.cs">
       <SubType>Form</SubType>
     </Compile>

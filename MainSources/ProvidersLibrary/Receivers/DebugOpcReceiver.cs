@@ -3,18 +3,17 @@
 namespace ProvidersLibrary
 {
     //Отладочный OPC-сервер
-    public class DebugOpcServer : OpcServer
+    public class DebugOpcReceiver : OpcReceiver
     {
-        public DebugOpcServer() { }
+        public DebugOpcReceiver() { }
 
-        public DebugOpcServer(string serverName, string node) 
+        public DebugOpcReceiver(string serverName, string node) 
         {
             ServerName = serverName;
             Node = node;
-            Logger = new Logger();
         }
 
-        public override string Code { get { return "DebugOpcServer"; } }
+        public override string Code { get { return "DebugOpcReceiver"; } }
 
         protected override string GetOpcItemTag(DicS<string> inf) { return ""; }
     }

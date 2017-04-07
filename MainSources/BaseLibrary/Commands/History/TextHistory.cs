@@ -8,13 +8,11 @@ namespace BaseLibrary
     public class TextHistory : IHistory
     {
         //Задание файла истории
-        public TextHistory(Logger logger, //Ссылка на логгер
-                                     string historyFile, //Файл истории
+        public TextHistory(string historyFile, //Файл истории
                                      bool useSuperHistory) //Разрешить команды уровня Progress
         {
             try
             {
-                Logger = logger;
                 _file = historyFile;
                 _shift = useSuperHistory ? "    " : "";
                 OpenHistory();
@@ -27,7 +25,7 @@ namespace BaseLibrary
         }
         
         //Логгер
-        public Logger Logger { get; private set; }
+        public Logger Logger { get;  set; }
         //Файл истории
         private readonly string _file;
         //Если команды уровня Progress разрешены, то сдвиг на 4 пробела

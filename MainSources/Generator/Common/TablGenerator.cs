@@ -17,7 +17,7 @@ namespace Generator
                 {
                     try
                     {
-                        var dir = moduleDir.EndsWith("\\") ? moduleDir : moduleDir + "\\";
+                        var dir = moduleDir.EndDir();
                         var table = new GenTemplateTable("GenParams", "GenRule", "ErrMess", "CalcOn", "ParamId");
                         var subTable = new GenTemplateTable("GenSubParams", table, "GenRule", "ErrMess", "CalcOn", "SubParamId", "ParamId");
                         var dataTabls = new TablsList();

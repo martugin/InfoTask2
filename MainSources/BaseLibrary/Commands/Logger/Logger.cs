@@ -4,17 +4,19 @@ using System.Threading;
 namespace BaseLibrary
 {
     //Логгер
-    public class Logger : ILogger
+    public class Logger : ILogger, IDisposable
     {
-        public Logger(LoggerStability stability = LoggerStability.Single)
+        public Logger(IHistory history, IIndicator indicator, LoggerStability stability = LoggerStability.Single)
         {
+            History = history;
+            Indicator = indicator;
             Stability = stability;
         }
 
         //Ссылка на историю
-        public IHistory History { get; set; }
+        public IHistory History { get; private set; }
         //Ссылка на индикатор
-        public IIndicator Indicator { get; set; }
+        public IIndicator Indicator { get; private set; }
 
         //Текущие команды разных типов
         internal CollectCommand CollectCommand { get; set; }
@@ -352,6 +354,20 @@ namespace BaseLibrary
                 if (Command != null) 
                     Command.Procent = value;
             }
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                FinishCollect();
+                FinishPeriod();
+                FinishProgress();
+                FinishLog();    
+            }
+            catch { }
+            try { History.Close();}
+            catch { }
         }
     }
 }

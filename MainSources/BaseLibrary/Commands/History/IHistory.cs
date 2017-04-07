@@ -4,7 +4,7 @@
     public interface IHistory
     {
         //Ссылка на логгер
-        Logger Logger { get; }
+        Logger Logger { get; set; }
 
         //Записать начало выполнения надкомманды
         void WriteStartSuper(ProgressCommand command);

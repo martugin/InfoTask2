@@ -61,10 +61,11 @@
     <Compile Include="Logger\HistoryTest.cs" />
     <Compile Include="Logger\HistoryTextTest.cs" />
     <Compile Include="Logger\LogTest.cs" />
-    <Compile Include="Logger\TestIndicator.cs" />
+    <Compile Include="Lib\TestHistory.cs" />
+    <Compile Include="Lib\TestIndicator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Collections\DicITest.cs" />
-    <Compile Include="TestLib.cs" />
+    <Compile Include="Lib\TestLib.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">

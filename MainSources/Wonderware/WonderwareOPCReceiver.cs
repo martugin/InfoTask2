@@ -7,7 +7,7 @@ namespace Provider
     //OPC-сервер Wonderware
     [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "WonderwareOpcReceiver")]
-    public class WonderwareOpcReceiver : OpcServer
+    public class WonderwareOpcReceiver : OpcReceiver
     {
         //Код
         public override string Code { get { return "WonderwareOpcReceiver"; } }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Remoting.Messaging;
 using BaseLibrary;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -15,12 +14,9 @@ namespace BaseLibraryTest
         {
             get
             {
-                var dir = new DirectoryInfo(ItStatic.InfoTaskDir()).Parent.FullName;
-                if (!dir.EndsWith(@"\")) dir += @"\";
-                return dir;
+                new DirectoryInfo(ItStatic.InfoTaskDir()).Parent.FullName.EndDir();
                 //var dir = Static.GetRegistry(@"software\InfoTask", "InfoTask2Path");
-                //if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
-                //if (!dir.EndsWith(@"\")) dir += @"\";
+                //if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path").EndDir();
                 //var n = dir.LastIndexOf(@"\", dir.Length - 2, StringComparison.Ordinal);
                 //return dir.Substring(0, n + 1);    
             }
@@ -29,6 +25,12 @@ namespace BaseLibraryTest
         public static string TestRunDir
         {
             get { return InfoTaskDevelopDir + @"Debug\TestsRun\"; }
+        }
+
+        //Создание тестового логгера
+        public static Logger CreateTestLogger(LoggerStability stability = LoggerStability.Single)
+        {
+            return new Logger(new TestHistory(), new TestIndicator(), stability);
         }
 
         //Строка настроек провайдера для соединения с тестовым SQL Server

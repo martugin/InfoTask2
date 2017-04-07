@@ -32,6 +32,12 @@ namespace BaseLibrary
             return string.IsNullOrWhiteSpace(s);
         }
 
+        //Добавляет к путь к каталогу слеш в конец, если надо
+        public static string EndDir(this string dir)
+        {
+            return dir.EndsWith("\\") ? dir : dir + "\\";
+        }
+
         //Преводит дату в формат для запросов Access
         public static string ToAccessString(this DateTime d)
         {
@@ -289,7 +295,6 @@ namespace BaseLibrary
         {
             return node.Name.ToString();
         }
-
         #endregion
     }
 }

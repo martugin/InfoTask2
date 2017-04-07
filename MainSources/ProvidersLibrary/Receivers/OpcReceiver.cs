@@ -7,9 +7,9 @@ using OPCAutomation;
 namespace ProvidersLibrary
 {
     //Соединение с OPC-сервером
-    public abstract class OpcServer : BaseReceiver
+    public abstract class OpcReceiver : BaseReceiver
     {
-        protected internal OpcServer() 
+        protected internal OpcReceiver() 
         {
             Server = new OPCServer();
         }

@@ -4,7 +4,8 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Базовый класс для всех сигналов источников и приемников
-    public abstract class ProviderSignal 
+
+    public abstract class ProviderSignal : ISignal
     {
         protected ProviderSignal(string code)
         {
@@ -28,5 +29,14 @@ namespace ProvidersLibrary
         public string CodeOut { get; private set; }
         //Словарь свойств
         public DicS<string> Inf { get; private set; }
+
+        //Список значений
+        protected MomList MomList { get; set; }
+
+        //Очистка списка значений
+        internal virtual void ClearMoments(bool clearBegin)
+        {
+            MomList.Clear();
+        }
     }
 }
