@@ -14,8 +14,7 @@ namespace ComLaunchers
     public interface IItLauncher
     {
         //Инициализация
-        void Initialize(string appCode, //Код приложения
-                              string project); //Код проекта
+        void Initialize(string appCode); //Код приложения
         //Закрытие клиента
         void Close();
 
@@ -25,6 +24,26 @@ namespace ComLaunchers
 
         //Путь к каталогу InfoTask
         string InfoTaskDir { get; }
+
+        //Код приложения
+        string AppCode { get; }
+        //Номер програмного продукта
+        int AppProductNumber{ get; }
+        //Имя организации-пользователя
+        string UserOrg { get; }
+        //Версия InfoTask
+        string InfoTaskVersion { get; }
+        //Дата версии InfoTask
+        DateTime InfoTaskVersionDate { get; }
+
+        //Код проекта
+        string ProjectCode { get; }
+        //Имя проекта
+        string ProjectName { get; }
+        //Каталог проекта
+        string ProjectDir { get; }
+        //Каталог локальных данных проекта
+        string ProjectLocalDir { get; }
 
         //Генерация параметров
         void GenerateParams(string moduleDir);
@@ -100,31 +119,24 @@ namespace ComLaunchers
     ComSourceInterfaces(typeof(ILoggerClientEvents))]
     public class ItLauncher :  IItLauncher
     {
-        public ItLauncher()
+        //Инициализация для нового приложения
+        public void Initialize(string appCode) //Код приложения
         {
-            Logger = new Logger {Indicator = new AppIndicator()};
-            Logger.ExecutionFinished += OnExecutionFinished;
+            AppCode = appCode;
         }
 
         //Инициализация
-        public void Initialize(string appCode, //Код приложения
-                                        string project) //Код проекта
+        public void LoadProject(string projectDir) //Каталог проекта
         {
-            AppCode = appCode;
-            Project = project;
-            Logger.History = new AccessHistory(Logger, ItStatic.InfoTaskDir() + @"LocalData\History\" + appCode + @"\" + project + @"\History.accdb", ItStatic.HistoryTemplateFile);
+            CloseProject();
+            Project = new AppProject(this,  projectDir);
+            Logger.ExecutionFinished += OnExecutionFinished;
         }
 
         //Закрытие клиента
         public void Close()
         {
-            try
-            {
-                Logger.ExecutionFinished -= OnExecutionFinished;
-                if (Logger.History != null)
-                    Logger.History.Close();
-            }
-            catch { }
+            CloseProject();
             Thread.Sleep(100);
             GC.Collect();
             IsClosed = true;
@@ -132,12 +144,14 @@ namespace ComLaunchers
         //Клиент уже был закрыт
         protected internal bool IsClosed { get; private set; }
 
-        //Инициализация для запуска в тестах
-        internal void InitializeTest(string appCode, string project)
+        //Закрытие проекта
+        private void CloseProject()
         {
-            AppCode = appCode;
-            Project = project;
-            Logger.History = new TestHistory(Logger);
+            if (Project != null)
+            {
+                Logger.ExecutionFinished -= OnExecutionFinished;
+                Logger.Dispose();
+            }
         }
 
         //Ошибка и результат последней операции
@@ -148,19 +162,55 @@ namespace ComLaunchers
         public string InfoTaskDir { get { return ItStatic.InfoTaskDir(); } }
 
         //Код приложения
-        protected internal string AppCode { get; private set; }
-        //Код проекта
-        protected internal string Project { get; private set; }
+        public string AppCode { get; private set; }
 
-        //Генератор параметров, синглетон
-        private TablGenerator _generator;
+        //Номер програмного продукта
+        public int AppProductNumber 
+        { 
+            get { return ItStatic.AppProductNumber(AppCode); }
+        }
+        //Имя организации-пользователя
+        public string UserOrg
+        {
+            get { return ItStatic.UserOrg; }
+        }
+        //Версия InfoTask
+        public string InfoTaskVersion
+        {
+            get { return ItStatic.InfoTaskVersion; }
+        }
+        //Дата версии InfoTask
+        public DateTime InfoTaskVersionDate
+        {
+            get { return ItStatic.InfoTaskVersionDate; }
+        }
+
+        //Текущий проект
+        private AppProject _project;
+        internal AppProject Project
+        {
+            get
+            {
+                if (_project == null)
+                    Static.MessageError("Не задан проект");
+                return _project;
+            }
+            private set { _project = value; }
+        }
+
+        //Код проекта
+        public string ProjectCode { get { return Project.ProjectCode; } }
+        //Имя проекта
+        public string ProjectName { get { return Project.ProjectCode; } }
+        //Каталог проекта
+        public string ProjectDir { get { return Project.ProjectDir; } }
+        //Каталог локальных данных проекта
+        public string ProjectLocalDir { get { return ItStatic.LocalProjectDir(AppCode, ProjectCode); }}
 
         //Генерация параметров
         public void GenerateParams(string moduleDir)
         {
-            if (_generator == null)
-                _generator = new TablGenerator(Logger);
-            Logger.RunSyncCommand(() => _generator.GenerateParams(moduleDir));
+            Project.GenerateParams(moduleDir);
         }
 
         //Создание соединения-источника
@@ -192,7 +242,8 @@ namespace ComLaunchers
 
         //Работа с логгером
         #region Logger
-        protected internal Logger Logger { get; private set; }
+        //Логгер
+        internal Logger Logger { get { return Project.Logger; } }
 
         //Прервать выполнение
         public void Break()

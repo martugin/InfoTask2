@@ -15,7 +15,7 @@ namespace ProvidersLibrary
 
         //Ссылка на источник
         protected BaseSource Source { get; private set; } 
-        //Код объекта + свойства выхода - контекст для формирования ошибок
+        //Свойства объекта + свойства выхода - контекст для формирования ошибок
         public string Context { get; internal set; }
 
         //Основной сигнал объекта

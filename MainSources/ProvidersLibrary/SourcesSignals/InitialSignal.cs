@@ -20,12 +20,6 @@ namespace ProvidersLibrary
         //Буферное значение для добавления
         internal EditMom BufMom { get; private set; }
 
-        //Очистка списка значений
-        internal override void ClearMoments(bool clearBegin)
-        {
-            MList.Clear();
-        }
-
         //Добавка мгновенного значения в список или клон
         //Возвращает количество реально добавленных значений 
         internal virtual int AddMom(DateTime time, MomErr err)
@@ -43,7 +37,7 @@ namespace ProvidersLibrary
         protected int PutMom(IMean mom)
         {
             if (IdInClone != 0) return PutClone(mom, false);
-            MList.AddMom(mom);
+            MomList.AddMom(mom);
             return 1;
         }
 

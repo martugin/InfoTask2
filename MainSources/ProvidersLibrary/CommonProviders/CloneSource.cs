@@ -17,9 +17,7 @@ namespace ProvidersLibrary
         //Чтение настроек провайдера
         protected override void ReadInf(DicS<string> dic)
         {
-            var dir = dic["CloneDir"];
-            if (!dir.EndsWith(@"\")) dir += @"\";
-            CloneFile = dir + @"Clone.accdb";
+            CloneFile = dic["CloneDir"].EndDir() + "Clone.accdb";
         }
 
         //Проверка соединения

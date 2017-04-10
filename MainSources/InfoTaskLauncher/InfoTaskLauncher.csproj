@@ -46,6 +46,7 @@
     <Compile Include="Connects\ReceivConnect.cs" />
     <Compile Include="Connects\SourConnect.cs" />
     <Compile Include="Launchers\ItLauncher.cs" />
+    <Compile Include="Launchers\AppProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Signals\RealTimeSignal.cs" />
     <Compile Include="Signals\ReceivSignal.cs" />
@@ -76,6 +77,9 @@
       <Project>{2828EE50-3906-40D8-BBAC-2B75F9BEE24E}</Project>
       <Name>Tablik</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

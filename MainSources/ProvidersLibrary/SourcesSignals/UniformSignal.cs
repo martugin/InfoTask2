@@ -25,7 +25,7 @@ namespace ProvidersLibrary
         //Очистка списка значений
         internal override void ClearMoments(bool clearBegin)
         {
-            MList.Clear();
+            MomList.Clear();
             _endMom.Time = Static.MinDate;
             if (clearBegin) _beginMom.Time = Static.MinDate;    
         }

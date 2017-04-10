@@ -6,7 +6,7 @@ namespace Provider
 {
     [Export(typeof(BaseProvider))]
     [ExportMetadata("Code", "KosmotronikaOpcReceiver")]
-    public class KosmotronikaOpcReceiver : OpcServer 
+    public class KosmotronikaOpcReceiver : OpcReceiver 
     {
         //Код
         public override string Code { get { return "KosmotronikaOPCReceiver"; } }

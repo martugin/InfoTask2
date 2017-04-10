@@ -50,49 +50,49 @@ namespace ComLaunchers
         public string Inf { get { return _signal.Inf.ToPropertyString(); } }
 
         //Количество значений
-        public int MomsCount { get { return _signal.MomList.Count; } }
+        public int MomsCount { get { return _signal.Value.Count; } }
         //Время i-ого значения
         public DateTime Time(int i)
         {
-            return _signal.MomList.TimeI(i);
+            return _signal.Value.TimeI(i);
         }
 
         //Качество ошибки i-ого значения
         public int ErrQuality(int i)
         {
-            return _signal.MomList.ErrorI(i) == null ? 0 : (int) _signal.MomList.ErrorI(i).Quality;
+            return _signal.Value.ErrorI(i) == null ? 0 : (int) _signal.Value.ErrorI(i).Quality;
         }
         //Номер ошибки i-ого значения
         public int ErrNumber(int i)
         {
-            return _signal.MomList.ErrorI(i) == null ? 0 : _signal.MomList.ErrorI(i).Number;
+            return _signal.Value.ErrorI(i) == null ? 0 : _signal.Value.ErrorI(i).Number;
         }
         //Текст ошибки i-ого значения
         public string ErrText(int i)
         {
-            return _signal.MomList.ErrorI(i) == null ? null : _signal.MomList.ErrorI(i).Text;
+            return _signal.Value.ErrorI(i) == null ? null : _signal.Value.ErrorI(i).Text;
         }
 
         //Значения разного типа
         public bool Boolean(int i)
         {
-            return _signal.MomList.BooleanI(i);
+            return _signal.Value.BooleanI(i);
         }
         public int Integer(int i)
         {
-            return _signal.MomList.IntegerI(i);
+            return _signal.Value.IntegerI(i);
         }
         public double Real(int i)
         {
-            return _signal.MomList.RealI(i);
+            return _signal.Value.RealI(i);
         }
         public DateTime Date(int i)
         {
-            return _signal.MomList.DateI(i);
+            return _signal.Value.DateI(i);
         }
         public string String(int i)
         {
-            return _signal.MomList.StringI(i);
+            return _signal.Value.StringI(i);
         }
     }
 }

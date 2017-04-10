@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using BaseLibrary;
 
@@ -13,15 +14,22 @@ namespace CommonTypes
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             var dir = fi.Directory.Parent;
             if (dir.Name == "Providers" || dir.Name == "TestsRun") dir = dir.Parent;
-            string s = dir.FullName;
-            if (!s.EndsWith(@"\")) s += @"\";
-            return s;
+            return dir.FullName.EndDir();
 
             //var dir = Static.GetRegistry(@"software\InfoTask", "InfoTask2Path");
             //if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path");
-            //if (!dir.EndsWith(@"\")) dir += @"\";
-            //return dir;
+            //return dir.EndDir();
         }
+
+        //Todo реализовать через VerSyn
+        //Номер програмного продукта
+        public static int AppProductNumber(string appCode) { return 1; }
+        //Имя организации-пользователя
+        public static string UserOrg { get { return "УТЭ"; } }
+        //Версия InfoTask
+        public static string InfoTaskVersion { get { return "2.0.0"; } }
+        //Дата версии InfoTask
+        public static DateTime InfoTaskVersionDate { get { return new DateTime(2017, 6, 1); } }
         
         //Каталог шаблонов
         public static string TemplatesDir
@@ -29,17 +37,29 @@ namespace CommonTypes
             get { return InfoTaskDir() + @"Templates\"; }
         }
 
-        //Путь к шаблону файла истории
-        public static string HistoryTemplateFile
+        //Каталог локальных данных проекта
+        public static string LocalProjectDir(string appCode, //Приложение
+                                                              string projectCode) //Проект
         {
-            get { return TemplatesDir + @"LocalData\History.accdb"; }
+            return InfoTaskDir() + @"LocalData\" + appCode + @"\" + projectCode + @"\";
         }
 
-        //Путь к локальным данным проекта
-        public static string LocalProjectDir(string app, //Приложение
-                                                              string project) //Проект
+        //Создание логгера потока приложения
+        public static Logger CreateAppLogger(string historyFile, //Путь к файлу истории относительно каталога History
+                                                                 LoggerStability stability = LoggerStability.Single) //Уровень важности безошибочности
         {
-            return InfoTaskDir() + @"LocalData\" + app + @"\" + project + @"\";
+            var history = new AccessHistory(InfoTaskDir() + @"LocalData\History\" + historyFile, TemplatesDir + @"LocalData\History.accdb");
+            var indicator = new AppIndicator();
+            return new Logger(history, indicator, stability);
+        }
+
+        //Создание логгера потока службы
+        public static Logger CreateServiceLogger(string historyFile, //Путь к файлу истории относительно каталога History
+                                                                      LoggerStability stability = LoggerStability.Periodic) //Уровень важности безошибочности
+        {
+            var history = new AccessHistory(InfoTaskDir() + @"LocalData\History\" + historyFile, TemplatesDir + @"LocalData\History.accdb");
+            var indicator = new AppIndicator();
+            return new Logger(history, indicator, stability);
         }
 
         //Возвращает тип ошибки как строку

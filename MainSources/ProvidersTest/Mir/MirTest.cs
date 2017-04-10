@@ -130,27 +130,27 @@ namespace ProvidersTest
 
         private void CheckTimeAndErr(SourceSignal sig)
         {
-            Assert.AreEqual(49, sig.MomList.Count);
-            Assert.AreEqual(D(0), sig.MomList.TimeI(0));
-            Assert.AreEqual(D(0, 30), sig.MomList.TimeI(1));
-            Assert.AreEqual(D(6), sig.MomList.TimeI(12));
-            Assert.AreEqual(D(10, 30), sig.MomList.TimeI(21));
-            Assert.AreEqual(D(20), sig.MomList.TimeI(40));
-            Assert.AreEqual(D(23, 30), sig.MomList.TimeI(47));
-            Assert.AreEqual(D(24), sig.MomList.TimeI(48));
+            Assert.AreEqual(49, sig.Value.Count);
+            Assert.AreEqual(D(0), sig.Value.TimeI(0));
+            Assert.AreEqual(D(0, 30), sig.Value.TimeI(1));
+            Assert.AreEqual(D(6), sig.Value.TimeI(12));
+            Assert.AreEqual(D(10, 30), sig.Value.TimeI(21));
+            Assert.AreEqual(D(20), sig.Value.TimeI(40));
+            Assert.AreEqual(D(23, 30), sig.Value.TimeI(47));
+            Assert.AreEqual(D(24), sig.Value.TimeI(48));
 
-            Assert.AreEqual(null, sig.MomList.ErrorI(0));
-            Assert.AreEqual(null, sig.MomList.ErrorI(1));
-            Assert.AreEqual(null, sig.MomList.ErrorI(7));
-            Assert.AreEqual(null, sig.MomList.ErrorI(21));
-            Assert.AreEqual(null, sig.MomList.ErrorI(31));
-            Assert.AreEqual(null, sig.MomList.ErrorI(43));
-            Assert.AreEqual(null, sig.MomList.ErrorI(44));
+            Assert.AreEqual(null, sig.Value.ErrorI(0));
+            Assert.AreEqual(null, sig.Value.ErrorI(1));
+            Assert.AreEqual(null, sig.Value.ErrorI(7));
+            Assert.AreEqual(null, sig.Value.ErrorI(21));
+            Assert.AreEqual(null, sig.Value.ErrorI(31));
+            Assert.AreEqual(null, sig.Value.ErrorI(43));
+            Assert.AreEqual(null, sig.Value.ErrorI(44));
         }
 
         private void CheckValue(double v, SourceSignal sig, int num, int round = 4)
         {
-            Assert.AreEqual(v, Math.Round(sig.MomList.RealI(num), round));
+            Assert.AreEqual(v, Math.Round(sig.Value.RealI(num), round));
         }
 
         [TestMethod]
