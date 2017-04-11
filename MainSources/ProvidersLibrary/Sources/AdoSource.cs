@@ -90,7 +90,6 @@ namespace ProvidersLibrary
             return ReadOneOut(ob, PeriodBegin, PeriodEnd, false, queryValuesFun, msg);
         }
         
-
         //Ссылки на используемые функции
         private Func<IList<SourceOut>, DateTime, DateTime, bool, IRecordRead> _queryValuesFun;
         private Func<IRecordRead, SourceOut> _defineObjectFun; 
@@ -100,7 +99,7 @@ namespace ProvidersLibrary
                                                                       DateTime beg, DateTime en, //Период считывания
                                                                       bool isCut) //Считывается срез
         {
-            IRecordRead rec;
+            IRecordRead rec = null;
             using (Start(0, 50))
             {
                 try
@@ -112,6 +111,7 @@ namespace ProvidersLibrary
                 catch (Exception ex)
                 {
                     AddError("Ошибка при запросе данных из источника", ex);
+                    if (rec!= null) rec.Dispose();
                     return new ValuesCount(VcStatus.NoSuccess);
                 }
             }

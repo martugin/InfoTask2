@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
-using BaseLibrary;
 using BaseLibraryTest;
 using ComLaunchers;
+using InfoTaskLauncherTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InfoTaskLouncherTest
@@ -10,12 +10,6 @@ namespace InfoTaskLouncherTest
     [TestClass]
     public class LoggerLauncherTest : ItLauncher
     {
-        public LoggerLauncherTest()
-        {
-            Logger.Indicator = new TestIndicator();
-            Logger.History = new TestHistory(Logger);
-        }
-
         public void MakeIndicatorEvents()
         {
             StartPeriod(new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
@@ -83,6 +77,7 @@ namespace InfoTaskLouncherTest
         [TestMethod]
         public void Indicator()
         {
+            Project = new TestAppProject(this, "Indicator");
             MakeIndicatorEvents();
             var ind = (TestIndicator)Logger.Indicator;
             Assert.AreEqual(86, ind.Events.Count);
@@ -177,6 +172,7 @@ namespace InfoTaskLouncherTest
         [TestMethod]
         public void BreakIndicator()
         {
+            Project = new TestAppProject(this, "BreakIndicator");
             Logger.StartCollect(false, true).Run(() =>
                 Logger.StartProgress("T", "N").Run(() =>
                     Logger.StartLog(20, 60, "Log").Run(() =>

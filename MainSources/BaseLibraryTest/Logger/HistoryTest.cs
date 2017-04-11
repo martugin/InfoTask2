@@ -6,19 +6,23 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace BaseLibraryTest
 {
     [TestClass]
-    public class HistoryTest :  Logger
+    public class HistoryTest : ExternalLogger
     {
         //Открытие файла истории
         private void OpenHistory(string fileName, bool replace)
         {
             var file = TestLib.TestRunDir + @"Libraries\History\" + fileName + ".accdb";
+            var template = ItStatic.InfoTaskDir() + @"Templates\LocalData\History.accdb";
             if (replace)
             {
-                DaoDb.FromTemplate(ItStatic.HistoryTemplateFile, file, ReplaceByTemplate.Always);
+                DaoDb.FromTemplate(template, file, ReplaceByTemplate.Always);
                 TestLib.CopyFile("Libraries", "CorrectHistory.accdb", @"History\CorrectHistory.accdb");
             }
-            History = new AccessHistory(this, file, ItStatic.HistoryTemplateFile);
+            var history = new AccessHistory(file, template);
+            Logger = new Logger(history, new TestIndicator());
         }
+
+        private IHistory History { get { return Logger.History; } }
 
         [TestMethod]
         public void Hist()

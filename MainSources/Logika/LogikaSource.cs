@@ -7,11 +7,11 @@ using ProvidersLibrary;
 namespace Logika
 {
     [Export(typeof(BaseProvider))]
-    [ExportMetadata("Code", "PrologSource")]
-    public class PrologSource : AccessSource
+    [ExportMetadata("Code", "LogikaSource")]
+    public class LogikaSource : AccessSource
     {
         //Код провайдера
-        public override string Code { get { return "PrologSource"; } }
+        public override string Code { get { return "LogikaSource"; } }
 
         //Проверка соединения с файлом
         protected override void ConnectProvider()
@@ -21,9 +21,9 @@ namespace Logika
         }
 
         //Словарь выходов, первый ключ - код таблицы, второй ключ - id объекта
-        internal readonly DicS<DicI<PrologOut>> Outs = new DicS<DicI<PrologOut>>();
+        internal readonly DicS<DicI<LogikaOut>> Outs = new DicS<DicI<LogikaOut>>();
         //Словарь выходов ключ - id объекта
-        internal readonly DicI<PrologOut> OutsId = new DicI<PrologOut>();
+        internal readonly DicI<LogikaOut> OutsId = new DicI<LogikaOut>();
 
         //Добавить выход в источник
         protected override SourceOut AddOut(InitialSignal sig)
@@ -33,8 +33,8 @@ namespace Logika
                 return OutsId[id];
             string tableName = sig.Inf["TableName"];
             if (!Outs.ContainsKey(tableName))
-                Outs.Add(tableName, new DicI<PrologOut>());
-            var ob = new PrologOut(this);
+                Outs.Add(tableName, new DicI<LogikaOut>());
+            var ob = new LogikaOut(this);
             Outs[tableName].Add(id, ob);
             return OutsId.Add(id, ob);
         }

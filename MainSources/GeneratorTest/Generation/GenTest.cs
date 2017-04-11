@@ -1,8 +1,8 @@
 ﻿using BaseLibrary;
 using BaseLibraryTest;
-using ComLaunchers;
 using CommonTypes;
 using Generator;
+using InfoTaskLauncherTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneratorTest
@@ -27,7 +27,8 @@ namespace GeneratorTest
             var templatesFile = TestLib.TestRunDir + @"Generator\Gen" + tablName + "Template.accdb";
             var table = new GenTemplateTable(tablName, "GenRule", "ErrMess", "CalcOn", "Id");
             var subTable = subTablName == null ? null : new GenTemplateTable(subTablName, table, "GenRule", "ErrMess", "CalcOn", "Id", "ParentId");
-            var generator = new ModuleGenerator(new Logger(), tabls, templatesFile, table, subTable);
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var generator = new ModuleGenerator(logger, tabls, templatesFile, table, subTable);
 
             var s = TestLib.TestRunDir + @"Generator\Gen" + tablName;
             if (copyRes) generator.Generate(s + "Res.accdb", tablName, subTablName);
@@ -63,8 +64,9 @@ namespace GeneratorTest
         public void GenCalcParams()
         {
             TestLib.CopyDir("Generator", "Module");
-            var launcher = new ItLauncher();
-            launcher.Initialize("Test", "Gen");
+            var launcher = new TestItLauncher();
+            launcher.Initialize("Test");
+            launcher.LoadProjectByCode("Gen");
             string dir = TestLib.TestRunDir + @"Generator\Module\";
             launcher.GenerateParams(dir);
             TestLib.CompareGeneratedParams(dir + "Compiled.accdb", dir + "CorrectCompiled.accdb");

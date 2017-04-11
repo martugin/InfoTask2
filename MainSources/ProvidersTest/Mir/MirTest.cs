@@ -14,7 +14,8 @@ namespace ProvidersTest
         private SourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Mir", new Logger());
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Mir", logger);
             var prov = factory.CreateProvider("MirSource", TestLib.TestSqlInf("EnergyRes"));
             con.JoinProvider(prov);
             return con;

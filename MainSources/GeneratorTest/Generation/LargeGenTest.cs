@@ -1,5 +1,6 @@
 ﻿using BaseLibraryTest;
 using ComLaunchers;
+using InfoTaskLauncherTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneratorTest
@@ -10,8 +11,9 @@ namespace GeneratorTest
         [TestMethod]
         public void GenModuleLarge()
         {
-            var launcher = new ItLauncher();
-            launcher.Initialize("Test", "GenerationLarge");
+            var launcher = new TestItLauncher();
+            launcher.Initialize("Test");
+            launcher.LoadProjectByCode("GenerationLarge");
             Generate(launcher, "ModuleLarge");
             Generate(launcher, "ApdControl");
         }

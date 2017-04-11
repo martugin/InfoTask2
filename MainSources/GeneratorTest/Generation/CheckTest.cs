@@ -25,7 +25,8 @@ namespace GeneratorTest
         //Созда накопитель ошибок
         private static GenKeeper MakeKeeper()
         {
-            return new GenKeeper(new ModuleGenerator(new Logger(), null, null, null));
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            return new GenKeeper(new ModuleGenerator(logger, null, null, null));
         }
 
         //Разбор выражения GenRule таблицы и подтаблицы

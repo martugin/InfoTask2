@@ -76,6 +76,10 @@
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InfoTaskLauncher\InfoTaskLauncher.csproj">
+      <Project>{BD29E947-8542-4B33-B209-87F5A98593A8}</Project>
+      <Name>InfoTaskLauncher</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

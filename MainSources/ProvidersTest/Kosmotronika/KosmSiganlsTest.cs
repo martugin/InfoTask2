@@ -13,7 +13,8 @@ namespace ProvidersTest
         private SourceConnect MakeProviders(bool isRetroBase)
         {
             var factory = new ProvidersFactory();
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Kosmotronika", new Logger());
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Kosmotronika", logger);
             var prov = factory.CreateProvider("KosmotronikaRetroSource", "RetroServerName=RetroServerTest");
             var prov2 = factory.CreateProvider("KosmotronikaArchDbSource", "ArchiveDir=" + TestLib.InfoTaskDevelopDir + @"TestsBig\Kosmotronika\ArchiveKurganOld;Location=0");
             if (isRetroBase) con.JoinProvider(prov, prov2);

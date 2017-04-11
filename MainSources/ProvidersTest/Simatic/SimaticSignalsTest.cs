@@ -14,7 +14,8 @@ namespace ProvidersTest
         private SourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Siemens", new Logger());
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Simatic", logger);
             var prov = factory.CreateProvider("SimaticSource", "SQLServer" + SysTabl.SubValueS(TestLib.TestRunDir + "TestsSettings.accdb", "SQLServerSettings", "SqlServer"));
             con.JoinProvider(prov);
             return con;
@@ -26,7 +27,7 @@ namespace ProvidersTest
             var con = MakeProviders();
             var prov = (SimaticSource)con.Provider;
             Assert.AreEqual("SourceCon", con.Name);
-            Assert.AreEqual("Siemens", con.Complect);
+            Assert.AreEqual("Simatic", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
             Assert.AreEqual(con.Context, "Источник: SourceCon");

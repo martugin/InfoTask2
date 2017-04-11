@@ -11,8 +11,8 @@ using System.Xml.Linq;
 using BaseLibrary;
 using ComLaunchers;
 using CommonTypes;
+using InfoTaskLauncherTest;
 using InfoTaskLouncherTest;
-using Provider;
 using ProvidersLibrary;
 
 namespace Experiments
@@ -35,15 +35,16 @@ namespace Experiments
 
         private void butIndicator_Click(object sender, EventArgs e)
         {
-            var launcher = new TestItLauncher();
+            var launcher = new ExperimentsItLauncher();
             launcher.RunTestForm();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var it = new ItLauncher();
+            var it = new TestItLauncher();
+            it.Initialize("Experiments");
             it.Finished += OnFinished;
-            it.Initialize("Experiments", "TestProject");
+            it.LoadProjectByCode("TestProject");
             var con = it.CreateSourConnect("Source", "Fictive");
             con.JoinProvider("FictiveSimpleSource", "Label=FictiveTest");
             con.MakeCloneAsync(new DateTime(2017, 1, 1), new DateTime(2017, 1, 1, 0, 10, 0), ItStatic.InfoTaskDir() + @"LocalData\RunItLauncher\Clone");
@@ -61,7 +62,7 @@ namespace Experiments
 
         private void butJustIndicator_Click(object sender, EventArgs e)
         {
-            var launcher = new TestItLauncher();
+            var launcher = new ExperimentsItLauncher();
             launcher.RunJustIndicator();
         }
 

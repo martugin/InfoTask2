@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExperimentsItLauncher.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,13 +98,25 @@
       <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
       <Name>BaseLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CalculationTest\CalculationTest.csproj">
+      <Project>{BD03ADC9-2C18-4840-AD12-EB668FBB4BB1}</Project>
+      <Name>CalculationTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Calculation\Calculation.csproj">
       <Project>{A4B84B9B-4130-4066-971D-3D597C141097}</Project>
       <Name>Calculation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CommonTypesTest\CommonTypesTest.csproj">
+      <Project>{68174E6C-46D0-400B-A07E-C96D602817D3}</Project>
+      <Name>CommonTypesTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GeneratorTest\GeneratorTest.csproj">
+      <Project>{3C5C4E65-E3C1-4167-877B-7FAF6A3AE026}</Project>
+      <Name>GeneratorTest</Name>
     </ProjectReference>
     <ProjectReference Include="..\Generator\Generator.csproj">
       <Project>{267562A7-4B4A-4B81-B417-33C57CD869FE}</Project>
@@ -121,9 +134,13 @@
       <Project>{819FEFDE-4840-45CD-BF58-B528821E3098}</Project>
       <Name>ProvidersLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Siemens\Siemens.csproj">
-      <Project>{37989224-CC06-4653-8FC3-C4874BB38EFC}</Project>
-      <Name>Siemens</Name>
+    <ProjectReference Include="..\ProvidersTest\ProvidersTest.csproj">
+      <Project>{9AD7123F-7DCB-4A9A-908A-53E0CCC5E496}</Project>
+      <Name>ProvidersTest</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TablikTest\TablikTest.csproj">
+      <Project>{B742DD40-DF36-4B2A-9DB1-A3AEA995CC40}</Project>
+      <Name>TablikTest</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tablik\Tablik.csproj">
       <Project>{2828EE50-3906-40D8-BBAC-2B75F9BEE24E}</Project>

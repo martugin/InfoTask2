@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <!--Файл установленной конфигурации InfoTask-->
 <Config>
-  <Packages>
+  <Packages Description="Комплект провайдеров для SIMATIC">
     <Kernel Description="Ядро системы " InstallDate=""></Kernel>
     <Constructor Description="Конструктор проектов " InstallDate="" />
     <ServerCalc Description="Сервер периодических расчетов" InstallDate="" />
@@ -15,7 +15,7 @@
     <Kosmotronika Description="Комплект провайдеров для ПТК Космотроника-Венец" InstallDate="" />
     <Ovation Description="Комплект провайдеров для ПТК Ovation" InstallDate="" />
     <Wonderware Description="Комплект провайдеров для ПТК Wonderware" InstallDate="" />
-    <Siemens Description="Комплект провайдеров для Siemens" InstallDate="" />
+    <Simatic InstallDate="" />
   </Packages>
   <Providers>
     <Kosmotronika Description="Провайдеры для ПТК Космотроника-Венец" DllFile="Providers\Kosmotronika\Kosmotronika.dll">
@@ -205,7 +205,7 @@
         </ProviderProps>
       </WonderwareOPCReceiver>
     </Wonderware>
-    <Siemens Description="Провайдеры для Siemens" DllFile="Providers\Siemens\Siemens.dll">
+    <Simatic Description="Провайдеры для Simatic" DllFile="Providers\Simatic\Simatic.dll">
       <SimaticSource ProviderType="Источник" Description="Источник OLE DB ПТК SIMATIC">
         <ProviderProps>
           <SQLServer PropNum="1" Description="Имя SQL-сервера архива">
@@ -230,7 +230,7 @@
           </Database>
         </ProviderProps>
       </SimaticComm>
-    </Siemens>
+    </Simatic>
     <Clones Description="Провайдеры архивов мгновенных значений InfoTask">
       <CloneSource ProviderType="Источник" Description="Клон архива">
         <ProviderProps>
@@ -367,20 +367,20 @@
       </FictiveComm>
     </Fictive>
     <Logika Description="Провайдеры для архивов программ НПФ Логика" DllFile="Providers\Logika\Logika.dll">
-      <PrologSource ProviderType="Источник" Description="Источник для программы Пролог">
+      <LogikaSource ProviderType="Источник" Description="Источник для программы Пролог">
         <ProviderProps>
           <DbFile PropNum="1" Description="Путь к базе данных архива" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
           </DbFile>
         </ProviderProps>
-      </PrologSource>
-      <PrologComm ProviderType="Коммуникатор" Description="Источник для программы Пролог">
+      </LogikaSource>
+      <LogikaComm ProviderType="Коммуникатор" Description="Источник для программы Пролог">
         <ProviderProps>
           <DbFile PropNum="1" Description="Путь к базе данных архива" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
           </DbFile>
         </ProviderProps>
-      </PrologComm>
+      </LogikaComm>
     </Logika>
     <Mir Description="Провайдеры для ПТК Мир" DllFile="Providers\Mir\Mir.dll">
       <MirSource ProviderType="Источник" Description="SQL база ПТК Мир">

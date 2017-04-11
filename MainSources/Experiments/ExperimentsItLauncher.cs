@@ -1,16 +1,20 @@
-using System;
+п»їusing System;
 using System.Threading;
 using BaseLibrary;
+using BaseLibraryTest;
 using ComLaunchers;
 
-namespace InfoTaskLouncherTest
+namespace Experiments
 {
-    //Класс для тестового отображения формы индикатора
-    public class TestItLauncher : ItLauncher
+    //РљР»Р°СЃСЃ РґР»СЏ С‚РµСЃС‚РѕРІРѕРіРѕ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ С„РѕСЂРјС‹ РёРЅРґРёРєР°С‚РѕСЂР°
+    public class ExperimentsItLauncher : ItLauncher
     {
-        public TestItLauncher()
+        public ExperimentsItLauncher()
         {
-            Logger.Indicator = new AppIndicator();
+            Project = new AppProject(this)
+            {
+                Logger = new Logger(new TestHistory(), new AppIndicator())
+            };
         }
 
         public void TestMethod()
@@ -23,7 +27,7 @@ namespace InfoTaskLouncherTest
         {
             Logger.StartCollect(false, false).Run(() =>
             {
-                StartProgress("P", "Процесс");
+                StartProgress("P", "РџСЂРѕС†РµСЃСЃ");
                 StartLogProcent(0, 30, "11111111");
                 Thread.Sleep(1000);
                 SetProcent(33);

@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace BaseLibraryTest
 {
     [TestClass]
-    public class HistoryTextTest : Logger
+    public class HistoryTextTest : ExternalLogger
     {
          //Открытие файла истории
          private void OpenHistory(string fileName, bool replace)
@@ -20,15 +20,17 @@ namespace BaseLibraryTest
                  new FileInfo(file).Delete();
                  new FileInfo(efile).Delete();
              }
-             History = new TextHistory(this, file, true);
+             Logger = new Logger(new TextHistory(file, true), new TestIndicator());
          }
+
+         private IHistory History { get { return Logger.History; }}
 
          [TestMethod]
          public void HistText()
          {
              OpenHistory("History", true);
              StartCollect(true, false);
-             StartPeriod(new DateTime(2017, 1, 1), new DateTime(2017, 1, 2));
+             StartPeriod(new DateTime(2017, 1, 1), new DateTime(2017, 1, 2), "");
              StartProgress("Синхронный", "SuperCommand1");
              StartLog("Command11", "Context1", "Pars11").Run(() =>
              {
@@ -43,7 +45,7 @@ namespace BaseLibraryTest
                  AddEvent("Event123", "Pars123");
              });
              StartLog("Command13", "Context3", "Pars13");
-             StartPeriod(new DateTime(2017, 1, 2), new DateTime(2017, 1, 3));
+             StartPeriod(new DateTime(2017, 1, 2), new DateTime(2017, 1, 3), "");
              StartProgress("Синхронный", "SuperCommand2");
              StartLog("Command21", "Context1", "Pars21");
              AddEvent("Event211");
@@ -55,13 +57,13 @@ namespace BaseLibraryTest
              AddEvent("Event221");
              AddError("Error222", new Exception("Text"));
              FinishLog("Results22");
-             StartPeriod(new DateTime(2017, 1, 3), new DateTime(2017, 1, 4));
+             StartPeriod(new DateTime(2017, 1, 3), new DateTime(2017, 1, 4), "");
              StartProgress("Синхронный", "SuperCommand3");
              FinishCollect();
              History.Close();
 
              OpenHistory("History", false);
-             StartPeriod(new DateTime(2017, 1, 4), new DateTime(2017, 1, 5)).Run(() =>
+             StartPeriod(new DateTime(2017, 1, 4), new DateTime(2017, 1, 5), "").Run(() =>
              {
                  StartProgress("Синхронный", "SuperCommand4").Run(() =>
                  {

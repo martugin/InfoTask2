@@ -34,6 +34,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
-[assembly: InternalsVisibleTo("Experiments")]
-[assembly: InternalsVisibleTo("InfoTaskLauncherTest")]
+[assembly: InternalsVisibleTo("CommonTypesTest")]
+[assembly: InternalsVisibleTo("CalculationTest")]
+[assembly: InternalsVisibleTo("GeneratorTest")]
+[assembly: InternalsVisibleTo("TablikTest")]
 [assembly: InternalsVisibleTo("ProvidersTest")]
+[assembly: InternalsVisibleTo("InfoTaskLauncherTest")]
+[assembly: InternalsVisibleTo("Experiments")]
+

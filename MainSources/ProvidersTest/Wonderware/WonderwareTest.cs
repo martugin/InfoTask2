@@ -13,7 +13,8 @@ namespace ProvidersTest
         private SourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Wonderware", new Logger());
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Wonderware", logger);
             var prov = factory.CreateProvider("WonderwareSource", TestLib.TestSqlInf("RunTime"));
             con.JoinProvider(prov);
             return con;

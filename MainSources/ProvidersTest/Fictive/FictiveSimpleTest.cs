@@ -1,5 +1,6 @@
 ﻿using System;
 using BaseLibrary;
+using BaseLibraryTest;
 using CommonTypes;
 using Fictive;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,7 +14,8 @@ namespace ProvidersTest
         private SourceConnect MakeFictiveConnect(bool makeReserve = false)
         {
             var factory = new ProvidersFactory();
-            var connect = (SourceConnect)factory.CreateConnect(ProviderType.Source, "TestSource", "Fictive", new Logger());
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var connect = (SourceConnect)factory.CreateConnect(ProviderType.Source, "TestSource", "Fictive", logger);
             var source = (FictiveSimpleSource)factory.CreateProvider("FictiveSimpleSource", "Label=p1");
             FictiveSimpleSource source2 = null;
             if (makeReserve)

@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-using BaseLibrary;
-using CommonTypes;
+﻿using CommonTypes;
 using Generator;
 
 namespace ComLaunchers
@@ -16,12 +14,12 @@ namespace ComLaunchers
             Logger = ItStatic.CreateAppLogger(ProjectCode + "History.accdb");
         }
 
-        //Тестовый вызов проекта, без указания проекта
+        //Тестовый вызов, без указания проекта
         internal AppProject(ItLauncher launcher)
         {
             Launcher = launcher;
         }
-
+        
         //Ссылка на Launcher
         public ItLauncher Launcher { get; private set; }
         
