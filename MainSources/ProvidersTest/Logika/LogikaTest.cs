@@ -15,8 +15,9 @@ namespace ProvidersTest
         {
             TestLib.CopyFile(@"Providers\Logika", "prolog.mdb", prefix + "Prolog.mdb");
             var factory = new ProvidersFactory();
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Logika", new Logger());
-            var prov = factory.CreateProvider("PrologSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\" + prefix + "Prolog.mdb");
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Logika", logger);
+            var prov = factory.CreateProvider("LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\" + prefix + "Prolog.mdb");
             con.JoinProvider(prov);
             return con;
         }
@@ -25,7 +26,7 @@ namespace ProvidersTest
         public void Signals()
         {
             var con = MakeProviders("Signals");
-            var prov = (PrologSource)con.Provider;
+            var prov = (LogikaSource)con.Provider;
 
             Assert.AreEqual("SourceCon", con.Name);
             Assert.AreEqual("Logika", con.Complect);
@@ -33,9 +34,9 @@ namespace ProvidersTest
             Assert.IsNotNull(con.Logger);
             Assert.AreEqual(con.Context, "Источник: SourceCon");
             Assert.IsNotNull(con.Provider);
-            Assert.IsTrue(con.Provider is PrologSource);
-            Assert.AreEqual("PrologSource", prov.Code);
-            Assert.AreEqual("Источник: SourceCon, PrologSource", prov.Context);
+            Assert.IsTrue(con.Provider is LogikaSource);
+            Assert.AreEqual("LogikaSource", prov.Code);
+            Assert.AreEqual("Источник: SourceCon, LogikaSource", prov.Context);
             Assert.AreEqual("DbFile=" + TestLib.TestRunDir + @"Providers\Logika\SignalsProlog.mdb", prov.Inf);
             Assert.AreSame(con, prov.ProviderConnect);
             Assert.IsNotNull(prov.Logger);
@@ -91,7 +92,7 @@ namespace ProvidersTest
             Assert.AreEqual(0, prov.Outs.Count);
             Assert.AreEqual(0, prov.OutsId.Count);
 
-            prov = (PrologSource)new ProvidersFactory().CreateProvider("PrologSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\НеТотProlog.mdb");
+            prov = (LogikaSource)new ProvidersFactory().CreateProvider("LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\НеТотProlog.mdb");
             con.JoinProvider(prov);
             Assert.IsFalse(prov.IsConnected);
             prov.Connect();

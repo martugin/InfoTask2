@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PrologOut.cs" />
-    <Compile Include="PrologSource.cs" />
+    <Compile Include="LogikaOut.cs" />
+    <Compile Include="LogikaSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

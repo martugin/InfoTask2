@@ -9,14 +9,15 @@ namespace BaseLibrary
         public Logger(IHistory history, IIndicator indicator, LoggerStability stability = LoggerStability.Single)
         {
             History = history;
+            History.Logger = this;
             Indicator = indicator;
             Stability = stability;
         }
 
         //Ссылка на историю
-        public IHistory History { get; private set; }
+        public IHistory History { get; internal set; }
         //Ссылка на индикатор
-        public IIndicator Indicator { get; private set; }
+        public IIndicator Indicator { get; internal set; }
 
         //Текущие команды разных типов
         internal CollectCommand CollectCommand { get; set; }

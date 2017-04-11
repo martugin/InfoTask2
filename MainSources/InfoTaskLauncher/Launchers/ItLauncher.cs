@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Forms;
 using BaseLibrary;
 using CommonTypes;
-using Generator;
 using ProvidersLibrary;
 
 namespace ComLaunchers
@@ -125,7 +123,7 @@ namespace ComLaunchers
             AppCode = appCode;
         }
 
-        //Инициализация
+        //Загрузка проекта
         public void LoadProject(string projectDir) //Каталог проекта
         {
             CloseProject();
@@ -195,7 +193,7 @@ namespace ComLaunchers
                     Static.MessageError("Не задан проект");
                 return _project;
             }
-            private set { _project = value; }
+            set { _project = value; }
         }
 
         //Код проекта

@@ -27,7 +27,8 @@ namespace GeneratorTest
         //Создать накопитель ошибок
         private static GenKeeper MakeKeeper()
         {
-            return new GenKeeper(new ModuleGenerator(new Logger(), null, null, null));
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            return new GenKeeper(new ModuleGenerator(logger, null, null, null));
         }
 
         //Выбрать ряды по условию генерации таблицы, возвращает ряды и, возможно, также структуру

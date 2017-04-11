@@ -18,13 +18,13 @@ namespace CommonTypes
         }
 
         //Код и имя проекта
-        public string ProjectCode { get; internal set; }
-        public string ProjectName { get; private set; }
+        public string ProjectCode { get; protected set; }
+        public string ProjectName { get; protected set; }
         //Каталог проекта
         public string ProjectDir { get; private set; }
 
         //Ссылка на логгер
-        public Logger Logger { get; protected set; }
+        public Logger Logger { get; protected internal set; }
 
         public void Dispose()
         {

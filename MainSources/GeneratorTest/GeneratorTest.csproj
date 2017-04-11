@@ -66,6 +66,10 @@
       <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
       <Name>BaseLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CommonTypesTest\CommonTypesTest.csproj">
+      <Project>{68174E6C-46D0-400B-A07E-C96D602817D3}</Project>
+      <Name>CommonTypesTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
@@ -74,9 +78,17 @@
       <Project>{267562A7-4B4A-4B81-B417-33C57CD869FE}</Project>
       <Name>Generator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InfoTaskLauncherTest\InfoTaskLauncherTest.csproj">
+      <Project>{4365333D-C73F-422E-A7A0-BF138B7186BB}</Project>
+      <Name>InfoTaskLauncherTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InfoTaskLauncher\InfoTaskLauncher.csproj">
       <Project>{BD29E947-8542-4B33-B209-87F5A98593A8}</Project>
       <Name>InfoTaskLauncher</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tablik\Tablik.csproj">
+      <Project>{2828EE50-3906-40D8-BBAC-2B75F9BEE24E}</Project>
+      <Name>Tablik</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

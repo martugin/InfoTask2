@@ -33,3 +33,6 @@ using System.Runtime.InteropServices;
 // используя "*", как показано ниже:
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+[assembly: InternalsVisibleTo("InfoTaskLauncherTest")]
+[assembly: InternalsVisibleTo("Experiments")]

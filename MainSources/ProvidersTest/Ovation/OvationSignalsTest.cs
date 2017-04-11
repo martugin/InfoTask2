@@ -1,4 +1,5 @@
 ﻿using BaseLibrary;
+using BaseLibraryTest;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Provider;
@@ -12,7 +13,8 @@ namespace ProvidersTest
         private SourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Ovation", new Logger());
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Ovation", logger);
             var prov = factory.CreateProvider("OvationSource", "DataSource=DROP200");
             con.JoinProvider(prov);
             return con;

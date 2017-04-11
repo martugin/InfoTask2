@@ -47,7 +47,8 @@
   <ItemGroup>
     <Compile Include="Launcher\LauncherFictiveTest.cs" />
     <Compile Include="Launcher\LoggerLauncherTest.cs" />
-    <Compile Include="Launcher\TestItLauncher.cs" />
+    <Compile Include="Lib\TestAppProject.cs" />
+    <Compile Include="Lib\TestItLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -62,10 +63,6 @@
     <ProjectReference Include="..\Calculation\Calculation.csproj">
       <Project>{A4B84B9B-4130-4066-971D-3D597C141097}</Project>
       <Name>Calculation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CommonTypesTest\CommonTypesTest.csproj">
-      <Project>{68174E6C-46D0-400B-A07E-C96D602817D3}</Project>
-      <Name>CommonTypesTest</Name>
     </ProjectReference>
     <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
@@ -83,13 +80,37 @@
       <Project>{BD29E947-8542-4B33-B209-87F5A98593A8}</Project>
       <Name>InfoTaskLauncher</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Kosmotronika\Kosmotronika.csproj">
+      <Project>{59936548-81AE-4A69-986C-C3DA8883988B}</Project>
+      <Name>Kosmotronika</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logika\Logika.csproj">
+      <Project>{1EE14391-9039-426D-8463-F3373C490A6B}</Project>
+      <Name>Logika</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mir\Mir.csproj">
+      <Project>{2632994B-9C7F-45C2-B216-49186B11E352}</Project>
+      <Name>Mir</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ovation\Ovation.csproj">
+      <Project>{B69AA18D-2920-4A14-88DE-D715C2219BA7}</Project>
+      <Name>Ovation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProvidersLibrary\ProvidersLibrary.csproj">
       <Project>{819FEFDE-4840-45CD-BF58-B528821E3098}</Project>
       <Name>ProvidersLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Simatic\Simatic.csproj">
+      <Project>{648D799A-7531-4576-8E79-B7D17E5C2556}</Project>
+      <Name>Simatic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tablik\Tablik.csproj">
       <Project>{2828EE50-3906-40D8-BBAC-2B75F9BEE24E}</Project>
       <Name>Tablik</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Wonderware\Wonderware.csproj">
+      <Project>{17DD3C7D-97D6-4F5B-A4A4-2826012E164C}</Project>
+      <Name>Wonderware</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

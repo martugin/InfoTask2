@@ -14,7 +14,7 @@ namespace BaseLibraryTest
         {
             get
             {
-                new DirectoryInfo(ItStatic.InfoTaskDir()).Parent.FullName.EndDir();
+                return new DirectoryInfo(ItStatic.InfoTaskDir()).Parent.FullName.EndDir();
                 //var dir = Static.GetRegistry(@"software\InfoTask", "InfoTask2Path");
                 //if (dir == "") dir = Static.GetRegistry(@"software\Wow6432Node\InfoTask", "InfoTask2Path").EndDir();
                 //var n = dir.LastIndexOf(@"\", dir.Length - 2, StringComparison.Ordinal);

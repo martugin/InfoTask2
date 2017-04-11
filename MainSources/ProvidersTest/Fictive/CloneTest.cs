@@ -13,7 +13,8 @@ namespace ProvidersTest
         {
             TestLib.CopyDir(@"Providers\Fictive", "TestClone", "Clone" + prefix);
             var factory = new ProvidersFactory();
-            var connect = factory.CreateConnect(ProviderType.Source, "TestSource", "Clones", new Logger());
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var connect = factory.CreateConnect(ProviderType.Source, "TestSource", "Clones", logger);
             connect.JoinProvider(factory.CreateProvider("CloneSource", "CloneDir=" + TestLib.TestRunDir + @"Providers\Fictive\Clone" + prefix));
             return (SourceConnect)connect;
         }
