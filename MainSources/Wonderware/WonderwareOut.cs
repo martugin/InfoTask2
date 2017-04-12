@@ -6,7 +6,7 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Выход
-    internal class WonderwareOut : SourceOut
+    internal class WonderwareOut : ListSourceOut
     {
         internal WonderwareOut(WonderwareSource source, string tag) : base(source)
         {

@@ -10,7 +10,7 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(BaseProvider))]
+    [Export(typeof(ProvidersLibrary.Provider))]
     [ExportMetadata("Code", "OvationSource")]
     public class OvationSource : OleDbSource
     {
@@ -43,7 +43,7 @@ namespace Provider
         internal OvationMsgOut TextOut;
 
         //Добавить выход в провайдер
-        protected override SourceOut AddOut(InitialSignal sig)
+        protected override ListSourceOut AddOut(InitialSignal sig)
         {
             var obType = sig.Inf.Get("ObjectType").ToUpper();
             switch (obType)
@@ -84,7 +84,7 @@ namespace Provider
         }
 
         //Запрос значений из Historian по списку выходов и интервалу
-        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("select ID, TIMESTAMP, TIME_NSEC, F_VALUE, RAW_VALUE, STS from PT_HF_HIST " + "where (");
             bool isFirst = true;
@@ -102,21 +102,21 @@ namespace Provider
         }
         
         //Определение текущего считываемого выхода
-        protected override SourceOut DefineOut(IRecordRead rec)
+        protected override ListSourceOut DefineOut(IRecordRead rec)
         {
             return OutsId[rec.GetInt("Id")];
         }
 
         //Запросы значений по сигналам сообщений разного типа
-        protected IRecordRead QueryAlarmValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryAlarmValues(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             return new AdoReader(Connection, "select * from MSG_ALARM_HIST" + TimeCondition(beg, en));
         }
-        protected IRecordRead QuerySoeValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QuerySoeValues(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             return new AdoReader(Connection, "select * from MSG_SOE_HIST" + TimeCondition(beg, en));
         }
-        protected IRecordRead QueryTextValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryTextValues(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             return new AdoReader(Connection, "select * from MSG_TEXT_HIST" + TimeCondition(beg, en));
         }

@@ -9,7 +9,7 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Провайдер источника Wonderware
-    [Export(typeof(BaseProvider))]
+    [Export(typeof(ProvidersLibrary.Provider))]
     [ExportMetadata("Code", "WonderwareSource")]
     public class WonderwareSource : SqlServerSource
     {
@@ -37,7 +37,7 @@ namespace Provider
         internal readonly Dictionary<string, WonderwareOut> Outs = new Dictionary<string, WonderwareOut>();
 
         //Добавить выход в провайдер
-        protected override SourceOut AddOut(InitialSignal sig)
+        protected override ListSourceOut AddOut(InitialSignal sig)
         {
             string tag = sig.Inf["TagName"];
             if (!Outs.ContainsKey(tag))
@@ -80,7 +80,7 @@ namespace Provider
         }
 
         //Запрос значений по одному блоку сигналов
-        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("SELECT TagName, DateTime = convert(nvarchar, DateTime, 21), Value, vValue, Quality, QualityDetail FROM History WHERE  TagName IN (");
             for (var n = 0; n < part.Count; n++)
@@ -99,7 +99,7 @@ namespace Provider
         }
 
         //Определение текущего считываемого объекта
-        protected override SourceOut DefineOut(IRecordRead rec)
+        protected override ListSourceOut DefineOut(IRecordRead rec)
         {
             string code = rec.GetString("TagName");
             return Outs.ContainsKey(code) ? Outs[code] : null;

@@ -4,9 +4,9 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Один выход (дисктретная, аналоговая или упакованная точка)
-    internal class MirOut : SourceOut
+    internal class MirOut : ListSourceOut
     {
-        internal MirOut(BaseSource source) : base(source) { }
+        internal MirOut(ListSource source) : base(source) { }
 
         //Cигналы Unit и Indcation
         internal InitialSignal UnitSignal { get; set; }

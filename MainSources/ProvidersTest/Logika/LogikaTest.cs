@@ -104,7 +104,7 @@ namespace ProvidersTest
             return new DateTime(2016, 10, 11).AddHours(h);
         }
 
-        private void CheckTimeAndErr(SourceSignal sig)
+        private void CheckTimeAndErr(ListSourceSignal sig)
         {
             Assert.AreEqual(25, sig.Value.Count);
             Assert.AreEqual(D(0), sig.Value.TimeI(0));
@@ -124,7 +124,7 @@ namespace ProvidersTest
             Assert.AreEqual(null, sig.Value.ErrorI(24));
         }
 
-        private void CheckValue(double v, SourceSignal sig, int num, int round = 5)
+        private void CheckValue(double v, ListSourceSignal sig, int num, int round = 5)
         {
             Assert.AreEqual(v, Math.Round(sig.Value.RealI(num), round));
         }

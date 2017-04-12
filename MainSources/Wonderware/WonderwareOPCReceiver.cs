@@ -5,9 +5,9 @@ using ProvidersLibrary;
 namespace Provider
 {
     //OPC-сервер Wonderware
-    [Export(typeof(BaseProvider))]
+    [Export(typeof(ProvidersLibrary.Provider))]
     [ExportMetadata("Code", "WonderwareOpcReceiver")]
-    public class WonderwareOpcReceiver : OpcReceiver
+    public class WonderwareOpcReceiver : OpcDaReceiver
     {
         //Код
         public override string Code { get { return "WonderwareOpcReceiver"; } }

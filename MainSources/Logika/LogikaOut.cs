@@ -5,9 +5,9 @@ using ProvidersLibrary;
 
 namespace Logika
 {
-    internal class LogikaOut : SourceOut
+    internal class LogikaOut : ListSourceOut
     {
-        internal LogikaOut(BaseSource source) 
+        internal LogikaOut(ListSource source) 
             : base(source) { }
 
         //Словарь сигналов выхода

@@ -23,7 +23,7 @@ namespace BaseLibrary
 
     //-----------------------------------------------------------------------------------------------------
     //Интерфейс словаря, в который нельзя добавлять элементы
-    public interface IDicSForRead<T>
+    public interface IDicSForRead< out T>
     {
         //Получение элемента по индексу
         T this[string s] { get; }
@@ -34,6 +34,6 @@ namespace BaseLibrary
         //Коллекция ключей словаря
         ICollection<string> Keys { get; }
         //Коллекция значений словаря
-        ICollection<T> Values { get; }
+        IEnumerable<T> Values { get; }
     }
 }

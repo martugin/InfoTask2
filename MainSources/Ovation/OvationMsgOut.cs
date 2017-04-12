@@ -4,9 +4,9 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    internal class OvationMsgOut : SourceOut
+    internal class OvationMsgOut : ListSourceOut
     {
-        internal OvationMsgOut(BaseSource source, string objectType) : base(source)
+        internal OvationMsgOut(ListSource source, string objectType) : base(source)
         {
             OutType = objectType;
         }

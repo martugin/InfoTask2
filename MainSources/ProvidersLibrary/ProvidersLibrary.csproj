@@ -46,42 +46,51 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonProviders\CloneOut.cs" />
+    <Compile Include="Common\ProvidersSignals\ProviderOut.cs" />
+    <Compile Include="Receivers\ListReceivers\ListReceiver.cs" />
+    <Compile Include="Receivers\ListReceivers\ListReceiverConnect.cs" />
+    <Compile Include="Receivers\ListReceivers\ListReceiverOut.cs" />
+    <Compile Include="Receivers\MomReceivers\MomReceiverConnect.cs" />
+    <Compile Include="Sources\Clone\CloneOut.cs" />
     <Compile Include="Common\ProvidersStatic.cs" />
-    <Compile Include="Common\ProviderConfig.cs" />
-    <Compile Include="Common\ProvidersFactory.cs" />
-    <Compile Include="Providers\ISignal.cs" />
-    <Compile Include="Receivers\DebugOpcReceiver.cs" />
-    <Compile Include="Receivers\OpcItem.cs" />
-    <Compile Include="Receivers\OpcReceiver.cs" />
+    <Compile Include="Common\Factory\ProviderConfig.cs" />
+    <Compile Include="Common\Factory\ProvidersFactory.cs" />
+    <Compile Include="Common\ProvidersSignals\ISignal.cs" />
+    <Compile Include="Receivers\MomReceivers\DebugOpcReceiver.cs" />
+    <Compile Include="Receivers\Signals\OpcItem.cs" />
+    <Compile Include="Receivers\MomReceivers\OpcDaReceiver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Receivers\ReceiverConnect.cs" />
-    <Compile Include="Receivers\ReceiverOut.cs" />
-    <Compile Include="Sources\AccessSource.cs" />
-    <Compile Include="Sources\AdoSource.cs" />
-    <Compile Include="Sources\OleDbSource.cs" />
-    <Compile Include="Sources\PartsSource.cs" />
-    <Compile Include="Providers\ProviderConnect.cs" />
-    <Compile Include="Receivers\BaseReceiver.cs" />
-    <Compile Include="Sources\BaseSource.cs" />
-    <Compile Include="CommonProviders\CloneSource.cs" />
-    <Compile Include="Providers\ProviderSetupForm.cs">
+    <Compile Include="Receivers\BaseReceivers\ReceiverConnect.cs" />
+    <Compile Include="Receivers\Signals\MomReceiverOut.cs" />
+    <Compile Include="Sources\ListSources\AccessSource.cs" />
+    <Compile Include="Sources\ListSources\AdoSource.cs" />
+    <Compile Include="Sources\ListSources\ListSourceConnect.cs" />
+    <Compile Include="Sources\ListSources\OleDbSource.cs" />
+    <Compile Include="Sources\ListSources\PartsSource.cs" />
+    <Compile Include="Common\Providers\ProviderConnect.cs" />
+    <Compile Include="Receivers\MomReceivers\MomReceiver.cs" />
+    <Compile Include="Sources\ListSources\ListSource.cs" />
+    <Compile Include="Sources\Clone\CloneSource.cs" />
+    <Compile Include="Common\Providers\ProviderSetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Providers\ProviderSetupForm.designer.cs">
+    <Compile Include="Common\Providers\ProviderSetupForm.designer.cs">
       <DependentUpon>ProviderSetupForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Providers\BaseProvider.cs" />
-    <Compile Include="Sources\SourceConnect.cs" />
-    <Compile Include="Sources\SqlServerSource.cs" />
-    <Compile Include="Sources\ValuesCount.cs" />
-    <Compile Include="SourcesSignals\CalcSignal.cs" />
-    <Compile Include="SourcesSignals\InitialSignal.cs" />
-    <Compile Include="Providers\ProviderSignal.cs" />
-    <Compile Include="SourcesSignals\SourceOut.cs" />
-    <Compile Include="Receivers\ReceiverSignal.cs" />
-    <Compile Include="SourcesSignals\UniformSignal.cs" />
-    <Compile Include="SourcesSignals\SourceSignal.cs" />
+    <Compile Include="Common\Providers\Provider.cs" />
+    <Compile Include="Sources\MomSources\MomSource.cs" />
+    <Compile Include="Sources\MomSources\MomSourceConnect.cs" />
+    <Compile Include="Sources\BaseSources\Source.cs" />
+    <Compile Include="Sources\BaseSources\SourceConnect.cs" />
+    <Compile Include="Sources\ListSources\SqlServerSource.cs" />
+    <Compile Include="Sources\Signals\MomSourceOut.cs" />
+    <Compile Include="Sources\BaseSources\ValuesCount.cs" />
+    <Compile Include="Sources\Signals\CalcListSignal.cs" />
+    <Compile Include="Sources\Signals\InitialSignal.cs" />
+    <Compile Include="Common\ProvidersSignals\ProviderSignal.cs" />
+    <Compile Include="Sources\Signals\ListSourceOut.cs" />
+    <Compile Include="Sources\Signals\UniformSignal.cs" />
+    <Compile Include="Common\ProvidersSignals\ListSignal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
@@ -94,10 +103,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="MomentSources\" />
+    <Folder Include="Sources\HandInput\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Providers\ProviderSetupForm.resx">
+    <EmbeddedResource Include="Common\Providers\ProviderSetupForm.resx">
       <DependentUpon>ProviderSetupForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

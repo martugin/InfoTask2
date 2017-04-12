@@ -4,15 +4,15 @@ using ProvidersLibrary;
 
 namespace Fictive
 {
-    internal class FictiveOut : SourceOut 
+    internal class FictiveOut : ListSourceOut 
     {
         //Фиктивный объект
         //Сигналы задаются свойствами ValuesInterval - частота возвращаемых значений в секундах
-        internal FictiveOut(BaseSource source, int valuesInterval) : base(source)
+        internal FictiveOut(ListSource source, int valuesInterval) : base(source)
         {
             ValuesInterval = valuesInterval;
         }
-        internal FictiveOut(BaseSource source, bool isErorObject) : base(source)
+        internal FictiveOut(ListSource source, bool isErorObject) : base(source)
         {
             IsErrorObject = isErorObject;
         }

@@ -9,7 +9,7 @@ using ProvidersLibrary;
 namespace Fictive
 {
     //Фиктивный тестовый источник с чтением по блокам, OleDb, резервным подключением
-    [Export(typeof(BaseProvider))]
+    [Export(typeof(Provider))]
     [ExportMetadata("Code", "FictiveSource")]
     public class FictiveSource : AccessSource
     {
@@ -34,7 +34,7 @@ namespace Fictive
         internal FictiveOperatorOut OperatorOut;
 
         //Добавление объекта
-        protected override SourceOut AddOut(InitialSignal sig)
+        protected override ListSourceOut AddOut(InitialSignal sig)
         {
             var table = sig.Inf.Get("Table");
             bool isErr = sig.Inf.Get("IsErrorObject") == "True";
@@ -101,7 +101,7 @@ namespace Fictive
         }
 
         //Запрос значений по одному блоку из таблицы Values
-        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("SELECT " + "MomValues.* FROM " + "MomValues" + " WHERE (");
             for (int i = 0; i < part.Count; i++)
@@ -117,13 +117,13 @@ namespace Fictive
             return new DaoRec(DbFile, sb.ToString());
         }
         //Определение текущего считываемого объекта
-        protected override SourceOut DefineOut(IRecordRead rec)
+        protected override ListSourceOut DefineOut(IRecordRead rec)
         {
             return OutsId[rec.GetInt("ObjectId")];
         }
 
         //Запрос значений по одному блоку из таблицы Values2
-        protected IRecordRead QueryValues2(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryValues2(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("SELECT MomValues2.* FROM MomValues2 WHERE ((ObjectId = " + ((FictiveSmallOut)part[0]).Id + ")");
             for (int i = 1; i < part.Count; i++)
@@ -135,13 +135,13 @@ namespace Fictive
             sb.Append(" ORDER BY Time");
             return new DaoRec(DbFile, sb.ToString());
         }
-        protected SourceOut DefineOut2(IRecordRead rec)
+        protected ListSourceOut DefineOut2(IRecordRead rec)
         {
             return OutsId2[rec.GetInt("ObjectId")];
         }
 
         //Запрос действий оператора
-        protected IRecordRead QueryOperator(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryOperator(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             return new DaoRec(DbFile, "SELECT * FROM MomOperator WHERE (Time >= " + beg.ToAccessString() + ") And (Time <= " + en.ToAccessString() + ")");
         }

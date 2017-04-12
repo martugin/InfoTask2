@@ -39,7 +39,7 @@ namespace Provider
         }
 
         //Добавляет один сигнал в список
-        protected override SourceOut AddOut(InitialSignal sig)
+        protected override ProviderOut AddOut(ProviderSignal sig)
         {
             if (sig.Inf.Get("ObjectType") == "Operator")
                 return OperatorOut ?? (OperatorOut = new KosmOperatorOut(this));
@@ -72,7 +72,7 @@ namespace Provider
         protected abstract int PartSize { get; }
 
         //Запрос значений по одному блоку выходов
-        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var nums = new ushort[part.Count, IsAnalog ? 3 : 4];
             for (int i = 0; i < part.Count; i++)
@@ -97,7 +97,7 @@ namespace Provider
         }
 
         //Определение текущего считываемого выхода
-        protected override SourceOut DefineOut(IRecordRead rec)
+        protected override ListSourceOut DefineOut(IRecordRead rec)
         {
             int dn = this is KosmotronikaRetroSource ? 1 : 0;
             var ind = new OutIndex(rec.GetInt(0), rec.GetInt(1), rec.GetInt(2), IsAnalog ? 1 : rec.GetInt(5 + dn));
@@ -107,7 +107,7 @@ namespace Provider
         }
 
         //Запрос значений действий оператора
-        protected IRecordRead QueryValuesOperator(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected IRecordRead QueryValuesOperator(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var parBeginTime = new OleDbParameter("BeginTime", OleDbType.DBTimeStamp) { Value = beg };
             var parEndTime = new OleDbParameter("EndTime", OleDbType.DBTimeStamp) { Value = en };

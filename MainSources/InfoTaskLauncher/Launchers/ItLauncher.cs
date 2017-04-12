@@ -153,8 +153,8 @@ namespace ComLaunchers
         }
 
         //Ошибка и результат последней операции
-        public string ErrMess { get { return Logger.CollectedError; } }
-        public string ResultMess { get { return Logger.CollectedResults; } }
+        public string ErrMess { get { return Logger.CollectedError; }}
+        public string ResultMess { get { return Logger.CollectedResults; }}
 
         //Путь к каталогу InfoTask
         public string InfoTaskDir { get { return ItStatic.InfoTaskDir(); } }

@@ -6,7 +6,7 @@ using ProvidersLibrary;
 
 namespace Logika
 {
-    [Export(typeof(BaseProvider))]
+    [Export(typeof(Provider))]
     [ExportMetadata("Code", "LogikaSource")]
     public class LogikaSource : AccessSource
     {
@@ -26,7 +26,7 @@ namespace Logika
         internal readonly DicI<LogikaOut> OutsId = new DicI<LogikaOut>();
 
         //Добавить выход в источник
-        protected override SourceOut AddOut(InitialSignal sig)
+        protected override ListSourceOut AddOut(InitialSignal sig)
         {
             int id = sig.Inf.GetInt("NodeId");
             if (OutsId.ContainsKey(id))
@@ -50,14 +50,14 @@ namespace Logika
         private string _tableName;
 
         //Запрос значений
-        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             return new DaoRec(DbFile, "SELECT * FROM " + _tableName + "_ARCHIVE " +
                                       "WHERE (TYPE = 0) AND (Время >= " + beg.ToAccessString() + ") AND (Время <= " + en.ToAccessString() + ")"); 
         }
 
         //Определение текущего выхода
-        protected override SourceOut DefineOut(IRecordRead rec)
+        protected override ListSourceOut DefineOut(IRecordRead rec)
         {
             return OutsId[rec.GetInt("PARENT_ID")];
         }

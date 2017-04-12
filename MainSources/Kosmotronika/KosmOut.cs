@@ -28,7 +28,7 @@ namespace Provider
     //---------------------------------------------------------------------------------------------------------------------------------
     //Один выход для непосредственного считывания с архива космотроники
     //Для аналоговых - один ТМ, для выходов - один выход ТМ
-    internal class KosmOut : SourceOut
+    internal class KosmOut : ListSourceOut
     {
         internal KosmOut(KosmotronikaBaseSource source, OutIndex ind) : base(source)
         {

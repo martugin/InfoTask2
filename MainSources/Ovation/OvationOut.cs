@@ -6,7 +6,7 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Один выход (дисктретная, аналоговая или упакованная точка)
-    internal class OvationOut : SourceOut
+    internal class OvationOut : ListSourceOut
     {
         internal OvationOut(OvationSource source, int id) : base(source)
         {

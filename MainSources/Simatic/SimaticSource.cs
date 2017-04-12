@@ -8,7 +8,7 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(BaseProvider))]
+    [Export(typeof(ProvidersLibrary.Provider))]
     [ExportMetadata("Code", "SimaticSource")]
     public class SimaticSource : OleDbSource
     {
@@ -57,7 +57,7 @@ namespace Provider
         internal readonly DicI<SimaticOut> OutsId = new DicI<SimaticOut>();
 
         //Добавить объект в провайдер
-        protected override SourceOut AddOut(InitialSignal sig)
+        protected override ListSourceOut AddOut(InitialSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
             return OutsId.ContainsKey(id) 
@@ -87,7 +87,7 @@ namespace Provider
         }
 
         //Запрос значений из архива по списку выходов и интервалу
-        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             var sb = new StringBuilder("TAG:R, ");
             if (part.Count == 1)
@@ -107,7 +107,7 @@ namespace Provider
         }
 
         //Определение текущего считываемого выхода
-        protected override SourceOut DefineOut(IRecordRead rec)
+        protected override ListSourceOut DefineOut(IRecordRead rec)
         {
             return OutsId[rec.GetInt(0)];
         }

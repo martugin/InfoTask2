@@ -7,9 +7,9 @@ using ProvidersLibrary;
 namespace Fictive
 {
     //Фиктивный тестовый источник, реализация без чтения по блокам и OleDb
-    [Export(typeof(BaseProvider))]
+    [Export(typeof(Provider))]
     [ExportMetadata("Code", "FictiveSimpleSource")]
-    public class FictiveSimpleSource : BaseSource
+    public class FictiveSimpleSource : ListSource
     {
         //Код
         public override string Code { get { return "FictiveSimpleSource"; } }
@@ -32,7 +32,7 @@ namespace Fictive
         internal DicI<FictiveOut> Outs { get { return _outs; } }
 
         //Добавить объект в провайдер
-        protected override SourceOut AddOut(InitialSignal sig)
+        protected override ListSourceOut AddOut(InitialSignal sig)
         {
             var num = sig.Inf.GetInt("NumObject");
             if (_outs.ContainsKey(num)) return _outs[num];

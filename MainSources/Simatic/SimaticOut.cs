@@ -5,7 +5,7 @@ using ProvidersLibrary;
 namespace Provider
 {
     //Объект
-    internal class SimaticOut : SourceOut
+    internal class SimaticOut : ListSourceOut
     {
         internal SimaticOut(SimaticSource source, string archive, string tag, int id) : base(source)
         {

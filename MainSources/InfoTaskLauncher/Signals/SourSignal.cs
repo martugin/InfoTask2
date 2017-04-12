@@ -30,17 +30,17 @@ namespace ComLaunchers
     //--------------------------------------------------------------------------------------------------------
 
     //Сигнал источника для внешнего использования через COM
-    //Обертка над SourceSignal
+    //Обертка над ListSourceSignal
     [ClassInterface(ClassInterfaceType.None)]
     public class RSourSignal : SourSignal
     {
-        internal RSourSignal(SourceSignal signal)
+        internal RSourSignal(ListSourceSignal signal)
         {
             _signal = signal;
         }
 
         //Ссылка на сигнал
-        private readonly SourceSignal _signal;
+        private readonly ListSourceSignal _signal;
 
         //Полный код сигнала
         public string Code { get { return _signal.Code; } }

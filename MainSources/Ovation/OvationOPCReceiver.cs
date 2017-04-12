@@ -4,9 +4,9 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(BaseProvider))]
+    [Export(typeof(ProvidersLibrary.Provider))]
     [ExportMetadata("Code", "OvationOpcReceiver")]
-    public class OvationOpcReceiver : OpcReceiver
+    public class OvationOpcReceiver : OpcDaReceiver
     {
         //Код
         public override string Code { get { return "OvationOPCReceiver"; }}

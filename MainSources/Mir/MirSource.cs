@@ -6,7 +6,7 @@ using ProvidersLibrary;
 
 namespace Provider
 {
-    [Export(typeof(BaseProvider))]
+    [Export(typeof(ProvidersLibrary.Provider))]
     [ExportMetadata("Code", "MirSource")]
     public class MirSource : SqlServerSource
     {
@@ -26,7 +26,7 @@ namespace Provider
         }
 
         //Добавить выход в провайдер
-        protected override SourceOut AddOut(InitialSignal sig)
+        protected override ListSourceOut AddOut(InitialSignal sig)
         {
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
             return !Outs.ContainsKey(ocode) 
@@ -59,7 +59,7 @@ namespace Provider
         }
 
         //Запрос значений по одному блоку выходов
-        protected override IRecordRead QueryValues(IList<SourceOut> part, DateTime beg, DateTime en, bool isCut)
+        protected override IRecordRead QueryValues(IList<ListSourceOut> part, DateTime beg, DateTime en, bool isCut)
         {
             string queryString = "SELECT IDCHANNEL, TIME, VALUE, VALUE_UNIT, VALUE_INDICATION FROM IZM_TII" +
                                      " WHERE (TIME >= " + beg.ToSqlString() + ") AND (TIME <=" + en.ToSqlString() + ") ORDER BY TIME";
@@ -67,7 +67,7 @@ namespace Provider
         }
 
         //Определение текущего считываемого выхода
-        protected override SourceOut DefineOut(IRecordRead rec)
+        protected override ListSourceOut DefineOut(IRecordRead rec)
         {
             return OutsId[rec.GetInt("IDCHANNEL")];
         }
