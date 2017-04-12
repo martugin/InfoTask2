@@ -16,6 +16,7 @@
     <Ovation Description="Комплект провайдеров для ПТК Ovation" InstallDate="" />
     <Wonderware Description="Комплект провайдеров для ПТК Wonderware" InstallDate="" />
     <Simatic InstallDate="" />
+    <Comm Description="Коммуникатор" InstallDate="" />
   </Packages>
   <Providers>
     <Kosmotronika Description="Провайдеры для ПТК Космотроника-Венец" DllFile="Providers\Kosmotronika\Kosmotronika.dll">
