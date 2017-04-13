@@ -4,11 +4,11 @@ using CommonTypes;
 
 namespace ProvidersLibrary
 {
-    //Сигнал, значение которого считывается из источника, с работой со срезами
+    //Сигнал архивного источника, с работой со срезами
     public class UniformSignal : InitialSignal
     {
-        public UniformSignal(SourceConnect connect, string code, DataType dataType, string infObject, string infOut, string infProp)
-            : base(connect, code, dataType, infObject, infOut, infProp)
+        public UniformSignal(SourceConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
+            : base(connect, code, dataType, contextOut, inf)
         {
             _prevMom = new EditMom(dataType);
             _beginMom = new EditMom(dataType);
@@ -82,7 +82,6 @@ namespace ProvidersLibrary
             var rec = isReal ? SourceConnect.CloneRec : SourceConnect.CloneStrRec;
             var recCut = isReal ? SourceConnect.CloneCutRec : SourceConnect.CloneStrCutRec;
             int nwrite = 0;
-
             if (_prevMom.Time >= Connect.PeriodBegin)
             {
                 var d1 = SourceConnect.RemoveMinultes(mom.Time);

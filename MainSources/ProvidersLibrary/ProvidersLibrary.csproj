@@ -49,10 +49,10 @@
     <Compile Include="Common\ProvidersSignals\ProviderOut.cs" />
     <Compile Include="Receivers\ListReceivers\ListReceiver.cs" />
     <Compile Include="Receivers\ListReceivers\ListReceiverConnect.cs" />
-    <Compile Include="Receivers\ListReceivers\ListReceiverOut.cs" />
+    <Compile Include="Receivers\Signals\ListReceiverOut.cs" />
     <Compile Include="Receivers\MomReceivers\MomReceiverConnect.cs" />
     <Compile Include="Sources\Clone\CloneOut.cs" />
-    <Compile Include="Common\ProvidersStatic.cs" />
+    <Compile Include="Common\Factory\ProvidersStatic.cs" />
     <Compile Include="Common\Factory\ProviderConfig.cs" />
     <Compile Include="Common\Factory\ProvidersFactory.cs" />
     <Compile Include="Common\ProvidersSignals\ISignal.cs" />

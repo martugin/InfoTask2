@@ -29,7 +29,7 @@ namespace BaseLibrary
         //Строка для отображения ошибки в сообщениях
         public override string ToString()
         {
-            return Text + (Params.IsEmpty() ? "" : (";" + Environment.NewLine + Params));
+            return Text + (Params.IsEmpty() ? "" : ";" + Environment.NewLine + Params);
         }
         //Строка для записи в лог
         public string ToLog()

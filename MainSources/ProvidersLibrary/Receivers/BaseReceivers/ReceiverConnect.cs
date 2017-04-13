@@ -1,5 +1,4 @@
-﻿using System;
-using BaseLibrary;
+﻿using BaseLibrary;
 using CommonTypes;
 
 namespace ProvidersLibrary
@@ -17,16 +16,13 @@ namespace ProvidersLibrary
         public IDicSForRead<IReceiverSignal> Signals { get { return ProviderSignals; } }
 
         //Добавить сигнал
-        public virtual IReceiverSignal AddSignal(string fullCode, //Полный код сигнала
-                                                                   DataType dataType, //Тип данных
-                                                                   string infObject, //Свойства объекта
-                                                                   string infOut = "", //Свойства выхода относительно объекта
-                                                                   string infProp = "") //Свойства сигнала относительно выхода
+        public IReceiverSignal AddSignal(string fullCode, //Полный код сигнала
+                                                                     DataType dataType, //Тип данных
+                                                                     string infObject, //Свойства объекта
+                                                                     string infOut = "", //Свойства выхода относительно объекта
+                                                                     string infProp = "") //Свойства сигнала относительно выхода
         {
-            if (ProviderSignals.ContainsKey(fullCode))
-                return ProviderSignals[fullCode];
-            Provider.IsPrepared = false;
-            return ProviderSignals.Add(fullCode, new ProviderSignal(this, fullCode, dataType, infObject, infOut, infProp));
+            return AddProviderSignal(fullCode, dataType, infObject, infOut, infProp);
         }
 
         //Запись значений в приемник

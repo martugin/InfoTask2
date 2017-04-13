@@ -8,9 +8,9 @@ using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Ovation
 {
-    [Export(typeof(ProvidersLibrary.Provider))]
+    [Export(typeof(Provider))]
     [ExportMetadata("Code", "OvationSource")]
     public class OvationSource : OleDbSource
     {
@@ -43,7 +43,7 @@ namespace Provider
         internal OvationMsgOut TextOut;
 
         //Добавить выход в провайдер
-        protected override ListSourceOut AddOut(InitialSignal sig)
+        protected override ProviderOut AddOut(ProviderSignal sig)
         {
             var obType = sig.Inf.Get("ObjectType").ToUpper();
             switch (obType)

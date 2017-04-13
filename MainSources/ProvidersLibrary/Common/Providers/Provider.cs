@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using BaseLibrary;
-using CommonTypes;
 
 namespace ProvidersLibrary
 {
@@ -58,7 +57,7 @@ namespace ProvidersLibrary
         {
             if (IsConnected) return true;
             return IsConnected = StartDanger(2, LoggerStability.Single, "Соединение с провайдером", false, ConnectErrorWaitingTime)
-                                                .Run(ConnectProvider, Disconnect).IsSuccess;
+                                                            .Run(ConnectProvider, Disconnect).IsSuccess;
         }
 
         //Отключение от провайдера
@@ -101,15 +100,16 @@ namespace ProvidersLibrary
                 AddEvent("Подготовка выходов");
                 ClearOuts();
                 foreach (var sig in ProviderConnect.ProviderSignals.Values)
-                {
-                    var ob = AddOut(sig);
-                    ob.Context = sig.CodeOut;
-                    ob.AddSignal(sig);
-                }
+                    if (sig.IsInitial)
+                    {
+                        var ob = AddOut(sig);
+                        ob.Context = sig.ContextOut;
+                        ob.AddSignal(sig);
+                    }
                 Procent = 20;
                 if (connectBefore && !Connect()) return false;
                 IsPrepared = StartDanger(0, 100, 2, LoggerStability.Periodic, "Подготовка провайдера")
-                                    .Run(PrepareProvider, Reconnect).IsSuccess;
+                                                  .Run(PrepareProvider, Reconnect).IsSuccess;
                 MakeErrPool();
                 return IsPrepared;
             }

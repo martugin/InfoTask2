@@ -1,5 +1,6 @@
 ﻿namespace ProvidersLibrary
 {
+    //Выход мгновенного источника
     public class MomSourceOut: ProviderOut
     {
         protected MomSourceOut(MomSource source) 

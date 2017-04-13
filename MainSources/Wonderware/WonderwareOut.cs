@@ -3,7 +3,7 @@ using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Wonderware
 {
     //Выход
     internal class WonderwareOut : ListSourceOut

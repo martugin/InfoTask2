@@ -4,12 +4,12 @@ using CommonTypes;
 
 namespace ProvidersLibrary
 {
-    //Сигнал, значение которого считывается из источника, без работы со срезами
+    //Сигнал архивного источника, без работы со срезами
     //Используется для событий, сигнализации, действий оператора и т.д.
     public class InitialSignal : ListSignal
     {
-        public InitialSignal(SourceConnect connect, string code, DataType dataType, string infObject, string infOut, string infProp)
-            : base(connect, code, dataType, infObject, infOut, infProp)
+        public InitialSignal(SourceConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
+            : base(connect, code, dataType, contextOut, inf)
         {
             BufMom = new EditMom(dataType);
         }

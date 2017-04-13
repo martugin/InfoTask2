@@ -11,12 +11,12 @@ namespace ProvidersTest
     [TestClass]
     public class LogikaTest
     {
-        private SourceConnect MakeProviders(string prefix)
+        private ListSourceConnect MakeProviders(string prefix)
         {
             TestLib.CopyFile(@"Providers\Logika", "prolog.mdb", prefix + "Prolog.mdb");
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Logika", logger);
+            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalValueType.List, "SourceCon", "Logika", logger);
             var prov = factory.CreateProvider("LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\" + prefix + "Prolog.mdb");
             con.JoinProvider(prov);
             return con;
@@ -48,16 +48,16 @@ namespace ProvidersTest
             Assert.IsFalse(prov.IsPrepared);
             Assert.AreEqual(Static.MinDate, ti.Begin);
 
-            con.AddInitialSignal("T941M_412.t1", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=t1", false);
-            con.AddInitialSignal("T941M_412.t2", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=t2", false);
-            con.AddInitialSignal("T941M_412.V1", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=V1", false);
-            con.AddInitialSignal("T941M_412.V2", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=V2", false);
-            con.AddInitialSignal("T941M_412.V3", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=V3", false);
-            con.AddInitialSignal("T941M_412.M1", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=M1", false);
-            con.AddInitialSignal("T941M_412.M2", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=M2", false);
-            con.AddInitialSignal("T941M_412.M3", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=M3", false);
-            con.AddInitialSignal("T941M_412.Q", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=Q", false);
-            con.AddInitialSignal("T941M_412.Tи", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=Tи", false);
+            con.AddSignal("T941M_412.t1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=t1");
+            con.AddSignal("T941M_412.t2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=t2");
+            con.AddSignal("T941M_412.V1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V1");
+            con.AddSignal("T941M_412.V2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V2");
+            con.AddSignal("T941M_412.V3", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V3");
+            con.AddSignal("T941M_412.M1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M1");
+            con.AddSignal("T941M_412.M2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M2");
+            con.AddSignal("T941M_412.M3", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M3");
+            con.AddSignal("T941M_412.Q", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=Q");
+            con.AddSignal("T941M_412.Tи", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=Tи");
 
             Assert.AreEqual(10, con.Signals.Count);
             Assert.AreEqual(10, con.InitialSignals.Count);
@@ -104,7 +104,7 @@ namespace ProvidersTest
             return new DateTime(2016, 10, 11).AddHours(h);
         }
 
-        private void CheckTimeAndErr(ListSourceSignal sig)
+        private void CheckTimeAndErr(ListSignal sig)
         {
             Assert.AreEqual(25, sig.Value.Count);
             Assert.AreEqual(D(0), sig.Value.TimeI(0));
@@ -124,7 +124,7 @@ namespace ProvidersTest
             Assert.AreEqual(null, sig.Value.ErrorI(24));
         }
 
-        private void CheckValue(double v, ListSourceSignal sig, int num, int round = 5)
+        private void CheckValue(double v, ListSignal sig, int num, int round = 5)
         {
             Assert.AreEqual(v, Math.Round(sig.Value.RealI(num), round));
         }
@@ -133,23 +133,23 @@ namespace ProvidersTest
         public void Values()
         {
             var con = MakeProviders("Values");
-            con.AddInitialSignal("T941M_412.t1", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=t1", false);
-            con.AddInitialSignal("T941M_412.t2", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=t2", false);
-            con.AddInitialSignal("T941M_412.V1", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=V1", false);
-            con.AddInitialSignal("T941M_412.V2", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=V2", false);
-            con.AddInitialSignal("T941M_412.V3", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=V3", false);
-            con.AddInitialSignal("T941M_412.M1", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=M1", false);
-            con.AddInitialSignal("T941M_412.M2", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=M2", false);
-            con.AddInitialSignal("T941M_412.M3", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=M3", false);
-            con.AddInitialSignal("T941M_412.Q", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=Q", false);
-            con.AddInitialSignal("T941M_412.Tи", DataType.Real, "TableName=T941M;NodeId=412", "", "SignalCode=Tи", false);
+            con.AddSignal("T941M_412.t1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=t1");
+            con.AddSignal("T941M_412.t2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=t2");
+            con.AddSignal("T941M_412.V1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V1");
+            con.AddSignal("T941M_412.V2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V2");
+            con.AddSignal("T941M_412.V3", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V3");
+            con.AddSignal("T941M_412.M1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M1");
+            con.AddSignal("T941M_412.M2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M2");
+            con.AddSignal("T941M_412.M3", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M3");
+            con.AddSignal("T941M_412.Q", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=Q");
+            con.AddSignal("T941M_412.Tи", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=Tи");
 
             using (con.StartPeriod(D(0), D(24), "Single"))
             {
                 con.GetValues();
                 Assert.IsTrue(con.Source.IsConnected);
                 Assert.IsTrue(con.Source.IsPrepared);
-                var sig = con.Signals["T941M_412.t1"];
+                var sig = (ListSignal)con.Signals["T941M_412.t1"];
                 CheckTimeAndErr(sig);
                 CheckValue(71.65745, sig, 0);
                 CheckValue(71.7553, sig, 1);
@@ -157,7 +157,7 @@ namespace ProvidersTest
                 CheckValue(71.74596, sig, 14);
                 CheckValue(71.55679, sig, 23);
 
-                sig = con.Signals["T941M_412.t2"];
+                sig = (ListSignal)con.Signals["T941M_412.t2"];
                 CheckTimeAndErr(sig);
                 CheckValue(58.88191, sig, 0);
                 CheckValue(58.84616, sig, 1);
@@ -165,7 +165,7 @@ namespace ProvidersTest
                 CheckValue(59.96256, sig, 14);
                 CheckValue(58.90205, sig, 23);
 
-                sig = con.Signals["T941M_412.V1"];
+                sig = (ListSignal)con.Signals["T941M_412.V1"];
                 CheckTimeAndErr(sig);
                 CheckValue(289.9, sig, 0, 1);
                 CheckValue(290.1, sig, 1, 1);
@@ -173,7 +173,7 @@ namespace ProvidersTest
                 CheckValue(290.3, sig, 14, 1);
                 CheckValue(290.5, sig, 23, 1);
 
-                sig = con.Signals["T941M_412.V2"];
+                sig = (ListSignal)con.Signals["T941M_412.V2"];
                 CheckTimeAndErr(sig);
                 CheckValue(285.4, sig, 0, 1);
                 CheckValue(285.5, sig, 1, 1);
@@ -181,7 +181,7 @@ namespace ProvidersTest
                 CheckValue(285.6, sig, 14, 1);
                 CheckValue(285.5, sig, 23, 1);
 
-                sig = con.Signals["T941M_412.V3"];
+                sig = (ListSignal)con.Signals["T941M_412.V3"];
                 CheckTimeAndErr(sig);
                 CheckValue(0, sig, 0);
                 CheckValue(0, sig, 1);
@@ -189,7 +189,7 @@ namespace ProvidersTest
                 CheckValue(0, sig, 14);
                 CheckValue(0, sig, 23);
 
-                sig = con.Signals["T941M_412.M1"];
+                sig = (ListSignal)con.Signals["T941M_412.M1"];
                 CheckTimeAndErr(sig);
                 CheckValue(283.2027, sig, 0);
                 CheckValue(283.38159, sig, 1);
@@ -197,7 +197,7 @@ namespace ProvidersTest
                 CheckValue(283.57852, sig, 14);
                 CheckValue(283.80579, sig, 23);
 
-                sig = con.Signals["T941M_412.M2"];
+                sig = (ListSignal)con.Signals["T941M_412.M2"];
                 CheckTimeAndErr(sig);
                 CheckValue(280.79285, sig, 0);
                 CheckValue(280.89642, sig, 1);
@@ -205,7 +205,7 @@ namespace ProvidersTest
                 CheckValue(280.83179, sig, 14);
                 CheckValue(280.88831, sig, 23);
 
-                sig = con.Signals["T941M_412.M3"];
+                sig = (ListSignal)con.Signals["T941M_412.M3"];
                 CheckTimeAndErr(sig);
                 CheckValue(0, sig, 0);
                 CheckValue(0, sig, 1);
@@ -213,7 +213,7 @@ namespace ProvidersTest
                 CheckValue(0, sig, 14);
                 CheckValue(0, sig, 23);
 
-                sig = con.Signals["T941M_412.Q"];
+                sig = (ListSignal)con.Signals["T941M_412.Q"];
                 CheckTimeAndErr(sig);
                 CheckValue(3.590067, sig, 0, 6);
                 CheckValue(3.629146, sig, 1, 6);
@@ -221,7 +221,7 @@ namespace ProvidersTest
                 CheckValue(3.311962, sig, 14, 6);
                 CheckValue(3.557389, sig, 23, 6);
 
-                sig = con.Signals["T941M_412.Tи"];
+                sig = (ListSignal)con.Signals["T941M_412.Tи"];
                 CheckTimeAndErr(sig);
                 CheckValue(1, sig, 0);
                 CheckValue(1, sig, 1);

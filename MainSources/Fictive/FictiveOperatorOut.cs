@@ -14,7 +14,7 @@ namespace Fictive
         //Номер команды
         internal InitialSignal NumberSignal { get; private set; }
 
-        protected override InitialSignal AddNewSignal(InitialSignal sig)
+        protected override InitialSignal AddInitialSignal(InitialSignal sig)
         {
             switch (sig.Inf["Signal"])
             {

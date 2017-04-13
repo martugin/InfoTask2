@@ -2,7 +2,7 @@
 using BaseLibrary;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Kosmotronika
 {
     //Структура для индекса словаря сигналов
     internal struct OutIndex
@@ -39,7 +39,7 @@ namespace Provider
         }
 
         //Добавить к выходу сигнал, если такого еще не было
-        protected override InitialSignal AddNewSignal(InitialSignal sig)
+        protected override InitialSignal AddInitialSignal(InitialSignal sig)
         {
             switch (sig.Inf["Prop"].ToUpper())
             {

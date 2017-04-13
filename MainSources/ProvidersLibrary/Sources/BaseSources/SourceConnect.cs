@@ -16,16 +16,13 @@ namespace ProvidersLibrary
         public IDicSForRead<ISourceSignal> Signals { get { return ProviderSignals; } }
 
         //Добавить сигнал
-        public virtual ISourceSignal AddSignal(string fullCode, //Полный код сигнала
+        public ISourceSignal AddSignal(string fullCode, //Полный код сигнала
                                                                    DataType dataType, //Тип данных
                                                                    string infObject, //Свойства объекта
-                                                                   string infOut = "", //Свойства выхода относительно объекта
+                                                                   string infOut, //Свойства выхода относительно объекта
                                                                    string infProp = "") //Свойства сигнала относительно выхода
         {
-            if (ProviderSignals.ContainsKey(fullCode))
-                return ProviderSignals[fullCode];
-            Provider.IsPrepared = false;
-            return ProviderSignals.Add(fullCode, new ProviderSignal(this, fullCode, dataType, infObject, infOut, infProp));
+            return AddProviderSignal(fullCode, dataType, infObject, infOut, infProp);
         }
 
         //Чтение значений из источника, возвращает true, если прочитались все значения или частично

@@ -5,7 +5,7 @@ using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Kosmotronika
 {
     //Базовый класс для источников космотроники
     public abstract class KosmotronikaBaseSource : OleDbSource

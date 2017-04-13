@@ -3,6 +3,7 @@ using BaseLibrary;
 
 namespace ProvidersLibrary
 {
+    //Соединение с мгновенным источником
     public class MomSourceConnect : SourceConnect
     {
         public MomSourceConnect(string name, string complect, Logger logger) 

@@ -34,13 +34,13 @@ namespace ComLaunchers
     [ClassInterface(ClassInterfaceType.None)]
     public class RSourSignal : SourSignal
     {
-        internal RSourSignal(ListSourceSignal signal)
+        internal RSourSignal(ListSignal signal)
         {
             _signal = signal;
         }
 
         //Ссылка на сигнал
-        private readonly ListSourceSignal _signal;
+        private readonly ListSignal _signal;
 
         //Полный код сигнала
         public string Code { get { return _signal.Code; } }

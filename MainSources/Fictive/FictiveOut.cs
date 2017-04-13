@@ -37,7 +37,7 @@ namespace Fictive
         //Id в таблице объектов
         internal int Id { get; set; }
 
-        protected override InitialSignal AddNewSignal(InitialSignal sig)
+        protected override InitialSignal AddInitialSignal(InitialSignal sig)
         {
             switch (sig.Inf["Signal"])
             {

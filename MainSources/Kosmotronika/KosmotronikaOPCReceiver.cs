@@ -2,7 +2,7 @@
 using BaseLibrary;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Kosmotronika
 {
     [Export(typeof(ProvidersLibrary.Provider))]
     [ExportMetadata("Code", "KosmotronikaOpcReceiver")]

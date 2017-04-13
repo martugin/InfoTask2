@@ -80,7 +80,7 @@ namespace ProvidersLibrary
         }
 
         //Добавить итем содержащий заданный сигнал
-        protected override MomReceiverOut AddOut(ReceiverSignal sig)
+        protected override ProviderOut AddOut(ProviderSignal sig)
         {
             var tag = GetOpcItemTag(sig.Inf);
             if (_items.ContainsKey(tag))

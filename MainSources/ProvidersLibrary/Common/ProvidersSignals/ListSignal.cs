@@ -1,12 +1,13 @@
-﻿using CommonTypes;
+﻿using BaseLibrary;
+using CommonTypes;
 
 namespace ProvidersLibrary
 {
-    //Базовый класс для всех сигналов, значение которых это список мгновенных значений
+    //Базовый класс для мгновенных сигналов
     public class ListSignal : ProviderSignal
     {
-        protected ListSignal(ProviderConnect connect, string code, DataType dataType, string infObject, string infOut, string infProp)
-            : base(connect, code, dataType, infObject, infOut, infProp)
+        protected ListSignal(ProviderConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
+            : base(connect, code, dataType, contextOut, inf)
         {
             MomList = MFactory.NewList(dataType);
         }

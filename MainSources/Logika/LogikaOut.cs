@@ -14,7 +14,7 @@ namespace Logika
         private readonly Dictionary<string, InitialSignal> _signals = new Dictionary<string, InitialSignal>();
 
         //Сигнал только добавляется в Signals
-        protected override InitialSignal AddNewSignal(InitialSignal sig)
+        protected override InitialSignal AddInitialSignal(InitialSignal sig)
         {
             var code = sig.Inf["SignalCode"];
             if (!_signals.ContainsKey(code))

@@ -2,7 +2,7 @@
 using BaseLibrary;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Wonderware
 {
     //OPC-сервер Wonderware
     [Export(typeof(ProvidersLibrary.Provider))]

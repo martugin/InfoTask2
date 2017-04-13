@@ -9,7 +9,7 @@
         protected MomReceiver Receiver { get { return (MomReceiver) Provider; } }
 
         //Основной сигнал объекта
-        protected ProviderSignal ValueSignal { get; set; }
+        protected internal ProviderSignal ValueSignal { get; set; }
 
         //Добавить сигнал в выход
         protected override ProviderSignal AddNewSignal(ProviderSignal sig)

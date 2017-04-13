@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using BaseLibrary;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Mir
 {
     [Export(typeof(ProvidersLibrary.Provider))]
     [ExportMetadata("Code", "MirSource")]
@@ -26,7 +26,7 @@ namespace Provider
         }
 
         //Добавить выход в провайдер
-        protected override ListSourceOut AddOut(InitialSignal sig)
+        protected override ProviderOut AddOut(ProviderSignal sig)
         {
             string ocode = sig.Inf.Get("Name_Object") + "." + sig.Inf.Get("Name_Device") + "." + sig.Inf.Get("Name_Type");
             return !Outs.ContainsKey(ocode) 

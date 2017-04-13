@@ -23,7 +23,10 @@ namespace ProvidersLibrary
                 foreach (var nprov in ncomp.Elements())
                 {
                     var pcode = nprov.GetName();
-                    var provider = new ProviderConfig(complect, nprov.GetAttr("ProviderType").ToProviderType(), pcode);
+                    var provider = new ProviderConfig(complect, 
+                                                                       nprov.GetAttr("ProviderType").ToProviderType(), 
+                                                                       nprov.GetAttr("ValueType").ToSignalValueType(), 
+                                                                       pcode);
                     ProviderConfigs.Add(pcode, provider);
                 }
             }
@@ -38,6 +41,7 @@ namespace ProvidersLibrary
 
         //Создание соединения
         public ProviderConnect CreateConnect(ProviderType type, //Тип провайдера
+                                                                 SignalValueType valueType, //Тип значения сигналов
                                                                  string name, //Имя соединения
                                                                  string complect, //Комплект
                                                                  Logger logger) //Логгер (поток)
@@ -45,16 +49,20 @@ namespace ProvidersLibrary
             switch (type)
             {
                 case ProviderType.Source:
-                    return new SourceConnect(name, complect, logger);
+                    if (valueType == SignalValueType.Mom) 
+                        return new MomSourceConnect(name, complect, logger);
+                    return new ListSourceConnect(name, complect, logger);
                 case ProviderType.Receiver:
-                    return new ReceiverConnect(name, complect, logger);
+                    if (valueType == SignalValueType.Mom) 
+                        return new MomReceiverConnect(name, complect, logger);
+                    return new ListReceiverConnect(name, complect, logger);
             }
             return null;
         }
 
         //Создание провайдера
         public Provider CreateProvider(string code, //Код провайдера
-                                                             string inf) //Настройки
+                                                       string inf) //Настройки
         {
             var prc = ProviderConfigs[code];
             var pr = prc.Complect.Complect == "Clones" || prc.Complect.Complect == "Archives"

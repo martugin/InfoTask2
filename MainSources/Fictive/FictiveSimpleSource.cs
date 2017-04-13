@@ -32,7 +32,7 @@ namespace Fictive
         internal DicI<FictiveOut> Outs { get { return _outs; } }
 
         //Добавить объект в провайдер
-        protected override ListSourceOut AddOut(InitialSignal sig)
+        protected override ProviderOut AddOut(ProviderSignal sig)
         {
             var num = sig.Inf.GetInt("NumObject");
             if (_outs.ContainsKey(num)) return _outs[num];

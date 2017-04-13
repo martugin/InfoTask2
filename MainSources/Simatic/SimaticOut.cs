@@ -2,7 +2,7 @@
 using BaseLibrary;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Simatic
 {
     //Объект
     internal class SimaticOut : ListSourceOut
@@ -26,7 +26,7 @@ namespace Provider
         internal int Id { get; private set; }
 
         //Добавление сигнала
-        protected override InitialSignal AddNewSignal(InitialSignal sig)
+        protected override InitialSignal AddInitialSignal(InitialSignal sig)
         {
             switch (sig.Inf.Get("Prop", "").ToLower())
             {

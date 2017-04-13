@@ -34,7 +34,7 @@ namespace Fictive
         internal FictiveOperatorOut OperatorOut;
 
         //Добавление объекта
-        protected override ListSourceOut AddOut(InitialSignal sig)
+        protected override ProviderOut AddOut(ProviderSignal sig)
         {
             var table = sig.Inf.Get("Table");
             bool isErr = sig.Inf.Get("IsErrorObject") == "True";

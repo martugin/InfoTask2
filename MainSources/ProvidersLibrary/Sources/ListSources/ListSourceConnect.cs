@@ -31,19 +31,12 @@ namespace ProvidersLibrary
         private readonly DicS<CalcListSignal> _calcSignals = new DicS<CalcListSignal>();
         internal DicS<CalcListSignal> CalcSignals { get { return _calcSignals; } }
 
-        //Добавить исходный сигнал
-        public override ISourceSignal AddSignal(string fullCode, //Полный код сигнала
-                                                               DataType dataType, //Тип данных
-                                                               string infObject, //Свойства объекта
-                                                               string infOut = "", //Свойства выхода относительно объекта
-                                                               string infProp = "") //Свойства сигнала относительно выхода
+        //Переопределяемый метод для добавления сигналов конкретного типа
+        protected override ProviderSignal AddConcreteSignal(string fullCode, DataType dataType, string contextOut, DicS<string> inf)
         {
-            if (InitialSignals.ContainsKey(fullCode))
-                return InitialSignals[fullCode];
-            Provider.IsPrepared = false;
-            var sig = needCut ? new UniformSignal(this, fullCode, dataType, infObject, infOut, infProp)
-                                      : new InitialSignal(this, fullCode, dataType, infObject, infOut, infProp);
-            ProviderSignals.Add(fullCode, sig);
+            var sig = inf.GetBool("NeedCut")
+                ? new UniformSignal(this, fullCode, dataType, contextOut, inf)
+                : new InitialSignal(this, fullCode, dataType, contextOut, inf);
             return InitialSignals.Add(fullCode, sig);
         }
 
@@ -167,7 +160,7 @@ namespace ProvidersLibrary
         {
             if (!_errorObjects.ContainsKey(codeObject))
             {
-                var err = errText + (ex == null ? "" : (". " + ex.Message + ". " + ex.StackTrace));
+                var err = errText + (ex == null ? "" : ". " + ex.Message + ". " + ex.StackTrace);
                 _errorObjects.Add(codeObject, err);
                 if (CloneErrorsRec != null)
                 {
@@ -201,12 +194,11 @@ namespace ProvidersLibrary
             using (var rec = new DaoRec(cloneDb, "Signals"))
                 while (rec.Read())
                 {
-                    var sig = AddSignal(rec.GetString("FullCode"),
-                                                           rec.GetString("DataType").ToDataType(),
-                                                           rec.GetString("InfObject"),
-                                                           rec.GetString("InfOut"),
-                                                           rec.GetString("InfProp"),
-                                                           rec.GetBool("NeedCut"));
+                    var sig = (InitialSignal)AddSignal(rec.GetString("FullCode"),
+                                                                      rec.GetString("DataType").ToDataType(),
+                                                                      rec.GetString("InfObject"),
+                                                                      rec.GetString("InfOut"),
+                                                                      rec.GetString("InfProp"));
                     sig.IdInClone = rec.GetInt("SignalId");
                 }
         }

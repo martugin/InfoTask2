@@ -2,7 +2,7 @@
 using BaseLibraryTest;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Provider;
+using Ovation;
 using ProvidersLibrary;
 
 namespace ProvidersTest
@@ -10,11 +10,11 @@ namespace ProvidersTest
     [TestClass]
     public class OvationSignalsTest
     {
-        private SourceConnect MakeProviders()
+        private ListSourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Ovation", logger);
+            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalValueType.List, "SourceCon", "Ovation", logger);
             var prov = factory.CreateProvider("OvationSource", "DataSource=DROP200");
             con.JoinProvider(prov);
             return con;
@@ -43,33 +43,33 @@ namespace ProvidersTest
             Assert.AreEqual(0, con.Signals.Count);
             con.ClearSignals();
             Assert.AreEqual(0, con.Signals.Count);
-            con.AddInitialSignal("11ASV00CT001.Пар", DataType.Real, "Id=45259");
-            con.AddInitialSignal("11ASV00CT001.Stat", DataType.Integer, "Id=45259", "", "Prop=STAT");
-            con.AddInitialSignal("11ASV00CT002.Пар", DataType.Real, "Id=45260");
+            con.AddSignal("11ASV00CT001.Пар", DataType.Real, "Id=45259", "NeedCut=True");
+            con.AddSignal("11ASV00CT001.Stat", DataType.Integer, "Id=45259", "NeedCut=True", "Prop=STAT");
+            con.AddSignal("11ASV00CT002.Пар", DataType.Real, "Id=45260", "NeedCut=True");
             Assert.AreEqual(3, con.Signals.Count);
-            con.AddInitialSignal("11BAT14CP051XG01.Пар", DataType.Boolean, "Id=46958");
-            con.AddInitialSignal("11BAT14CP051XG01.Stat", DataType.Integer, "Id=46958", "", "Prop=STAT");
+            con.AddSignal("11BAT14CP051XG01.Пар", DataType.Boolean, "Id=46958", "NeedCut=True");
+            con.AddSignal("11BAT14CP051XG01.Stat", DataType.Integer, "Id=46958", "NeedCut=True", "Prop=STAT");
             Assert.AreEqual(5, con.Signals.Count);
-            con.AddInitialSignal("11HHG50AA001-SOST1.Пар", DataType.Integer, "Id=50679");
-            con.AddInitialSignal("11HHG50AA001-SOST2.Пар", DataType.Integer, "Id=50680");
+            con.AddSignal("11HHG50AA001-SOST1.Пар", DataType.Integer, "Id=50679", "NeedCut=True");
+            con.AddSignal("11HHG50AA001-SOST2.Пар", DataType.Integer, "Id=50680", "NeedCut=True");
             Assert.AreEqual(7, con.Signals.Count);
             Assert.AreEqual(7, con.InitialSignals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.IsTrue(con.Signals.ContainsKey("11ASV00CT001.Пар"));
             Assert.AreEqual(DataType.Real, con.Signals["11ASV00CT001.Пар"].DataType);
-            Assert.AreEqual("ID=45259;", con.Signals["11ASV00CT001.Пар"].Inf.ToPropertyString());
+            Assert.AreEqual("ID=45259;NEEDCUT=True;", con.Signals["11ASV00CT001.Пар"].Inf.ToPropertyString());
             Assert.IsTrue(con.Signals.ContainsKey("11ASV00CT001.Stat"));
             Assert.AreEqual(DataType.Integer, con.Signals["11ASV00CT001.Stat"].DataType);
-            Assert.AreEqual("ID=45259;PROP=STAT;", con.Signals["11ASV00CT001.Stat"].Inf.ToPropertyString());
+            Assert.AreEqual("ID=45259;NEEDCUT=True;PROP=STAT;", con.Signals["11ASV00CT001.Stat"].Inf.ToPropertyString());
             Assert.IsTrue(con.Signals.ContainsKey("11ASV00CT002.Пар"));
             Assert.AreEqual(DataType.Real, con.Signals["11ASV00CT002.Пар"].DataType);
-            Assert.AreEqual("ID=45260;", con.Signals["11ASV00CT002.Пар"].Inf.ToPropertyString());
+            Assert.AreEqual("ID=45260;NEEDCUT=True;", con.Signals["11ASV00CT002.Пар"].Inf.ToPropertyString());
             Assert.IsTrue(con.Signals.ContainsKey("11BAT14CP051XG01.Пар"));
             Assert.AreEqual(DataType.Boolean, con.Signals["11BAT14CP051XG01.Пар"].DataType);
-            Assert.AreEqual("ID=46958;", con.Signals["11BAT14CP051XG01.Пар"].Inf.ToPropertyString());
+            Assert.AreEqual("ID=46958;NEEDCUT=True;", con.Signals["11BAT14CP051XG01.Пар"].Inf.ToPropertyString());
             Assert.IsTrue(con.Signals.ContainsKey("11BAT14CP051XG01.Stat"));
             Assert.AreEqual(DataType.Integer, con.Signals["11BAT14CP051XG01.Stat"].DataType);
-            Assert.AreEqual("ID=46958;PROP=STAT;", con.Signals["11BAT14CP051XG01.Stat"].Inf.ToPropertyString());
+            Assert.AreEqual("ID=46958;NEEDCUT=True;PROP=STAT;", con.Signals["11BAT14CP051XG01.Stat"].Inf.ToPropertyString());
             Assert.IsTrue(con.Signals.ContainsKey("11HHG50AA001-SOST1.Пар"));
             Assert.AreEqual(DataType.Integer, con.Signals["11HHG50AA001-SOST1.Пар"].DataType);
             Assert.IsTrue(con.Signals.ContainsKey("11HHG50AA001-SOST2.Пар"));
@@ -111,38 +111,38 @@ namespace ProvidersTest
             Assert.AreEqual(DataType.Integer, prov.OutsId[50680].ValueSignal.DataType);
             Assert.IsNull(prov.OutsId[50680].StateSignal);
 
-            con.AddInitialSignal("AlarmMessages.MsgFlags", DataType.Integer, "ObjectType=Alarm", "", "Prop=MSG_FLAGS", false);
-            con.AddInitialSignal("AlarmMessages.MsgType", DataType.Integer, "ObjectType=Alarm", "", "Prop=MSG_TYPE", false);
-            con.AddInitialSignal("AlarmMessages.SubType", DataType.Integer, "ObjectType=Alarm", "", "Prop=SUB_TYPE", false);
-            con.AddInitialSignal("AlarmMessages.System", DataType.Integer, "ObjectType=Alarm", "", "Prop=SYSTEM", false);
-            con.AddInitialSignal("AlarmMessages.Node", DataType.String, "ObjectType=Alarm", "", "Prop=NODE", false);
-            con.AddInitialSignal("AlarmMessages.AlmName", DataType.String, "ObjectType=Alarm", "", "Prop=ALM_NAME", false);
-            con.AddInitialSignal("AlarmMessages.PrimText", DataType.String, "ObjectType=Alarm", "", "Prop=PRIM_TEXT", false);
-            con.AddInitialSignal("AlarmMessages.SuppText", DataType.String, "ObjectType=Alarm", "", "Prop=SUPP_TEXT", false);
-            con.AddInitialSignal("AlarmMessages.Info1", DataType.String, "ObjectType=Alarm", "", "Prop=INFO1", false);
-            con.AddInitialSignal("AlarmMessages.Info2", DataType.String, "ObjectType=Alarm", "", "Prop=INFO2", false);
+            con.AddSignal("AlarmMessages.MsgFlags", DataType.Integer, "ObjectType=Alarm", "NeedCut=False", "Prop=MSG_FLAGS");
+            con.AddSignal("AlarmMessages.MsgType", DataType.Integer, "ObjectType=Alarm", "NeedCut=False", "Prop=MSG_TYPE");
+            con.AddSignal("AlarmMessages.SubType", DataType.Integer, "ObjectType=Alarm", "NeedCut=False", "Prop=SUB_TYPE");
+            con.AddSignal("AlarmMessages.System", DataType.Integer, "ObjectType=Alarm", "NeedCut=False", "Prop=SYSTEM");
+            con.AddSignal("AlarmMessages.Node", DataType.String, "ObjectType=Alarm", "NeedCut=False", "Prop=NODE");
+            con.AddSignal("AlarmMessages.AlmName", DataType.String, "ObjectType=Alarm", "NeedCut=False", "Prop=ALM_NAME");
+            con.AddSignal("AlarmMessages.PrimText", DataType.String, "ObjectType=Alarm", "NeedCut=False", "Prop=PRIM_TEXT");
+            con.AddSignal("AlarmMessages.SuppText", DataType.String, "ObjectType=Alarm", "NeedCut=False", "Prop=SUPP_TEXT");
+            con.AddSignal("AlarmMessages.Info1", DataType.String, "ObjectType=Alarm", "NeedCut=False", "Prop=INFO1");
+            con.AddSignal("AlarmMessages.Info2", DataType.String, "ObjectType=Alarm", "NeedCut=False", "Prop=INFO2");
 
-            con.AddInitialSignal("SoeMessages.MsgFlags", DataType.Integer, "ObjectType=Soe", "", "Prop=MSG_FLAGS", false);
-            con.AddInitialSignal("SoeMessages.MsgType", DataType.Integer, "ObjectType=Soe", "", "Prop=MSG_TYPE", false);
-            con.AddInitialSignal("SoeMessages.SubType", DataType.Integer, "ObjectType=Soe", "", "Prop=SUB_TYPE", false);
-            con.AddInitialSignal("SoeMessages.System", DataType.Integer, "ObjectType=Soe", "", "Prop=SYSTEM", false);
-            con.AddInitialSignal("SoeMessages.Node", DataType.String, "ObjectType=Soe", "", "Prop=NODE", false);
-            con.AddInitialSignal("SoeMessages.AlmName", DataType.String, "ObjectType=Soe", "", "Prop=ALM_NAME", false);
-            con.AddInitialSignal("SoeMessages.PrimText", DataType.String, "ObjectType=Soe", "", "Prop=PRIM_TEXT", false);
-            con.AddInitialSignal("SoeMessages.SuppText", DataType.String, "ObjectType=Soe", "", "Prop=SUPP_TEXT", false);
-            con.AddInitialSignal("SoeMessages.Info1", DataType.String, "ObjectType=Soe", "", "Prop=INFO1", false);
-            con.AddInitialSignal("SoeMessages.Info2", DataType.String, "ObjectType=Soe", "", "Prop=INFO2", false);
+            con.AddSignal("SoeMessages.MsgFlags", DataType.Integer, "ObjectType=Soe", "NeedCut=False", "Prop=MSG_FLAGS");
+            con.AddSignal("SoeMessages.MsgType", DataType.Integer, "ObjectType=Soe", "NeedCut=False", "Prop=MSG_TYPE");
+            con.AddSignal("SoeMessages.SubType", DataType.Integer, "ObjectType=Soe", "NeedCut=False", "Prop=SUB_TYPE");
+            con.AddSignal("SoeMessages.System", DataType.Integer, "ObjectType=Soe", "NeedCut=False", "Prop=SYSTEM");
+            con.AddSignal("SoeMessages.Node", DataType.String, "ObjectType=Soe", "NeedCut=False", "Prop=NODE");
+            con.AddSignal("SoeMessages.AlmName", DataType.String, "ObjectType=Soe", "NeedCut=False", "Prop=ALM_NAME");
+            con.AddSignal("SoeMessages.PrimText", DataType.String, "ObjectType=Soe", "NeedCut=False", "Prop=PRIM_TEXT");
+            con.AddSignal("SoeMessages.SuppText", DataType.String, "ObjectType=Soe", "NeedCut=False", "Prop=SUPP_TEXT");
+            con.AddSignal("SoeMessages.Info1", DataType.String, "ObjectType=Soe", "NeedCut=False", "Prop=INFO1");
+            con.AddSignal("SoeMessages.Info2", DataType.String, "ObjectType=Soe", "NeedCut=False", "Prop=INFO2");
 
-            con.AddInitialSignal("TextMessages.MsgFlags", DataType.Integer, "ObjectType=Text", "", "Prop=MSG_FLAGS", false);
-            con.AddInitialSignal("TextMessages.MsgType", DataType.Integer, "ObjectType=Text", "", "Prop=MSG_TYPE", false);
-            con.AddInitialSignal("TextMessages.SubType", DataType.Integer, "ObjectType=Text", "", "Prop=SUB_TYPE", false);
-            con.AddInitialSignal("TextMessages.System", DataType.Integer, "ObjectType=Text", "", "Prop=SYSTEM", false);
-            con.AddInitialSignal("TextMessages.Node", DataType.String, "ObjectType=Text", "", "Prop=NODE", false);
-            con.AddInitialSignal("TextMessages.AlmName", DataType.String, "ObjectType=Text", "", "Prop=ALM_NAME", false);
-            con.AddInitialSignal("TextMessages.PrimText", DataType.String, "ObjectType=Text", "", "Prop=PRIM_TEXT", false);
-            con.AddInitialSignal("TextMessages.SuppText", DataType.String, "ObjectType=Text", "", "Prop=SUPP_TEXT", false);
-            con.AddInitialSignal("TextMessages.Info1", DataType.String, "ObjectType=Text", "", "Prop=INFO1", false);
-            con.AddInitialSignal("TextMessages.Info2", DataType.String, "ObjectType=Text", "", "Prop=INFO2", false);
+            con.AddSignal("TextMessages.MsgFlags", DataType.Integer, "ObjectType=Text", "NeedCut=False", "Prop=MSG_FLAGS");
+            con.AddSignal("TextMessages.MsgType", DataType.Integer, "ObjectType=Text", "NeedCut=False", "Prop=MSG_TYPE");
+            con.AddSignal("TextMessages.SubType", DataType.Integer, "ObjectType=Text", "NeedCut=False", "Prop=SUB_TYPE");
+            con.AddSignal("TextMessages.System", DataType.Integer, "ObjectType=Text", "NeedCut=False", "Prop=SYSTEM");
+            con.AddSignal("TextMessages.Node", DataType.String, "ObjectType=Text", "NeedCut=False", "Prop=NODE");
+            con.AddSignal("TextMessages.AlmName", DataType.String, "ObjectType=Text", "NeedCut=False", "Prop=ALM_NAME");
+            con.AddSignal("TextMessages.PrimText", DataType.String, "ObjectType=Text", "NeedCut=False", "Prop=PRIM_TEXT");
+            con.AddSignal("TextMessages.SuppText", DataType.String, "ObjectType=Text", "NeedCut=False", "Prop=SUPP_TEXT");
+            con.AddSignal("TextMessages.Info1", DataType.String, "ObjectType=Text", "NeedCut=False", "Prop=INFO1");
+            con.AddSignal("TextMessages.Info2", DataType.String, "ObjectType=Text", "NeedCut=False", "Prop=INFO2");
 
             Assert.AreEqual(37, con.Signals.Count);
             Assert.AreEqual(37, con.InitialSignals.Count);
@@ -164,7 +164,7 @@ namespace ProvidersTest
 
             Assert.IsNotNull(prov.AlarmOut.MsgFlagsSignal);
             Assert.AreEqual(DataType.Integer, prov.AlarmOut.MsgFlagsSignal.DataType);
-            Assert.AreEqual("OBJECTTYPE=Alarm;PROP=MSG_FLAGS;", prov.AlarmOut.MsgFlagsSignal.Inf.ToPropertyString());
+            Assert.AreEqual("OBJECTTYPE=Alarm;NEEDCUT=False;PROP=MSG_FLAGS;", prov.AlarmOut.MsgFlagsSignal.Inf.ToPropertyString());
             Assert.IsNotNull(prov.AlarmOut.MsgTypeSignal);
             Assert.AreEqual(DataType.Integer, prov.AlarmOut.MsgTypeSignal.DataType);
             Assert.IsNotNull(prov.AlarmOut.SubTypeSignal);
@@ -186,7 +186,7 @@ namespace ProvidersTest
 
             Assert.IsNotNull(prov.AlarmOut.MsgFlagsSignal);
             Assert.AreEqual(DataType.Integer, prov.SoeOut.MsgFlagsSignal.DataType);
-            Assert.AreEqual("OBJECTTYPE=Soe;PROP=MSG_FLAGS;", prov.SoeOut.MsgFlagsSignal.Inf.ToPropertyString());
+            Assert.AreEqual("OBJECTTYPE=Soe;NEEDCUT=False;PROP=MSG_FLAGS;", prov.SoeOut.MsgFlagsSignal.Inf.ToPropertyString());
             Assert.IsNotNull(prov.SoeOut.MsgTypeSignal);
             Assert.AreEqual(DataType.Integer, prov.SoeOut.MsgTypeSignal.DataType);
             Assert.IsNotNull(prov.SoeOut.AlmNameSignal);
@@ -194,7 +194,7 @@ namespace ProvidersTest
 
             Assert.IsNotNull(prov.AlarmOut.MsgFlagsSignal);
             Assert.AreEqual(DataType.Integer, prov.TextOut.MsgFlagsSignal.DataType);
-            Assert.AreEqual("OBJECTTYPE=Text;PROP=MSG_FLAGS;", prov.TextOut.MsgFlagsSignal.Inf.ToPropertyString());
+            Assert.AreEqual("OBJECTTYPE=Text;NEEDCUT=False;PROP=MSG_FLAGS;", prov.TextOut.MsgFlagsSignal.Inf.ToPropertyString());
             Assert.IsNotNull(prov.TextOut.MsgTypeSignal);
             Assert.AreEqual(DataType.Integer, prov.TextOut.MsgTypeSignal.DataType);
             Assert.IsNotNull(prov.TextOut.AlmNameSignal);

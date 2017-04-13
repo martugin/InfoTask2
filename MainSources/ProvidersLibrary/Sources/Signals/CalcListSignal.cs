@@ -5,12 +5,13 @@ using CommonTypes;
 
 namespace ProvidersLibrary
 {
-    //Расчетный сигнал
+    //Расчетный сигнал архивного источника
     public class CalcListSignal : ListSignal
     {
         public CalcListSignal(string code, InitialSignal initialSignal, string formula)
             : base(initialSignal.Connect, code)
         {
+            IsInitial = false;
             _initialSignal = initialSignal;
             ParseFormula(formula);
         }

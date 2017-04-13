@@ -1,7 +1,7 @@
 ﻿using BaseLibrary;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Mir
 {
     //Один выход (дисктретная, аналоговая или упакованная точка)
     internal class MirOut : ListSourceOut
@@ -15,7 +15,7 @@ namespace Provider
         internal int IdChannel { get; set; }
 
         //Добавить к выходу сигнал, если такого еще не было
-        protected override InitialSignal AddNewSignal(InitialSignal sig)
+        protected override InitialSignal AddInitialSignal(InitialSignal sig)
         {
             if (sig.Inf.Get("ValueType") == "Indication")
                 return IndicationSignal = IndicationSignal ?? sig;

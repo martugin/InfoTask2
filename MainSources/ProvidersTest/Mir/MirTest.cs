@@ -3,7 +3,7 @@ using BaseLibrary;
 using BaseLibraryTest;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Provider;
+using Mir;
 using ProvidersLibrary;
 
 namespace ProvidersTest
@@ -11,11 +11,11 @@ namespace ProvidersTest
     [TestClass]
     public class MirTest
     {
-        private SourceConnect MakeProviders()
+        private ListSourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Mir", logger);
+            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalValueType.List, "SourceCon", "Mir", logger);
             var prov = factory.CreateProvider("MirSource", TestLib.TestSqlInf("EnergyRes"));
             con.JoinProvider(prov);
             return con;
@@ -45,22 +45,22 @@ namespace ProvidersTest
             con.ClearSignals();
             Assert.AreEqual(0, con.Signals.Count);
 
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 2Г.Активная прямая.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Активная прямая", "ValueType=Unit", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 2Г.Активная прямая.Indication", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Активная прямая", "ValueType=Indication", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 2Г.Активная обратная.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Активная обратная", "ValueType=Unit", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 2Г.Активная обратная.Indication", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Активная обратная", "ValueType=Indication", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная прямая.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Реактивная прямая", "ValueType=Unit", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная прямая.Indication", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Реактивная прямая", "ValueType=Indication", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная обратная.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Реактивная обратная", "ValueType=Unit", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная обратная.Indication", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Реактивная обратная", "ValueType=Indication", false);
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 2Г.Активная прямая.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Активная прямая;NeedCut=False", "ValueType=Unit");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 2Г.Активная прямая.Indication", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Активная прямая;NeedCut=False", "ValueType=Indication");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 2Г.Активная обратная.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Активная обратная;NeedCut=False", "ValueType=Unit");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 2Г.Активная обратная.Indication", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Активная обратная;NeedCut=False", "ValueType=Indication");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная прямая.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Реактивная прямая;NeedCut=False", "ValueType=Unit");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная прямая.Indication", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Реактивная прямая;NeedCut=False", "ValueType=Indication");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная обратная.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Реактивная обратная;NeedCut=False", "ValueType=Unit");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная обратная.Indication", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Реактивная обратная;NeedCut=False", "ValueType=Indication");
 
             Assert.AreEqual(8, con.Signals.Count);
             Assert.AreEqual(8, con.InitialSignals.Count);
@@ -69,10 +69,10 @@ namespace ProvidersTest
             Assert.IsTrue(con.Signals.ContainsKey("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная прямая.Indication"));
             Assert.AreEqual(DataType.Real, con.Signals["ГТЭС 4х6 Игольская.В-6 2Г.Реактивная прямая.Indication"].DataType);
 
-            con.AddInitialSignal("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 2х6МВт Игольско-Талового нмр.;NAME_DEVICE=Яч.14 Ввод 6Г", "NAME_TYPE=Активная прямая", "ValueType=Unit", false);
-            con.AddInitialSignal("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная обратная.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 2х6МВт Игольско-Талового нмр.;NAME_DEVICE=Яч.14 Ввод 6Г", "NAME_TYPE=Активная обратная", "ValueType=Unit", false);
+            con.AddSignal("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 2х6МВт Игольско-Талового нмр.;NAME_DEVICE=Яч.14 Ввод 6Г", "NAME_TYPE=Активная прямая;NeedCut=False", "ValueType=Unit");
+            con.AddSignal("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная обратная.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 2х6МВт Игольско-Талового нмр.;NAME_DEVICE=Яч.14 Ввод 6Г", "NAME_TYPE=Активная обратная;NeedCut=False", "ValueType=Unit");
 
             Assert.AreEqual(10, con.Signals.Count);
             Assert.AreEqual(10, con.InitialSignals.Count);
@@ -129,7 +129,7 @@ namespace ProvidersTest
             return new DateTime(2015, 10, 8).AddHours(h).AddMinutes(m);
         }
 
-        private void CheckTimeAndErr(ListSourceSignal sig)
+        private void CheckTimeAndErr(ListSignal sig)
         {
             Assert.AreEqual(49, sig.Value.Count);
             Assert.AreEqual(D(0), sig.Value.TimeI(0));
@@ -149,7 +149,7 @@ namespace ProvidersTest
             Assert.AreEqual(null, sig.Value.ErrorI(44));
         }
 
-        private void CheckValue(double v, ListSourceSignal sig, int num, int round = 4)
+        private void CheckValue(double v, ListSignal sig, int num, int round = 4)
         {
             Assert.AreEqual(v, Math.Round(sig.Value.RealI(num), round));
         }
@@ -160,33 +160,33 @@ namespace ProvidersTest
             var con = MakeProviders();
             var prov = (MirSource)con.Provider;
             con.ClearSignals();
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Активная прямая", "ValueType=Unit", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Indication", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Активная прямая", "ValueType=Indication", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Активная обратная", "ValueType=Unit", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Indication", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Активная обратная", "ValueType=Indication", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Реактивная прямая", "ValueType=Unit", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Indication", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Реактивная прямая", "ValueType=Indication", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Реактивная обратная", "ValueType=Unit", false);
-            con.AddInitialSignal("ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Indication", DataType.Real,
-                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Реактивная обратная", "ValueType=Indication", false);
-            con.AddInitialSignal("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 2х6МВт Игольско-Талового нмр.;NAME_DEVICE=Яч.14 Ввод 6Г", "NAME_TYPE=Активная прямая", "ValueType=Unit", false);
-            con.AddInitialSignal("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная обратная.Unit", DataType.Real,
-                "NAME_OBJECT=ГТЭС 2х6МВт Игольско-Талового нмр.;NAME_DEVICE=Яч.14 Ввод 6Г", "NAME_TYPE=Активная обратная", "ValueType=Unit", false);
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Активная прямая;NeedCut=False", "ValueType=Unit");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Indication", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Активная прямая;NeedCut=False", "ValueType=Indication");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Активная обратная;NeedCut=False", "ValueType=Unit");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Indication", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Активная обратная;NeedCut=False", "ValueType=Indication");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Реактивная прямая;NeedCut=False", "ValueType=Unit");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Indication", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Реактивная прямая;NeedCut=False", "ValueType=Indication");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Реактивная обратная;NeedCut=False", "ValueType=Unit");
+            con.AddSignal("ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Indication", DataType.Real,
+                "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 1Г", "NAME_TYPE=Реактивная обратная;NeedCut=False", "ValueType=Indication");
+            con.AddSignal("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 2х6МВт Игольско-Талового нмр.;NAME_DEVICE=Яч.14 Ввод 6Г", "NAME_TYPE=Активная прямая;NeedCut=False", "ValueType=Unit");
+            con.AddSignal("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная обратная.Unit", DataType.Real,
+                "NAME_OBJECT=ГТЭС 2х6МВт Игольско-Талового нмр.;NAME_DEVICE=Яч.14 Ввод 6Г", "NAME_TYPE=Активная обратная;NeedCut=False", "ValueType=Unit");
             
             Assert.AreEqual(10, con.Signals.Count);
 
             using (con.StartPeriod(D(0), D(24), "Single"))
             {
                 con.GetValues();
-                var sig = con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Unit"];
+                var sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(2289.6, sig, 0);
                 CheckValue(2292.48, sig, 1);
@@ -198,7 +198,7 @@ namespace ProvidersTest
                 CheckValue(2287.68, sig, 47);
                 CheckValue(2290.56, sig, 48);
 
-                sig = con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Indication"];
+                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Indication"];
                 CheckTimeAndErr(sig);
                 CheckValue(41606.4227, sig, 0);
                 CheckValue(41606.6615, sig, 1);
@@ -210,7 +210,7 @@ namespace ProvidersTest
                 CheckValue(41617.4368, sig, 47);
                 CheckValue(41617.6754, sig, 48);
 
-                sig = con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Unit"];
+                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(0, sig, 0);
                 CheckValue(0, sig, 1);
@@ -222,7 +222,7 @@ namespace ProvidersTest
                 CheckValue(0, sig, 47);
                 CheckValue(0, sig, 48);
 
-                sig = con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Indication"];
+                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Indication"];
                 CheckTimeAndErr(sig);
                 CheckValue(0.0988, sig, 0);
                 CheckValue(0.0988, sig, 1);
@@ -234,7 +234,7 @@ namespace ProvidersTest
                 CheckValue(0.0988, sig, 47);
                 CheckValue(0.0988, sig, 48);
 
-                sig = con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Unit"];
+                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(214.08, sig, 0);
                 CheckValue(213.12, sig, 1);
@@ -247,7 +247,7 @@ namespace ProvidersTest
                 CheckValue(158.4, sig, 47);
                 CheckValue(163.2, sig, 48);
 
-                sig = con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Indication"];
+                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Indication"];
                 CheckTimeAndErr(sig);
                 CheckValue(5795.1083, sig, 0);
                 CheckValue(5795.1305, sig, 1);
@@ -259,7 +259,7 @@ namespace ProvidersTest
                 CheckValue(5796.0499, sig, 47);
                 CheckValue(5796.0669, sig, 48);
 
-                sig = con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Unit"];
+                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(0, sig, 0);
                 CheckValue(0, sig, 1);
@@ -271,7 +271,7 @@ namespace ProvidersTest
                 CheckValue(0, sig, 47);
                 CheckValue(0, sig, 48);
 
-                sig = con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Indication"];
+                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Indication"];
                 CheckTimeAndErr(sig);
                 CheckValue(0.8527, sig, 0);
                 CheckValue(0.8527, sig, 1);
@@ -283,7 +283,7 @@ namespace ProvidersTest
                 CheckValue(0.8527, sig, 47);
                 CheckValue(0.8527, sig, 48);
 
-                sig = con.Signals["ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit"];
+                sig = (ListSignal)con.Signals["ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(2491.20, sig, 0);
                 CheckValue(2484, sig, 1);
@@ -295,7 +295,7 @@ namespace ProvidersTest
                 CheckValue(2481.6, sig, 47);
                 CheckValue(2488.8, sig, 48);
 
-                sig = con.Signals["ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная обратная.Unit"];
+                sig = (ListSignal)con.Signals["ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная обратная.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(0, sig, 0);
                 CheckValue(0, sig, 1);

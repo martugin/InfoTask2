@@ -2,9 +2,9 @@
 using BaseLibrary;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Ovation
 {
-    [Export(typeof(ProvidersLibrary.Provider))]
+    [Export(typeof(Provider))]
     [ExportMetadata("Code", "OvationOpcReceiver")]
     public class OvationOpcReceiver : OpcDaReceiver
     {

@@ -26,7 +26,7 @@ namespace Logika
         internal readonly DicI<LogikaOut> OutsId = new DicI<LogikaOut>();
 
         //Добавить выход в источник
-        protected override ListSourceOut AddOut(InitialSignal sig)
+        protected override ProviderOut AddOut(ProviderSignal sig)
         {
             int id = sig.Inf.GetInt("NodeId");
             if (OutsId.ContainsKey(id))

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace BaseLibrary
 {
@@ -85,7 +84,7 @@ namespace BaseLibrary
         //Коллекция ключей словаря
         public ICollection<string> Keys { get { return _dic.Keys; }}
         //Коллекция значений словаря
-        public ICollection<T> Values { get { return _dic.Values; } } 
+        public IEnumerable<T> Values { get { return _dic.Values; } } 
         
         //Добавляет все элементы из другого словаря, replace - заменять если ключи совпадают
         public DicS<T> AddDic(DicS<T> dicI2, bool replace = true)

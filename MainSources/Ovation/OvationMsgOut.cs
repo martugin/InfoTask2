@@ -2,11 +2,11 @@
 using BaseLibrary;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Ovation
 {
     internal class OvationMsgOut : ListSourceOut
     {
-        internal OvationMsgOut(ListSource source, string objectType) : base(source)
+        internal OvationMsgOut(OvationSource source, string objectType) : base(source)
         {
             OutType = objectType;
         }
@@ -35,7 +35,7 @@ namespace Provider
         internal InitialSignal Info2Signal { get; private set; }
 
         //Добавить к выходу сигнал, если такого еще не было
-        protected override InitialSignal AddNewSignal(InitialSignal sig)
+        protected override InitialSignal AddInitialSignal(InitialSignal sig)
         {
             switch (sig.Inf["Prop"])
             {

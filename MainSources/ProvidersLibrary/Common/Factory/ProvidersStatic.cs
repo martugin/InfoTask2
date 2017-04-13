@@ -11,7 +11,15 @@
     }
 
     //---------------------------------------------------------------------------------------------------------------------------
-    
+    //Тип значений сигналов провайдера
+    public enum SignalValueType
+    {
+        Mom, //Одно мгновенное значение
+        List, //Список мгновенных значений
+        Error
+    }
+
+    //---------------------------------------------------------------------------------------------------------------------------
     //Общие функции для InfoTask и конвертеры 
     public static class ProvidersStatic
     {
@@ -69,6 +77,49 @@
                     return "Receiver";
             }
             return "Error";
+        }
+
+        //Перевод из строки в SignalValueType
+        public static SignalValueType ToSignalValueType(this string t)
+        {
+            if (t == null) return SignalValueType.Error;
+            switch (t.ToLower())
+            {
+                case "мгновенный":
+                case "moment":
+                    return SignalValueType.Mom;
+                case "архивный":
+                case "arhive":
+                    return SignalValueType.List;
+                
+            }
+            return SignalValueType.Error;
+        }
+
+        //Перевод из SignalValueType в русское имя
+        public static string ToRussian(this SignalValueType t)
+        {
+            switch (t)
+            {
+                case SignalValueType.Mom:
+                    return "Мгновенный";
+                case SignalValueType.List:
+                    return "Архивный";
+            }
+            return "Ошибка";
+        }
+
+        //Перевод из SignalValueType в английское имя
+        public static string ToEnglish(this SignalValueType t)
+        {
+            switch (t)
+            {
+                case SignalValueType.Mom:
+                    return "Moment";
+                case SignalValueType.List:
+                    return "Archive";
+            }
+            return "Ошибка";
         }
     }
 }

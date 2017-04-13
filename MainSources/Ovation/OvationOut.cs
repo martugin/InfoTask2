@@ -3,7 +3,7 @@ using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Ovation
 {
     //Один выход (дисктретная, аналоговая или упакованная точка)
     internal class OvationOut : ListSourceOut
@@ -19,7 +19,7 @@ namespace Provider
         internal int Id { get; private set; }
         
         //Добавить к объекту сигнал, если такого еще не было
-        protected override InitialSignal AddNewSignal(InitialSignal sig)
+        protected override InitialSignal AddInitialSignal(InitialSignal sig)
         {
             if (sig.Inf["Prop"].ToUpper() == "STAT")
                 return StateSignal = StateSignal ?? sig;

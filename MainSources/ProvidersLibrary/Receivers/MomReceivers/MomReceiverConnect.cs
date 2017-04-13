@@ -3,9 +3,9 @@ using BaseLibrary;
 
 namespace ProvidersLibrary
 {
-    public abstract class MomReceiverConnect : ReceiverConnect
+    public class MomReceiverConnect : ReceiverConnect
     {
-        protected MomReceiverConnect(string name, string complect, Logger logger) 
+        public MomReceiverConnect(string name, string complect, Logger logger) 
             : base(name, complect, logger) { }
 
         //Текущий провайдер источника

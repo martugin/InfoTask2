@@ -7,6 +7,5 @@
         {
             get { return (ListReceiverConnect)ProviderConnect; }
         }
-
     }
 }

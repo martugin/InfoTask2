@@ -6,9 +6,9 @@ using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Simatic
 {
-    [Export(typeof(ProvidersLibrary.Provider))]
+    [Export(typeof(Provider))]
     [ExportMetadata("Code", "SimaticSource")]
     public class SimaticSource : OleDbSource
     {
@@ -57,7 +57,7 @@ namespace Provider
         internal readonly DicI<SimaticOut> OutsId = new DicI<SimaticOut>();
 
         //Добавить объект в провайдер
-        protected override ListSourceOut AddOut(InitialSignal sig)
+        protected override ProviderOut AddOut(ProviderSignal sig)
         {
             int id = sig.Inf.GetInt("Id");
             return OutsId.ContainsKey(id) 

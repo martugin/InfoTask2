@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Windows.Forms;
 using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
@@ -30,12 +28,11 @@ namespace ComLaunchers
         void ClearSignals();
         
         //Добавить исходный сигнал
-        RSourSignal AddInitialSignal(string fullCode, //Полный код сигнала
-                                                   string dataType, //Тип данных
-                                                   string infObject, //Свойства объекта
-                                                   string infOut, //Свойства выхода относительно объекта
-                                                   string infProp, //Свойства сигнала относительно выхода
-                                                   bool needCut = true); //Нужно считывать срез значений
+        RSourSignal AddSignal(string fullCode, //Полный код сигнала
+                                            string dataType, //Тип данных
+                                            string infObject, //Свойства объекта
+                                            string infOut, //Свойства выхода относительно объекта
+                                            string infProp); //Свойства сигнала относительно выхода
         
         //Добавить расчетный сигнал
         RSourSignal AddCalcSignal(string fullCode, //Полный код сигнала
@@ -62,14 +59,14 @@ namespace ComLaunchers
     [ClassInterface(ClassInterfaceType.None)]
     public class RSourConnect : SourConnect
     {
-        internal RSourConnect(SourceConnect connect, ProvidersFactory factory)
+        internal RSourConnect(ListSourceConnect connect, ProvidersFactory factory)
         {
             Connect = connect;
             _factory = factory;
         }
            
         //Ссылка на соединение
-        internal SourceConnect Connect { get; private set; }
+        internal ListSourceConnect Connect { get; private set; }
         //Фабрика провайдеров
         private readonly ProvidersFactory _factory;
         //Ссылка на логгер
@@ -113,14 +110,13 @@ namespace ComLaunchers
         }
 
         //Добавить исходный сигнал
-        public RSourSignal AddInitialSignal(string fullCode, //Полный код сигнала
-                                                               string dataType, //Тип данных
-                                                               string infObject, //Свойства объекта
-                                                               string infOut, //Свойства выхода относительно объекта
-                                                               string infProp, //Свойства сигнала относительно выхода
-                                                               bool needCut = true) //Нужно считывать срез значений
+        public RSourSignal AddSignal(string fullCode, //Полный код сигнала
+                                                     string dataType, //Тип данных
+                                                     string infObject, //Свойства объекта
+                                                     string infOut, //Свойства выхода относительно объекта
+                                                     string infProp) //Свойства сигнала относительно выхода
         {
-            return new RSourSignal(Connect.AddInitialSignal(fullCode, dataType.ToDataType(), infObject, infOut, infProp, needCut));
+            return new RSourSignal((ListSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), infObject, infOut, infProp));
         }
 
         //Добавить расчетный сигнал

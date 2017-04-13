@@ -4,7 +4,7 @@ using CommonTypes;
 
 namespace ProvidersLibrary
 {
-    //Один выход для чтения по блокам
+    //Выход архивного источника
     public abstract class ListSourceOut : ProviderOut
     {
         protected ListSourceOut(ListSource source) 

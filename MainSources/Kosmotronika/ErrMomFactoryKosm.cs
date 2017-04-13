@@ -1,7 +1,7 @@
 ﻿using BaseLibrary;
 using CommonTypes;
 
-namespace Provider
+namespace Kosmotronika
 {
     public class KosmMomErrFactory : IMomErrFactory
     {

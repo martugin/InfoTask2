@@ -1,9 +1,10 @@
 ﻿using System;
 using BaseLibrary;
+using CommonTypes;
 
 namespace ProvidersLibrary
 {
-    //Соединение 
+    //Базовый класс для соединений с провайдерами
     public abstract class ProviderConnect : ExternalLogger
     {
         protected ProviderConnect(string name, string complect, Logger logger)
@@ -101,6 +102,23 @@ namespace ProvidersLibrary
             Provider.IsPrepared = false;
             Provider.ClearOuts();
             ProviderSignals.Clear();
+        }
+
+        //Добавить сигнал в провайдер
+        protected ProviderSignal AddProviderSignal(string fullCode, DataType dataType, string infObject, string infOut, string infProp)
+        {
+            if (ProviderSignals.ContainsKey(fullCode))
+                return ProviderSignals[fullCode];
+            Provider.IsPrepared = false;
+            var contextOut = infObject + (infOut.IsEmpty() ? "" : ";" + infOut);
+            var inf = infObject.ToPropertyDicS().AddDic(infOut.ToPropertyDicS()).AddDic(infProp.ToPropertyDicS());
+            return ProviderSignals.Add(fullCode, AddConcreteSignal(fullCode, dataType, contextOut, inf));
+        }
+
+        //Переопределяемый метод для добавления сигналов конкретного типа
+        protected virtual ProviderSignal AddConcreteSignal(string fullCode, DataType dataType, string contextOut, DicS<string> inf)
+        {
+            return new ProviderSignal(this, fullCode, dataType, contextOut, inf);
         }
     }
 }

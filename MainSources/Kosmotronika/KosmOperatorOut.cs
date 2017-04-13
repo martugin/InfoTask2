@@ -2,7 +2,7 @@
 using BaseLibrary;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Kosmotronika
 {
     //Выход для считывания действий оператора Космотроники
     internal class KosmOperatorOut : ListSourceOut
@@ -30,7 +30,7 @@ namespace Provider
         internal InitialSignal PointSignal { get; private set; }
         
         //Добавить сигнал
-        protected override InitialSignal AddNewSignal(InitialSignal sig)
+        protected override InitialSignal AddInitialSignal(InitialSignal sig)
         {
             switch (sig.Inf["Prop"].ToLower())
             {

@@ -6,10 +6,10 @@ using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
-namespace Provider
+namespace Wonderware
 {
     //Провайдер источника Wonderware
-    [Export(typeof(ProvidersLibrary.Provider))]
+    [Export(typeof(Provider))]
     [ExportMetadata("Code", "WonderwareSource")]
     public class WonderwareSource : SqlServerSource
     {
@@ -37,7 +37,7 @@ namespace Provider
         internal readonly Dictionary<string, WonderwareOut> Outs = new Dictionary<string, WonderwareOut>();
 
         //Добавить выход в провайдер
-        protected override ListSourceOut AddOut(InitialSignal sig)
+        protected override ProviderOut AddOut(ProviderSignal sig)
         {
             string tag = sig.Inf["TagName"];
             if (!Outs.ContainsKey(tag))

@@ -13,7 +13,11 @@ namespace ProvidersLibrary
         //Настройки сигнала
         DicS<string> Inf { get; }
         //Настройки выхода отдельно
-        string CodeOut { get; }
+        string ContextOut { get; }
+        //Соединение
+        ProviderConnect Connect { get; }
+        //Является основным сигналом (не расчетным и т.п.)
+        bool IsInitial { get; }
     }
 
     //------------------------------------------------------------------------------------

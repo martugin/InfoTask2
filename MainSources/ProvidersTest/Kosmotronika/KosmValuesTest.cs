@@ -1,6 +1,6 @@
 ﻿using CommonTypes;
+using Kosmotronika;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Provider;
 
 namespace ProvidersTest
 {

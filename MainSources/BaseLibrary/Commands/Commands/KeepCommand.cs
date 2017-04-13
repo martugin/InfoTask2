@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BaseLibrary
@@ -26,7 +27,16 @@ namespace BaseLibrary
         //Совокупное сообщение об ошибках
         public string ErrorMessage
         {
-            get { return _errors.Aggregate("", (current, err) => current + err.ToString()); }
+            get
+            {
+                string s = "";
+                foreach (var err in _errors)
+                {
+                    if (s != "") s += Environment.NewLine;
+                    s += err.ToString();
+                }
+                return s;
+            }
         }
 
         //Завершение команды
