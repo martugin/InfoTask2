@@ -12,7 +12,7 @@ namespace CommonTypes
         public Project(string projectDir) //Каталог проекта
         {
             ProjectDir = projectDir;
-            var elem = XDocument.Load(projectDir.EndDir() + "Config.xml").Element("ProjectProperties");
+            var elem = XDocument.Load(projectDir.EndDir() + "ProjectProperties.xml").Element("ProjectProperties");
             ProjectCode = elem.GetAttr("ProjectCode");
             ProjectName = elem.GetAttr("ProjectName");
         }
