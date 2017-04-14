@@ -148,7 +148,7 @@ namespace ComLaunchers
         //Закрытие проекта
         private void CloseProject()
         {
-            if (Project != null)
+            if (_project != null)
             {
                 Logger.ExecutionFinished -= OnExecutionFinished;
                 Logger.Dispose();
