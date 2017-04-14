@@ -130,7 +130,7 @@ namespace ComLaunchers
         public void LoadProject(string projectDir) //Каталог проекта
         {
             CloseProject();
-            Project = new AppProject(this,  projectDir);
+            _project = new AppProject(this,  projectDir);
             Logger.ExecutionFinished += OnExecutionFinished;
         }
 
