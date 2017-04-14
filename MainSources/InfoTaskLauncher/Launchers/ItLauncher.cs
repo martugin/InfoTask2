@@ -34,6 +34,9 @@ namespace ComLaunchers
         //Дата версии InfoTask
         DateTime InfoTaskVersionDate { get; }
 
+        //Загрузка проекта
+        void LoadProject(string projectDir);
+
         //Код проекта
         string ProjectCode { get; }
         //Имя проекта
