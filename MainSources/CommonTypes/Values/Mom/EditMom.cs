@@ -167,6 +167,12 @@ namespace CommonTypes
             return _mean.ToMom(time, err);
         }
 
+        //Клонировать
+        public override object Clone()
+        {
+            return new EditMom(DataType, Time, Error).CopyValueFrom(this);
+        }
+
         //Типы данных и значения
         public override DataType DataType { get { return _mean.DataType; } }
         public override ICalcVal CalcValue { get { return this; } }
@@ -182,7 +188,7 @@ namespace CommonTypes
         public DateTime DateI(int i) { return Date; }
         public string StringI(int i) { return String;  }
         public object ObjectI(int i) { return Object; }
-        public void ValueToRecI(IRecordAdd rec, string field, int i) { ValueToRec(rec, field); }
+        public void ValueToRecI(int i, IRecordAdd rec, string field) { ValueToRec(rec, field); }
         public IMean ToMeanI(int i) { return ToMean(); }
         public IMean ToMeanI(int i, MomErr err) { return ToMean(err); }
         public IMean ToMomI(int i) { return ToMom(); }

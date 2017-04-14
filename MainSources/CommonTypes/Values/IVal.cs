@@ -4,7 +4,7 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Интерфейс для всех значений кроме Tabl, Grafic и т.п.
-    public interface IVal
+    public interface IVal : ICloneable
     {
         //Значение само, или значение переменной
         Val Value { get; }
@@ -70,7 +70,7 @@ namespace CommonTypes
         //Запись значения в рекордсет
         void ValueToRec(IRecordAdd rec, string field);
         //Запись значения в рекордсет rec, поле field
-        void ValueToRecI(IRecordAdd rec, string field, int i);
+        void ValueToRecI(int i, IRecordAdd rec, string field);
 
         //Копия значения, возможно с новым временем и ошибкой
         IMean ToMean();

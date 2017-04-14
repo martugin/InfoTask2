@@ -17,10 +17,10 @@ namespace ProvidersLibrary
 
         //Добавить сигнал
         public ISourceSignal AddSignal(string fullCode, //Полный код сигнала
-                                                                   DataType dataType, //Тип данных
-                                                                   string infObject, //Свойства объекта
-                                                                   string infOut, //Свойства выхода относительно объекта
-                                                                   string infProp = "") //Свойства сигнала относительно выхода
+                                                        DataType dataType, //Тип данных
+                                                        string infObject, //Свойства объекта
+                                                        string infOut, //Свойства выхода относительно объекта
+                                                        string infProp = "") //Свойства сигнала относительно выхода
         {
             return AddProviderSignal(fullCode, dataType, infObject, infOut, infProp);
         }

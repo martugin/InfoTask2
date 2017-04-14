@@ -84,7 +84,7 @@ namespace CommonTypes
         }
 
         //Запись значения в рекордсет rec, поле field
-        public void ValueToRecI(IRecordAdd rec, string field, int i)
+        public void ValueToRecI(int i, IRecordAdd rec, string field)
         {
             MeanI(i).ValueToRec(rec, field);
         }
@@ -264,6 +264,18 @@ namespace CommonTypes
                     terr = terr.Add(err);
                 return terr;
             }
+        }
+
+        //Клонировать
+        public override object Clone()
+        {
+            var mlist = MFactory.NewList(DataType);
+            for (int i = 0; i < _times.Count; i++)
+            {
+                SetBufMom(i);
+                mlist.AddMom(BufMom);
+            }
+            return mlist;
         }
 
         //Todo Подумать, что сделать с интерполяций

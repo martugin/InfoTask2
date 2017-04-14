@@ -114,7 +114,7 @@ namespace CommonTypes
         }
 
         public abstract void ValueToRec(IRecordAdd rec, string field);
-        public void ValueToRecI(IRecordAdd rec, string field, int i) { ValueToRec(rec, field); }
+        public void ValueToRecI(int i, IRecordAdd rec, string field) { ValueToRec(rec, field); }
 
         public abstract IMean ToMean();
         public abstract IMean ToMean(MomErr err);
@@ -142,5 +142,11 @@ namespace CommonTypes
         internal abstract void CopyValueFrom(IMean mean);
         //Присвоить значение по умолчанию
         internal abstract void MakeDefaultValue();
+
+        //Клонировать
+        public override object Clone()
+        {
+            return ToMean();
+        }
     }
 }

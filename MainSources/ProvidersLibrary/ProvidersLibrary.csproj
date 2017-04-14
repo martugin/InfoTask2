@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ProvidersSignals\ProviderOut.cs" />
+    <Compile Include="RealTime\ControllerSignal.cs" />
     <Compile Include="RealTime\SourceController.cs" />
     <Compile Include="Receivers\ListReceivers\ListReceiver.cs" />
     <Compile Include="Receivers\ListReceivers\ListReceiverConnect.cs" />

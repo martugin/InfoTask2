@@ -13,6 +13,9 @@ namespace CommonTypes
             Time = time;
         }
         internal BoolMom(){}
+
+        //Клонировать
+        public override object Clone() { return ToMom(); }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -26,6 +29,9 @@ namespace CommonTypes
             Time = time;
         }
         internal IntMom() {}
+
+        //Клонировать
+        public override object Clone() { return ToMom(); }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -39,6 +45,9 @@ namespace CommonTypes
             Time = time;
         }
         internal RealMom() {}
+
+        //Клонировать
+        public override object Clone() { return ToMom(); }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -52,6 +61,9 @@ namespace CommonTypes
             Time = time;
         }
         internal StringMom() {}
+
+        //Клонировать
+        public override object Clone() { return ToMom(); }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -65,6 +77,9 @@ namespace CommonTypes
             Time = time;
         }
         internal TimeMom() {}
+
+        //Клонировать
+        public override object Clone() { return ToMom(); }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -91,6 +106,9 @@ namespace CommonTypes
         {
             return new WeightedErrMom(time, Real, Weight, Error.Add(err));
         }
+
+        //Клонировать
+        public override object Clone() { return ToMom(); }
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -104,5 +122,8 @@ namespace CommonTypes
             Time = time;
         }
         internal ValueMom() { }
+
+        //Клонировать
+        public override object Clone() { return ToMom(); }
     }
 }
