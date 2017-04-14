@@ -8,7 +8,7 @@ namespace InfoTaskLauncherTest
         //“естова€ загрузка проекта без указани€ каталога
         internal void LoadProjectByCode(string projectCode)
         {
-            Project = new TestAppProject(this, projectCode);
+            _project = new TestAppProject(this, projectCode);
         }        
     }
 }

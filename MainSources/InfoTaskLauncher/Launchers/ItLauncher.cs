@@ -152,6 +152,7 @@ namespace ComLaunchers
             {
                 Logger.ExecutionFinished -= OnExecutionFinished;
                 Logger.Dispose();
+                _project = null;
             }
         }
 
@@ -187,7 +188,7 @@ namespace ComLaunchers
         }
 
         //Текущий проект
-        private AppProject _project;
+        internal AppProject _project;
         internal AppProject Project
         {
             get
@@ -196,13 +197,12 @@ namespace ComLaunchers
                     Static.MessageError("Не задан проект");
                 return _project;
             }
-            set { _project = value; }
         }
 
         //Код проекта
         public string ProjectCode { get { return Project.ProjectCode; } }
         //Имя проекта
-        public string ProjectName { get { return Project.ProjectCode; } }
+        public string ProjectName { get { return Project.ProjectName; } }
         //Каталог проекта
         public string ProjectDir { get { return Project.ProjectDir; } }
         //Каталог локальных данных проекта

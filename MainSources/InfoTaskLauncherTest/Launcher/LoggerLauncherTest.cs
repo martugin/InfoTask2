@@ -77,7 +77,7 @@ namespace InfoTaskLouncherTest
         [TestMethod]
         public void Indicator()
         {
-            Project = new TestAppProject(this, "Indicator");
+            _project = new TestAppProject(this, "Indicator");
             MakeIndicatorEvents();
             var ind = (TestIndicator)Logger.Indicator;
             Assert.AreEqual(86, ind.Events.Count);
@@ -172,7 +172,7 @@ namespace InfoTaskLouncherTest
         [TestMethod]
         public void BreakIndicator()
         {
-            Project = new TestAppProject(this, "BreakIndicator");
+            _project = new TestAppProject(this, "BreakIndicator");
             Logger.StartCollect(false, true).Run(() =>
                 Logger.StartProgress("T", "N").Run(() =>
                     Logger.StartLog(20, 60, "Log").Run(() =>

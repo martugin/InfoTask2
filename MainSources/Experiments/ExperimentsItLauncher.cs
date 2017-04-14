@@ -11,7 +11,7 @@ namespace Experiments
     {
         public ExperimentsItLauncher()
         {
-            Project = new AppProject(this)
+            _project = new AppProject(this)
             {
                 Logger = new Logger(new TestHistory(), new AppIndicator())
             };
