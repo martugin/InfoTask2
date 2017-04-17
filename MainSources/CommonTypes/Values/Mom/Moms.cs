@@ -4,13 +4,15 @@ namespace CommonTypes
 {
     //Мгновенные значения со временем и ошибкой
 
-    public class BoolMom : BoolMean
+    public class BoolMom : BoolMean, IMean
     {
-        public override DateTime Time { get; internal set; }
+        public sealed override DateTime Time { get; set; }
+        public sealed override MomErr Error { get; set; }
         
-        public BoolMom(DateTime time, bool b) : base(b)
+        public BoolMom(DateTime time, bool b, MomErr err = null) : base(b)
         {
             Time = time;
+            Error = err;
         }
         internal BoolMom(){}
 
@@ -20,13 +22,16 @@ namespace CommonTypes
 
     //---------------------------------------------------------------------------------------------------
 
-    public class IntMom : IntMean
+    public class IntMom : IntMean, IMean
     {
-        public override DateTime Time { get; internal set; }
+        public sealed override DateTime Time { get; set; }
+        public sealed override MomErr Error { get; set; }
 
-        public IntMom(DateTime time, int i) : base(i)
+        public IntMom(DateTime time, int i, MomErr err = null)
+            : base(i)
         {
             Time = time;
+            Error = err;
         }
         internal IntMom() {}
 
@@ -36,13 +41,16 @@ namespace CommonTypes
 
     //---------------------------------------------------------------------------------------------------
 
-    public class RealMom : RealMean
+    public class RealMom : RealMean, IMean
     {
-        public override DateTime Time { get; internal set; }
+        public sealed override DateTime Time { get; set; }
+        public sealed override MomErr Error { get; set; }
 
-        public RealMom(DateTime time, double r) : base(r)
+        public RealMom(DateTime time, double r, MomErr err = null)
+            : base(r)
         {
             Time = time;
+            Error = err;
         }
         internal RealMom() {}
 
@@ -52,13 +60,16 @@ namespace CommonTypes
 
     //---------------------------------------------------------------------------------------------------
 
-    public class StringMom : StringMean
+    public class StringMom : StringMean, IMean
     {
-        public override DateTime Time { get; internal set; }
+        public sealed override DateTime Time { get; set; }
+        public sealed override MomErr Error { get; set; }
 
-        public StringMom(DateTime time, string s) : base(s)
+        public StringMom(DateTime time, string s, MomErr err = null)
+            : base(s)
         {
             Time = time;
+            Error = err;
         }
         internal StringMom() {}
 
@@ -68,13 +79,16 @@ namespace CommonTypes
 
     //---------------------------------------------------------------------------------------------------
 
-    public class TimeMom : TimeMean
+    public class TimeMom : TimeMean, IMean
     {
-        public override DateTime Time { get; internal set; }
+        public sealed override DateTime Time { get; set; }
+        public sealed override MomErr Error { get; set; }
 
-        public TimeMom(DateTime time, DateTime d) : base(d)
+        public TimeMom(DateTime time, DateTime d, MomErr err = null)
+            : base(d)
         {
             Time = time;
+            Error = err;
         }
         internal TimeMom() {}
 
@@ -86,7 +100,8 @@ namespace CommonTypes
 
     public class WeightedMom : RealMom
     {
-        public WeightedMom(DateTime time, double r, double w) : base(time, r)
+        public WeightedMom(DateTime time, double r, double w, MomErr err = null)
+            : base(time, r, err)
         {
             Weight = w;
         }
@@ -98,13 +113,12 @@ namespace CommonTypes
 
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new WeightedMom(time, Real, Weight);
-            return new WeightedErrMom(time, Real, Weight, Error);
+            return new WeightedMom(time, Real, Weight, Error);
         }
 
         public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new WeightedErrMom(time, Real, Weight, Error.Add(err));
+            return new WeightedMom(time, Real, Weight, Error.Add(err));
         }
 
         //Клонировать
@@ -113,13 +127,15 @@ namespace CommonTypes
 
     //---------------------------------------------------------------------------------------------------
 
-    public class ValueMom : ValueMean
+    public class ValueMom : ValueMean, IMean
     {
-        public override DateTime Time { get; internal set; }
+        public sealed override DateTime Time { get; set; }
+        public sealed override MomErr Error { get; set; }
         
-        public ValueMom(DateTime time)
+        public ValueMom(DateTime time, MomErr err = null)
         {
             Time = time;
+            Error = err;
         }
         internal ValueMom() { }
 

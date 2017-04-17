@@ -5,7 +5,7 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Сигнал архивного источника, с работой со срезами
-    public class UniformSignal : InitialSignal
+    public class UniformSignal : CloneSignal
     {
         public UniformSignal(SourceConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
             : base(connect, code, dataType, contextOut, inf)

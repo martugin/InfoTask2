@@ -5,7 +5,7 @@ namespace Generator
     //Интерфейс функций для генерации
     internal interface IGenFun
     {
-        IMean Calculate(IMean[] par, DataType resultType);
+        IReadMean Calculate(IReadMean[] par, DataType resultType);
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -17,9 +17,9 @@ namespace Generator
             : base(funs, code, errNum) { }
 
         //Расчет значения
-        public IMean Calculate(IMean[] par, DataType resultType)
+        public IReadMean Calculate(IReadMean[] par, DataType resultType)
         {
-            return (IMean)Fun();
+            return (IReadMean)Fun();
         }
     }
 
@@ -32,7 +32,7 @@ namespace Generator
             : base(funs, code, errNum) { }
 
         //Расчет значения
-        public IMean Calculate(IMean[] par, DataType resultType)
+        public IReadMean Calculate(IReadMean[] par, DataType resultType)
         {
             Functions.CurFun = this;
             Functions.SetScalarDataType(resultType);

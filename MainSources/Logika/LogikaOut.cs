@@ -11,10 +11,10 @@ namespace Logika
             : base(source) { }
 
         //Словарь сигналов выхода
-        private readonly Dictionary<string, InitialSignal> _signals = new Dictionary<string, InitialSignal>();
+        private readonly Dictionary<string, CloneSignal> _signals = new Dictionary<string, CloneSignal>();
 
         //Сигнал только добавляется в Signals
-        protected override InitialSignal AddInitialSignal(InitialSignal sig)
+        protected override CloneSignal AddInitialSignal(CloneSignal sig)
         {
             var code = sig.Inf["SignalCode"];
             if (!_signals.ContainsKey(code))

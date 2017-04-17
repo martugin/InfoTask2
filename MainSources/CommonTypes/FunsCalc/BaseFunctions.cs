@@ -84,7 +84,7 @@ namespace CommonTypes
         }
 
         //Вычисляет суммарную ошибку значений
-        protected MomErr MaxErr(IEnumerable<IMean> par)
+        protected MomErr MaxErr(IEnumerable<IReadMean> par)
         {
             MomErr err = null;
             foreach (var mom in par)
@@ -92,7 +92,7 @@ namespace CommonTypes
             return err;
         }
         //Вычисляет минимальную ошибку значений
-        protected MomErr MinErr(IEnumerable<IMean> par)
+        protected MomErr MinErr(IEnumerable<IReadMean> par)
         {
             MomErr err = null;
             foreach (var p in par)
@@ -123,7 +123,7 @@ namespace CommonTypes
         }
 
         //Обрамление промежуточного вычисления скалярного значения
-        public void CalcScalarFun(IMean[] par, //Параметры расчета
+        public void CalcScalarFun(IReadMean[] par, //Параметры расчета
                                                Action action) //Действие, выполняющее расчет
         {
             try

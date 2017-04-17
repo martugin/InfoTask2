@@ -42,7 +42,7 @@ namespace Generator
         }
 
         //Вычисление значения
-        public IMean Generate(SubRows row)
+        public IReadMean Generate(SubRows row)
         {
             for (int i = 0; i < _variants.Count - 1; i++)
                 if (_conditions[i].Generate(row).Boolean)

@@ -18,7 +18,7 @@ namespace Generator
         //Тип данных
         public DataType DataType { get; set; }
         //Значение переменной
-        public IMean Mean { get; set; }
+        public IReadMean Mean { get; set; }
     }
 
     //----------------------------------------------------------------------------------------------------

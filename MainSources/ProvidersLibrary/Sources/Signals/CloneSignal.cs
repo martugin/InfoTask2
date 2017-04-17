@@ -6,42 +6,23 @@ namespace ProvidersLibrary
 {
     //Сигнал архивного источника, без работы со срезами
     //Используется для событий, сигнализации, действий оператора и т.д.
-    public class InitialSignal : ListSignal
+    public class CloneSignal : ListSignal
     {
-        public InitialSignal(SourceConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
-            : base(connect, code, dataType, contextOut, inf)
-        {
-            BufMom = new EditMom(dataType);
-        }
+        public CloneSignal(SourceConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
+            : base(connect, code, dataType, contextOut, inf) { }
 
         //Соединение с источником
         public ListSourceConnect SourceConnect { get { return (ListSourceConnect) Connect; } }
 
         //Id в таблице сигналов клона
         internal int IdInClone { get; set; }
-
-        //Буферное значение для добавления
-        internal EditMom BufMom { get; private set; }
-
+        
         //Добавка мгновенного значения в список или клон
         //Возвращает количество реально добавленных значений 
-        internal virtual int AddMom(DateTime time, MomErr err)
+        internal override int AddMom(DateTime time, MomErr err)
         {
-            if (BufMom.Time == time && time == Connect.PeriodBegin)
-                return 0;
-            BufMom.Time = time;
-            BufMom.Error = err;
-            if (time >= Connect.PeriodBegin && time <= Connect.PeriodEnd)
-                return PutMom(BufMom);
-            return 0;
-        }
-
-        //Запись значения в список или клон
-        protected int PutMom(IMean mom)
-        {
-            if (IdInClone != 0) return PutClone(mom, false);
-            MomList.AddMom(mom);
-            return 1;
+            if (!CheckMomTime(time, err)) return 0;
+            return PutClone(BufMom, false);
         }
 
         //Запись значения в клон, для UniformSignal переопределяется

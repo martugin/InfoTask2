@@ -77,7 +77,7 @@ namespace ProvidersLibrary
         public SourceConnect SourceConnect { get { return (SourceConnect) Connect; } }
 
         //Список сигналов, содержащих возвращаемые значения
-        public IDicSForRead<ISourceSignal> Signals { get { return ControllerSignals; } }
+        public IDicSForRead<IReadSignal> Signals { get { return ControllerSignals; } }
 
         //Получение данных из источника
         protected override void RunCycle()
@@ -85,7 +85,7 @@ namespace ProvidersLibrary
             SourceConnect.GetValues();
             lock (BufferLooker)
                 foreach (var csig in ControllerSignals.Values)
-                    csig.BufferValue = (IMean)csig.Signal.Value.Clone();
+                    csig.BufferValue = (IReadMean)csig.Signal.Value.Clone();
         }
 
         //Получение значений из буферных
@@ -93,7 +93,7 @@ namespace ProvidersLibrary
         {
             lock (BufferLooker)
                 foreach (var csig in ControllerSignals.Values)
-                    csig.Value = (IMean)csig.BufferValue.Clone();
+                    csig.Value = (IReadMean)csig.BufferValue.Clone();
         }
     }
 
@@ -109,14 +109,14 @@ namespace ProvidersLibrary
         public ReceiverConnect ReceiverConnect { get { return (ReceiverConnect)Connect; } }
 
         //Список сигналов, содержащих возвращаемые значения
-        public IDicSForRead<IReceiverSignal> Signals { get { return ControllerSignals; } }
+        public IDicSForRead<IWriteSignal> Signals { get { return ControllerSignals; } }
 
         //Запись данных в приемник
         protected override void RunCycle()
         {
             lock (BufferLooker)
                 foreach (var csig in ControllerSignals.Values)
-                    csig.Signal.Value = (IMean)csig.BufferValue.Clone();
+                    csig.Signal.Value = (IReadMean)csig.BufferValue.Clone();
             ReceiverConnect.WriteValues();
         }
 
@@ -125,7 +125,7 @@ namespace ProvidersLibrary
         {
             lock (BufferLooker)
                 foreach (var csig in ControllerSignals.Values)
-                    csig.BufferValue = (IMean)csig.Value.Clone();
+                    csig.BufferValue = (IReadMean)csig.Value.Clone();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace ProvidersLibrary
     //Расчетный сигнал архивного источника
     public class CalcListSignal : ListSignal
     {
-        public CalcListSignal(string code, InitialSignal initialSignal, string formula)
+        public CalcListSignal(string code, CloneSignal initialSignal, string formula)
             : base(initialSignal.Connect, code)
         {
             IsInitial = false;
@@ -19,10 +19,10 @@ namespace ProvidersLibrary
         //Вычисление функции, возвращает количество сформированных значений
         internal Action Calculate { get; private set; }
         //Сигнал, на основе которого вычисляется значение
-        private readonly InitialSignal _initialSignal;
+        private readonly CloneSignal _initialSignal;
 
         //Дополнительные параметры
-        private IMean[] _pars;
+        private IReadMean[] _pars;
 
         //Разбор формулы, заданной прямой польской записью
         //Формула имеет вид ИмяФункции;КоличествоПараметров;Параметр;Параметр;...
@@ -33,7 +33,7 @@ namespace ProvidersLibrary
             DefineDataType(funName);
             MethodInfo met = typeof(CalcListSignal).GetMethod(funName);
             if (met != null) Calculate = (Action)Delegate.CreateDelegate(typeof(Action), this, met);
-            _pars = new IMean[lexemes[1].ToInt()];
+            _pars = new IReadMean[lexemes[1].ToInt()];
             for (int i = 0; i < _pars.Length; i++)
                 _pars[i] = MFactory.NewMean(DataType.Real, lexemes[i + 2]);
         }
@@ -170,7 +170,7 @@ namespace ProvidersLibrary
             }
         }
 
-        private void AddUniformMom(IMean fromList, MomList toList, int i, DateTime t)
+        private void AddUniformMom(IReadMean fromList, MomList toList, int i, DateTime t)
         {
             if (i < fromList.Count && fromList.TimeI(i) == t) return;
             toList.AddMom(fromList.ToMomI(i == 0 ? 0 : i - 1, t));

@@ -50,7 +50,7 @@ namespace Generator
         }
 
         //Вычисленное значение
-        public IMean Generate(SubRows row)
+        public IReadMean Generate(SubRows row)
         {
             return _fun.Calculate(_args.Select(a => a.Generate(row)).ToArray(), _resultType);
         }

@@ -5,7 +5,7 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Список мгновенных значений
-    public abstract class MomList : CalcVal, IMeanList
+    public abstract class MomList : CalcVal, IMean
     {
         //Тип данных
         public override DataType DataType { get { return BufMom.DataType; } }
@@ -22,6 +22,8 @@ namespace CommonTypes
         protected Mean BufMom { get; set; }
         //Записать i-е значение в BufMom
         protected abstract void SetBufMom(int i);
+        //Записать BufMom в i-е значение
+        protected abstract void SaveBufMom(int i);
 
         //Получить значение из списка по индексу
         public IMean MeanI(int i)
@@ -32,17 +34,23 @@ namespace CommonTypes
 
         //Текущий номер значения и время слдующего значения, для прохода по списку
         public int CurNum { get; set; }
-        public DateTime NextTime { get
-        {
-            if (CurNum >= Count - 1) return Static.MaxDate;
-            return TimeI(CurNum + 1);
-        } 
+        public DateTime NextTime 
+        { 
+            get
+            {
+                if (CurNum >= Count - 1) return Static.MaxDate;
+                return TimeI(CurNum + 1);
+            } 
         }
 
         //Время i-ого значения
         public DateTime TimeI(int i) { return _times[i]; }
         //Время значения с номером CurNum
-        public DateTime Time { get { return _times[CurNum]; } }
+        public DateTime Time
+        {
+            get { return _times[CurNum]; }
+            set { _times[CurNum] = value; }
+        }
 
         //Ошибка i-ого значения
         public MomErr ErrorI(int i)
@@ -51,7 +59,11 @@ namespace CommonTypes
             return _errors[i];
         }
         //Ошибка значения с номером CurNum
-        public MomErr Error { get { return _errors[CurNum]; } }
+        public MomErr Error
+        {
+            get { return _errors[CurNum]; }
+            set { _errors[CurNum] = value; }
+        }
 
         //Значение по индексу
         public bool BooleanI(int i) { return MeanI(i).Boolean;}
@@ -62,12 +74,65 @@ namespace CommonTypes
         public object ObjectI(int i) { return MeanI(i).Object; }
 
         //Значение по CurNum
-        public bool Boolean { get { return MeanI(CurNum).Boolean; } }
-        public int Integer { get { return MeanI(CurNum).Integer; } }
-        public double Real { get { return MeanI(CurNum).Real; } }
-        public DateTime Date { get { return MeanI(CurNum).Date; } }
-        public string String { get { return MeanI(CurNum).String; } }
-        public object Object { get { return MeanI(CurNum).Object; } }
+        public bool Boolean
+        {
+            get { return MeanI(CurNum).Boolean; }
+            set
+            {
+                BufMom.Boolean = value;
+                SaveBufMom(CurNum);
+            }
+        }
+
+        public int Integer
+        {
+            get { return MeanI(CurNum).Integer; }
+            set
+            {
+                BufMom.Integer = value;
+                SaveBufMom(CurNum);
+            }
+        }
+
+        public double Real
+        {
+            get { return MeanI(CurNum).Real; }
+            set
+            {
+                BufMom.Real = value;
+                SaveBufMom(CurNum);
+            }
+        }
+
+        public DateTime Date
+        {
+            get { return MeanI(CurNum).Date; }
+            set
+            {
+                BufMom.Date = value;
+                SaveBufMom(CurNum);
+            }
+        }
+
+        public string String
+        {
+            get { return MeanI(CurNum).String; }
+            set
+            {
+                BufMom.String = value;
+                SaveBufMom(CurNum);
+            }
+        }
+
+        public object Object
+        {
+            get { return MeanI(CurNum).Object; }
+            set
+            {
+                BufMom.Object = value;
+                SaveBufMom(CurNum);
+            }
+        }
 
         //Сравнение значений и ошибок
         public bool ValueEquals(IMean mean)
@@ -91,6 +156,11 @@ namespace CommonTypes
         public void ValueToRec(IRecordAdd rec, string field)
         {
             MeanI(CurNum).ValueToRec(rec, field);
+        }
+        public void ValueFromRec(IRecordRead rec, string field)
+        {
+            BufMom.ValueFromRec(rec, field);
+            SaveBufMom(CurNum);
         }
         
         //Добавить буферное значение в список по индексу или в конец
@@ -208,14 +278,9 @@ namespace CommonTypes
 
         public IMean ToMeanI(int i)
         {
-            return MeanI(i).ToMean(ErrorI(i));
+            return MeanI(i).ToMean();
         }
-
-        public IMean ToMeanI(int i, MomErr err)
-        {
-            return MeanI(i).ToMean(ErrorI(i).Add(err));
-        }
-
+        
         public IMean ToMomI(int i)
         {
             return MeanI(i).ToMom(TimeI(i), ErrorI(i));
@@ -237,7 +302,6 @@ namespace CommonTypes
         }
 
         public IMean ToMean() { return ToMeanI(CurNum);}
-        public IMean ToMean(MomErr err) { return ToMeanI(CurNum, err); }
         public IMean ToMom() { return ToMomI(CurNum); }
         public IMean ToMom(MomErr err) { return ToMomI(CurNum, err); }
         public IMean ToMom(DateTime time) { return ToMomI(CurNum, time); }

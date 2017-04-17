@@ -25,8 +25,8 @@ namespace ProvidersLibrary
         }
 
         //Множество исходных сигналов
-        private readonly DicS<InitialSignal> _initialSignals = new DicS<InitialSignal>();
-        internal DicS<InitialSignal> InitialSignals { get { return _initialSignals; } }
+        private readonly DicS<CloneSignal> _initialSignals = new DicS<CloneSignal>();
+        internal DicS<CloneSignal> InitialSignals { get { return _initialSignals; } }
         //Словарь расчетных сигналов
         private readonly DicS<CalcListSignal> _calcSignals = new DicS<CalcListSignal>();
         internal DicS<CalcListSignal> CalcSignals { get { return _calcSignals; } }
@@ -36,7 +36,7 @@ namespace ProvidersLibrary
         {
             var sig = inf.GetBool("NeedCut")
                 ? new UniformSignal(this, fullCode, dataType, contextOut, inf)
-                : new InitialSignal(this, fullCode, dataType, contextOut, inf);
+                : new CloneSignal(this, fullCode, dataType, contextOut, inf);
             return InitialSignals.Add(fullCode, sig);
         }
 
@@ -195,7 +195,7 @@ namespace ProvidersLibrary
             using (var rec = new DaoRec(cloneDb, "Signals"))
                 while (rec.Read())
                 {
-                    var sig = (InitialSignal)AddSignal(rec.GetString("FullCode"),
+                    var sig = (CloneSignal)AddSignal(rec.GetString("FullCode"),
                                                                       rec.GetString("DataType").ToDataType(),
                                                                       rec.GetString("InfObject"),
                                                                       rec.GetString("InfOut"),

@@ -100,6 +100,11 @@ namespace CommonTypes
             _mean.ValueToRec(rec, field);
         }
 
+        public void ValueFromRec(IRecordRead rec, string field)
+        {
+            throw new NotImplementedException();
+        }
+
         //Копирует значение из другого мгновенного значения, возвращает себя
         public EditMom CopyValueFrom(IMean mean)
         {
@@ -144,11 +149,7 @@ namespace CommonTypes
         //Создание нового значения на основе этого
         public IMean ToMean()
         {
-            return _mean.ToMean(Error);
-        }
-        public IMean ToMean(MomErr err)
-        {
-            return _mean.ToMean(err);
+            return _mean.ToMean();
         }
         public IMean ToMom()
         {
@@ -190,12 +191,70 @@ namespace CommonTypes
         public object ObjectI(int i) { return Object; }
         public void ValueToRecI(int i, IRecordAdd rec, string field) { ValueToRec(rec, field); }
         public IMean ToMeanI(int i) { return ToMean(); }
-        public IMean ToMeanI(int i, MomErr err) { return ToMean(err); }
         public IMean ToMomI(int i) { return ToMom(); }
         public IMean ToMomI(int i, MomErr err) { return ToMom(err); }
         public IMean ToMomI(int i, DateTime time) { return ToMom(time); }
         public IMean ToMomI(int i, DateTime time, MomErr err) { return ToMom(time, err); }
         public IMean MeanI(int i) { return this; }
         public DateTime TimeI(int i) { return Time; }
+
+        //Добавление значений как будто в список
+        public virtual void AddMom(IMean mom)
+        {
+            CopyAllFrom(mom);
+        }
+        public void AddMom(DateTime time, IMean mean)
+        {
+            CopyAllFrom(mean);
+            Time = time;
+        }
+        public void AddMom(IMean mom, MomErr err)
+        {
+            CopyAllFrom(mom);
+            Error = err;
+        }
+        public void AddMom(DateTime time, IMean mean, MomErr err)
+        {
+            CopyValueFrom(mean);
+            Time = time;
+            Error = err;
+        }
+        public void AddMom(DateTime time, bool b, MomErr err = null)
+        {
+            Boolean = b;
+            Time = time;
+            Error = err;
+        }
+        public void AddMom(DateTime time, int i, MomErr err = null)
+        {
+            Integer = i;
+            Time = time;
+            Error = err;
+        }
+        public void AddMom(DateTime time, double r, MomErr err = null)
+        {
+            Real = r;
+            Time = time;
+            Error = err;
+        }
+        public void AddMom(DateTime time, DateTime d, MomErr err = null)
+        {
+            Date = d;
+            Time = time;
+            Error = err;
+        }
+        public void AddMom(DateTime time, string s, MomErr err = null)
+        {
+            String = s;
+            Time = time;
+            Error = err;
+        }
+        public void AddMom(DateTime time, object ob, MomErr err = null)
+        {
+            Object = ob;
+            Time = time;
+            Error = err;
+        }
+        public void Clear() { }
     }
 }

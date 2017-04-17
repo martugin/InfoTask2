@@ -38,9 +38,9 @@ namespace Generator
         }
 
         //Вычисление значения
-        public IMean Generate(SubRows row)
+        public IReadMean Generate(SubRows row)
         {
-            IMean mean = null;
+            IReadMean mean = null;
             while (_condition.Generate(row).Boolean)
                 mean = _prog.Generate(row);
             return mean ?? _elseProg.Generate(row);

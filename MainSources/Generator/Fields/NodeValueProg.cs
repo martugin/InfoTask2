@@ -65,7 +65,7 @@ namespace Generator
         }
 
         //Вычисление значения по ряду исходной таблицы
-        public IMean Generate(SubRows row)
+        public IReadMean Generate(SubRows row)
         {
             _voidProg.Generate(row);
             return _expr.Generate(row);

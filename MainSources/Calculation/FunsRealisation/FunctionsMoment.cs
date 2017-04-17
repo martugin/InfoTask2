@@ -6,7 +6,7 @@ namespace Calculation
     internal partial class CalcFunctions
     {
         //5 - Мгновенные
-        public IMean Aperture_rr(FunData data, DataType dataType, params IMean[] par)
+        public IReadMean Aperture_rr(FunData data, DataType dataType, params IReadMean[] par)
         {
             var res = MFactory.NewList(dataType);
             var list = par[0]; 
@@ -15,7 +15,7 @@ namespace Calculation
             var prev = data.ParamsValues[0];
             list.CurNum = 0;
             if (prev == null) res.AddMom(list);
-            IMean m = prev ?? list.ToMean();
+            IReadMean m = prev ?? list.ToMean();
             for (list.CurNum = 0; list.CurNum < list.Count; list.CurNum++)
                 if (Math.Abs(list.Real - m.Real) >= dif.Real)
                     res.AddMom(m = list.ToMean());
@@ -23,7 +23,7 @@ namespace Calculation
             return res;
         }
 
-        private IMean Aperture_ir(FunData data, DataType dataType, params IMean[] par)
+        private IReadMean Aperture_ir(FunData data, DataType dataType, params IReadMean[] par)
         {
             return Aperture_rr(data, dataType, par);
         }

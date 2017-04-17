@@ -10,7 +10,7 @@ namespace CommonTypes
             : base(funs, code, errNum) { }
 
         //Делегат скалярных функций
-        public delegate void ScalarDelegate(IMean[] par);
+        public delegate void ScalarDelegate(IReadMean[] par);
         //Ссылка на реализацию функции
         public ScalarDelegate Fun { get; private set; }
         //Создание экземпляра делегата функции

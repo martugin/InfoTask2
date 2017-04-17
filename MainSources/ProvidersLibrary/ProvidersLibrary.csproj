@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ProvidersSignals\MomSignal.cs" />
     <Compile Include="Common\ProvidersSignals\ProviderOut.cs" />
     <Compile Include="RealTime\ControllerSignal.cs" />
     <Compile Include="RealTime\SourceController.cs" />
@@ -88,7 +89,7 @@
     <Compile Include="Sources\Signals\MomSourceOut.cs" />
     <Compile Include="Sources\BaseSources\ValuesCount.cs" />
     <Compile Include="Sources\Signals\CalcListSignal.cs" />
-    <Compile Include="Sources\Signals\InitialSignal.cs" />
+    <Compile Include="Sources\Signals\CloneSignal.cs" />
     <Compile Include="Common\ProvidersSignals\ProviderSignal.cs" />
     <Compile Include="Sources\Signals\ListSourceOut.cs" />
     <Compile Include="Sources\Signals\UniformSignal.cs" />

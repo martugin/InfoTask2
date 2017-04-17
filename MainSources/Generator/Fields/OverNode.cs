@@ -33,7 +33,7 @@ namespace Generator
         }
 
         //Вычисление значения
-        public IMean Generate(SubRows row)
+        public IReadMean Generate(SubRows row)
         {
             return _expr.Generate(row.Parent);
         }
