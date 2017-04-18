@@ -21,27 +21,27 @@ namespace CommonTypes
         public override bool Boolean
         {
             get { return _bool; }
-            internal set { _bool = value; }
+            set { _bool = value; }
         }
         public override int Integer
         {
             get { return _bool ? 1 : 0; }
-            internal set { _bool = value != 0; }
+            set { _bool = value != 0; }
         }
         public override double Real
         {
             get { return _bool ? 1.0 : 0.0; }
-            internal set { _bool = value != 0.0; }
+            set { _bool = value != 0.0; }
         }
         public override string String
         {
             get { return _bool ? "1" : "0"; }
-            internal set { _bool = value != "0"; }
+            set { _bool = value != "0"; }
         }
         public override object Object
         {
             get { return _bool; }
-            internal set { _bool = (bool)value; }
+            set { _bool = (bool)value; }
         }
 
         public override void ValueToRec(IRecordAdd rec, string field)
@@ -50,26 +50,24 @@ namespace CommonTypes
             catch { rec.Put(field, _bool); }
         }
 
+        public override void ValueFromRec(IRecordRead rec, string field)
+        {
+            rec.GetBool(field);
+        }
+
         public override IMean ToMean()
         {
-            if (Error == null) return new BoolMean(_bool);
-            return new MeanErrBool(_bool, Error);
+            return new BoolMean(_bool);
         }
-
-        public override IMean ToMean(MomErr err)
-        {
-            return new MeanErrBool(_bool, Error.Add(err));
-        }
-
+        
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new BoolMom(time, _bool);
-            return new BoolErrMom(time, _bool, Error);
+            return new BoolMom(time, _bool, Error);
         }
 
         public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new BoolErrMom(time, _bool, Error.Add(err));
+            return new BoolMom(time, _bool, Error.Add(err));
         }
 
         internal override void CopyValueFrom(IMean mean)
@@ -102,27 +100,27 @@ namespace CommonTypes
         public override bool Boolean
         {
             get { return _int != 0; }
-            internal set { _int = value ? 1 : 0; }
+            set { _int = value ? 1 : 0; }
         }
         public override int Integer
         {
             get { return _int; }
-            internal set { _int = value; }
+            set { _int = value; }
         }
         public override double Real
         {
             get { return _int; }
-            internal set { _int = Convert.ToInt32(value); }
+            set { _int = Convert.ToInt32(value); }
         }
         public override string String
         {
             get { return _int.ToString(); }
-            internal set { _int = value.ToInt(); }
+            set { _int = value.ToInt(); }
         }
         public override object Object
         {
             get { return _int; }
-            internal set { _int = (int)value; }
+            set { _int = (int)value; }
         }
 
         public override void ValueToRec(IRecordAdd rec, string field)
@@ -130,26 +128,24 @@ namespace CommonTypes
             rec.Put(field, _int);
         }
 
+        public override void ValueFromRec(IRecordRead rec, string field)
+        {
+            rec.GetInt(field);
+        }
+
         public override IMean ToMean()
         {
-            if (Error == null) return new IntMean(_int);
-            return new MeanErrInt(_int, Error);
+            return new IntMean(_int);
         }
-
-        public override IMean ToMean(MomErr err)
-        {
-            return new MeanErrInt(_int, Error.Add(err));
-        }
-
+        
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new IntMom(time, _int);
-            return new IntErrMom(time, _int, Error);
+            return new IntMom(time, _int, Error);
         }
 
         public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new IntErrMom(time, _int, Error.Add(err));
+            return new IntMom(time, _int, Error.Add(err));
         }
 
         internal override void CopyValueFrom(IMean mean)
@@ -182,28 +178,28 @@ namespace CommonTypes
         public override bool Boolean
         {
             get { return _real != 0.0; }
-            internal set { _real = value ? 1.0 : 0.0; }
+            set { _real = value ? 1.0 : 0.0; }
         }
         public override int Integer
         {
             get { try { return Convert.ToInt32(_real); }
                     catch { return 0; } }
-            internal set { _real = value; }
+            set { _real = value; }
         }
         public override double Real
         {
             get { return _real; }
-            internal set { _real = value; }
+            set { _real = value; }
         }
         public override string String
         {
             get { return _real.ToString(); }
-            internal set { _real = value.ToDouble(0); }
+            set { _real = value.ToDouble(0); }
         }
         public override object Object
         {
             get { return _real; }
-            internal set { _real = (double)value; }
+            set { _real = (double)value; }
         }
 
         public override void ValueToRec(IRecordAdd rec, string field)
@@ -211,26 +207,24 @@ namespace CommonTypes
             rec.Put(field, _real);
         }
 
-        public override IMean ToMean()
+        public override void ValueFromRec(IRecordRead rec, string field)
         {
-            if (Error == null) return new RealMean(_real);
-            return new MeanErrReal(_real, Error);
+            rec.GetDouble(field);
         }
 
-        public override IMean ToMean(MomErr err)
+        public override IMean ToMean()
         {
-            return new MeanErrReal(_real, Error.Add(err));
+            return new RealMean(_real);
         }
 
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new RealMom(time, _real);
-            return new RealErrMom(time, _real, Error);
+            return new RealMom(time, _real, Error);
         }
 
         public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new RealErrMom(time, _real, Error.Add(err));
+            return new RealMom(time, _real, Error.Add(err));
         }
 
         internal override void CopyValueFrom(IMean mean)
@@ -263,32 +257,32 @@ namespace CommonTypes
         public override bool Boolean
         {
             get { return _string != "0"; }
-            internal set { _string = value ? "1" : "0"; }
+            set { _string = value ? "1" : "0"; }
         }
         public override int Integer
         {
             get { return _string.ToInt(); }
-            internal set { _string = value.ToString(); }
+            set { _string = value.ToString(); }
         }
         public override double Real
         {
             get { return _string.ToDouble(); }
-            internal set { _string = value.ToString(); }
+            set { _string = value.ToString(); }
         }
         public override DateTime Date
         {
             get { return _string.ToDateTime(); }
-            internal set { _string = value.ToString(); }
+            set { _string = value.ToString(); }
         }
         public override string String
         {
             get { return _string; }
-            internal set { _string = value ?? ""; }
+            set { _string = value ?? ""; }
         }
         public override object Object
         {
             get { return _string; }
-            internal set { _string = (string)value ?? ""; }
+            set { _string = (string)value ?? ""; }
         }
 
         public override void ValueToRec(IRecordAdd rec, string field)
@@ -296,26 +290,24 @@ namespace CommonTypes
             rec.Put(field, _string);
         }
 
-        public override IMean ToMean()
+        public override void ValueFromRec(IRecordRead rec, string field)
         {
-            if (Error == null) return new StringMean(_string);
-            return new MeanErrString(_string, Error);
+            rec.GetString(field);
         }
 
-        public override IMean ToMean(MomErr err)
+        public override IMean ToMean()
         {
-            return new MeanErrString(_string, Error.Add(err));
+            return new StringMean(_string);
         }
 
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new StringMom(time, _string);
-            return new StringErrMom(time, _string, Error);
+            return new StringMom(time, _string, Error);
         }
 
         public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new StringErrMom(time, _string, Error.Add(err));
+            return new StringMom(time, _string, Error.Add(err));
         }
 
         internal override void CopyValueFrom(IMean mean)
@@ -348,17 +340,17 @@ namespace CommonTypes
         public override DateTime Date
         {
             get { return _date; }
-            internal set { _date = value; }
+            set { _date = value; }
         }
         public override string String
         {
             get { return _date.ToString(); }
-            internal set { _date = value.ToDateTime(); }
+            set { _date = value.ToDateTime(); }
         }
         public override object Object
         {
             get { return _date; }
-            internal set { _date = (DateTime)value; }
+            set { _date = (DateTime)value; }
         }
 
         public override void ValueToRec(IRecordAdd rec, string field)
@@ -366,26 +358,24 @@ namespace CommonTypes
             rec.Put(field, _date);
         }
 
-        public override IMean ToMean()
+        public override void ValueFromRec(IRecordRead rec, string field)
         {
-            if (Error == null) return new TimeMean(_date);
-            return new MeanErrTime(_date, Error);
+            rec.GetTime(field);
         }
 
-        public override IMean ToMean(MomErr err)
+        public override IMean ToMean()
         {
-            return new MeanErrTime(_date, Error.Add(err));
+            return new TimeMean(_date);
         }
 
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new TimeMom(time, _date);
-            return new TimeErrMom(time, _date, Error);
+            return new TimeMom(time, _date, Error);
         }
 
         public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new TimeErrMom(time, _date, Error.Add(err));
+            return new TimeMom(time, _date, Error.Add(err));
         }
 
         internal override void CopyValueFrom(IMean mean)
@@ -413,23 +403,18 @@ namespace CommonTypes
         public override object Object { get { return 0; } }
 
         public override void ValueToRec(IRecordAdd rec, string field) { }
+        public override void ValueFromRec(IRecordRead rec, string field) { }
         public override IMean ToMean()
         {
-            if (Error == null) return new ValueMean();
-            return new MeanErrValue(Error);
-        }
-        public override IMean ToMean(MomErr err)
-        {
-            return new MeanErrValue(Error.Add(err));
+            return new ValueMean();
         }
         public override IMean ToMom(DateTime time)
         {
-            if (Error == null) return new ValueMom(time);
-            return new ValueErrMom(time, Error);
+            return new ValueMom(time);
         }
         public override IMean ToMom(DateTime time, MomErr err)
         {
-            return new ValueErrMom(time, Error.Add(err));
+            return new ValueMom(time, Error.Add(err));
         }
         internal override void CopyValueFrom(IMean mean) { }
         internal override void MakeDefaultValue() { }

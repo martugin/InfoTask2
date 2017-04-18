@@ -28,6 +28,10 @@ namespace CommonTypes
         {
             BufMom.Boolean = _means[i];
         }
+        protected override void SaveBufMom(int i)
+        {
+            _means[i] = BufMom.Boolean;
+        }
         
         //Очистка значений
         protected override void ClearMeans()
@@ -61,6 +65,10 @@ namespace CommonTypes
         protected override void SetBufMom(int i)
         {
             BufMom.Integer = _means[i];
+        }
+        protected override void SaveBufMom(int i)
+        {
+            _means[i] = BufMom.Integer;
         }
 
         //Очистка значений
@@ -96,6 +104,10 @@ namespace CommonTypes
         {
             BufMom.Real = _means[i];
         }
+        protected override void SaveBufMom(int i)
+        {
+            _means[i] = BufMom.Real;
+        }
 
         //Очистка значений
         protected override void ClearMeans()
@@ -130,6 +142,10 @@ namespace CommonTypes
         {
             BufMom.String = _means[i];
         }
+        protected override void SaveBufMom(int i)
+        {
+            _means[i] = BufMom.String;
+        }
 
         //Очистка значений
         protected override void ClearMeans()
@@ -163,6 +179,10 @@ namespace CommonTypes
         protected override void SetBufMom(int i)
         {
             BufMom.Date = _means[i];
+        }
+        protected override void SaveBufMom(int i)
+        {
+            _means[i] = BufMom.Date;
         }
 
         //Очистка значений

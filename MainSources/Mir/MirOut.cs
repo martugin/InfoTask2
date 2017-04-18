@@ -9,13 +9,13 @@ namespace Mir
         internal MirOut(ListSource source) : base(source) { }
 
         //Cигналы Unit и Indcation
-        internal InitialSignal UnitSignal { get; set; }
-        internal InitialSignal IndicationSignal { get; set; }
+        internal CloneSignal UnitSignal { get; set; }
+        internal CloneSignal IndicationSignal { get; set; }
         //Id для получения значений из IZM_TII
         internal int IdChannel { get; set; }
 
         //Добавить к выходу сигнал, если такого еще не было
-        protected override InitialSignal AddInitialSignal(InitialSignal sig)
+        protected override CloneSignal AddInitialSignal(CloneSignal sig)
         {
             if (sig.Inf.Get("ValueType") == "Indication")
                 return IndicationSignal = IndicationSignal ?? sig;

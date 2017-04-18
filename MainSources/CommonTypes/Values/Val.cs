@@ -6,6 +6,7 @@
         public Val Value { get { return this; } }
         public abstract ICalcVal CalcValue { get; }
         public abstract DataType DataType { get; }
+        public abstract object Clone();
     }
 
     //-----------------------------------------------------------------------------------------------

@@ -35,7 +35,7 @@ namespace Generator
         }
 
         //Вычисление значения
-        public IMean Generate(SubRows row)
+        public IReadMean Generate(SubRows row)
         {
             return row[_field];
         }

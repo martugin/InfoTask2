@@ -18,14 +18,14 @@ namespace Calculation
         }
 
         //Делегат функции
-        public delegate IMean MomentsDelegate(FunData data, DataType dataType, params IMean[] par);
+        public delegate IReadMean MomentsDelegate(FunData data, DataType dataType, params IReadMean[] par);
         //Ссылка на реализацию функции
         private MomentsDelegate _fun;
 
         //Вычислить значение
         public IVal Calculate(DataType resultType, IEnumerable<IVal> par, FunData funData)
         {
-            return _fun(funData, resultType, par.Cast<IMean>().ToArray());
+            return _fun(funData, resultType, par.Cast<IReadMean>().ToArray());
         }
     }
 }

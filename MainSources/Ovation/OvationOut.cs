@@ -14,12 +14,12 @@ namespace Ovation
         }
         
         //Сигнал со словом состояния
-        internal InitialSignal StateSignal { get; set; }
+        internal CloneSignal StateSignal { get; set; }
         //Id в Historian
         internal int Id { get; private set; }
         
         //Добавить к объекту сигнал, если такого еще не было
-        protected override InitialSignal AddInitialSignal(InitialSignal sig)
+        protected override CloneSignal AddInitialSignal(CloneSignal sig)
         {
             if (sig.Inf["Prop"].ToUpper() == "STAT")
                 return StateSignal = StateSignal ?? sig;

@@ -13,14 +13,14 @@ namespace ProvidersLibrary
         public override ProviderType Type { get { return ProviderType.Source;}}
         
         //Список сигналов, содержащих возвращаемые значения
-        public IDicSForRead<ISourceSignal> Signals { get { return ProviderSignals; } }
+        public IDicSForRead<IReadSignal> Signals { get { return ProviderSignals; } }
 
         //Добавить сигнал
-        public ISourceSignal AddSignal(string fullCode, //Полный код сигнала
-                                                                   DataType dataType, //Тип данных
-                                                                   string infObject, //Свойства объекта
-                                                                   string infOut, //Свойства выхода относительно объекта
-                                                                   string infProp = "") //Свойства сигнала относительно выхода
+        public IReadSignal AddSignal(string fullCode, //Полный код сигнала
+                                                        DataType dataType, //Тип данных
+                                                        string infObject, //Свойства объекта
+                                                        string infOut, //Свойства выхода относительно объекта
+                                                        string infProp = "") //Свойства сигнала относительно выхода
         {
             return AddProviderSignal(fullCode, dataType, infObject, infOut, infProp);
         }

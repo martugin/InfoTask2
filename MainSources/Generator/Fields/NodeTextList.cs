@@ -25,7 +25,7 @@ namespace Generator
         }
 
         //Генерация значения
-        public IMean Generate(SubRows row)
+        public IReadMean Generate(SubRows row)
         {
             if (Children.Count == 1)
                 return ((IExprNode) Children[0]).Generate(row);

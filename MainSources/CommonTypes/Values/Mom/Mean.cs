@@ -9,32 +9,32 @@ namespace CommonTypes
         public virtual bool Boolean
         {
             get { return false; }
-            internal set { }
+            set { }
         }
         public virtual int Integer
         {
             get { return 0; }
-            internal set { }
+            set { }
         }
         public virtual double Real
         {
             get { return 0; }
-            internal set { }
+            set { }
         }
         public virtual DateTime Date
         {
             get { return Static.MinDate; }
-            internal set { }
+            set { }
         }
         public virtual string String
         {
             get { return ""; }
-            internal set { }
+            set { }
         }
         public virtual object Object
         {
             get { return 0; }
-            internal set { }
+            set { }
         }
 
         public bool BooleanI(int i) { return Boolean; }
@@ -47,14 +47,14 @@ namespace CommonTypes
         public virtual MomErr Error
         {
             get { return null; }
-            internal set { }
+            set { }
         }
         public MomErr ErrorI(int i) { return Error; }
 
         public virtual DateTime Time
         {
             get { return Static.MinDate; }
-            internal set {}
+            set {}
         }
         public DateTime TimeI(int i) { return Time; }
 
@@ -114,17 +114,16 @@ namespace CommonTypes
         }
 
         public abstract void ValueToRec(IRecordAdd rec, string field);
-        public void ValueToRecI(IRecordAdd rec, string field, int i) { ValueToRec(rec, field); }
+        public void ValueToRecI(int i, IRecordAdd rec, string field) { ValueToRec(rec, field); }
+        public abstract void ValueFromRec(IRecordRead rec, string field);
 
         public abstract IMean ToMean();
-        public abstract IMean ToMean(MomErr err);
         public abstract IMean ToMom(DateTime time);
         public abstract IMean ToMom(DateTime time, MomErr err);
         public IMean ToMom() { return ToMom(Time, Error);}
         public IMean ToMom(MomErr err) { return ToMom(Time, err); }
 
         public IMean ToMeanI(int i) { return ToMean(); }
-        public IMean ToMeanI(int i, MomErr err) { return ToMean(err); }
         public IMean ToMomI(int i) { return ToMom(); }
         public IMean ToMomI(int i, MomErr err) { return ToMom(err); }
         public IMean ToMomI(int i, DateTime time) { return ToMom(time); }
@@ -142,5 +141,68 @@ namespace CommonTypes
         internal abstract void CopyValueFrom(IMean mean);
         //Присвоить значение по умолчанию
         internal abstract void MakeDefaultValue();
+
+        //Клонировать
+        public override object Clone()
+        {
+            return ToMean();
+        }
+
+        //Добавить мгновенное значение
+        public void AddMom(IMean mom)
+        {
+            CopyValueFrom(mom);
+            Time = mom.Time;
+            Error = mom.Error;
+        }
+        public void AddMom(DateTime time, IMean mean, MomErr err = null)
+        {
+            CopyValueFrom(mean);
+            Time = time;
+            Error = err;
+        }
+        public void AddMom(DateTime time, bool b, MomErr err = null)
+        {
+            Boolean = b;
+            Time = time;
+            Error = err;
+        }
+
+        public void AddMom(DateTime time, int i, MomErr err = null)
+        {
+            Integer = i;
+            Time = time;
+            Error = err;
+        }
+
+        public void AddMom(DateTime time, double r, MomErr err = null)
+        {
+            Real = r;
+            Time = time;
+            Error = err;
+        }
+
+        public void AddMom(DateTime time, DateTime d, MomErr err = null)
+        {
+            Date = d;
+            Time = time;
+            Error = err;
+        }
+
+        public void AddMom(DateTime time, string s, MomErr err = null)
+        {
+            String = s;
+            Time = time;
+            Error = err;
+        }
+
+        public void AddMom(DateTime time, object ob, MomErr err = null)
+        {
+            Object = ob;
+            Time = time;
+            Error = err;
+        }
+
+        public void Clear() { }
     }
 }

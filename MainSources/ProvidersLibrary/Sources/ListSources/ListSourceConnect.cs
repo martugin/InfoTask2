@@ -25,8 +25,8 @@ namespace ProvidersLibrary
         }
 
         //Множество исходных сигналов
-        private readonly DicS<InitialSignal> _initialSignals = new DicS<InitialSignal>();
-        internal DicS<InitialSignal> InitialSignals { get { return _initialSignals; } }
+        private readonly DicS<CloneSignal> _initialSignals = new DicS<CloneSignal>();
+        internal DicS<CloneSignal> InitialSignals { get { return _initialSignals; } }
         //Словарь расчетных сигналов
         private readonly DicS<CalcListSignal> _calcSignals = new DicS<CalcListSignal>();
         internal DicS<CalcListSignal> CalcSignals { get { return _calcSignals; } }
@@ -36,15 +36,15 @@ namespace ProvidersLibrary
         {
             var sig = inf.GetBool("NeedCut")
                 ? new UniformSignal(this, fullCode, dataType, contextOut, inf)
-                : new InitialSignal(this, fullCode, dataType, contextOut, inf);
+                : new CloneSignal(this, fullCode, dataType, contextOut, inf);
             return InitialSignals.Add(fullCode, sig);
         }
 
         //Добавить расчетный сигнал
         public CalcListSignal AddCalcSignal(string fullCode, //Полный код сигнала
-                                                         string objectCode, //Код объекта
-                                                         string initialSignalCode, //Код исходного сигнала без кода объекта
-                                                         string formula) //Формула
+                                                              string objectCode, //Код объекта
+                                                              string initialSignalCode, //Код исходного сигнала без кода объекта
+                                                              string formula) //Формула
         {
             if (CalcSignals.ContainsKey(fullCode))
                 return CalcSignals[fullCode];
@@ -68,6 +68,7 @@ namespace ProvidersLibrary
             CalcSignals.Clear();
         }
 
+        //Очистка значений сигналов
         private void ClearSignalsValues(bool clearBegin)
         {
             AddEvent("Очистка значений сигналов");
@@ -134,7 +135,7 @@ namespace ProvidersLibrary
             }
             finally
             {
-                AddErrorObjectsWarning();
+                AddErrorOutsWarning();
                 Source.PrevPeriodEnd = PeriodEnd;
             }
             return vcount;
@@ -151,17 +152,17 @@ namespace ProvidersLibrary
         internal DaoRec CloneErrorsRec { get; private set; }
 
         //Словарь ошибочных объектов, ключи - коды объектов
-        private readonly DicS<string> _errorObjects = new DicS<string>();
+        private readonly DicS<string> _errorOuts = new DicS<string>();
 
         //Добавляет объект в ErrorsObjects
         internal void AddErrorOut(string codeObject,  //Код сигнала
                                                 string errText,        //Сообщение об ошибке
                                                 Exception ex = null)  //Исключение
         {
-            if (!_errorObjects.ContainsKey(codeObject))
+            if (!_errorOuts.ContainsKey(codeObject))
             {
                 var err = errText + (ex == null ? "" : ". " + ex.Message + ". " + ex.StackTrace);
-                _errorObjects.Add(codeObject, err);
+                _errorOuts.Add(codeObject, err);
                 if (CloneErrorsRec != null)
                 {
                     CloneErrorsRec.AddNew();
@@ -173,16 +174,16 @@ namespace ProvidersLibrary
         }
 
         //Запись списка непрочитанных объектов в лог
-        internal void AddErrorObjectsWarning()
+        internal void AddErrorOutsWarning()
         {
-            if (_errorObjects.Count > 0)
+            if (_errorOuts.Count > 0)
             {
                 int i = 0;
                 string s = "";
-                foreach (var ob in _errorObjects.Keys)
+                foreach (var ob in _errorOuts.Keys)
                     if (++i < 10) s += ob + ", ";
-                AddWarning("Не удалось прочитать значения по некоторым объектам", null,
-                           s + (_errorObjects.Count > 10 ? " и др." : "") + "всего " + _errorObjects.Count + " объектов не удалось прочитать");
+                AddWarning("Не удалось прочитать значения по некоторым сигналам", null,
+                           s + (_errorOuts.Count > 10 ? " и др." : "") + "всего " + _errorOuts.Count + " выходов не удалось прочитать");
             }
         }
 
@@ -194,7 +195,7 @@ namespace ProvidersLibrary
             using (var rec = new DaoRec(cloneDb, "Signals"))
                 while (rec.Read())
                 {
-                    var sig = (InitialSignal)AddSignal(rec.GetString("FullCode"),
+                    var sig = (CloneSignal)AddSignal(rec.GetString("FullCode"),
                                                                       rec.GetString("DataType").ToDataType(),
                                                                       rec.GetString("InfObject"),
                                                                       rec.GetString("InfOut"),

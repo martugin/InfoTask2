@@ -28,13 +28,13 @@ namespace ComLaunchers
     [ClassInterface(ClassInterfaceType.None)]
     public class RReceivSignal : ReceivSignal
     {
-        internal RReceivSignal(IReceiverSignal signal)
+        internal RReceivSignal(IWriteSignal signal)
         {
             _signal = signal;
         }
 
         //Ссылка на сигнал
-        private readonly IReceiverSignal _signal;
+        private readonly IWriteSignal _signal;
 
         //Полный код сигнала
         public string Code { get { return _signal.Code; } }

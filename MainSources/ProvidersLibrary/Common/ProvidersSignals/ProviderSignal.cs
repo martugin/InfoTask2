@@ -1,21 +1,20 @@
-﻿using BaseLibrary;
+﻿using System;
+using BaseLibrary;
 using CommonTypes;
 
 namespace ProvidersLibrary
 {
     //Базовый класс для всех сигналов
-    public class ProviderSignal : ISourceSignal, IReceiverSignal
+    public abstract class ProviderSignal : ISignal
     {
         protected internal ProviderSignal(ProviderConnect connect, string code)
         {
-            IsInitial = true;
             Connect = connect;
             Code = code;
         }
 
         protected internal ProviderSignal(ProviderConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
         {
-            IsInitial = true;
             Connect = connect;
             Code = code;
             DataType = dataType;
@@ -36,10 +35,17 @@ namespace ProvidersLibrary
         //Словарь свойств
         public DicS<string> Inf { get; private set; }
 
-        //Является основным сигналом (не расчетным и т.п.)
-        public bool IsInitial { get; protected set; }
+        //Тип значений сигнала
+        public abstract SignalValueType ValueType { get; }
 
         //Значение или список значений
         public virtual IMean Value { get; set; }
+
+        //Мгновенное значение сигнала или буферное значение
+        internal abstract IMean BufMom { get; }
+
+        //Добавка мгновенного значения (BufMom) в список или клон
+        //Возвращает количество реально добавленных значений 
+        internal abstract int AddMom(DateTime time, MomErr err);
     }
 }

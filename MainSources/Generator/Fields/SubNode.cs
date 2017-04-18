@@ -62,7 +62,7 @@ namespace Generator
         }
 
         //Вычисление значения по ряду исходной таблицы
-        public IMean Generate(SubRows row)
+        public IReadMean Generate(SubRows row)
         {
             IEnumerable<SubRows> rows = row.SubList;
             if (_condition != null)

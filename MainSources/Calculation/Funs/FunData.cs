@@ -8,12 +8,12 @@ namespace Calculation
         //На входе количество параметров функции
         public FunData(int parsCount)
         {
-            ParamsValues = new IMean[parsCount];
+            ParamsValues = new IReadMean[parsCount];
         }
 
         //Значения входных параметров функции
-        public IMean[] ParamsValues { get; private set; }
+        public IReadMean[] ParamsValues { get; private set; }
         //Значение результата функции
-        public IMean ResultValue { get; set; }
+        public IReadMean ResultValue { get; set; }
     }
 }

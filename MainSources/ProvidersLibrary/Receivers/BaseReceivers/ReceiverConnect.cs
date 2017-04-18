@@ -13,10 +13,10 @@ namespace ProvidersLibrary
         public override ProviderType Type { get { return ProviderType.Receiver; } }
         
         //Словарь сигналов приемников, ключи - коды
-        public IDicSForRead<IReceiverSignal> Signals { get { return ProviderSignals; } }
+        public IDicSForRead<IWriteSignal> Signals { get { return ProviderSignals; } }
 
         //Добавить сигнал
-        public IReceiverSignal AddSignal(string fullCode, //Полный код сигнала
+        public IWriteSignal AddSignal(string fullCode, //Полный код сигнала
                                                                      DataType dataType, //Тип данных
                                                                      string infObject, //Свойства объекта
                                                                      string infOut = "", //Свойства выхода относительно объекта

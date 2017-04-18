@@ -12,62 +12,62 @@ namespace CommonTypes
     {
         //1 - Операции
         #region
-        public void Plus_ii(IMean[] par)
+        public void Plus_ii(IReadMean[] par)
         {
             ScalarRes.Integer = par[0].Integer + par[1].Integer;
         }
 
-        public void Plus_dr(IMean[] par)
+        public void Plus_dr(IReadMean[] par)
         {
             ScalarRes.Date = par[0].Date.AddSeconds(par[1].Real);
         }
 
-        public void Plus_rd(IMean[] par)
+        public void Plus_rd(IReadMean[] par)
         {
             ScalarRes.Date = par[1].Date.AddSeconds(par[0].Real); 
         }
 
-        public void Plus_rr(IMean[] par)
+        public void Plus_rr(IReadMean[] par)
         {
             ScalarRes.Real = par[0].Real + par[1].Real;
         }
 
-        public void Plus_ss(IMean[] par)
+        public void Plus_ss(IReadMean[] par)
         {
             ScalarRes.String = par[0].String + par[1].String;
         }
 
-        public void Minus_ii(IMean[] par)
+        public void Minus_ii(IReadMean[] par)
         {
             ScalarRes.Integer = par[0].Integer - par[1].Integer;
         }
 
-        public void Minus_dd(IMean[] par)
+        public void Minus_dd(IReadMean[] par)
         {
             ScalarRes.Real = par[0].Date.Minus(par[1].Date);
         }
 
-        public void Minus_dr(IMean[] par)
+        public void Minus_dr(IReadMean[] par)
         {
             ScalarRes.Date = par[0].Date.AddSeconds(-par[1].Real); 
         }
 
-        public void Minus_rr(IMean[] par)
+        public void Minus_rr(IReadMean[] par)
         {
             ScalarRes.Real = par[0].Real - par[1].Real;
         }
 
-        public void Minus_i(IMean[] par)
+        public void Minus_i(IReadMean[] par)
         {
             ScalarRes.Integer = -par[0].Integer;
         }
 
-        public void Minus_r(IMean[] par)
+        public void Minus_r(IReadMean[] par)
         {
             ScalarRes.Real = -par[0].Real;
         }
 
-        public void Multiply_ii(IMean[] par)
+        public void Multiply_ii(IReadMean[] par)
         {
             ScalarRes.Integer = par[0].Integer * par[1].Integer;
             if (par[0].Integer == 0)
@@ -76,7 +76,7 @@ namespace CommonTypes
                 ScalarRes.Error = par[1].Error;
         }
 
-        public void Multiply_rr(IMean[] par)
+        public void Multiply_rr(IReadMean[] par)
         {
             ScalarRes.Real = par[0].Real * par[1].Real;
             if (par[0].Real == 0)
@@ -85,7 +85,7 @@ namespace CommonTypes
                 ScalarRes.Error = par[1].Error;
         }
 
-        public void Divide_rr(IMean[] par)
+        public void Divide_rr(IReadMean[] par)
         {
             if (par[0].Real == 0)
                 ScalarRes.Error = par[0].Error;
@@ -93,7 +93,7 @@ namespace CommonTypes
             else ScalarRes.Real = par[0].Real / par[1].Real;
         }
 
-        public void Div_ii(IMean[] par)
+        public void Div_ii(IReadMean[] par)
         {
             if (par[0].Integer == 0)
                 ScalarRes.Error = par[0].Error;
@@ -101,7 +101,7 @@ namespace CommonTypes
             else ScalarRes.Integer = par[0].Integer / par[1].Integer;
         }
 
-        public void Mod_ii(IMean[] par)
+        public void Mod_ii(IReadMean[] par)
         {
             if (par[0].Integer == 0)
                 ScalarRes.Error = par[0].Error;
@@ -109,7 +109,7 @@ namespace CommonTypes
             else ScalarRes.Integer = par[0].Integer % par[1].Integer;
         }
 
-        public void Power_rr(IMean[] par)
+        public void Power_rr(IReadMean[] par)
         {
             double m0 = par[0].Real, m1 = par[1].Real;
             if (m0 == 0)
@@ -152,52 +152,52 @@ namespace CommonTypes
             ScalarRes.Real = m;
         }
 
-        public void Equal_uu(IMean[] par)
+        public void Equal_uu(IReadMean[] par)
         {
             ScalarRes.Boolean = par[0].ValueEquals(par[1]);
         }
 
-        public void NotEqual_uu(IMean[] par)
+        public void NotEqual_uu(IReadMean[] par)
         {
             ScalarRes.Boolean = !par[0].ValueEquals(par[1]);
         }
 
-        public void Less_uu(IMean[] par)
+        public void Less_uu(IReadMean[] par)
         {
             ScalarRes.Boolean = par[0].ValueLess(par[1]);
         }
 
-        public void LessEqual_uu(IMean[] par)
+        public void LessEqual_uu(IReadMean[] par)
         {
             ScalarRes.Boolean = par[0].ValueLess(par[1]) || par[0].ValueEquals(par[1]);
         }
 
-        public void Greater_uu(IMean[] par)
+        public void Greater_uu(IReadMean[] par)
         {
             ScalarRes.Boolean = !par[0].ValueLess(par[1]) && !par[0].ValueEquals(par[1]);
         }
 
-        public void GreaterEqual_uu(IMean[] par)
+        public void GreaterEqual_uu(IReadMean[] par)
         {
             ScalarRes.Boolean = !par[0].ValueLess(par[1]);
         }
 
-        public void Not_b(IMean[] par)
+        public void Not_b(IReadMean[] par)
         {
             ScalarRes.Boolean = !par[0].Boolean;
         }
 
-        public void Xor_bb(IMean[] par)
+        public void Xor_bb(IReadMean[] par)
         {
             ScalarRes.Boolean = par[0].Boolean ^ par[1].Boolean;
         }
 
-        public void Xor_ii(IMean[] par)
+        public void Xor_ii(IReadMean[] par)
         {
             ScalarRes.Integer = par[0].Integer ^ par[1].Integer;
         }
 
-        public void Or_bb(IMean[] par)
+        public void Or_bb(IReadMean[] par)
         {
             bool m0 = par[0].Boolean;
             bool m1 = par[1].Boolean;
@@ -210,12 +210,12 @@ namespace CommonTypes
                 ScalarRes.Error = MinErr(par);
         }
 
-        public void Or_ii(IMean[] par)
+        public void Or_ii(IReadMean[] par)
         {
             ScalarRes.Integer = par[0].Integer | par[1].Integer;
         }
 
-        public void And_bb(IMean[] par)
+        public void And_bb(IReadMean[] par)
         {
             bool m0 = par[0].Boolean;
             bool m1 = par[1].Boolean;
@@ -228,12 +228,12 @@ namespace CommonTypes
                 ScalarRes.Error = MinErr(par);
         }
 
-        public void And_ii(IMean[] par)
+        public void And_ii(IReadMean[] par)
         {
             ScalarRes.Integer = par[0].Integer & par[1].Integer;
         }
 
-        public void Like_ss(IMean[] par)
+        public void Like_ss(IReadMean[] par)
         {
             string m1 = "^" + par[1].String.Replace("*", @"[\S|\s]*").Replace("?", @"[\S|\s]") + "$";
             string m0 = par[0].String;
@@ -253,19 +253,19 @@ namespace CommonTypes
             return new BoolMean(false);
         }
 
-        private bool GetBit(IMean[] par, int num)
+        private bool GetBit(IReadMean[] par, int num)
         {
             if (num < 0 || num > 31)
                 PutErr("Номер бита должен быть от 0 до 31");
             return par[0].Integer.GetBit(par[num].Integer);
         }
 
-        public void Bit_ii(IMean[] par)
+        public void Bit_ii(IReadMean[] par)
         {
             ScalarRes.Boolean = GetBit(par, 1);
         }
 
-        public void BitAnd_iii(IMean[] par)
+        public void BitAnd_iii(IReadMean[] par)
         {
             var b = true;
             for (int i = 1; i < par.Length; i++)
@@ -273,7 +273,7 @@ namespace CommonTypes
             ScalarRes.Boolean = b;
         }
 
-        public void BitOr_iii(IMean[] par)
+        public void BitOr_iii(IReadMean[] par)
         {
             var b = false;
             for (int i = 1; i < par.Length; i++)
@@ -281,12 +281,12 @@ namespace CommonTypes
             ScalarRes.Boolean = b;
         }
 
-        public void Sr_ii(IMean[] par)
+        public void Sr_ii(IReadMean[] par)
         {
             ScalarRes.Integer = par[0].Integer >> par[1].Integer;
         }
 
-        public void Sl_ii(IMean[] par)
+        public void Sl_ii(IReadMean[] par)
         {
             ScalarRes.Integer = par[0].Integer << par[1].Integer;
         }
@@ -294,47 +294,47 @@ namespace CommonTypes
 
         //3 - Математические
         #region
-        public void Abs_i(IMean[] par)
+        public void Abs_i(IReadMean[] par)
         {
             ScalarRes.Integer = Math.Abs(par[0].Integer);
         }
 
-        public void Abs_r(IMean[] par)
+        public void Abs_r(IReadMean[] par)
         {
             ScalarRes.Real = Math.Abs(par[0].Real);
         }
 
-        public void Sign_i(IMean[] par)
+        public void Sign_i(IReadMean[] par)
         {
             ScalarRes.Integer = Math.Sign(par[0].Integer);
         }
 
-        public void Sign_r(IMean[] par)
+        public void Sign_r(IReadMean[] par)
         {
             ScalarRes.Integer = Math.Sign(par[0].Real);
         }
 
-        public void Round_r(IMean[] par)
+        public void Round_r(IReadMean[] par)
         {
             ScalarRes.Integer = Convert.ToInt32(par[0].Real);
         }
 
-        public void Round_ri(IMean[] par)
+        public void Round_ri(IReadMean[] par)
         {
             ScalarRes.Real = Math.Round(par[0].Real, par[1].Integer);
         }
 
-        public void Min_uu(IMean[] par)
+        public void Min_uu(IReadMean[] par)
         {
-            IMean mv = par[0];
+            IReadMean mv = par[0];
             for (int i = 1; i < par.Length; ++i)
                 if (par[i].ValueLess(mv)) mv = par[i];
             ScalarRes.CopyValueFrom(mv);
         }
 
-        public void Max_uu(IMean[] par)
+        public void Max_uu(IReadMean[] par)
         {
-            IMean mv = par[0];
+            IReadMean mv = par[0];
             for (int i = 1; i < par.Length; ++i)
                 if (mv.ValueLess(par[i])) mv = par[i];
             ScalarRes.CopyValueFrom(mv);
@@ -345,84 +345,84 @@ namespace CommonTypes
             return new RealMean(Math.PI);
         }
 
-        public void Sqr_r(IMean[] par)
+        public void Sqr_r(IReadMean[] par)
         {
             if (par[0].Real < 0) 
                 PutErr("Извлечение корня из отрицательного числа");
             else ScalarRes.Real = Math.Sqrt(par[0].Real);
         }
 
-        public void Cos_r(IMean[] par)
+        public void Cos_r(IReadMean[] par)
         {
             ScalarRes.Real = Math.Cos(par[0].Real);
         }
 
-        public void Sin_r(IMean[] par)
+        public void Sin_r(IReadMean[] par)
         {
             ScalarRes.Real = Math.Sin(par[0].Real);
         }
 
-        public void Tan_r(IMean[] par)
+        public void Tan_r(IReadMean[] par)
         {
             ScalarRes.Real = Math.Tan(par[0].Real);
         }
 
-        public void Ctan_r(IMean[] par)
+        public void Ctan_r(IReadMean[] par)
         {
             var tan = Math.Tan(par[0].Real);
             if (tan == 0) PutErr();
             ScalarRes.Real = 1 / tan;
         }
 
-        public void Arccos_r(IMean[] par)
+        public void Arccos_r(IReadMean[] par)
         {
             double d = par[0].Real;
             if (d < -1 || d > 1) PutErr();
             else ScalarRes.Real = Math.Acos(d);
         }
 
-        public void Arcsin_r(IMean[] par)
+        public void Arcsin_r(IReadMean[] par)
         {
             double d = par[0].Real;
             if (d < -1 || d > 1) PutErr();
             else ScalarRes.Real = Math.Asin(d);
         }
 
-        public void Arctan_r(IMean[] par)
+        public void Arctan_r(IReadMean[] par)
         {
             ScalarRes.Real = Math.Atan(par[0].Real);
         }
 
-        public void Sh_r(IMean[] par)
+        public void Sh_r(IReadMean[] par)
         {
             ScalarRes.Real = Math.Sinh(par[0].Real);
         }
 
-        public void Ch_r(IMean[] par)
+        public void Ch_r(IReadMean[] par)
         {
             ScalarRes.Real = Math.Cosh(par[0].Real);
         }
 
-        public void Th_r(IMean[] par)
+        public void Th_r(IReadMean[] par)
         {
             ScalarRes.Real = Math.Tanh(par[0].Real);
         }
 
-        public void Arcsh_r(IMean[] par)
+        public void Arcsh_r(IReadMean[] par)
         {
             double d = par[0].Real;
             d = Math.Log(d + Math.Sqrt(d * d + 1));
             ScalarRes.Real = d;
         }
 
-        public void Arcch_r(IMean[] par)
+        public void Arcch_r(IReadMean[] par)
         {
             double d = par[0].Real;
             d = Math.Log(d + Math.Sqrt(d * d - 1));
             ScalarRes.Real = d;
         }
 
-        public void Arcth_r(IMean[] par)
+        public void Arcth_r(IReadMean[] par)
         {
             double d = par[0].Real;
             if (d == 1 || (1 + d) / (1 - d) <= 0)
@@ -430,26 +430,26 @@ namespace CommonTypes
             else ScalarRes.Real = Math.Log((1 + d) / (1 - d)) / 2;
         }
 
-        public void Exp_r(IMean[] par)
+        public void Exp_r(IReadMean[] par)
         {
             ScalarRes.Real = Math.Exp(par[0].Real);
         }
 
-        public void Ln_r(IMean[] par)
+        public void Ln_r(IReadMean[] par)
         {
             if (par[0].Real <= 0) 
                 PutErr("Взятие логарифма от неположительного числа");
             else ScalarRes.Real = Math.Log(par[0].Real);
         }
 
-        public void Log10_r(IMean[] par)
+        public void Log10_r(IReadMean[] par)
         {
             if (par[0].Real <= 0) 
                 PutErr("Взятие логарифма от неположительного числа");
             else ScalarRes.Real = Math.Log10(par[0].Real);
         }
 
-        public void Log_rr(IMean[] par)
+        public void Log_rr(IReadMean[] par)
         {
             double m0 = par[0].Real, m1 = par[1].Real;
             if (m0 == 1)
@@ -472,12 +472,12 @@ namespace CommonTypes
 
         //4 - Недостоверность
         #region
-        public void Quality_u(IMean[] par)
+        public void Quality_u(IReadMean[] par)
         {
             ScalarRes.Integer = par[0].Error == null ? 0 : (int)par[0].Error.Quality;
         }
 
-        public void Error_u(IMean[] par)
+        public void Error_u(IReadMean[] par)
         {
             ScalarRes.String = par[0].Error == null ? "" : par[0].Error.Text;
         }
@@ -497,7 +497,7 @@ namespace CommonTypes
             return new IntMean(2);
         }
 
-        public void MakeError_u(IMean[] par)
+        public void MakeError_u(IReadMean[] par)
         {
             ScalarRes.CopyValueFrom(par[0]);
             if (par.Length != 4 || par[3].Boolean)
@@ -506,12 +506,12 @@ namespace CommonTypes
             PutErr(par[2].String, par[1].Integer);
         }
 
-        public void RemoveError_u(IMean[] par)
+        public void RemoveError_u(IReadMean[] par)
         {
             ScalarRes.CopyValueFrom(par[0]);
         }
 
-        private double Certain(IEnumerable<IMean> par, IMean pn, double dn, double dp)
+        private double Certain(IEnumerable<IReadMean> par, IReadMean pn, double dn, double dp)
         {
             //Аппаратная недостоверность и сравнение с нормативным
             var dpar = (from p in par where (p.Error == null || p.Error.Quality != ErrQuality.Error) && Math.Abs(p.Real - pn.Real) <= dn select p.Real).ToList();
@@ -532,36 +532,36 @@ namespace CommonTypes
             return dpar.Average();
         }
 
-        public void CertainNP_rrrrr(IMean[] par)
+        public void CertainNP_rrrrr(IReadMean[] par)
         {
-            var parv = new IMean[par.Length - 3];
+            var parv = new IReadMean[par.Length - 3];
             for (int i = 0; i < parv.Length; i++)
                 parv[i] = par[i + 3];
             ScalarRes.Error = par[0].Error.Add(par[1].Error).Add(par[2].Error);
             ScalarRes.Real = Certain(parv, par[0], par[1].Real, par[2].Real);
         }
 
-        public void CertainN_rrrr(IMean[] par)
+        public void CertainN_rrrr(IReadMean[] par)
         {
-            var parv = new IMean[par.Length - 2];
+            var parv = new IReadMean[par.Length - 2];
             for (int i = 0; i < parv.Length; i++)
                 parv[i] = par[i + 2];
             ScalarRes.Error = par[0].Error.Add(par[1].Error);
             ScalarRes.Real = Certain(parv, par[0], par[1].Real, double.MaxValue);
         }
 
-        public void CertainP_rrrr(IMean[] par)
+        public void CertainP_rrrr(IReadMean[] par)
         {
-            var parv = new IMean[par.Length - 2];
+            var parv = new IReadMean[par.Length - 2];
             for (int i = 0; i < parv.Length; i++)
                 parv[i] = par[i + 2];
             ScalarRes.Error = par[0].Error.Add(par[1].Error);
             ScalarRes.Real = Certain(parv, par[0], double.MaxValue, par[1].Real);
         }
 
-        public void Certain_rrr(IMean[] par)
+        public void Certain_rrr(IReadMean[] par)
         {
-            var parv = new IMean[par.Length - 1];
+            var parv = new IReadMean[par.Length - 1];
             for (int i = 0; i < parv.Length; i++)
                 parv[i] = par[i + 1];
             ScalarRes.Error = par[0].Error;
@@ -571,14 +571,14 @@ namespace CommonTypes
 
         //8 - Типы данных
         #region
-        public void Bool_u(IMean[] par)
+        public void Bool_u(IReadMean[] par)
         {
             ScalarRes.Boolean = par[0].String != "0";
             if (par[0].String != "0" && par[0].String != "1")
                 PutErr();
         }
 
-        public void Int_u(IMean[] par)
+        public void Int_u(IReadMean[] par)
         {
             if (par[0].DataType.LessOrEquals(DataType.Integer))
                 ScalarRes.Integer = par[0].Integer;
@@ -593,37 +593,37 @@ namespace CommonTypes
             }
         }
 
-        public void Real_u(IMean[] par)
+        public void Real_u(IReadMean[] par)
         {
             ScalarRes.Real = par[0].DataType.LessOrEquals(DataType.Real) 
                                             ? par[0].Real 
                                             : (par[0].String ?? "0").ToDouble(double.NaN);
         }
 
-        public void Date_u(IMean[] par)
+        public void Date_u(IReadMean[] par)
         {
             ScalarRes.Date = par[0].String.ToDateTime();
             if (ScalarRes.Date == Static.MinDate)
                 PutErr();
         }
 
-        public void String_u(IMean[] par)
+        public void String_u(IReadMean[] par)
         {
             ScalarRes.String = par[0].String;
         }
 
-        public void IsInt_u(IMean[] par)
+        public void IsInt_u(IReadMean[] par)
         {
             int i;
             ScalarRes.Boolean = int.TryParse(par[0].String, out i);
         }
 
-        public void IsReal_u(IMean[] par)
+        public void IsReal_u(IReadMean[] par)
         {
             ScalarRes.Boolean = !double.IsNaN(par[0].String.ToDouble(double.NaN));
         }
 
-        public void IsTime_u(IMean[] par)
+        public void IsTime_u(IReadMean[] par)
         {
             ScalarRes.Boolean = par[0].String.ToDateTime() != Static.MinDate;
         }
@@ -666,7 +666,7 @@ namespace CommonTypes
             return new IntMean((int)TimeUnit.MSec);
         }
 
-        public void TimeAdd_idr(IMean[] par)
+        public void TimeAdd_idr(IReadMean[] par)
         {
             DateTime t = par[1].Date;
             var u = (TimeUnit)par[0].Integer;
@@ -701,7 +701,7 @@ namespace CommonTypes
             ScalarRes.Date = t;
         }
 
-        public void TimeDiff_idd(IMean[] par)
+        public void TimeDiff_idd(IReadMean[] par)
         {
             TimeSpan dif = par[1].Date.Subtract(par[2].Date);
             var u = (TimeUnit)par[0].Integer;
@@ -728,7 +728,7 @@ namespace CommonTypes
             }
         }
 
-        public void TimePart_id(IMean[] par)
+        public void TimePart_id(IReadMean[] par)
         {
             DateTime t = par[1].Date;
             var u = (TimeUnit)par[0].Integer;
@@ -761,7 +761,7 @@ namespace CommonTypes
             }
         }
 
-        public void TimeSerial_iiiiiii(IMean[] par)
+        public void TimeSerial_iiiiiii(IReadMean[] par)
         {
             int p1 = par.Length > 1 ? par[1].Integer : 0;
             int p2 = par.Length > 1 ? par[2].Integer : 0;
@@ -785,7 +785,7 @@ namespace CommonTypes
             return new StringMean(Environment.NewLine);
         }
 
-        public void StrMid_si(IMean[] par)
+        public void StrMid_si(IReadMean[] par)
         {
             int m1 = par[1].Integer - 1;
             string m0 = par[0].String;
@@ -793,7 +793,7 @@ namespace CommonTypes
             else ScalarRes.String = m0.Substring(m1);
         }
 
-        public void StrMid_sii(IMean[] par)
+        public void StrMid_sii(IReadMean[] par)
         {
             int m1 = par[1].Integer - 1, m2 = par[2].Integer;
             string m0 = par[0].String;
@@ -801,7 +801,7 @@ namespace CommonTypes
             else ScalarRes.String = m0.Substring(m1, m2);
         }
 
-        public void StrLeft_si(IMean[] par)
+        public void StrLeft_si(IReadMean[] par)
         {
             int m1 = par[1].Integer;
             string m0 = par[0].String;
@@ -809,7 +809,7 @@ namespace CommonTypes
             else ScalarRes.String = m0.Substring(0, m1);
         }
 
-        public void StrRight_si(IMean[] par)
+        public void StrRight_si(IReadMean[] par)
         {
             int m1 = par[1].Integer;
             string m0 = par[0].String;
@@ -817,12 +817,12 @@ namespace CommonTypes
             else ScalarRes.String = m0.Substring(m0.Length - m1, m1);
         }
 
-        public void StrLen_s(IMean[] par)
+        public void StrLen_s(IReadMean[] par)
         {
             ScalarRes.Integer = par[0].String.Length;
         }
 
-        public void StrInsert_ssi(IMean[] par)
+        public void StrInsert_ssi(IReadMean[] par)
         {
             string m0 = par[0].String;
             string m1 = par[1].String;
@@ -831,7 +831,7 @@ namespace CommonTypes
             else ScalarRes.String = m0.Insert(m2, m1);
         }
 
-        public void StrRemove_si(IMean[] par)
+        public void StrRemove_si(IReadMean[] par)
         {
             string m0 = par[0].String;
             int m1 = par[1].Integer - 1;
@@ -839,7 +839,7 @@ namespace CommonTypes
             else ScalarRes.String = m0.Remove(m1);
         }
 
-        public void StrRemove_sii(IMean[] par)
+        public void StrRemove_sii(IReadMean[] par)
         {
             string m0 = par[0].String;
             int m1 = par[1].Integer - 1;
@@ -848,7 +848,7 @@ namespace CommonTypes
             else ScalarRes.String = m0.Remove(m1, m2);
         }
 
-        public void StrReplace_sss(IMean[] par)
+        public void StrReplace_sss(IReadMean[] par)
         {
             string m0 = par[0].String;
             string m1 = par[1].String;
@@ -856,7 +856,7 @@ namespace CommonTypes
             ScalarRes.String = m0.Replace(m1, m2);
         }
 
-        public void StrFind_ssi(IMean[] par)
+        public void StrFind_ssi(IReadMean[] par)
         {
             int m2 = par.Length == 2 ? 0 : par[2].Integer - 1;
             string m0 = par[0].String;
@@ -865,7 +865,7 @@ namespace CommonTypes
             else ScalarRes.Integer = m1.IndexOf(m0, m2) + 1;
         }
 
-        public void StrFindLast_ssi(IMean[] par)
+        public void StrFindLast_ssi(IReadMean[] par)
         {
             int m2 = par.Length == 2 ? -1 : par[2].Integer - 1;
             string m0 = par[0].String;
@@ -874,32 +874,32 @@ namespace CommonTypes
             else ScalarRes.Integer = (m2 == -1) ? m1.LastIndexOf(m0) + 1 : m1.LastIndexOf(m0, m2) + 1;
         }
 
-        public void StrTrim_s(IMean[] par)
+        public void StrTrim_s(IReadMean[] par)
         {
             ScalarRes.String = par[0].String.Trim();
         }
 
-        public void StrLTrim_s(IMean[] par)
+        public void StrLTrim_s(IReadMean[] par)
         {
             ScalarRes.String = par[0].String.TrimStart();
         }
 
-        public void StrRTrim_s(IMean[] par)
+        public void StrRTrim_s(IReadMean[] par)
         {
             ScalarRes.String = par[0].String.TrimEnd();
         }
 
-        public void StrLCase_s(IMean[] par)
+        public void StrLCase_s(IReadMean[] par)
         {
             ScalarRes.String = par[0].String.ToLower();
         }
 
-        public void StrUCase_s(IMean[] par)
+        public void StrUCase_s(IReadMean[] par)
         {
             ScalarRes.String = par[0].String.ToUpper();
         }
 
-        public void StrRegReplace_sss(IMean[] par)
+        public void StrRegReplace_sss(IReadMean[] par)
         {
             string m0 = par[0].String;
             var r1 = new Regex(par[1].String);
@@ -907,21 +907,21 @@ namespace CommonTypes
             ScalarRes.String = r1.Replace(m0, m2);
         }
 
-        public void StrRegFind_ss(IMean[] par)
+        public void StrRegFind_ss(IReadMean[] par)
         {
             string m0 = par[0].String;
             var r1 = new Regex(par[1].String);
             ScalarRes.Integer = r1.Match(m0).Index+1;
         }
 
-        public void StrRegMatch_ss(IMean[] par)
+        public void StrRegMatch_ss(IReadMean[] par)
         {
             string m0 = par[0].String;
             var r1 = new Regex("^" + par[1].String + "$");
             ScalarRes.Boolean = r1.Match(m0).Success;
         }
 
-        public void ToIdent_s(IMean[] par)
+        public void ToIdent_s(IReadMean[] par)
         {
             string s = par[0].String.Trim();
             var sb = new StringBuilder();

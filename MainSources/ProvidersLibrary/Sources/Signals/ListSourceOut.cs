@@ -14,14 +14,14 @@ namespace ProvidersLibrary
         protected ListSource Source { get { return (ListSource) Provider; } }
 
         //Основной сигнал объекта
-        protected internal InitialSignal ValueSignal { get; set; }
+        protected internal CloneSignal ValueSignal { get; set; }
         
         //Добавить сигнал в выход
         protected override ProviderSignal AddNewSignal(ProviderSignal sig)
         {
-            return AddInitialSignal((InitialSignal)sig);
+            return AddInitialSignal((CloneSignal)sig);
         }
-        protected virtual InitialSignal AddInitialSignal(InitialSignal sig)
+        protected virtual CloneSignal AddInitialSignal(CloneSignal sig)
         {
             return ValueSignal = ValueSignal ?? sig;
         }
@@ -50,38 +50,38 @@ namespace ProvidersLibrary
         }
 
         //Добавка мгновенных значений разного типа в указанный сигнал
-        protected int AddMom(InitialSignal sig, DateTime time, bool b, MomErr err = null)
+        protected int AddMom(CloneSignal sig, DateTime time, bool b, MomErr err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Boolean = b;
             return sig.AddMom(time, err);
         }
-        protected int AddMom(InitialSignal sig, DateTime time, int i, MomErr err = null)
+        protected int AddMom(CloneSignal sig, DateTime time, int i, MomErr err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Integer = i;
             return sig.AddMom(time, err);
         }
-        protected int AddMom(InitialSignal sig, DateTime time, double r, MomErr err = null)
+        protected int AddMom(CloneSignal sig, DateTime time, double r, MomErr err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Real = r;
             return sig.AddMom(time, err);
         }
-        protected int AddMom(InitialSignal sig, DateTime time, DateTime d, MomErr err = null)
+        protected int AddMom(CloneSignal sig, DateTime time, DateTime d, MomErr err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Date = d;
             return sig.AddMom(time, err);
         }
-        protected int AddMom(InitialSignal sig, DateTime time, string s, MomErr err = null)
+        protected int AddMom(CloneSignal sig, DateTime time, string s, MomErr err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.String = s;
             return sig.AddMom(time, err);
         }
         //Добавка мгновенных значений, значение берется из типа object
-        protected int AddMom(InitialSignal sig, DateTime time, object ob, MomErr err = null)
+        protected int AddMom(CloneSignal sig, DateTime time, object ob, MomErr err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Object = ob;
@@ -89,31 +89,31 @@ namespace ProvidersLibrary
         }
 
         //Добавка мгнорвенных значений разного типа с чтением из рекордсета
-        protected int AddMomBool(InitialSignal sig, DateTime time, IRecordRead rec, string field, MomErr err = null)
+        protected int AddMomBool(CloneSignal sig, DateTime time, IRecordRead rec, string field, MomErr err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Boolean = rec.GetBool(field);
             return sig.AddMom(time, err);
         }
-        protected int AddMomInt(InitialSignal sig, DateTime time, IRecordRead rec, string field, MomErr err = null)
+        protected int AddMomInt(CloneSignal sig, DateTime time, IRecordRead rec, string field, MomErr err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Integer = rec.GetInt(field);
             return sig.AddMom(time, err);
         }
-        protected int AddMomReal(InitialSignal sig, DateTime time, IRecordRead rec, string field, MomErr err = null)
+        protected int AddMomReal(CloneSignal sig, DateTime time, IRecordRead rec, string field, MomErr err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Real = rec.GetDouble(field);
             return sig.AddMom(time, err);
         }
-        protected int AddMomString(InitialSignal sig, DateTime time, IRecordRead rec, string field, MomErr err = null)
+        protected int AddMomString(CloneSignal sig, DateTime time, IRecordRead rec, string field, MomErr err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.String = rec.GetString(field);
             return sig.AddMom(time, err);
         }
-        protected int AddMomTime(InitialSignal sig, DateTime time, IRecordRead rec, string field, MomErr err = null)
+        protected int AddMomTime(CloneSignal sig, DateTime time, IRecordRead rec, string field, MomErr err = null)
         {
             if (sig == null) return 0;
             sig.BufMom.Date = rec.GetTime(field);

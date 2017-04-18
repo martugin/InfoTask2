@@ -10,12 +10,12 @@ namespace Fictive
             : base(source) { }
 
         //Второй сигнал
-        internal InitialSignal ValueSignal2 { get; private set; }
+        internal CloneSignal ValueSignal2 { get; private set; }
 
         //Id в таблице объектов
         internal int Id { get; set; }
 
-        protected override InitialSignal AddInitialSignal(InitialSignal sig)
+        protected override CloneSignal AddInitialSignal(CloneSignal sig)
         {
             switch (sig.Inf["Signal"])
             {

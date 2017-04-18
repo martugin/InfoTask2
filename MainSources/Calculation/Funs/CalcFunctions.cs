@@ -48,13 +48,13 @@ namespace Calculation
         }
 
         //Вычисление скалярной функции для списков мгновенных значений
-        internal IMean CalcScalar(DataType dataType, //Возвращаемый тип данных
-                                                IMean[] par, //Список аргументов
+        internal IReadMean CalcScalar(DataType dataType, //Возвращаемый тип данных
+                                                IReadMean[] par, //Список аргументов
                                                 bool isComplex, //При вычислении используются флаги значений аргументов
-                                                Action<IMean[], bool[]> action) //Действие, выполняющее вычисление для одного момента времени
+                                                Action<IReadMean[], bool[]> action) //Действие, выполняющее вычисление для одного момента времени
         {
             SetScalarDataType(dataType);
-            var mpar = new IMean[par.Length];
+            var mpar = new IReadMean[par.Length];
             var cpar = new bool[par.Length];
             
             bool isMom = !isComplex;
