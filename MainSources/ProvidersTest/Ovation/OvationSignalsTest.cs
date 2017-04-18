@@ -14,7 +14,7 @@ namespace ProvidersTest
         {
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalValueType.List, "SourceCon", "Ovation", logger);
+            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalType.List, "SourceCon", "Ovation", logger);
             var prov = factory.CreateProvider("OvationSource", "DataSource=DROP200");
             con.JoinProvider(prov);
             return con;

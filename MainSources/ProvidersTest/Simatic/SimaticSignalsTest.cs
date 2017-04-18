@@ -14,7 +14,7 @@ namespace ProvidersTest
         {
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalValueType.List, "SourceCon", "Simatic", logger);
+            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalType.List, "SourceCon", "Simatic", logger);
             var prov = factory.CreateProvider("SimaticSource", "SQLServer" + SysTabl.SubValueS(TestLib.TestRunDir + "TestsSettings.accdb", "SQLServerSettings", "SqlServer"));
             con.JoinProvider(prov);
             return con;

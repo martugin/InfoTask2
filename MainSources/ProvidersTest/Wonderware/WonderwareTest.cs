@@ -14,7 +14,7 @@ namespace ProvidersTest
         {
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalValueType.List, "SourceCon", "Wonderware", logger);
+            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalType.List, "SourceCon", "Wonderware", logger);
             var prov = factory.CreateProvider("WonderwareSource", TestLib.TestSqlInf("RunTime"));
             con.JoinProvider(prov);
             return con;

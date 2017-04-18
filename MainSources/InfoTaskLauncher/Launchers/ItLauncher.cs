@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Forms;
 using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
@@ -27,13 +26,15 @@ namespace ComLaunchers
         //Код приложения
         string AppCode { get; }
         //Номер програмного продукта
-        int AppProductNumber{ get; }
+        int ProductNumber{ get; }
         //Имя организации-пользователя
         string UserOrg { get; }
         //Версия InfoTask
         string InfoTaskVersion { get; }
         //Дата версии InfoTask
         DateTime InfoTaskVersionDate { get; }
+        //Проверка активации приложения
+        bool AppActivated { get; }
 
         //Загрузка проекта
         void LoadProject(string projectDir);
@@ -168,7 +169,7 @@ namespace ComLaunchers
         public string AppCode { get; private set; }
 
         //Номер програмного продукта
-        public int AppProductNumber 
+        public int ProductNumber 
         { 
             get { return ItStatic.AppProductNumber(AppCode); }
         }
@@ -186,6 +187,12 @@ namespace ComLaunchers
         public DateTime InfoTaskVersionDate
         {
             get { return ItStatic.InfoTaskVersionDate; }
+        }
+        //Проверка активации приложения
+        public bool AppActivated
+        {
+            //Todo реализовать
+            get { return true; }
         }
 
         //Текущий проект
@@ -220,7 +227,7 @@ namespace ComLaunchers
         {
             ListSourceConnect s = null;
             Logger.RunSyncCommand(() => { 
-                s = (ListSourceConnect)Factory.CreateConnect(ProviderType.Source, SignalValueType.List, name, complect, Logger);
+                s = (ListSourceConnect)Factory.CreateConnect(ProviderType.Source, SignalType.List, name, complect, Logger);
             });
             return new RSourConnect(s, Factory);
         }
@@ -230,7 +237,7 @@ namespace ComLaunchers
         {
             MomReceiverConnect r = null;
             Logger.RunSyncCommand(() => {
-                r = (MomReceiverConnect)Factory.CreateConnect(ProviderType.Receiver, SignalValueType.Mom, name, complect, Logger);
+                r = (MomReceiverConnect)Factory.CreateConnect(ProviderType.Receiver, SignalType.Mom, name, complect, Logger);
             });
             return new RReceivConnect(r, Factory);
         }

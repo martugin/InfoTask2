@@ -22,7 +22,7 @@ namespace Fictive
         internal string Label { get; private set; }
         
         //Диапазон источника
-        protected override TimeInterval GetTimeSource()
+        protected override TimeInterval GetTimeProvider()
         {
             return new TimeInterval(new DateTime(2000, 1, 1), new DateTime(2100, 1, 1));
         }

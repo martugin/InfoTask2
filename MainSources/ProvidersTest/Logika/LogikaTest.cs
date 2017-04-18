@@ -16,7 +16,7 @@ namespace ProvidersTest
             TestLib.CopyFile(@"Providers\Logika", "prolog.mdb", prefix + "Prolog.mdb");
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalValueType.List, "SourceCon", "Logika", logger);
+            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalType.List, "SourceCon", "Logika", logger);
             var prov = factory.CreateProvider("LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\" + prefix + "Prolog.mdb");
             con.JoinProvider(prov);
             return con;

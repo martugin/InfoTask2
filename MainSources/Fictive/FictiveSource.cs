@@ -17,7 +17,7 @@ namespace Fictive
         public override string Code { get { return "FictiveSource"; } }
 
         //Диапазон источника
-        protected override TimeInterval GetTimeSource()
+        protected override TimeInterval GetTimeProvider()
         {
             if (!Connect()) return TimeInterval.CreateDefault();
             using (var sys = new SysTabl(DbFile))

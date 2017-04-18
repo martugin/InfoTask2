@@ -15,7 +15,7 @@ namespace ProvidersTest
         {
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var connect = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalValueType.List, "TestSource", "Fictive", logger);
+            var connect = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalType.List, "TestSource", "Fictive", logger);
             var source = (FictiveSimpleSource)factory.CreateProvider("FictiveSimpleSource", "Label=p1");
             FictiveSimpleSource source2 = null;
             if (makeReserve)

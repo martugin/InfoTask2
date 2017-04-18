@@ -39,7 +39,7 @@ namespace Kosmotronika
         }
 
         //Добавить к выходу сигнал, если такого еще не было
-        protected override CloneSignal AddInitialSignal(CloneSignal sig)
+        protected override SourceSignal AddSourceSignal(SourceSignal sig)
         {
             switch (sig.Inf["Prop"].ToUpper())
             {
