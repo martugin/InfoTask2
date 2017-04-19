@@ -11,7 +11,7 @@ namespace Kosmotronika
     public abstract class KosmotronikaBaseSource : OleDbSource
     {
         //Получение времени архива ПТК
-        protected override TimeInterval GetTimeSource()
+        protected override TimeInterval GetTimeProvider()
         {
             using (var rec = new AdoReader(Connection, "Exec RT_ARCHDATE"))
             {

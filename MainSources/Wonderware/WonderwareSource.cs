@@ -17,7 +17,7 @@ namespace Wonderware
         public override string Code { get { return "WonderwareSource"; } }
 
         //Получение диапазона архива по блокам истории
-        protected override TimeInterval GetTimeSource()
+        protected override TimeInterval GetTimeProvider()
         {
             DateTime mind = Static.MaxDate, maxd = Static.MinDate;
             using (var rec = new AdoReader(SqlProps, "SELECT FromDate, ToDate FROM v_HistoryBlock ORDER BY FromDate, ToDate DESC"))
