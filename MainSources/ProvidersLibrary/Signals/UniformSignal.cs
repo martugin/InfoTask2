@@ -26,11 +26,12 @@ namespace ProvidersLibrary
         private readonly EditMom _endMom;
 
         //Очистка списка значений
-        internal override void ClearMoments(bool clearBegin)
+        internal override void ClearMoments()
         {
             MomList.Clear();
             _endMom.Time = Static.MinDate;
-            if (clearBegin) _beginMom.Time = Static.MinDate;
+            if (SourceConnect.PeriodBegin != SourceConnect.Source.PrevPeriodEnd)
+                _beginMom.Time = Static.MinDate;
         }
 
         //Добавка мгновенного значения в список или клон
@@ -55,21 +56,21 @@ namespace ProvidersLibrary
         }
 
         //Для сигнала был задан срез
-        internal bool HasBegin
+        internal override bool HasBegin
         {
             get { return _beginMom.Time != Static.MinDate; }
         }
 
         //Добавляет значение среза на начало периода в список, возвращает 1, если срез был получен, иначе 0
-        internal int MakeBegin()
+        internal override int MakeBegin()
         {
             if (!HasBegin) return 0;
-            MomList.AddMom(BufMom);
+            MomList.AddMom(_beginMom);
             return 1;
         }
 
         //Формирует значение на конец периода
-        internal int MakeEnd()
+        internal override int MakeEnd()
         {
             if (_endMom.Time != Static.MinDate)
                 _beginMom.CopyAllFrom(_endMom);

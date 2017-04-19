@@ -7,23 +7,23 @@ namespace CommonTypes
     public static class MFactory
     {
         #region Mean
-        public static IMean NewMean(DataType dtype)
+        public static Mean NewMean(DataType dtype)
         {
             return CreateMean(dtype);
         }
 
-        public static IMean NewMean(bool b)
+        public static Mean NewMean(bool b)
         {
             return new BoolMean(b);
         }
-        public static IMean NewMean(DataType dtype, bool b)
+        public static Mean NewMean(DataType dtype, bool b)
         {
             var mean = CreateMean(dtype);
             mean.Boolean = b;
             return mean;
         }
 
-        public static IMean NewMean(int i)
+        public static Mean NewMean(int i)
         {
             return new IntMean(i);
         }
@@ -34,7 +34,7 @@ namespace CommonTypes
             return mean;
         }
 
-        public static IMean NewMean(double d, MomErr err = null)
+        public static Mean NewMean(double d)
         {
             return new RealMean(d);
         }
@@ -45,7 +45,7 @@ namespace CommonTypes
             return mean;
         }
 
-        public static IMean NewMean(string s, MomErr err = null)
+        public static Mean NewMean(string s)
         {
             return new StringMean(s);
         }
@@ -56,7 +56,7 @@ namespace CommonTypes
             return mean;
         }
 
-        public static IMean NewMean(DateTime d, MomErr err = null)
+        public static Mean NewMean(DateTime d)
         {
             return new TimeMean(d);
         }
@@ -86,7 +86,7 @@ namespace CommonTypes
         }
 
         //Записать значение в рекордсет
-        public static void PutMean(this IRecordAdd rec, string field, IMean mean)
+        public static void PutMean(this IRecordAdd rec, string field, IReadMean mean)
         {
             mean.ValueToRec(rec, field);
         }

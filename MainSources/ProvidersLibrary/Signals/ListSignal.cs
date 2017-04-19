@@ -11,7 +11,7 @@ namespace ProvidersLibrary
             : base(connect, code, dataType, contextOut, inf)
         {
             MomList = MFactory.NewList(dataType);
-            _bufMom = MFactory.NewMom(dataType);
+            _bufMom = (Mean)MFactory.NewMom(dataType);
         }
         protected ListSignal(SourceConnect connect, string code) 
             : base(connect,  code) { }
@@ -25,20 +25,20 @@ namespace ProvidersLibrary
         protected MomList MomList { get; set; }
 
         //Очистка списка значений
-        internal virtual void ClearMoments(bool clearBegin)
+        internal virtual void ClearMoments()
         {
             MomList.Clear();
         }
 
         //Возвращаемый список значений
-        public override IMean Value
+        public override IReadMean Value
         {
             get { return MomList; }
         }
 
         //Буферное значение для добавления
-        private readonly IMean _bufMom;
-        internal override IMean BufMom { get { return _bufMom; }}
+        private readonly Mean _bufMom;
+        internal override Mean BufMom { get { return _bufMom; }}
         
         //Добавка мгновенного значения в список или клон
         //Возвращает количество реально добавленных значений 
@@ -60,5 +60,12 @@ namespace ProvidersLibrary
             BufMom.Error = err;
             return true;
         }
+
+        //Для сигнала был задан срез
+        internal virtual bool HasBegin { get { return true; }}
+        //Добавляет значение среза на начало периода в список, возвращает 1, если срез был получен, иначе 0
+        internal virtual int MakeBegin() { return 0; }
+        //Формирует значение на конец периода
+        internal virtual int MakeEnd() { return 0; }
     }
 }

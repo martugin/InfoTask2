@@ -10,17 +10,17 @@ namespace ProvidersTest
     [TestClass]
     public class CloneSourceTest
     {
-        private ListSourceConnect MakeCloneConnect(string prefix)
+        private SourceConnect MakeCloneConnect(string prefix)
         {
             TestLib.CopyDir(@"Providers\Fictive", "TestClone", "Clone" + prefix);
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var connect = factory.CreateConnect(ProviderType.Source, SignalType.List, "TestSource", "Clones", logger);
+            var connect = factory.CreateConnect(ProviderType.Source, "TestSource", "Clones", logger);
             connect.JoinProvider(factory.CreateProvider("CloneSource", "CloneDir=" + TestLib.TestRunDir + @"Providers\Fictive\Clone" + prefix));
-            return (ListSourceConnect)connect;
+            return (SourceConnect)connect;
         }
 
-        private static void GetValues(ListSourceConnect connect, DateTime beg, DateTime en)
+        private static void GetValues(SourceConnect connect, DateTime beg, DateTime en)
         {
             connect.Logger.StartPeriod(beg, en);
             connect.GetValues();
@@ -61,35 +61,35 @@ namespace ProvidersTest
         {
             var con = MakeCloneConnect("Signals");
             var prov = (CloneSource)con.Source;
-            var sig = con.AddSignal("Ob.SigB", DataType.Boolean, "Ob.SigB", "NeedCut=True");
+            var sig = con.AddSignal("Ob.SigB", DataType.Boolean, SignalType.Uniform, "Ob.SigB");
             Assert.AreEqual(DataType.Boolean, sig.DataType);
-            Assert.AreEqual(con, ((ProviderSignal)sig).Connect);
+            Assert.AreEqual(con, sig.Connect);
             Assert.AreEqual(1, con.Signals.Count);
             Assert.IsTrue(con.Signals.ContainsKey("Ob.SigB"));
-            sig = con.AddSignal("Ob.SigI", DataType.Integer, "Ob.SigI", "NeedCut=True");
+            sig = con.AddSignal("Ob.SigI", DataType.Integer, SignalType.Uniform, "Ob.SigI");
             Assert.AreEqual(DataType.Integer, sig.DataType);
-            Assert.AreEqual(con, ((ProviderSignal)sig).Connect);
+            Assert.AreEqual(con, sig.Connect);
             Assert.AreEqual(2, con.Signals.Count);
             Assert.IsTrue(con.Signals.ContainsKey("Ob.SigI"));
-            sig = con.AddSignal("Ob.SigR", DataType.Real, "Ob.SigR", "NeedCut=True");
+            sig = con.AddSignal("Ob.SigR", DataType.Real, SignalType.Uniform, "Ob.SigR");
             Assert.AreEqual(DataType.Real, sig.DataType);
-            Assert.AreEqual(con, ((ProviderSignal)sig).Connect);
+            Assert.AreEqual(con, sig.Connect);
             Assert.AreEqual(3, con.Signals.Count);
             Assert.IsTrue(con.Signals.ContainsKey("Ob.SigR"));
-            sig = con.AddSignal("Ob.SigS", DataType.String, "Ob.SigS", "NeedCut=True");
+            sig = con.AddSignal("Ob.SigS", DataType.String, SignalType.Uniform, "Ob.SigS");
             Assert.AreEqual(DataType.String, sig.DataType);
-            Assert.AreEqual(con, ((ProviderSignal)sig).Connect);
+            Assert.AreEqual(con, sig.Connect);
             Assert.AreEqual(4, con.Signals.Count);
             Assert.IsTrue(con.Signals.ContainsKey("Ob.SigS"));
-            sig = con.AddSignal("Ob.SigT", DataType.Time, "Ob.SigT", "NeedCut=True");
+            sig = con.AddSignal("Ob.SigT", DataType.Time, SignalType.Uniform, "Ob.SigT");
             Assert.AreEqual(DataType.Time, sig.DataType);
-            Assert.AreEqual(con, ((ProviderSignal)sig).Connect);
+            Assert.AreEqual(con, sig.Connect);
             Assert.AreEqual(5, con.Signals.Count);
             Assert.IsTrue(con.Signals.ContainsKey("Ob.SigT"));
-            con.AddSignal("ObConst.SigB", DataType.Boolean, "ObConst.SigB", "NeedCut=True");
-            con.AddSignal("ObConst.SigI", DataType.Integer, "ObConst.SigI", "NeedCut=True");
-            con.AddSignal("ObConst.SigR", DataType.Real, "ObConst.SigR", "NeedCut=True");
-            con.AddSignal("ObConst.SigS", DataType.String, "ObConst.SigS", "NeedCut=True");
+            con.AddSignal("ObConst.SigB", DataType.Boolean, SignalType.Uniform, "ObConst.SigB");
+            con.AddSignal("ObConst.SigI", DataType.Integer, SignalType.Uniform, "ObConst.SigI");
+            con.AddSignal("ObConst.SigR", DataType.Real, SignalType.Uniform, "ObConst.SigR");
+            con.AddSignal("ObConst.SigS", DataType.String, SignalType.Uniform, "ObConst.SigS");
             Assert.AreEqual(9, con.Signals.Count);
             Assert.IsTrue(con.Signals.ContainsKey("ObConst.SigB"));
             Assert.IsTrue(con.Signals.ContainsKey("ObConst.SigI"));
@@ -129,15 +129,15 @@ namespace ProvidersTest
         {
             var con = MakeCloneConnect("ReadValues");
             var prov = (CloneSource)con.Source;
-            con.AddSignal("Ob.SigB", DataType.Boolean, "Ob.SigB", "NeedCut=True");
-            con.AddSignal("Ob.SigI", DataType.Integer, "Ob.SigI", "NeedCut=True");
-            con.AddSignal("Ob.SigR", DataType.Real, "Ob.SigR", "NeedCut=True");
-            con.AddSignal("Ob.SigS", DataType.String, "Ob.SigS", "NeedCut=True");
-            con.AddSignal("Ob.SigT", DataType.Time, "Ob.SigT", "NeedCut=True");
-            con.AddSignal("ObConst.SigB", DataType.Boolean, "ObConst.SigB", "NeedCut=True");
-            con.AddSignal("ObConst.SigI", DataType.Integer, "ObConst.SigI", "NeedCut=True");
-            con.AddSignal("ObConst.SigR", DataType.Real, "ObConst.SigR", "NeedCut=True");
-            con.AddSignal("ObConst.SigS", DataType.String, "ObConst.SigS", "NeedCut=True");
+            con.AddSignal("Ob.SigB", DataType.Boolean, SignalType.Uniform, "Ob.SigB");
+            con.AddSignal("Ob.SigI", DataType.Integer, SignalType.Uniform, "Ob.SigI");
+            con.AddSignal("Ob.SigR", DataType.Real, SignalType.Uniform, "Ob.SigR");
+            con.AddSignal("Ob.SigS", DataType.String, SignalType.Uniform, "Ob.SigS");
+            con.AddSignal("Ob.SigT", DataType.Time, SignalType.Uniform, "Ob.SigT");
+            con.AddSignal("ObConst.SigB", DataType.Boolean, SignalType.Uniform, "ObConst.SigB");
+            con.AddSignal("ObConst.SigI", DataType.Integer, SignalType.Uniform, "ObConst.SigI");
+            con.AddSignal("ObConst.SigR", DataType.Real, SignalType.Uniform, "ObConst.SigR");
+            con.AddSignal("ObConst.SigS", DataType.String,SignalType.Uniform, "ObConst.SigS");
 
             Assert.IsFalse(prov.IsConnected);
             Assert.IsFalse(prov.IsPrepared);
@@ -246,15 +246,15 @@ namespace ProvidersTest
         public void ReadCut()
         {
             var con = MakeCloneConnect("ReadCut");
-            con.AddSignal("Ob.SigB", DataType.Boolean, "Ob.SigB", "NeedCut=True");
-            con.AddSignal("Ob.SigI", DataType.Integer, "Ob.SigI", "NeedCut=True");
-            con.AddSignal("Ob.SigR", DataType.Real, "Ob.SigR", "NeedCut=True");
-            con.AddSignal("Ob.SigS", DataType.String, "Ob.SigS", "NeedCut=True");
-            con.AddSignal("Ob.SigT", DataType.Time, "Ob.SigT", "NeedCut=True");
-            con.AddSignal("ObConst.SigB", DataType.Boolean, "ObConst.SigB", "NeedCut=True");
-            con.AddSignal("ObConst.SigI", DataType.Integer, "ObConst.SigI", "NeedCut=True");
-            con.AddSignal("ObConst.SigR", DataType.Real, "ObConst.SigR", "NeedCut=True");
-            con.AddSignal("ObConst.SigS", DataType.String, "ObConst.SigS", "NeedCut=True");
+            con.AddSignal("Ob.SigB", DataType.Boolean, SignalType.Uniform, "Ob.SigB");
+            con.AddSignal("Ob.SigI", DataType.Integer, SignalType.Uniform, "Ob.SigI");
+            con.AddSignal("Ob.SigR", DataType.Real, SignalType.Uniform, "Ob.SigR");
+            con.AddSignal("Ob.SigS", DataType.String, SignalType.Uniform, "Ob.SigS");
+            con.AddSignal("Ob.SigT", DataType.Time, SignalType.Uniform, "Ob.SigT");
+            con.AddSignal("ObConst.SigB", DataType.Boolean, SignalType.Uniform, "ObConst.SigB");
+            con.AddSignal("ObConst.SigI", DataType.Integer, SignalType.Uniform, "ObConst.SigI");
+            con.AddSignal("ObConst.SigR", DataType.Real, SignalType.Uniform, "ObConst.SigR");
+            con.AddSignal("ObConst.SigS", DataType.String, SignalType.Uniform, "ObConst.SigS");
 
             GetValues(con, D(12), D(20));
             var mlist = con.Signals["Ob.SigB"].Value;

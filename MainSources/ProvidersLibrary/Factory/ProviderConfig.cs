@@ -31,11 +31,11 @@ namespace ProvidersLibrary
     //Описание одного провайдера из Config
     public class ProviderConfig
     {
-        public ProviderConfig(ComplectConfig complect, ProviderType type, SignalType valueType, string code)
+        public ProviderConfig(ComplectConfig complect, ProviderType type, SignalType signalType, string code)
         {
             Complect = complect;
             Type = type;
-            SignalValueType = valueType;
+            SignalType = signalType;
             Code = code;
         }
         
@@ -46,7 +46,7 @@ namespace ProvidersLibrary
         //Комплект провайдеров
         public ComplectConfig Complect { get; private set; }
         //Тип значений
-        public SignalType SignalValueType { get; private set; }
+        public SignalType SignalType { get; private set; }
 
     }
 }

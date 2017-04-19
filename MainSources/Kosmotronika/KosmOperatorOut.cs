@@ -11,26 +11,26 @@ namespace Kosmotronika
 
         //Сигналы (поля таблицы действий оператора)
         //Номер рабочей станции
-        internal CloneSignal NumWsSignal { get; private set; }
+        internal ListSignal NumWsSignal { get; private set; }
         //Режим
-        internal CloneSignal ModeSignal { get; private set; }
+        internal ListSignal ModeSignal { get; private set; }
         //Код 
-        internal CloneSignal CodeSignal { get; private set; }
+        internal ListSignal CodeSignal { get; private set; }
         //Системный номер
-        internal CloneSignal SnSignal { get; private set; }
+        internal ListSignal SnSignal { get; private set; }
         //Номер типа
-        internal CloneSignal NumTypeSignal { get; private set; }
+        internal ListSignal NumTypeSignal { get; private set; }
         //Подразделение
-        internal CloneSignal AppartmentSignal { get; private set; }
+        internal ListSignal AppartmentSignal { get; private set; }
         //Параметры 
-        internal CloneSignal ParamsSignal { get; private set; }
+        internal ListSignal ParamsSignal { get; private set; }
         //
-        internal CloneSignal ExtCommandSignal { get; private set; }
+        internal ListSignal ExtCommandSignal { get; private set; }
         //
-        internal CloneSignal PointSignal { get; private set; }
+        internal ListSignal PointSignal { get; private set; }
         
         //Добавить сигнал
-        protected override CloneSignal AddInitialSignal(CloneSignal sig)
+        protected override ListSignal AddSourceSignal(ListSignal sig)
         {
             switch (sig.Inf["Prop"].ToLower())
             {

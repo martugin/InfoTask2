@@ -1,6 +1,5 @@
 ﻿using System;
 using BaseLibrary;
-using CommonTypes;
 
 namespace ProvidersLibrary
 {
@@ -49,6 +48,8 @@ namespace ProvidersLibrary
                 reserveProvider.ProviderConnect = this;
                 reserveProvider.Logger = Logger;
             }
+            if (mainProvider != null && reserveProvider != null && mainProvider.SignalType != reserveProvider.SignalType)
+                AddError("Разный тип значений у основного и резервного провайдера", null, _mainProvider.SignalType.ToEnglish() + ", " + _reserveProvider.SignalType.ToEnglish());
         }
 
         //Переключение текущего провайдера, возвращает true, если переключение произошло
@@ -103,36 +104,12 @@ namespace ProvidersLibrary
             return true;
         }
 
-        //Список сигналов, содержащих возвращаемые значения
-        protected internal readonly DicS<ProviderSignal> ProviderSignals = new DicS<ProviderSignal>();
-        public IDicSForRead<ProviderSignal> Signals { get { return ProviderSignals; } }
-        
         //Очистка списка сигналов
         public virtual void ClearSignals()
         {
             AddEvent("Очистка списка сигналов");
             Provider.IsPrepared = false;
             Provider.ClearOuts();
-            ProviderSignals.Clear();
         }
-
-        //Добавить сигнал
-        public ProviderSignal AddSignal(string fullCode, //Полный код сигнала
-                                                        DataType dataType, //Тип данных
-                                                        SignalType signalType, //Тип сигнала
-                                                        string infObject, //Свойства объекта
-                                                        string infOut, //Свойства выхода относительно объекта
-                                                        string infProp = "") //Свойства сигнала относительно выхода
-        {
-            if (ProviderSignals.ContainsKey(fullCode))
-                return ProviderSignals[fullCode];
-            Provider.IsPrepared = false;
-            var contextOut = infObject + (infOut.IsEmpty() ? "" : ";" + infOut);
-            var inf = infObject.ToPropertyDicS().AddDic(infOut.ToPropertyDicS()).AddDic(infProp.ToPropertyDicS());
-            return ProviderSignals.Add(fullCode, AddConcreteSignal(fullCode, dataType, signalType, contextOut, inf));
-        }
-
-        //Переопределяемый метод для добавления сигналов конкретного типа
-        protected abstract ProviderSignal AddConcreteSignal(string fullCode, DataType dataType, SignalType signalType, string contextOut, DicS<string> inf);
     }
 }

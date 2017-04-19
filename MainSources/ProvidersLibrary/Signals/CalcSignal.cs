@@ -174,7 +174,7 @@ namespace ProvidersLibrary
             }
         }
 
-        private void AddUniformMom(IMean fromList, MomList toList, int i, DateTime t)
+        private void AddUniformMom(IReadMean fromList, MomList toList, int i, DateTime t)
         {
             if (i < fromList.Count && fromList.TimeI(i) == t) return;
             toList.AddMom(fromList.ToMomI(i == 0 ? 0 : i - 1, t));

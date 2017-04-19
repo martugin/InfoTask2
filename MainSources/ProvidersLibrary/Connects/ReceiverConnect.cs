@@ -1,33 +1,47 @@
-п»їusing System;
+using System;
 using BaseLibrary;
 using CommonTypes;
 
 namespace ProvidersLibrary
 {
-    //РЎРѕРµРґРёРЅРµРЅРёРµ - РїСЂРёРµРјРЅРёРє
+    //Соединение - приемник
     public class ReceiverConnect : ProviderConnect
     {
-        protected ReceiverConnect(string name, string complect, Logger logger) 
+        public ReceiverConnect(string name, string complect, Logger logger) 
             : base(name, complect, logger) { }
 
-        //РўРёРї РїСЂРѕРІР°Р№РґРµСЂР°
+        //Тип провайдера
         public override ProviderType Type
         {
             get { return ProviderType.Receiver; }
         }
-        //РўРµРєСѓС‰РёР№ РїСЂРѕРІР°Р№РґРµСЂ РїСЂРёРµРјРЅРёРєР°
+        //Текущий провайдер приемника
         internal Receiver Receiver
         {
             get { return (Receiver)Provider; }
         }
        
-        //Р”РѕР±Р°РІРёС‚СЊ СЃРёРіРЅР°Р» РїСЂРёРµРјРЅРёРєР°
-        protected override ProviderSignal AddConcreteSignal(string fullCode, DataType dataType, SignalType signalType, string contextOut, DicS<string> inf)
+        //Список сигналов, содержащих возвращаемые значения
+        private readonly DicS<ReceiverSignal> _signals = new DicS<ReceiverSignal>();
+        public IDicSForRead<ReceiverSignal> Signals { get { return _signals; } }
+
+        //Добавить сигнал
+        public ReceiverSignal AddSignal(string fullCode, //Полный код сигнала
+                                                         DataType dataType, //Тип данных
+                                                         SignalType signalType, //Тип сигнала
+                                                         string infObject, //Свойства объекта
+                                                         string infOut = "", //Свойства выхода относительно объекта
+                                                         string infProp = "") //Свойства сигнала относительно выхода
         {
-            return new ReceiverSignal(this, fullCode, dataType, contextOut, inf);
+            if (_signals.ContainsKey(fullCode))
+                return _signals[fullCode];
+            Provider.IsPrepared = false;
+            var contextOut = infObject + (infOut.IsEmpty() ? "" : ";" + infOut);
+            var inf = infObject.ToPropertyDicS().AddDic(infOut.ToPropertyDicS()).AddDic(infProp.ToPropertyDicS());
+            return _signals.Add(fullCode, new ReceiverSignal(this, fullCode, dataType, contextOut, inf));
         }
 
-        //Р—Р°РїРёСЃСЊ Р·РЅР°С‡РµРЅРёР№ РІ РїСЂРёРµРјРЅРёРє
+        //Запись значений в приемник
         public void WriteValues() 
         {
             if (PeriodIsUndefined()) return;
@@ -38,7 +52,7 @@ namespace ProvidersLibrary
                     PutValues();
         }
 
-        //Р—Р°РїРёСЃСЊ Р·РЅР°С‡РµРЅРёР№ РІ РїСЂРёРµРјРЅРёРє
+        //Запись значений в приемник
         protected void PutValues()
         {
             try
@@ -48,14 +62,14 @@ namespace ProvidersLibrary
 
                 using (Start(10, 100))
                 {
-                    AddEvent("Р—Р°РїРёСЃСЊ Р·РЅР°С‡РµРЅРёР№ РІ РїСЂРёРµРјРЅРёРє");
+                    AddEvent("Запись значений в приемник");
                     Receiver.WriteValues();
-                    AddEvent("Р—РЅР°С‡РµРЅРёСЏ Р·Р°РїРёСЃР°РЅС‹ РІ РїСЂРёРµРјРЅРёРє");
+                    AddEvent("Значения записаны в приемник");
                 }
             }
             catch (Exception ex)
             {
-                AddError("РћС€РёР±РєР° РїСЂРё Р·Р°РїРёСЃРё Р·РЅР°С‡РµРЅРёР№ РІ РїСЂРёРµРјРЅРёРє", ex);
+                AddError("Ошибка при записи значений в приемник", ex);
             }
         }
     }

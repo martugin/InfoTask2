@@ -8,7 +8,7 @@ namespace ProvidersLibrary
     //Соединение-источник
     public class SourceConnect : ProviderConnect
     {
-        protected SourceConnect(string name, string complect, Logger logger) 
+        public SourceConnect(string name, string complect, Logger logger) 
             : base(name, complect, logger) { }
 
         //Тип провайдера
@@ -22,30 +22,49 @@ namespace ProvidersLibrary
             get { return (Source)Provider; }
         }
 
+        //Список сигналов, содержащих возвращаемые значения
+        private readonly DicS<SourceSignal> _signals = new DicS<SourceSignal>();
+        public IDicSForRead<SourceSignal> Signals { get { return _signals; } }
         //Словарь исходных сигналов
         private readonly DicS<SourceSignal> _initialSignals = new DicS<SourceSignal>();
         internal DicS<SourceSignal> InitialSignals { get { return _initialSignals; } }
         //Словарь расчетных сигналов
         private readonly DicS<CalcSignal> _calcSignals = new DicS<CalcSignal>();
         internal DicS<CalcSignal> CalcSignals { get { return _calcSignals; } }
-        
-        //Переопределяемый метод для добавления сигналов конкретного типа
-        protected override ProviderSignal AddConcreteSignal(string fullCode, DataType dataType, SignalType signalType, string contextOut, DicS<string> inf)
+
+        //Добавить сигнал
+        public SourceSignal AddSignal(string fullCode, //Полный код сигнала
+                                                        DataType dataType, //Тип данных
+                                                        SignalType signalType, //Тип сигнала
+                                                        string infObject, //Свойства объекта
+                                                        string infOut = "", //Свойства выхода относительно объекта
+                                                        string infProp = "") //Свойства сигнала относительно выхода
         {
+            if (_signals.ContainsKey(fullCode))
+                return _signals[fullCode];
+            Provider.IsPrepared = false;
+            var contextOut = infObject + (infOut.IsEmpty() ? "" : ";" + infOut);
+            var inf = infObject.ToPropertyDicS().AddDic(infOut.ToPropertyDicS()).AddDic(infProp.ToPropertyDicS());
+            SourceSignal sig = null;
             switch (signalType)
             {
                 case SignalType.Mom:
-                    return _initialSignals.Add(fullCode, new MomSignal(this, fullCode, dataType, contextOut, inf));
+                    sig = _initialSignals.Add(fullCode, new MomSignal(this, fullCode, dataType, contextOut, inf));
+                    break;
                 case SignalType.Uniform:
-                    return _initialSignals.Add(fullCode, new UniformSignal(this, fullCode, dataType, contextOut, inf));
+                    sig = _initialSignals.Add(fullCode, new UniformSignal(this, fullCode, dataType, contextOut, inf));
+                    break;
                 case SignalType.List:
-                    return _initialSignals.Add(fullCode, new ListSignal(this, fullCode, dataType, contextOut, inf));
+                    sig = _initialSignals.Add(fullCode, new ListSignal(this, fullCode, dataType, contextOut, inf));
+                    break;
                 case SignalType.Clone:
-                    return _initialSignals.Add(fullCode, new CloneSignal(this, fullCode, dataType, contextOut, inf));
+                    sig =  _initialSignals.Add(fullCode, new CloneSignal(this, fullCode, dataType, contextOut, inf));
+                    break;
                 case SignalType.UniformClone:
-                    return _initialSignals.Add(fullCode, new UniformCloneSignal(this, fullCode, dataType, contextOut, inf));
+                    sig = _initialSignals.Add(fullCode, new UniformCloneSignal(this, fullCode, dataType, contextOut, inf));
+                    break;
             }
-            return null;
+            return _signals.Add(fullCode, sig);
         }
 
         //Добавить расчетный сигнал
@@ -61,7 +80,7 @@ namespace ProvidersLibrary
                 throw new InstanceNotFoundException("Не найден исходный сигнал " + icode);
             Provider.IsPrepared = false;
             var calc = new CalcSignal(fullCode, _initialSignals[icode], formula);
-            ProviderSignals.Add(fullCode, calc);
+            _signals.Add(fullCode, calc);
             return CalcSignals.Add(fullCode, calc);
         }
 
@@ -69,6 +88,7 @@ namespace ProvidersLibrary
         public override void ClearSignals()
         {
             base.ClearSignals();
+            _signals.Clear();
             InitialSignals.Clear();
             CalcSignals.Clear();
         }
@@ -77,8 +97,8 @@ namespace ProvidersLibrary
         internal void ClearSignalsValues(bool clearBegin)
         {
             AddEvent("Очистка значений сигналов");
-            foreach (ListSignal sig in ProviderSignals.Values)
-                sig.ClearMoments(clearBegin);
+            foreach (ListSignal sig in _signals.Values)
+                sig.ClearMoments();
         }
 
         //Чтение значений из источника, возвращает true, если прочитались все значения или частично
@@ -89,78 +109,13 @@ namespace ProvidersLibrary
             if (PeriodIsUndefined()) return vc;
             using (Start(0, 80))
             {
-                vc += ReadValues();
+                vc += Source.ReadValues();
                 if (!vc.IsFail) return vc;
             }
 
             if (!ChangeProvider()) return vc;
             using (Start(80, 100))
-                return ReadValues();
-        }
-
-        //Чтение значений из источника
-        protected ValuesCount ReadValues()
-        {
-            var vcount = new ValuesCount();
-            try
-            {
-                ClearSignalsValues(PeriodBegin != Source.PrevPeriodEnd);
-                using (Start(5, 10))
-                    if (!Source.Connect() || !Source.Prepare())
-                        return new ValuesCount(VcStatus.Fail);
-
-                AddEvent("Чтение среза значений");
-                using (Start(10, PeriodBegin == PeriodEnd ? 90 : 40))
-                    vcount += Source.ReadCut();
-                foreach (var sig in InitialSignals.Values)
-                    if (sig is UniformCloneSignal)
-                        vcount.WriteCount += ((UniformCloneSignal)sig).MakeBegin();
-                AddEvent("Срез значений получен", vcount.ToString());
-                if (vcount.Status == VcStatus.Fail)
-                    return vcount;
-
-                //Чтение изменений
-                if (PeriodBegin < PeriodEnd)
-                {
-                    AddEvent("Чтение изменений значений");
-                    ValuesCount changes;
-                    using (Start(40, 85))
-                        changes = Source.ReadChanges();
-                    foreach (var sig in InitialSignals.Values)
-                        if (sig is UniformCloneSignal)
-                            changes.WriteCount += ((UniformCloneSignal)sig).MakeEnd();
-                    AddEvent("Изменения значений получены", changes.ToString());
-                    vcount += changes;
-                    if (vcount.IsFail) return vcount;
-                    Procent = 90;
-                }
-
-                //Вычисление значений расчетных сигналов
-                if (CalcSignals.Count > 0)
-                {
-                    AddEvent("Вычисление значений расчетных сигналов");
-                    int calc = 0;
-                    foreach (var sig in CalcSignals.Values)
-                    {
-                        sig.Calculate();
-                        calc += sig.Value.Count;
-                    }
-                    AddEvent("Значения расчетных сигналов прочитаны", calc + " значений сформировано");
-                    vcount.WriteCount += calc;
-                }
-                AddEvent("Значения из источника прочитаны", vcount.ToString());
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка при чтении значений из источника", ex);
-                return vcount.AddStatus(VcStatus.Fail);
-            }
-            finally
-            {
-                AddErrorOutsWarning();
-                Source.PrevPeriodEnd = PeriodEnd;
-            }
-            return vcount;
+                return Source.ReadValues();
         }
 
         //Создание клона
@@ -172,43 +127,7 @@ namespace ProvidersLibrary
         internal DaoRec CloneStrCutRec { get; private set; }
         //Рекордсет таблицы ошибок создания клона
         internal DaoRec CloneErrorsRec { get; private set; }
-
-        //Словарь ошибочных объектов, ключи - коды объектов
-        private readonly DicS<string> _errorOuts = new DicS<string>();
-
-        //Добавляет объект в ErrorsObjects
-        internal void AddErrorOut(string codeObject,  //Код сигнала
-                                                string errText,        //Сообщение об ошибке
-                                                Exception ex = null)  //Исключение
-        {
-            if (!_errorOuts.ContainsKey(codeObject))
-            {
-                var err = errText + (ex == null ? "" : ". " + ex.Message + ". " + ex.StackTrace);
-                _errorOuts.Add(codeObject, err);
-                if (CloneErrorsRec != null)
-                {
-                    CloneErrorsRec.AddNew();
-                    CloneErrorsRec.Put("OutContext", codeObject);
-                    CloneErrorsRec.Put("ErrorDescription", err);
-                    CloneErrorsRec.Update();
-                }
-            }
-        }
-
-        //Запись списка непрочитанных объектов в лог
-        internal void AddErrorOutsWarning()
-        {
-            if (_errorOuts.Count > 0)
-            {
-                int i = 0;
-                string s = "";
-                foreach (var ob in _errorOuts.Keys)
-                    if (++i < 10) s += ob + ", ";
-                AddWarning("Не удалось прочитать значения по некоторым сигналам", null,
-                           s + (_errorOuts.Count > 10 ? " и др." : "") + "всего " + _errorOuts.Count + " выходов не удалось прочитать");
-            }
-        }
-
+        
         //Чтение Id сигналов клона
         private void ReadCloneSignals(DaoDb cloneDb)
         {
@@ -219,6 +138,7 @@ namespace ProvidersLibrary
                 {
                     var sig = (CloneSignal)AddSignal(rec.GetString("FullCode"),
                                                                      rec.GetString("DataType").ToDataType(),
+                                                                     rec.GetString("SignalType").ToSignalType() == SignalType.Uniform ? SignalType.UniformClone : SignalType.Clone,
                                                                      rec.GetString("InfObject"),
                                                                      rec.GetString("InfOut"),
                                                                      rec.GetString("InfProp"));

@@ -116,7 +116,7 @@ namespace GeneratorTest
             Assert.IsTrue(Calc(funs, "GreaterEqual_uu", DataType.Integer, s2, s1).Boolean);
 
             m = Calc(funs, "Divide_rr", DataType.Real, i1, i3);
-            IReadMean b1 = new BoolMean(true), b2 = new BoolMean(false), b3 = new MeanErrBool(false, m.Error);
+            IReadMean b1 = new BoolMean(true), b2 = new BoolMean(false), b3 = new BoolMom(DateTime.MinValue, false, m.Error);
 
             m = Calc(funs, "Not_b", DataType.Boolean, b1);
             Assert.IsFalse(m.Boolean);
@@ -216,7 +216,7 @@ namespace GeneratorTest
              var m = Calc(funs, "Sqr_r", DataType.Real, r2);
              Assert.AreEqual(1001, m.Error.Number);
 
-             IReadMean r4 = new MeanErrReal(-0.567, m.Error);
+             IReadMean r4 = new RealMom(DateTime.MinValue, -0.567, m.Error);
              IReadMean s1 = new StringMean("1111");
 
              m = Calc(funs, "Min_uu", DataType.Real, r1, r2, r3, r4);

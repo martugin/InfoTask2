@@ -10,11 +10,11 @@ namespace Fictive
             : base(source) { }
 
         //Текст команды
-        internal CloneSignal TextSignal { get; private set; }
+        internal ListSignal TextSignal { get; private set; }
         //Номер команды
-        internal CloneSignal NumberSignal { get; private set; }
+        internal ListSignal NumberSignal { get; private set; }
 
-        protected override CloneSignal AddInitialSignal(CloneSignal sig)
+        protected override ListSignal AddSourceSignal(ListSignal sig)
         {
             switch (sig.Inf["Signal"])
             {

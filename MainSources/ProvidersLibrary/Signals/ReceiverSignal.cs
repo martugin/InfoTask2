@@ -22,6 +22,6 @@ namespace ProvidersLibrary
         }
 
         //Значение
-        public IMean Value { get; set; }
+        public IReadMean Value { get; set; }
     }
 }

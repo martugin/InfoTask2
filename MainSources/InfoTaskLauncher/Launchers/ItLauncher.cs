@@ -225,9 +225,9 @@ namespace ComLaunchers
         //Создание соединения-источника
         public SourConnect CreateSourConnect(string name, string complect)
         {
-            ListSourceConnect s = null;
+            SourceConnect s = null;
             Logger.RunSyncCommand(() => { 
-                s = (ListSourceConnect)Factory.CreateConnect(ProviderType.Source, SignalType.List, name, complect, Logger);
+                s = (SourceConnect)Factory.CreateConnect(ProviderType.Source, name, complect, Logger);
             });
             return new RSourConnect(s, Factory);
         }
@@ -235,9 +235,9 @@ namespace ComLaunchers
         //Создание соединения-приемника
         public ReceivConnect CreateReceivConnect(string name, string complect)
         {
-            MomReceiverConnect r = null;
+            ReceiverConnect r = null;
             Logger.RunSyncCommand(() => {
-                r = (MomReceiverConnect)Factory.CreateConnect(ProviderType.Receiver, SignalType.Mom, name, complect, Logger);
+                r = (ReceiverConnect)Factory.CreateConnect(ProviderType.Receiver, name, complect, Logger);
             });
             return new RReceivConnect(r, Factory);
         }

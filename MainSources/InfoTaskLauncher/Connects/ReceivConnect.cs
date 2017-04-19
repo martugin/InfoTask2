@@ -23,6 +23,7 @@ namespace ComLaunchers
         //Добавить сигнал
         RReceivSignal AddSignal(string fullCode, //Полный код сигнала
                                             string dataType, //Тип данных
+                                            string valueType, //Тип значений сигнала
                                             string infObject, //Свойства объекта
                                             string infOut, //Свойства выхода относительно объекта
                                             string infProp); //Свойства сигнала относительно выхода
@@ -79,12 +80,13 @@ namespace ComLaunchers
 
         //Добавить сигнал
         public RReceivSignal AddSignal(string fullCode, //Полный код сигнала
-                                                      string dataType, //Тип данных
-                                                      string infObject, //Свойства объекта
-                                                      string infOut, //Свойства выхода относительно объекта
-                                                      string infProp) //Свойства сигнала относительно выхода
+                                                        string dataType, //Тип данных
+                                                        string valueType, //Тип значений сигнала
+                                                        string infObject, //Свойства объекта
+                                                        string infOut, //Свойства выхода относительно объекта
+                                                        string infProp) //Свойства сигнала относительно выхода
         {
-            return new RReceivSignal(Connect.AddSignal(fullCode, dataType.ToDataType(), infObject, infOut, infProp));
+            return new RReceivSignal((ReceiverSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), valueType.ToSignalType(), infObject, infOut, infProp));
         }
 
         //Запись значений в приемник

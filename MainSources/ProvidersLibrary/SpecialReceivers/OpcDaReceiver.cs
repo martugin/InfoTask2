@@ -15,7 +15,7 @@ namespace ProvidersLibrary
         }
 
         //Тип сигналов
-        public override SignalType ValueType
+        public override SignalType SignalType
         {
             get { return SignalType.Receiver;}
         }

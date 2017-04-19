@@ -4,11 +4,11 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Мгновенные значения с возможностью изменения, декоратор над Mean
-    public class EditMom: CalcVal, IMean
+    public class EditMom: CalcVal, IMean, IReadMean
     {
         public EditMom(DataType dtype)
         {
-            _mean = (Mean)MFactory.NewMean(dtype);
+            _mean = MFactory.NewMean(dtype);
             Time = Static.MinDate;
         }
         public EditMom(DataType dtype, DateTime time) : this(dtype)
@@ -79,19 +79,19 @@ namespace CommonTypes
             }
         }
 
-        public bool ValueEquals(IMean mean)
+        public bool ValueEquals(IBaseMean mean)
         {
             return _mean.ValueEquals(mean);
         }
 
-        public bool ValueLess(IMean mean)
+        public bool ValueLess(IBaseMean mean)
         {
             return _mean.ValueLess(mean);
         }
 
-        public bool ValueAndErrorEquals(IMean mean)
+        public bool ValueAndErrorEquals(IBaseMean mean)
         {
-            return _mean.ValueEquals(mean) && Error == mean.Error;
+            return _mean.ValueEquals(mean) && Error == ((IReadMean)mean).Error;
         }
 
         //Запись в рекордсет
@@ -106,13 +106,13 @@ namespace CommonTypes
         }
 
         //Копирует значение из другого мгновенного значения, возвращает себя
-        public EditMom CopyValueFrom(IMean mean)
+        public EditMom CopyValueFrom(IReadMean mean)
         {
             _mean.CopyValueFrom(mean);
             return this;
         }
         //Копирует время, ошибку и значение из другого IMean, возвращает себя
-        public EditMom CopyAllFrom(IMean mom)
+        public EditMom CopyAllFrom(IReadMean mom)
         {
             _mean.CopyValueFrom(mom);
             Time = mom.Time;
@@ -120,7 +120,7 @@ namespace CommonTypes
             return this;
         }
         //Копирует значение из списка мгновенных значений по указанной позиции
-        public EditMom CopyValueFrom(IMean list, //список значений
+        public EditMom CopyValueFrom(IReadMean list, //список значений
                                                         int i) //Позиция
         {
             list.CurNum = i;
@@ -128,7 +128,7 @@ namespace CommonTypes
             return this;
         }
         //Копирует время, ошибку и значение из списка мгновенных значений по указанной позиции
-        public EditMom CopyAllFrom(IMean list, //список значений
+        public EditMom CopyAllFrom(IReadMean list, //список значений
                                                     int i) //Позиция
         {
             list.CurNum = i;
@@ -147,23 +147,23 @@ namespace CommonTypes
         }
 
         //Создание нового значения на основе этого
-        public IMean ToMean()
+        public IReadMean ToMean()
         {
             return _mean.ToMean();
         }
-        public IMean ToMom()
+        public IReadMean ToMom()
         {
             return _mean.ToMom(Time, Error);
         }
-        public IMean ToMom(MomErr err)
+        public IReadMean ToMom(MomErr err)
         {
             return _mean.ToMom(Time, err);
         }
-        public IMean ToMom(DateTime time)
+        public IReadMean ToMom(DateTime time)
         {
             return _mean.ToMom(time, Error);
         }
-        public IMean ToMom(DateTime time, MomErr err)
+        public IReadMean ToMom(DateTime time, MomErr err)
         {
             return _mean.ToMom(time, err);
         }
@@ -179,7 +179,7 @@ namespace CommonTypes
         public override ICalcVal CalcValue { get { return this; } }
         public override MomErr TotalError { get { return Error; } }
         public int Count { get { return 1; } }
-        public IMean LastMom { get { return this; } }
+        public IReadMean LastMom { get { return this; } }
 
         //Методы из MomList
         public MomErr ErrorI(int i) {return Error; }
@@ -190,30 +190,30 @@ namespace CommonTypes
         public string StringI(int i) { return String;  }
         public object ObjectI(int i) { return Object; }
         public void ValueToRecI(int i, IRecordAdd rec, string field) { ValueToRec(rec, field); }
-        public IMean ToMeanI(int i) { return ToMean(); }
-        public IMean ToMomI(int i) { return ToMom(); }
-        public IMean ToMomI(int i, MomErr err) { return ToMom(err); }
-        public IMean ToMomI(int i, DateTime time) { return ToMom(time); }
-        public IMean ToMomI(int i, DateTime time, MomErr err) { return ToMom(time, err); }
+        public IReadMean ToMeanI(int i) { return ToMean(); }
+        public IReadMean ToMomI(int i) { return ToMom(); }
+        public IReadMean ToMomI(int i, MomErr err) { return ToMom(err); }
+        public IReadMean ToMomI(int i, DateTime time) { return ToMom(time); }
+        public IReadMean ToMomI(int i, DateTime time, MomErr err) { return ToMom(time, err); }
         public IMean MeanI(int i) { return this; }
         public DateTime TimeI(int i) { return Time; }
 
         //Добавление значений как будто в список
-        public virtual void AddMom(IMean mom)
+        public virtual void AddMom(IReadMean mom)
         {
             CopyAllFrom(mom);
         }
-        public void AddMom(DateTime time, IMean mean)
+        public void AddMom(DateTime time, IReadMean mean)
         {
             CopyAllFrom(mean);
             Time = time;
         }
-        public void AddMom(IMean mom, MomErr err)
+        public void AddMom(IReadMean mom, MomErr err)
         {
             CopyAllFrom(mom);
             Error = err;
         }
-        public void AddMom(DateTime time, IMean mean, MomErr err)
+        public void AddMom(DateTime time, IReadMean mean, MomErr err)
         {
             CopyValueFrom(mean);
             Time = time;

@@ -5,7 +5,7 @@ using ProvidersLibrary;
 namespace Wonderware
 {
     //OPC-сервер Wonderware
-    [Export(typeof(ProvidersLibrary.Provider))]
+    [Export(typeof(Provider))]
     [ExportMetadata("Code", "WonderwareOpcReceiver")]
     public class WonderwareOpcReceiver : OpcDaReceiver
     {

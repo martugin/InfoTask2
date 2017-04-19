@@ -22,8 +22,7 @@ namespace CommonTypesTest
         {
             var c = new ContextTest("Context");
             var pool = MakeErrPool();
-            var err = pool.MakeError(2, c);
-
+            
             var m = MFactory.NewMean(true);
             Assert.IsNull(m.Error);
             Assert.AreEqual(Static.MinDate, m.Time);
@@ -46,7 +45,7 @@ namespace CommonTypesTest
             Assert.IsNull(m.ErrorI(0));
             Assert.AreEqual(Static.MinDate, m.TimeI(0));
 
-            m = m.ToMean();
+            m = (Mean)m.ToMean();
             Assert.IsNull(m.Error);
             Assert.AreEqual(Static.MinDate, m.Time);
             Assert.IsNull(m.TotalError);
@@ -83,55 +82,6 @@ namespace CommonTypesTest
             Assert.AreEqual("1", m1.StringI(0));
             Assert.IsNull(m1.ErrorI(0));
             Assert.AreEqual(Static.MaxDate, m1.TimeI(0));
-
-            m = MFactory.NewMean(false, err);
-            Assert.IsNotNull(m.Error);
-            Assert.IsNotNull(m.TotalError);
-            Assert.AreEqual(2, m.Error.Number);
-            Assert.AreEqual("Error", m.Error.Text);
-            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
-            Assert.AreEqual(2, m.TotalError.Number);
-            Assert.AreEqual("Error", m.TotalError.Text);
-            Assert.AreEqual(MomErrType.Source, m.TotalError.ErrType);
-            Assert.AreEqual(false, m.Boolean);
-            Assert.AreEqual(0, m.Integer);
-            Assert.AreEqual(0.0, m.Real);
-            Assert.AreEqual("0", m.String);
-            Assert.AreEqual(1, m.Count);
-            Assert.AreEqual(DataType.Boolean, m.DataType);
-            Assert.IsFalse(m1.ValueEquals(m));
-            Assert.IsFalse(m1.ValueAndErrorEquals(m));
-            Assert.IsFalse(m.ValueEquals(m1));
-            Assert.IsFalse(m.ValueAndErrorEquals(m1));
-            Assert.AreEqual(false, m.BooleanI(0));
-            Assert.AreEqual(0, m.IntegerI(0));
-            Assert.AreEqual(0.0, m.RealI(0));
-            Assert.AreEqual("0", m.StringI(0));
-            Assert.IsNotNull(m.ErrorI(0));
-            Assert.AreEqual(2, m.ErrorI(0).Number);
-            Assert.AreEqual("Error", m.ErrorI(0).Text);
-            Assert.AreEqual(Static.MinDate, m.TimeI(0));
-
-            var err1 = pool.MakeError(1, c);
-            m = MFactory.NewMean(DataType.Boolean, 1, err1);
-            Assert.IsNotNull(m.Error);
-            Assert.IsNotNull(m.TotalError);
-            Assert.AreEqual(1, m.Error.Number);
-            Assert.AreEqual("Warning", m.Error.Text);
-            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
-            Assert.AreEqual(1, m.TotalError.Number);
-            Assert.AreEqual("Warning", m.TotalError.Text);
-            Assert.AreEqual(MomErrType.Source, m.TotalError.ErrType);
-            Assert.AreEqual(true, m.Boolean);
-            Assert.AreEqual(1, m.Integer);
-            Assert.AreEqual(1.0, m.Real);
-            Assert.AreEqual("1", m.String);
-            Assert.AreEqual(1, m.Count);
-            Assert.AreEqual(DataType.Boolean, m.DataType);
-            Assert.IsTrue(m1.ValueEquals(m));
-            Assert.IsFalse(m1.ValueAndErrorEquals(m));
-            Assert.IsTrue(m.ValueEquals(m1));
-            Assert.IsFalse(m.ValueAndErrorEquals(m1));
         }
 
         [TestMethod]
@@ -164,31 +114,7 @@ namespace CommonTypesTest
             Assert.AreEqual(Static.MinDate, m.TimeI(0));
 
             var e = pool.MakeError(4, c);
-            var me = m.ToMean(e);
-            Assert.IsNotNull(me.Error);
-            Assert.IsNotNull(me.TotalError);
-            Assert.AreEqual(4, me.Error.Number);
-            Assert.AreEqual("Неопределенная ошибка", me.Error.Text);
-            Assert.AreEqual(true, me.Boolean);
-            Assert.AreEqual(24, me.Integer);
-            Assert.AreEqual(24.0, me.Real);
-            Assert.AreEqual("24", me.String);
-            Assert.AreEqual(Static.MinDate, me.Date);
-            Assert.AreEqual(1, me.Count);
-            Assert.AreEqual(DataType.Integer, me.DataType);
-            Assert.IsNotNull(me.ErrorI(0));
-            Assert.AreEqual(4, me.ErrorI(0).Number);
-            Assert.AreEqual(true, me.BooleanI(0));
-            Assert.AreEqual(24, me.IntegerI(0));
-            Assert.AreEqual(24.0, me.RealI(0));
-            Assert.AreEqual("24", me.StringI(0));
-            Assert.AreEqual(Static.MinDate, me.TimeI(0));
-
-            me = m.ToMeanI(0, e);
-            Assert.IsNotNull(me.Error);
-            Assert.IsNotNull(me.TotalError);
-            Assert.AreEqual(4, me.Error.Number);
-            Assert.AreEqual("Неопределенная ошибка", me.Error.Text);
+            var me = m.ToMeanI(0);
             Assert.AreEqual(true, me.Boolean);
             Assert.AreEqual(24, me.Integer);
             Assert.AreEqual(24.0, me.Real);
@@ -217,49 +143,6 @@ namespace CommonTypesTest
             Assert.IsTrue(m1.ValueEquals(m));
             Assert.IsFalse(m1.ValueAndErrorEquals(m));
             Assert.IsTrue(me.ValueEquals(m1));
-            Assert.IsTrue(me.ValueAndErrorEquals(m1));
-
-            m = MFactory.NewMean(-32, err);
-            Assert.IsNotNull(m.Error);
-            Assert.IsNotNull(m.TotalError);
-            Assert.AreEqual(2, m.Error.Number);
-            Assert.AreEqual("Error", m.Error.Text);
-            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
-            Assert.AreEqual(2, m.TotalError.Number);
-            Assert.AreEqual("Error", m.TotalError.Text);
-            Assert.AreEqual(MomErrType.Source, m.TotalError.ErrType);
-            Assert.AreEqual(true, m.Boolean);
-            Assert.AreEqual(-32, m.Integer);
-            Assert.AreEqual(-32.0, m.Real);
-            Assert.AreEqual("-32", m.String);
-            Assert.AreEqual(1, m.Count);
-            Assert.AreEqual(DataType.Integer, m.DataType);
-            Assert.IsFalse(m1.ValueEquals(m));
-            Assert.IsFalse(m1.ValueAndErrorEquals(m));
-            Assert.IsFalse(m.ValueEquals(m1));
-            Assert.IsFalse(m.ValueAndErrorEquals(m1));
-            Assert.IsTrue(m.ValueLess(m1));
-
-            var err1 = pool.MakeError(1, c);
-            m = MFactory.NewMean(DataType.Integer, "24", err1);
-            Assert.IsNotNull(m.Error);
-            Assert.IsNotNull(m.TotalError);
-            Assert.AreEqual(1, m.Error.Number);
-            Assert.AreEqual("Warning", m.Error.Text);
-            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
-            Assert.AreEqual(1, m.TotalError.Number);
-            Assert.AreEqual("Warning", m.TotalError.Text);
-            Assert.AreEqual(MomErrType.Source, m.TotalError.ErrType);
-            Assert.AreEqual(true, m.Boolean);
-            Assert.AreEqual(24, m.Integer);
-            Assert.AreEqual(24.0, m.Real);
-            Assert.AreEqual("24", m.String);
-            Assert.AreEqual(1, m.Count);
-            Assert.AreEqual(DataType.Integer, m.DataType);
-            Assert.IsTrue(m1.ValueEquals(m));
-            Assert.IsFalse(m1.ValueAndErrorEquals(m));
-            Assert.IsTrue(m.ValueEquals(m1));
-            Assert.IsFalse(m.ValueAndErrorEquals(m1));
         }
 
         [TestMethod]
@@ -321,43 +204,6 @@ namespace CommonTypesTest
             Assert.IsTrue(m1.ValueEquals(m));
             Assert.IsFalse(m1.ValueAndErrorEquals(m));
             Assert.IsTrue(m.ValueEquals(m1));
-            Assert.IsFalse(m.ValueAndErrorEquals(m1));
-
-            m = MFactory.NewMean(33.4, err);
-            Assert.IsNotNull(m.Error);
-            Assert.IsNotNull(m.TotalError);
-            Assert.AreEqual(2, m.Error.Number);
-            Assert.AreEqual("Error", m.Error.Text);
-            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
-            Assert.AreEqual(true, m.Boolean);
-            Assert.AreEqual(33, m.Integer);
-            Assert.AreEqual(33.4, m.Real);
-            Assert.AreEqual("33,4", m.String);
-            Assert.AreEqual(1, m.Count);
-            Assert.AreEqual(DataType.Real, m.DataType);
-            Assert.IsTrue(m1.ValueEquals(m));
-            Assert.IsTrue(m1.ValueAndErrorEquals(m));
-            Assert.IsTrue(m.ValueEquals(m1));
-            Assert.IsTrue(m.ValueAndErrorEquals(m1));
-            Assert.IsFalse(m.ValueLess(m1));
-
-            var err1 = pool.MakeError(1, c);
-            m = MFactory.NewMean(DataType.Real, "-2.7", err1);
-            Assert.IsNotNull(m.Error);
-            Assert.IsNotNull(m.TotalError);
-            Assert.AreEqual(1, m.Error.Number);
-            Assert.AreEqual("Warning", m.Error.Text);
-            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
-            Assert.AreEqual(true, m.Boolean);
-            Assert.AreEqual(-3, m.Integer);
-            Assert.AreEqual(-2.7, m.Real);
-            Assert.AreEqual("-2,7", m.String);
-            Assert.AreEqual(1, m.Count);
-            Assert.AreEqual(DataType.Real, m.DataType);
-            Assert.IsFalse(m1.ValueEquals(m));
-            Assert.IsFalse(m1.ValueAndErrorEquals(m));
-            Assert.IsFalse(m.ValueEquals(m1));
-            Assert.IsFalse(m.ValueAndErrorEquals(m1));
         }
 
         [TestMethod]
@@ -413,44 +259,6 @@ namespace CommonTypesTest
             Assert.IsTrue(m1.ValueEquals(m));
             Assert.IsFalse(m1.ValueAndErrorEquals(m));
             Assert.IsTrue(m.ValueEquals(m1));
-            Assert.IsFalse(m.ValueAndErrorEquals(m1));
-
-            m = MFactory.NewMean("abc", err);
-            Assert.IsNotNull(m.Error);
-            Assert.IsNotNull(m.TotalError);
-            Assert.AreEqual(2, m.Error.Number);
-            Assert.AreEqual("Error", m.Error.Text);
-            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
-            Assert.AreEqual(true, m.Boolean);
-            Assert.AreEqual(0, m.Integer);
-            Assert.AreEqual(0.0, m.Real);
-            Assert.AreEqual("abc", m.String);
-            Assert.AreEqual(1, m.Count);
-            Assert.AreEqual(DataType.String, m.DataType);
-            Assert.IsFalse(m1.ValueEquals(m));
-            Assert.IsFalse(m1.ValueAndErrorEquals(m));
-            Assert.IsFalse(m.ValueEquals(m1));
-            Assert.IsFalse(m.ValueAndErrorEquals(m1));
-            Assert.IsFalse(m.ValueLess(m1));
-            Assert.IsTrue(m1.ValueLess(m));
-
-            var err1 = pool.MakeError(1, c);
-            m = MFactory.NewMean(DataType.String, -12.3, err1);
-            Assert.IsNotNull(m.Error);
-            Assert.IsNotNull(m.TotalError);
-            Assert.AreEqual(1, m.Error.Number);
-            Assert.AreEqual("Warning", m.Error.Text);
-            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
-            Assert.AreEqual(true, m.Boolean);
-            Assert.AreEqual(0, m.Integer);
-            Assert.AreEqual(-12.3, m.Real);
-            Assert.AreEqual("-12,3", m.String);
-            Assert.AreEqual(1, m.Count);
-            Assert.AreEqual(DataType.String, m.DataType);
-            Assert.IsFalse(m1.ValueEquals(m));
-            Assert.IsFalse(m1.ValueAndErrorEquals(m));
-            Assert.IsFalse(m.ValueEquals(m1));
-            Assert.IsFalse(m.ValueAndErrorEquals(m1));
 
             var d = new DateTime(2000, 2, 2, 15, 30, 0);
             m = MFactory.NewMean(DataType.String, d);
@@ -519,43 +327,6 @@ namespace CommonTypesTest
             Assert.IsTrue(m1.ValueEquals(m));
             Assert.IsFalse(m1.ValueAndErrorEquals(m));
             Assert.IsTrue(m.ValueEquals(m1));
-            Assert.IsFalse(m.ValueAndErrorEquals(m1));
-
-            m = MFactory.NewMean(d, err);
-            Assert.IsNotNull(m.Error);
-            Assert.IsNotNull(m.TotalError);
-            Assert.AreEqual(2, m.Error.Number);
-            Assert.AreEqual("Error", m.Error.Text);
-            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
-            Assert.AreEqual(false, m.Boolean);
-            Assert.AreEqual(0, m.Integer);
-            Assert.AreEqual(0.0, m.Real);
-            Assert.AreEqual(d, m.Date);
-            Assert.AreEqual(1, m.Count);
-            Assert.AreEqual(DataType.Time, m.DataType);
-            Assert.IsFalse(m1.ValueEquals(m));
-            Assert.IsFalse(m1.ValueAndErrorEquals(m));
-            Assert.IsFalse(m.ValueEquals(m1));
-            Assert.IsFalse(m.ValueAndErrorEquals(m1));
-            Assert.IsTrue(m.ValueLess(m1));
-            Assert.IsFalse(m1.ValueLess(m));
-
-            var err1 = pool.MakeError(1, c);
-            m = MFactory.NewMean(DataType.Time, "02.02.2000 15:30:00", err1);
-            Assert.IsNotNull(m.Error);
-            Assert.IsNotNull(m.TotalError);
-            Assert.AreEqual(1, m.Error.Number);
-            Assert.AreEqual("Warning", m.Error.Text);
-            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
-            Assert.AreEqual(false, m.Boolean);
-            Assert.AreEqual(0, m.Integer);
-            Assert.AreEqual(0.0, m.Real);
-            Assert.AreEqual(d, m.Date);
-            Assert.AreEqual(1, m.Count);
-            Assert.AreEqual(DataType.Time, m.DataType);
-            Assert.IsFalse(m1.ValueEquals(m));
-            Assert.IsFalse(m1.ValueAndErrorEquals(m));
-            Assert.IsFalse(m.ValueEquals(m1));
             Assert.IsFalse(m.ValueAndErrorEquals(m1));
         }
     }

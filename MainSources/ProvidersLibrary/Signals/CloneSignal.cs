@@ -24,7 +24,7 @@ namespace ProvidersLibrary
 
         //Запись значения в клон, для UniformCloneSignal переопределяется
         //Чтение одной строчки значений из рекордсета, и запись ее в клон
-        protected virtual int PutClone(IMean mom, //Рекордсет срезов клона
+        protected virtual int PutClone(IReadMean mom, //Рекордсет срезов клона
                                                      bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {
             bool isReal = DataType.LessOrEquals(DataType.Real);
@@ -33,7 +33,7 @@ namespace ProvidersLibrary
             return 1;
         }
         //Запись значения в рекордсет клона
-        protected void PutCloneRec(IMean mom, //Значение
+        protected void PutCloneRec(IReadMean mom, //Значение
                                                  DaoRec rec, //Рекордсет
                                                  bool isCutTable, //Запись в таблицу срезов
                                                  DateTime d) //Время среза

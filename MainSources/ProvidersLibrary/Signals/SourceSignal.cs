@@ -21,9 +21,9 @@ namespace ProvidersLibrary
         }
 
         //Значение
-        public abstract IMean Value { get; }
+        public abstract IReadMean Value { get; }
         //Мгновенное значение сигнала или буферное значение
-        internal abstract IMean BufMom { get; }
+        internal abstract Mean BufMom { get; }
 
         //Добавка мгновенного значения (BufMom) в список или клон
         //Возвращает количество реально добавленных значений 

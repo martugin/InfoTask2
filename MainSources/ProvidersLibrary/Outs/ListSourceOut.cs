@@ -28,8 +28,10 @@ namespace ProvidersLibrary
             {
                 bool res = true;
                 foreach (var sig in Signals)
+                {
                     if (sig is UniformSignal)
                         res &= ((UniformSignal)sig).HasBegin;
+                }
                 return res;
             }
         }
@@ -38,13 +40,8 @@ namespace ProvidersLibrary
         internal int AddBegin()
         {
             int nwrite = 0;
-            foreach (var sig in Signals)
-            {
-                if (sig is UniformSignal)
-                    nwrite += ((UniformSignal)sig).MakeBegin();
-                if (sig is UniformCloneSignal)
-                    nwrite += ((UniformCloneSignal)sig).MakeBegin();
-            }
+            foreach (ListSignal sig in Signals)
+                nwrite += sig.MakeBegin();
             return nwrite;
         }
         

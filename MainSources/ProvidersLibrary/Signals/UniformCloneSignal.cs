@@ -41,14 +41,17 @@ namespace ProvidersLibrary
             return 0;
         }
 
+        //Для сигнала был задан срез
+        internal override bool HasBegin { get { return false; } }
+
         //Добавляет значение среза на начало периода в  клон, возвращает 1, если срез был получен, иначе 0
-        internal int MakeBegin()
+        internal override int MakeBegin()
         {
             return _beginMom.Time == Static.MinDate ? 0 : PutClone(_beginMom, false);
         }
 
         //Формирует значение на конец периода и дополняет значения в клоне до конца периода
-        internal int MakeEnd()
+        internal override int MakeEnd()
         {
             BufMom.Time = Connect.PeriodEnd;
             return PutClone(BufMom, true);
@@ -56,7 +59,7 @@ namespace ProvidersLibrary
 
         //Запись значения в клон
         //Чтение одной строчки значений из рекордсета, и запись ее в клон
-        protected override int PutClone(IMean mom, //Рекордсет срезов клона
+        protected override int PutClone(IReadMean mom, //Рекордсет срезов клона
                                                        bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {
             bool isReal = DataType.LessOrEquals(DataType.Real);

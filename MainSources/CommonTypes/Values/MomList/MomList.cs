@@ -5,7 +5,7 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Список мгновенных значений
-    public abstract class MomList : CalcVal, IMean
+    public abstract class MomList : CalcVal, IMean, IReadMean
     {
         //Тип данных
         public override DataType DataType { get { return BufMom.DataType; } }
@@ -26,7 +26,7 @@ namespace CommonTypes
         protected abstract void SaveBufMom(int i);
 
         //Получить значение из списка по индексу
-        public IMean MeanI(int i)
+        public IReadMean MeanI(int i)
         {
             SetBufMom(i);
             return BufMom;
@@ -135,15 +135,15 @@ namespace CommonTypes
         }
 
         //Сравнение значений и ошибок
-        public bool ValueEquals(IMean mean)
+        public bool ValueEquals(IBaseMean mean)
         {
             return MeanI(CurNum).ValueEquals(mean);
         }
-        public bool ValueLess(IMean mean)
+        public bool ValueLess(IBaseMean mean)
         {
             return MeanI(CurNum).ValueLess(mean);
         }
-        public bool ValueAndErrorEquals(IMean mean)
+        public bool ValueAndErrorEquals(IBaseMean mean)
         {
             return MeanI(CurNum).ValueAndErrorEquals(mean);
         }
@@ -207,25 +207,25 @@ namespace CommonTypes
         }
 
         //Добавление мгновенного значения
-        public void AddMom(IMean mom)
+        public void AddMom(IReadMean mom)
         {
             BufMom.CopyValueFrom(mom);
             AddTimeErrorMean(mom.Time, mom.Error);
         }
 
-        public void AddMom(DateTime time, IMean mean)
+        public void AddMom(DateTime time, IReadMean mean)
         {
             BufMom.CopyValueFrom(mean);
             AddTimeErrorMean(time, mean.Error);
         }
 
-        public void AddMom(IMean mom, MomErr err)
+        public void AddMom(IReadMean mom, MomErr err)
         {
             BufMom.CopyValueFrom(mom);
             AddTimeErrorMean(mom.Time, err);
         }
 
-        public void AddMom(DateTime time, IMean mean, MomErr err)
+        public void AddMom(DateTime time, IReadMean mean, MomErr err)
         {
             BufMom.CopyValueFrom(mean);
             AddTimeErrorMean(time, err);
@@ -276,39 +276,39 @@ namespace CommonTypes
         //Очистка самих значений
         protected abstract void ClearMeans();
 
-        public IMean ToMeanI(int i)
+        public IReadMean ToMeanI(int i)
         {
             return MeanI(i).ToMean();
         }
         
-        public IMean ToMomI(int i)
+        public IReadMean ToMomI(int i)
         {
             return MeanI(i).ToMom(TimeI(i), ErrorI(i));
         }
 
-        public IMean ToMomI(int i, MomErr err)
+        public IReadMean ToMomI(int i, MomErr err)
         {
             return MeanI(i).ToMom(TimeI(i), ErrorI(i).Add(err));
         }
 
-        public IMean ToMomI(int i, DateTime time)
+        public IReadMean ToMomI(int i, DateTime time)
         {
             return MeanI(i).ToMom(time, ErrorI(i));
         }
 
-        public IMean ToMomI(int i, DateTime time, MomErr err)
+        public IReadMean ToMomI(int i, DateTime time, MomErr err)
         {
             return MeanI(i).ToMom(time, ErrorI(i).Add(err));
         }
 
-        public IMean ToMean() { return ToMeanI(CurNum);}
-        public IMean ToMom() { return ToMomI(CurNum); }
-        public IMean ToMom(MomErr err) { return ToMomI(CurNum, err); }
-        public IMean ToMom(DateTime time) { return ToMomI(CurNum, time); }
-        public IMean ToMom(DateTime time, MomErr err) { return ToMomI(CurNum, time, err); }
+        public IReadMean ToMean() { return ToMeanI(CurNum);}
+        public IReadMean ToMom() { return ToMomI(CurNum); }
+        public IReadMean ToMom(MomErr err) { return ToMomI(CurNum, err); }
+        public IReadMean ToMom(DateTime time) { return ToMomI(CurNum, time); }
+        public IReadMean ToMom(DateTime time, MomErr err) { return ToMomI(CurNum, time, err); }
         
         //Последнее значение
-        public IMean LastMom
+        public IReadMean LastMom
         {
             get
             {

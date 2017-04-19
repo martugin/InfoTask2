@@ -6,7 +6,7 @@ using ProvidersLibrary;
 
 namespace Mir
 {
-    [Export(typeof(ProvidersLibrary.Provider))]
+    [Export(typeof(Provider))]
     [ExportMetadata("Code", "MirSource")]
     public class MirSource : SqlServerSource
     {

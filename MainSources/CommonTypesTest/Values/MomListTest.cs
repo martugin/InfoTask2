@@ -141,11 +141,6 @@ namespace CommonTypesTest
             Assert.AreEqual(false, m.Boolean);
             Assert.AreEqual(Static.MinDate, m.Time);
             Assert.IsNull(m.Error);
-            m = list.ToMeanI(1, err);
-            Assert.AreEqual(false, m.Boolean);
-            Assert.AreEqual(Static.MinDate, m.Time);
-            Assert.IsNotNull(m.Error);
-            Assert.AreEqual(2, m.Error.Number);
             m = list.ToMomI(2);
             Assert.AreEqual(false, m.Boolean);
             Assert.AreEqual(RTime(1), m.Time);
@@ -177,12 +172,6 @@ namespace CommonTypesTest
             Assert.AreEqual(false, m.Boolean);
             Assert.AreEqual(0, m.Integer);
             Assert.IsNull(m.Error);
-            m = list.ToMean(err);
-            Assert.AreEqual(Static.MinDate, m.Time);
-            Assert.AreEqual(false, m.Boolean);
-            Assert.AreEqual(0, m.Integer);
-            Assert.IsNotNull(m.Error);
-            Assert.AreEqual(2, m.Error.Number);
             m = list.ToMom();
             Assert.AreEqual(RTime(1, 30), m.Time);
             Assert.AreEqual(false, m.Boolean);

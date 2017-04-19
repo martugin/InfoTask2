@@ -1,10 +1,11 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using BaseLibrary;
+using ProvidersLibrary;
 
 namespace Kosmotronika
 {
-    [Export(typeof(ProvidersLibrary.Provider))]
+    [Export(typeof(Provider))]
     [ExportMetadata("Code", "KosmotronikaRetroSource")]
     public class KosmotronikaRetroSource : KosmotronikaBaseSource
     {

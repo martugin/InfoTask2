@@ -4,7 +4,7 @@ using ProvidersLibrary;
 
 namespace Kosmotronika
 {
-    [Export(typeof(ProvidersLibrary.Provider))]
+    [Export(typeof(Provider))]
     [ExportMetadata("Code", "KosmotronikaOpcReceiver")]
     public class KosmotronikaOpcReceiver : OpcDaReceiver 
     {

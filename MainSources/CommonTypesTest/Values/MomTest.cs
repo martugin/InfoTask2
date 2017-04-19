@@ -133,21 +133,6 @@ namespace CommonTypesTest
             Assert.IsFalse(m1.ValueAndErrorEquals(m));
             Assert.IsTrue(m.ValueEquals(m1));
             Assert.IsFalse(m.ValueAndErrorEquals(m1));
-
-            var me = new EditMom(DataType.Boolean) {Boolean = true};
-            Assert.AreEqual(true, me.Boolean);
-            Assert.AreEqual(1, me.Integer);
-            Assert.AreEqual(1.0, me.Real);
-            Assert.AreEqual("1", me.String);
-            Assert.AreEqual(1, me.Count);
-            me.Integer = 0;
-            Assert.AreEqual(false, me.Boolean);
-            Assert.AreEqual(0, me.Integer);
-            Assert.AreEqual(0.0, me.Real);
-            Assert.AreEqual("0", me.String);
-            Assert.AreEqual(1, me.Count);
-            Assert.IsNotNull(me.LastMom);
-            Assert.AreEqual(false, me.LastMom.Boolean);
         }
 
         [TestMethod]
@@ -182,8 +167,7 @@ namespace CommonTypesTest
             Assert.AreEqual(24.0, m.RealI(0));
             Assert.AreEqual("24", m.StringI(0));
 
-            var mn = m.ToMean(err);
-            Assert.AreEqual(Static.MinDate, mn.Time);
+            var mn = m.ToMom(err);
             Assert.IsNotNull(mn.Error);
             Assert.IsNotNull(mn.TotalError);
             Assert.AreEqual(2, mn.Error.Number);
@@ -197,7 +181,6 @@ namespace CommonTypesTest
             Assert.AreEqual(DataType.Integer, m.DataType);
             Assert.IsNotNull(mn.LastMom);
             Assert.AreEqual(24, mn.LastMom.Integer);
-            Assert.AreEqual(Static.MinDate, mn.TimeI(0));
             Assert.IsNotNull(mn.ErrorI(0));
             Assert.AreEqual(2, mn.ErrorI(0).Number);
             Assert.AreEqual("Error", mn.ErrorI(0).Text);
@@ -267,43 +250,6 @@ namespace CommonTypesTest
             Assert.IsFalse(m1.ValueAndErrorEquals(m));
             Assert.IsTrue(m.ValueEquals(m1));
             Assert.IsFalse(m.ValueAndErrorEquals(m1));
-
-            var me = new EditMom(DataType.Integer) { Integer = 20};
-            Assert.AreEqual(true, me.Boolean);
-            Assert.AreEqual(20, me.Integer);
-            Assert.AreEqual(20.0, me.Real);
-            Assert.AreEqual("20", me.String);
-            Assert.AreEqual(1, me.Count);
-            me.String = "24";
-            Assert.AreEqual(true, me.Boolean);
-            Assert.AreEqual(24, me.Integer);
-            Assert.AreEqual(24.0, me.Real);
-            Assert.AreEqual("24", me.String);
-            Assert.AreEqual(1, me.Count);
-            Assert.IsNotNull(me.LastMom);
-            Assert.AreEqual(24, me.LastMom.Integer);
-            Assert.IsTrue(m.ValueEquals(me));
-            Assert.IsTrue(me.ValueEquals(m));
-            Assert.IsFalse(m.ValueLess(me));
-            me.Time = d;
-            Assert.AreEqual(d, me.Time);
-            me.Error = err;
-            Assert.IsNotNull(me.Error);
-            Assert.AreEqual(2, me.Error.Number);
-            Assert.AreEqual("Error", me.Error.Text);
-            Assert.AreEqual(MomErrType.Source, me.Error.ErrType);
-            Assert.IsFalse(m.ValueAndErrorEquals(me));
-            Assert.IsFalse(me.ValueAndErrorEquals(m));
-            me.CopyAllFrom(m);
-            Assert.IsNotNull(me.Error);
-            Assert.AreEqual(1, m.Error.Number);
-            Assert.AreEqual("Warning", m.Error.Text);
-            Assert.AreEqual(MomErrType.Source, m.Error.ErrType);
-            Assert.AreEqual(d, me.Time);
-            Assert.IsTrue(m.ValueEquals(me));
-            Assert.IsTrue(me.ValueEquals(m));
-            Assert.IsTrue(m.ValueAndErrorEquals(me));
-            Assert.IsTrue(me.ValueAndErrorEquals(m));
         }
 
         [TestMethod]
@@ -407,39 +353,6 @@ namespace CommonTypesTest
             Assert.IsFalse(m1.ValueAndErrorEquals(m));
             Assert.IsFalse(m.ValueEquals(m1));
             Assert.IsFalse(m.ValueAndErrorEquals(m1));
-
-            var me = new EditMom(DataType.Real, d) { Real = 0 };
-            Assert.IsNull(me.Error);
-            Assert.AreEqual(d, me.Time);
-            Assert.AreEqual(false, me.Boolean);
-            Assert.AreEqual(0, me.Integer);
-            Assert.AreEqual(0.0, me.Real);
-            Assert.AreEqual("0", me.String);
-            Assert.AreEqual(Static.MinDate, me.Date);
-            Assert.AreEqual(1, me.Count);
-            Assert.AreEqual(DataType.Real, me.DataType);
-            me.Integer = 45;
-            Assert.AreEqual(d, me.Time);
-            Assert.AreEqual(true, me.Boolean);
-            Assert.AreEqual(45, me.Integer);
-            Assert.AreEqual(45.0, me.Real);
-            Assert.AreEqual("45", me.String);
-            Assert.AreEqual(1, me.Count);
-            Assert.IsNotNull(me.LastMom);
-            Assert.AreEqual(45, me.LastMom.Integer);
-            Assert.IsFalse(m.ValueEquals(me));
-            Assert.IsFalse(me.ValueEquals(m));
-            Assert.IsTrue(m.ValueLess(me));
-            me.Time = d1;
-            Assert.AreEqual(d1, me.Time);
-            me.Error = err;
-            Assert.IsNotNull(me.Error);
-            Assert.AreEqual(2, me.Error.Number);
-            Assert.AreEqual("Error", me.Error.Text);
-            Assert.AreEqual(MomErrType.Source, me.Error.ErrType);
-            cv = me.CalcValue;
-            Assert.AreEqual(DataType.Real, cv.DataType);
-            Assert.IsNotNull(cv.TotalError);
         }
 
         [TestMethod]
@@ -552,41 +465,6 @@ namespace CommonTypesTest
             Assert.IsFalse(m1.ValueAndErrorEquals(m));
             Assert.IsFalse(m.ValueEquals(m1));
             Assert.IsFalse(m.ValueAndErrorEquals(m1));
-
-            var me = new EditMom(DataType.String, d, err) { String = "123.456" };
-            Assert.IsNotNull(me.Error);
-            Assert.AreEqual(2, me.Error.Number);
-            Assert.AreEqual("Error", me.Error.Text);
-            Assert.AreEqual(MomErrType.Source, me.Error.ErrType);
-            Assert.AreEqual(d, me.Time);
-            Assert.AreEqual(true, me.Boolean);
-            Assert.AreEqual(0, me.Integer);
-            Assert.AreEqual(123.456, me.Real);
-            Assert.AreEqual("123.456", me.String);
-            Assert.AreEqual(Static.MinDate, me.Date);
-            Assert.AreEqual(1, me.Count);
-            Assert.AreEqual(DataType.String, me.DataType);
-            me.Integer = 45;
-            Assert.AreEqual(d, me.Time);
-            Assert.AreEqual(true, me.Boolean);
-            Assert.AreEqual(45, me.Integer);
-            Assert.AreEqual(45.0, me.Real);
-            Assert.AreEqual("45", me.String);
-            Assert.AreEqual(1, me.Count);
-            Assert.IsNotNull(me.LastMom);
-            Assert.AreEqual(45, me.LastMom.Integer);
-            Assert.IsFalse(m.ValueEquals(me));
-            Assert.IsFalse(me.ValueEquals(m));
-            Assert.IsTrue(m.ValueLess(me));
-            me.Time = d1;
-            Assert.AreEqual(d1, me.Time);
-            me.Error = null;
-            Assert.IsNull(me.Error);
-            v = me.Value;
-            Assert.AreEqual(DataType.String, v.DataType);
-            Assert.IsTrue(m.ValueLess(me));
-            me.CopyValueFrom(m);
-            Assert.AreEqual("0", me.String);
         }
 
         [TestMethod]
@@ -638,39 +516,6 @@ namespace CommonTypesTest
             Assert.IsFalse(m.ValueAndErrorEquals(m1));
             Assert.IsFalse(m.ValueLess(m1));
             Assert.IsFalse(m1.ValueLess(m));
-            
-            var me = new EditMom(DataType.Real, d) { Real = 0 };
-            Assert.IsNull(me.Error);
-            Assert.AreEqual(d, me.Time);
-            Assert.AreEqual(false, me.Boolean);
-            Assert.AreEqual(0, me.Integer);
-            Assert.AreEqual(0.0, me.Real);
-            Assert.AreEqual("0", me.String);
-            Assert.AreEqual(Static.MinDate, me.Date);
-            Assert.AreEqual(1, me.Count);
-            Assert.AreEqual(DataType.Real, me.DataType);
-            me.Integer = 45;
-            Assert.AreEqual(d, me.Time);
-            Assert.AreEqual(true, me.Boolean);
-            Assert.AreEqual(45, me.Integer);
-            Assert.AreEqual(45.0, me.Real);
-            Assert.AreEqual("45", me.String);
-            Assert.AreEqual(1, me.Count);
-            Assert.IsNotNull(me.LastMom);
-            Assert.AreEqual(45, me.LastMom.Integer);
-            Assert.IsFalse(m.ValueEquals(me));
-            Assert.IsFalse(me.ValueEquals(m));
-            Assert.IsTrue(m.ValueLess(me));
-            me.Time = d1;
-            Assert.AreEqual(d1, me.Time);
-            me.Error = err;
-            Assert.IsNotNull(me.Error);
-            Assert.AreEqual(2, me.Error.Number);
-            Assert.AreEqual("Error", me.Error.Text);
-            Assert.AreEqual(MomErrType.Source, me.Error.ErrType);
-            cv = me.CalcValue;
-            Assert.AreEqual(DataType.Real, cv.DataType);
-            Assert.IsNotNull(cv.TotalError);
         }
     }
 }

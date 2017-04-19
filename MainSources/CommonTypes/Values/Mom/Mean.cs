@@ -4,7 +4,7 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Одно значение
-    public abstract class Mean : CalcVal, IMean
+    public abstract class Mean : CalcVal, IMean, IReadMean
     {
         public virtual bool Boolean
         {
@@ -68,66 +68,68 @@ namespace CommonTypes
             }
         }
 
-        public bool ValueEquals(IMean mean)
+        public bool ValueEquals(IBaseMean mean)
         {
+            var rmean = (IReadMean) mean;
             var dt = DataType.Add(mean.DataType);
             switch (dt)
             {
                 case DataType.Real:
                 case DataType.Weighted:
-                    return Real == mean.Real;
+                    return Real == rmean.Real;
                 case DataType.String:
-                    return String == mean.String;
+                    return String == rmean.String;
                 case DataType.Integer:
-                    return Integer == mean.Integer;
+                    return Integer == rmean.Integer;
                 case DataType.Boolean:
-                    return Boolean == mean.Boolean;
+                    return Boolean == rmean.Boolean;
                 case DataType.Time:
-                    return Date == mean.Date;
+                    return Date == rmean.Date;
             }
             return false;
         }
 
-        public bool ValueLess(IMean mean)
+        public bool ValueLess(IBaseMean mean)
         {
+            var rmean = (IReadMean)mean;
             var dt = DataType.Add(mean.DataType);
             switch (dt)
             {
                 case DataType.Real:
                 case DataType.Weighted:
-                    return Real < mean.Real;
+                    return Real < rmean.Real;
                 case DataType.String:
-                    return String.CompareTo(mean.String) < 0;
+                    return String.CompareTo(rmean.String) < 0;
                 case DataType.Integer:
-                    return Integer < mean.Integer;
+                    return Integer < rmean.Integer;
                 case DataType.Boolean:
-                    return !Boolean && mean.Boolean;
+                    return !Boolean && rmean.Boolean;
                 case DataType.Time:
-                    return Date < mean.Date;
+                    return Date < rmean.Date;
             }
             return false;
         }
 
-        public bool ValueAndErrorEquals(IMean mean)
+        public bool ValueAndErrorEquals(IBaseMean mean)
         {
-            return ValueEquals(mean) && Error == mean.Error;
+            return ValueEquals(mean) && Error == ((IReadMean)mean).Error;
         }
 
         public abstract void ValueToRec(IRecordAdd rec, string field);
         public void ValueToRecI(int i, IRecordAdd rec, string field) { ValueToRec(rec, field); }
         public abstract void ValueFromRec(IRecordRead rec, string field);
 
-        public abstract IMean ToMean();
-        public abstract IMean ToMom(DateTime time);
-        public abstract IMean ToMom(DateTime time, MomErr err);
-        public IMean ToMom() { return ToMom(Time, Error);}
-        public IMean ToMom(MomErr err) { return ToMom(Time, err); }
+        public abstract IReadMean ToMean();
+        public abstract IReadMean ToMom(DateTime time);
+        public abstract IReadMean ToMom(DateTime time, MomErr err);
+        public IReadMean ToMom() { return ToMom(Time, Error);}
+        public IReadMean ToMom(MomErr err) { return ToMom(Time, err); }
 
-        public IMean ToMeanI(int i) { return ToMean(); }
-        public IMean ToMomI(int i) { return ToMom(); }
-        public IMean ToMomI(int i, MomErr err) { return ToMom(err); }
-        public IMean ToMomI(int i, DateTime time) { return ToMom(time); }
-        public IMean ToMomI(int i, DateTime time, MomErr err) { return ToMom(time, err); }
+        public IReadMean ToMeanI(int i) { return ToMean(); }
+        public IReadMean ToMomI(int i) { return ToMom(); }
+        public IReadMean ToMomI(int i, MomErr err) { return ToMom(err); }
+        public IReadMean ToMomI(int i, DateTime time) { return ToMom(time); }
+        public IReadMean ToMomI(int i, DateTime time, MomErr err) { return ToMom(time, err); }
 
         public override MomErr TotalError
         {
@@ -135,10 +137,10 @@ namespace CommonTypes
         }
 
         public virtual int Count { get { return 1; } }
-        public virtual IMean LastMom { get { return this; } }
+        public virtual IReadMean LastMom { get { return this; } }
 
         //Скопировать значение из другого значения
-        internal abstract void CopyValueFrom(IMean mean);
+        internal abstract void CopyValueFrom(IReadMean mean);
         //Присвоить значение по умолчанию
         internal abstract void MakeDefaultValue();
 
@@ -149,13 +151,13 @@ namespace CommonTypes
         }
 
         //Добавить мгновенное значение
-        public void AddMom(IMean mom)
+        public void AddMom(IReadMean mom)
         {
             CopyValueFrom(mom);
             Time = mom.Time;
             Error = mom.Error;
         }
-        public void AddMom(DateTime time, IMean mean, MomErr err = null)
+        public void AddMom(DateTime time, IReadMean mean, MomErr err = null)
         {
             CopyValueFrom(mean);
             Time = time;

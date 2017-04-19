@@ -10,11 +10,11 @@ namespace ProvidersTest
     [TestClass]
     public class SimaticSignalsTest
     {
-        private ListSourceConnect MakeProviders()
+        private SourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalType.List, "SourceCon", "Simatic", logger);
+            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Simatic", logger);
             var prov = factory.CreateProvider("SimaticSource", "SQLServer" + SysTabl.SubValueS(TestLib.TestRunDir + "TestsSettings.accdb", "SQLServerSettings", "SqlServer"));
             con.JoinProvider(prov);
             return con;
@@ -44,11 +44,11 @@ namespace ProvidersTest
             con.ClearSignals();
             Assert.AreEqual(0, con.Signals.Count);
 
-            con.AddSignal("09ASV00CT002/Т$СК-2А.PV_Out#Value", DataType.Real, "Id=1136;Tag=09ASV00CT002/Т$СК-2А.PV_Out#Value;Archive=SystemArchive", "NeedCut=True");
-            con.AddSignal("09ASV00CT002/Т$СК-2А.PV_Out#Value.Quality", DataType.Integer, "Id=1136;Tag=09ASV00CT002/Т$СК-2А.PV_Out#Value;Archive=SystemArchive", "NeedCut=True", "Prop=Quality");
-            con.AddSignal("09ASV00CT002/Т$СК-2А.PV_Out#Value.Flags", DataType.Integer, "Id=1136;Tag=09ASV00CT002/Т$СК-2А.PV_Out#Value;Archive=SystemArchive", "NeedCut=True", "Prop=Flags");
-            con.AddSignal("09LBA55CN001XG02/DI.Out#Value", DataType.Boolean, "Id=1947;Tag=09LBA55CN001XG02/DI.Out#Value;Archive=SystemArchive;", "NeedCut=True");
-            con.AddSignal("09LBA55CN001XG02/DI.Out#Value.Quality", DataType.Integer, "Id=1947;Tag=09LBA55CN001XG02/DI.Out#Value;Archive=SystemArchive;", "NeedCut=True", "Prop=Quality");
+            con.AddSignal("09ASV00CT002/Т$СК-2А.PV_Out#Value", DataType.Real, SignalType.Uniform, "Id=1136;Tag=09ASV00CT002/Т$СК-2А.PV_Out#Value;Archive=SystemArchive");
+            con.AddSignal("09ASV00CT002/Т$СК-2А.PV_Out#Value.Quality", DataType.Integer, SignalType.Uniform, "Id=1136;Tag=09ASV00CT002/Т$СК-2А.PV_Out#Value;Archive=SystemArchive", "", "Prop=Quality");
+            con.AddSignal("09ASV00CT002/Т$СК-2А.PV_Out#Value.Flags", DataType.Integer, SignalType.Uniform, "Id=1136;Tag=09ASV00CT002/Т$СК-2А.PV_Out#Value;Archive=SystemArchive", "", "Prop=Flags");
+            con.AddSignal("09LBA55CN001XG02/DI.Out#Value", DataType.Boolean, SignalType.Uniform, "Id=1947;Tag=09LBA55CN001XG02/DI.Out#Value;Archive=SystemArchive;");
+            con.AddSignal("09LBA55CN001XG02/DI.Out#Value.Quality", DataType.Integer, SignalType.Uniform, "Id=1947;Tag=09LBA55CN001XG02/DI.Out#Value;Archive=SystemArchive;", "", "Prop=Quality");
             
             Assert.AreEqual(5, con.Signals.Count);
             Assert.AreEqual(5, con.InitialSignals.Count);

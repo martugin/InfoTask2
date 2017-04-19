@@ -25,7 +25,7 @@ namespace ProvidersLibrary
                     var pcode = nprov.GetName();
                     var provider = new ProviderConfig(complect, 
                                                                        nprov.GetAttr("ProviderType").ToProviderType(), 
-                                                                       nprov.GetAttr("ValueType").ToSignalType(), 
+                                                                       nprov.GetAttr("SignalType").ToSignalType(), 
                                                                        pcode);
                     ProviderConfigs.Add(pcode, provider);
                 }
@@ -41,7 +41,6 @@ namespace ProvidersLibrary
 
         //Создание соединения
         public ProviderConnect CreateConnect(ProviderType type, //Тип провайдера
-                                                                 SignalType valueType, //Тип значения сигналов
                                                                  string name, //Имя соединения
                                                                  string complect, //Комплект
                                                                  Logger logger) //Логгер (поток)
@@ -49,13 +48,9 @@ namespace ProvidersLibrary
             switch (type)
             {
                 case ProviderType.Source:
-                    if (valueType == SignalType.Mom) 
-                        return new MomSourceConnect(name, complect, logger);
-                    return new ListSourceConnect(name, complect, logger);
+                    return new SourceConnect(name, complect, logger);
                 case ProviderType.Receiver:
-                    if (valueType == SignalType.Mom) 
-                        return new MomReceiverConnect(name, complect, logger);
-                    return new ListReceiverConnect(name, complect, logger);
+                    return new ReceiverConnect(name, complect, logger);
             }
             return null;
         }

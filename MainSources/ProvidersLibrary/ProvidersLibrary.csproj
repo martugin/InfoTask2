@@ -46,11 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ReceiverController.cs" />
+    <Compile Include="Controllers\SourceController.cs" />
     <Compile Include="Outs\SourceOut.cs" />
     <Compile Include="Signals\MomSignal.cs" />
     <Compile Include="Outs\ProviderOut.cs" />
-    <Compile Include="RealTime\ControllerSignal.cs" />
-    <Compile Include="RealTime\SourceController.cs" />
+    <Compile Include="Controllers\ControllerSignals.cs" />
+    <Compile Include="Controllers\ProviderController.cs" />
     <Compile Include="Signals\ReceiverSignal.cs" />
     <Compile Include="Signals\SourceSignal.cs" />
     <Compile Include="SpecialSources\Clone\CloneOut.cs" />

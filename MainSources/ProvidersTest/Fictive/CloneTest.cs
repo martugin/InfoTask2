@@ -9,14 +9,14 @@ namespace ProvidersTest
     [TestClass]
     public class CloneTest
     {
-        private ListSourceConnect MakeCloneConnect(string prefix)
+        private SourceConnect MakeCloneConnect(string prefix)
         {
             TestLib.CopyDir(@"Providers\Fictive", "TestClone", "Clone" + prefix);
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var connect = factory.CreateConnect(ProviderType.Source, SignalType.List, "TestSource", "Clones", logger);
+            var connect = factory.CreateConnect(ProviderType.Source, "TestSource", "Clones", logger);
             connect.JoinProvider(factory.CreateProvider("CloneSource", "CloneDir=" + TestLib.TestRunDir + @"Providers\Fictive\Clone" + prefix));
-            return (ListSourceConnect)connect;
+            return (SourceConnect)connect;
         }
 
         private static void GetValues(SourceConnect connect, DateTime beg, DateTime en)

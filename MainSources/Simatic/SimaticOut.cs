@@ -15,8 +15,8 @@ namespace Simatic
         }
 
         //Сигналы: качество, флаги
-        internal CloneSignal QualitySignal { get; set; }
-        internal CloneSignal FlagsSignal { get; set; }
+        internal ListSignal QualitySignal { get; set; }
+        internal ListSignal FlagsSignal { get; set; }
         
         //Имя архива
         internal string Archive { get; private set; }
@@ -26,7 +26,7 @@ namespace Simatic
         internal int Id { get; private set; }
 
         //Добавление сигнала
-        protected override CloneSignal AddInitialSignal(CloneSignal sig)
+        protected override ListSignal AddSourceSignal(ListSignal sig)
         {
             switch (sig.Inf.Get("Prop", "").ToLower())
             {

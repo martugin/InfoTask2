@@ -20,14 +20,14 @@
   </Packages>
   <Providers>
     <Kosmotronika Description="Провайдеры для ПТК Космотроника-Венец" DllFile="Providers\Kosmotronika\Kosmotronika.dll">
-      <KosmotronikaRetroSource ProviderType="Источник" Description="Ретро-сервер" ValueType="Архивный">
+      <KosmotronikaRetroSource ProviderType="Источник" Description="Ретро-сервер" SignalType="Список">
         <ProviderProps>
           <RetroServerName PropNum="1" Description="Имя Ретро-сервера" DefaultValue="RetroServer">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
           </RetroServerName>
         </ProviderProps>
       </KosmotronikaRetroSource>
-      <KosmotronikaArchDbSource ProviderType="Источник" Description="OLE DB Provider ПТК Космотроника" ValueType="Архивный">
+      <KosmotronikaArchDbSource ProviderType="Источник" Description="OLE DB Provider ПТК Космотроника" SignalType="Список">
         <ProviderProps>
           <ArchiveDir PropNum="1" Description="Путь к каталогу архива" DefaultValue="">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
@@ -62,7 +62,7 @@
           </SystemDir>
         </ProviderProps>
       </KosmotronikaDBFComm>
-      <KosmotronikaOPCReceiver ProviderType="Приемник" Description="Запись в OPC-сервер DA" ValueType="Мгновенный">
+      <KosmotronikaOPCReceiver ProviderType="Приемник" Description="Запись в OPC-сервер DA" SignalType="Приемник">
         <ProviderProps>
           <OPCServerName PropNum="1" Description="Имя OPC-сервера" DefaultValue="Progress.OpenOPC.2">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
@@ -113,7 +113,7 @@
       </KosmotronikaDBFOPCReceiverComm>
     </Kosmotronika>
     <Ovation Description="Провайдеры для ПТК Ovation" DllFile="Providers\Ovation\Ovation.dll">
-      <OvationSource ProviderType="Источник" Description="Process Historian" ValueType="Архивный">
+      <OvationSource ProviderType="Источник" Description="Process Historian" SignalType="Список">
         <ProviderProps>
           <DataSource PropNum="1" Description="Источник данных Historian (DROP)">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
@@ -134,7 +134,7 @@
           </DataSource>
         </ProviderProps>
       </OvationOPCReceiverComm>
-      <OvationReceiver ProviderType="Приемник" Description="Запись в OPC-сервер DA" ValueType="Мгновенный">
+      <OvationReceiver ProviderType="Приемник" Description="Запись в OPC-сервер DA" SignalType="Приемник">
         <ProviderProps>
           <OPCServerName PropNum="1" Description="Имя OPC-сервера" DefaultValue="Ovation.OPCDAServer.1">
             <PropOptions RowSourceType="Value List" RowSource="Ovation.OPC.4;Ovation.OPCDAServer.1" />
@@ -146,7 +146,7 @@
       </OvationReceiver>
     </Ovation>
     <Wonderware Description="Провайдеры для ПТК Wonderware" DllFile="Providers\Wonderware\Wonderware.dll">
-      <WonderwareSource ProviderType="Источник" Description="Historian" ValueType="Архивный">
+      <WonderwareSource ProviderType="Источник" Description="Historian" SignalType="Список">
         <ProviderProps>
           <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
@@ -197,7 +197,7 @@
           </Database>
         </ProviderProps>
       </WonderwareOPCReceiverComm>
-      <WonderwareOPCReceiver ProviderType="Приемник" Description="Запись в OPC-сервер DA" ValueType="Мгновенный">
+      <WonderwareOPCReceiver ProviderType="Приемник" Description="Запись в OPC-сервер DA" SignalType="Приемник">
         <ProviderProps>
           <OPCServerName PropNum="1" Description="Имя OPC-сервера" DefaultValue="ArchestrA.FSGateway.2" RowSource="ArchestrA.FSGateway.2" />
           <Node PropNum="2" Description="Рабочая станция" />
@@ -207,7 +207,7 @@
       </WonderwareOPCReceiver>
     </Wonderware>
     <Simatic Description="Провайдеры для Simatic" DllFile="Providers\Simatic\Simatic.dll">
-      <SimaticSource ProviderType="Источник" Description="Источник OLE DB ПТК SIMATIC" ValueType="Архивный">
+      <SimaticSource ProviderType="Источник" Description="Источник OLE DB ПТК SIMATIC" SignalType="Список">
         <ProviderProps>
           <SQLServer PropNum="1" Description="Имя SQL-сервера архива">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
@@ -233,7 +233,7 @@
       </SimaticComm>
     </Simatic>
     <Clones Description="Провайдеры архивов мгновенных значений InfoTask">
-      <CloneSource ProviderType="Источник" Description="Клон архива" ValueType="Архивный">
+      <CloneSource ProviderType="Источник" Description="Клон архива" SignalType="Список">
         <ProviderProps>
           <CloneFile PropNum="1" Description="Файл клона архива" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
@@ -280,7 +280,7 @@
           </Database>
         </ProviderProps>
       </SQLServerArchive>
-      <AccessArchiveSource ProviderType="Источник" Description="Архив в формате Access как источник, один модуль" ValueType="Архивный">
+      <AccessArchiveSource ProviderType="Источник" Description="Архив в формате Access как источник, один модуль" SignalType="Список">
         <ProviderProps>
           <DatabaseFile PropNum="1" Description="Файл архива" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
@@ -290,7 +290,7 @@
           </ModuleCode>
         </ProviderProps>
       </AccessArchiveSource>
-      <SQLServerArchiveSource ProviderType="Источник" Description="Архив в формате SQL-сервера как источник, один модуль" ValueType="Архивный">
+      <SQLServerArchiveSource ProviderType="Источник" Description="Архив в формате SQL-сервера как источник, один модуль" SignalType="Список">
         <ProviderProps>
           <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
@@ -349,10 +349,10 @@
       </ArchiveModuleComm>
     </Archives>
     <Fictive Description="Отладочные провайдеры" DllFile="Providers\Fictive\Fictive.dll">
-      <FictiveSimpleSource ProviderType="Источник" Description="Простой отладочный источник" ValueType="Архивный">
+      <FictiveSimpleSource ProviderType="Источник" Description="Простой отладочный источник" SignalType="Список">
         <ProviderProps></ProviderProps>
       </FictiveSimpleSource>
-      <FictiveSource ProviderType="Источник" Description="Сложный отладочный источник" ValueType="Архивный">
+      <FictiveSource ProviderType="Источник" Description="Сложный отладочный источник" SignalType="Список">
         <ProviderProps>
           <DbFile PropNum="1" Description="Файл со списком значений" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл отладочных значений&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
@@ -368,7 +368,7 @@
       </FictiveComm>
     </Fictive>
     <Logika Description="Провайдеры для архивов программ НПФ Логика" DllFile="Providers\Logika\Logika.dll">
-      <LogikaSource ProviderType="Источник" Description="Источник для программы Пролог" ValueType="Архивный">
+      <LogikaSource ProviderType="Источник" Description="Источник для программы Пролог" SignalType="Список">
         <ProviderProps>
           <DbFile PropNum="1" Description="Путь к базе данных архива" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
@@ -384,7 +384,7 @@
       </LogikaComm>
     </Logika>
     <Mir Description="Провайдеры для ПТК Мир" DllFile="Providers\Mir\Mir.dll">
-      <MirSource ProviderType="Источник" Description="SQL база ПТК Мир" ValueType="Архивный">
+      <MirSource ProviderType="Источник" Description="SQL база ПТК Мир" SignalType="Список">
         <ProviderProps>
           <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
             <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />

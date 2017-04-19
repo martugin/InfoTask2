@@ -37,26 +37,26 @@ namespace InfoTaskLauncherTest
 
             con.ClearSignals();
             Assert.AreEqual(0, con.Connect.Signals.Count);
-            var sigBool = con.AddSignal("Out1.Bool", "bool", "NumObject=1;ValuesInterval=30000", "NeedCut=True", "Signal=Bool");
+            var sigBool = con.AddSignal("Out1.Bool", "bool", "Список со срезом", "NumObject=1;ValuesInterval=30000", "", "Signal=Bool");
             Assert.AreEqual("Out1.Bool", sigBool.Code);
             Assert.AreEqual("Логич", sigBool.DataType);
-            Assert.AreEqual("NUMOBJECT=1;VALUESINTERVAL=30000;NEEDCUT=True;SIGNAL=Bool;", sigBool.Inf);
-            var sigInt = con.AddSignal("Out1.Int", "int", "NumObject=1;ValuesInterval=30000", "NeedCut=True", "Signal=Int");
+            Assert.AreEqual("NUMOBJECT=1;VALUESINTERVAL=30000;SIGNAL=Bool;", sigBool.Inf);
+            var sigInt = con.AddSignal("Out1.Int", "int", "Список со срезом", "NumObject=1;ValuesInterval=30000", "", "Signal=Int");
             Assert.AreEqual("Out1.Int", sigInt.Code);
             Assert.AreEqual("Целое", sigInt.DataType);
-            var sigReal = con.AddSignal("Out1.Real", "real", "NumObject=1;ValuesInterval=30000", "NeedCut=True", "Signal=Real");
+            var sigReal = con.AddSignal("Out1.Real", "real", "Список со срезом", "NumObject=1;ValuesInterval=30000", "", "Signal=Real");
             Assert.AreEqual("Out1.Real", sigReal.Code);
             Assert.AreEqual("Действ", sigReal.DataType);
-            var sigTime = con.AddSignal("Out1.Time", "time", "NumObject=1;ValuesInterval=30000", "NeedCut=True", "Signal=Time");
+            var sigTime = con.AddSignal("Out1.Time", "time", "Список со срезом", "NumObject=1;ValuesInterval=30000", "", "Signal=Time");
             Assert.AreEqual("Out1.Time", sigTime.Code);
             Assert.AreEqual("Время", sigTime.DataType);
-            var sigString = con.AddSignal("Out1.String", "string", "NumObject=1;ValuesInterval=30000", "NeedCut=True", "Signal=String");
+            var sigString = con.AddSignal("Out1.String", "string", "Список со срезом", "NumObject=1;ValuesInterval=30000", "", "Signal=String");
             Assert.AreEqual("Out1.String", sigString.Code);
             Assert.AreEqual("Строка", sigString.DataType);
-            var sigValue = con.AddSignal("Out2.Value", "real", "NumObject=2;ValuesInterval=10000", "NeedCut=True", "Signal=Value");
+            var sigValue = con.AddSignal("Out2.Value", "real", "Список со срезом", "NumObject=2;ValuesInterval=10000", "", "Signal=Value");
             Assert.AreEqual("Out2.Value", sigValue.Code);
             Assert.AreEqual("Действ", sigValue.DataType);
-            var sigState = con.AddSignal("Out2.State", "int", "NumObject=2;ValuesInterval=10000", "NeedCut=True", "Signal=State");
+            var sigState = con.AddSignal("Out2.State", "int", "Список со срезом", "NumObject=2;ValuesInterval=10000", "", "Signal=State");
             Assert.AreEqual("Out2.State", sigState.Code);
             Assert.AreEqual("Целое", sigState.DataType);
 
@@ -71,8 +71,8 @@ namespace InfoTaskLauncherTest
 
             con.GetValues(new DateTime(2017, 1, 1), new DateTime(2017, 1, 1, 0, 10, 0));
             Assert.AreEqual(2, source.Outs.Count);
-            Assert.AreEqual("NumObject=1;ValuesInterval=30000;NeedCut=True", source.Outs[1].Context);
-            Assert.AreEqual("NumObject=2;ValuesInterval=10000;NeedCut=True", source.Outs[2].Context);
+            Assert.AreEqual("NumObject=1;ValuesInterval=30000", source.Outs[1].Context);
+            Assert.AreEqual("NumObject=2;ValuesInterval=10000", source.Outs[2].Context);
             Assert.AreEqual(21, sigBool.MomsCount);
 
             DateTime d = new DateTime(2017, 1, 1);
@@ -213,31 +213,31 @@ namespace InfoTaskLauncherTest
 
             con.ClearSignals();
             Assert.AreEqual(0, con.Connect.Signals.Count);
-            var sigBool = con.AddSignal("Out1.Bool", "bool", "Table=MomValues;ObjectCode=Ob1", "NeedCut=True", "Signal=Bool");
+            var sigBool = con.AddSignal("Out1.Bool", "bool", "Список со срезом", "Table=MomValues;ObjectCode=Ob1", "", "Signal=Bool");
             Assert.AreEqual("Out1.Bool", sigBool.Code);
             Assert.AreEqual("Логич", sigBool.DataType);
-            var sigInt = con.AddSignal("Out1.Int", "int", "Table=MomValues;ObjectCode=Ob1", "NeedCut=True", "Signal=Int");
+            var sigInt = con.AddSignal("Out1.Int", "int", "Список со срезом", "Table=MomValues;ObjectCode=Ob1", "", "Signal=Int");
             Assert.AreEqual("Out1.Int", sigInt.Code);
             Assert.AreEqual("Целое", sigInt.DataType);
-            var sigReal = con.AddSignal("Out1.Real", "real", "Table=MomValues;ObjectCode=Ob1", "NeedCut=True", "Signal=Real");
+            var sigReal = con.AddSignal("Out1.Real", "real", "Список со срезом", "Table=MomValues;ObjectCode=Ob1", "", "Signal=Real");
             Assert.AreEqual("Out1.Real", sigReal.Code);
             Assert.AreEqual("Действ", sigReal.DataType);
-            var sigTime = con.AddSignal("Out1.Time", "time", "Table=MomValues;ObjectCode=Ob1", "NeedCut=True", "Signal=Time");
+            var sigTime = con.AddSignal("Out1.Time", "time", "Список со срезом", "Table=MomValues;ObjectCode=Ob1", "", "Signal=Time");
             Assert.AreEqual("Out1.Time", sigTime.Code);
             Assert.AreEqual("Время", sigTime.DataType);
-            var sigString = con.AddSignal("Out1.String", "string", "Table=MomValues;ObjectCode=Ob1", "NeedCut=True", "Signal=String");
+            var sigString = con.AddSignal("Out1.String", "string", "Список со срезом", "Table=MomValues;ObjectCode=Ob1", "", "Signal=String");
             Assert.AreEqual("Out1.String", sigString.Code);
             Assert.AreEqual("Строка", sigString.DataType);
-            var sigValue = con.AddSignal("Out2.Value", "real", "Table=MomValues;ObjectCode=Ob2", "NeedCut=True", "Signal=Value");
+            var sigValue = con.AddSignal("Out2.Value", "real", "Список со срезом", "Table=MomValues;ObjectCode=Ob2", "", "Signal=Value");
             Assert.AreEqual("Out2.Value", sigValue.Code);
             Assert.AreEqual("Действ", sigValue.DataType);
-            var sigState = con.AddSignal("Out2.State", "int", "Table=MomValues;ObjectCode=Ob2", "NeedCut=True", "Signal=State");
+            var sigState = con.AddSignal("Out2.State", "int", "Список со срезом", "Table=MomValues;ObjectCode=Ob2", "", "Signal=State");
             Assert.AreEqual("Out2.State", sigState.Code);
             Assert.AreEqual("Целое", sigState.DataType);
-            var sigValueX = con.AddSignal("OutX.Value", "real", "Table=MomValues2;ObjectCode=ObX", "NeedCut=True", "Signal=Value");
+            var sigValueX = con.AddSignal("OutX.Value", "real", "Список со срезом", "Table=MomValues2;ObjectCode=ObX", "", "Signal=Value");
             Assert.AreEqual("OutX.Value", sigValueX.Code);
             Assert.AreEqual("Действ", sigValueX.DataType);
-            var sigValue2X = con.AddSignal("OutX.Value2", "real", "Table=MomValues2;ObjectCode=ObX", "NeedCut=True", "Signal=Value2");
+            var sigValue2X = con.AddSignal("OutX.Value2", "real", "Список со срезом", "Table=MomValues2;ObjectCode=ObX", "", "Signal=Value2");
             Assert.AreEqual("OutX.Value2", sigValue2X.Code);
             Assert.AreEqual("Действ", sigValue2X.DataType);
 

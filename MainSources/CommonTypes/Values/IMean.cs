@@ -3,8 +3,7 @@ using BaseLibrary;
 
 namespace CommonTypes
 {
-    //Интерфейс для мгновенных значений и списков значений только для чтения
-    public interface IMean : ICalcVal
+    public interface IBaseMean : ICalcVal
     {
         //Количество значений
         int Count { get; }
@@ -15,15 +14,7 @@ namespace CommonTypes
         DateTime NextTime { get; }
 
         //Само отдельное значение или последнее значение списка
-        IMean LastMom { get; }
-
-        //Значения разных типов
-        bool Boolean { get; set; }
-        int Integer { get; set; }
-        double Real { get; set; }
-        DateTime Date { get; set; }
-        string String { get; set; }
-        object Object { get; set; }
+        IReadMean LastMom { get; }
 
         //Значения разных типов i-ого значения
         bool BooleanI(int i);
@@ -33,45 +24,77 @@ namespace CommonTypes
         string StringI(int i);
         object ObjectI(int i);
 
-        //Ошибка
-        MomErr Error { get; set; }
         //Ошибка i-ого значения
         MomErr ErrorI(int i);
-
-        //Время или MinDate
-        DateTime Time { get; set; }
         //Время i-ого значения
         DateTime TimeI(int i);
 
         //Сравнение значений и ошибок
-        bool ValueEquals(IMean mean);
-        bool ValueLess(IMean mean);
-        bool ValueAndErrorEquals(IMean mean);
+        bool ValueEquals(IBaseMean mean);
+        bool ValueLess(IBaseMean mean);
+        bool ValueAndErrorEquals(IBaseMean mean);
 
         //Запись значения в рекордсет
         void ValueToRec(IRecordAdd rec, string field);
         //Запись значения в рекордсет rec, поле field
         void ValueToRecI(int i, IRecordAdd rec, string field);
+
+        //Копия значения, возможно с новым временем и ошибкой
+        IReadMean ToMean();
+        IReadMean ToMom();
+        IReadMean ToMom(MomErr err);
+        IReadMean ToMom(DateTime time);
+        IReadMean ToMom(DateTime time, MomErr err);
+
+        //Копия значения по индексу, возможно с новым временем и ошибкой
+        IReadMean ToMeanI(int i);
+        IReadMean ToMomI(int i);
+        IReadMean ToMomI(int i, MomErr err);
+        IReadMean ToMomI(int i, DateTime time);
+        IReadMean ToMomI(int i, DateTime time, MomErr err);
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    //Интерфейс для мгновенных значений и списков значений только для чтения
+    public interface IReadMean : IBaseMean
+    {
+        //Значения разных типов
+        bool Boolean { get; }
+        int Integer { get; }
+        double Real { get; }
+        DateTime Date { get; }
+        string String { get; }
+        object Object { get; }
+
+        //Ошибка
+        MomErr Error { get; }
+        //Время или MinDate
+        DateTime Time { get; }
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    //Интерфейс для мгновенных значений и списков значений
+    public interface IMean : IBaseMean
+    {
+        //Значения разных типов
+        bool Boolean { get; set; }
+        int Integer { get; set; }
+        double Real { get; set; }
+        DateTime Date { get; set; }
+        string String { get; set; }
+        object Object { get; set; }
+
+        //Ошибка
+        MomErr Error { get; set; }
+        //Время или MinDate
+        DateTime Time { get; set; }
+
         //Запись значения в рекордсет
         void ValueFromRec(IRecordRead rec, string field);
 
-        //Копия значения, возможно с новым временем и ошибкой
-        IMean ToMean();
-        IMean ToMom();
-        IMean ToMom(MomErr err);
-        IMean ToMom(DateTime time);
-        IMean ToMom(DateTime time, MomErr err);
-
-        //Копия значения по индексу, возможно с новым временем и ошибкой
-        IMean ToMeanI(int i);
-        IMean ToMomI(int i);
-        IMean ToMomI(int i, MomErr err);
-        IMean ToMomI(int i, DateTime time);
-        IMean ToMomI(int i, DateTime time, MomErr err);
-
         //Добавление мгновенного значения
-        void AddMom(IMean mom);
-        void AddMom(DateTime time, IMean mean, MomErr err);
+        void AddMom(IReadMean mom);
+        void AddMom(DateTime time, IReadMean mean, MomErr err);
         //Добавление с указанием времени и значения
         void AddMom(DateTime time, bool b, MomErr err = null);
         void AddMom(DateTime time, int i, MomErr err = null);

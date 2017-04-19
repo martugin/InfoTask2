@@ -39,7 +39,7 @@ namespace Kosmotronika
         }
 
         //Добавить к выходу сигнал, если такого еще не было
-        protected override SourceSignal AddSourceSignal(SourceSignal sig)
+        protected override ListSignal AddSourceSignal(ListSignal sig)
         {
             switch (sig.Inf["Prop"].ToUpper())
             {
@@ -61,9 +61,9 @@ namespace Kosmotronika
         internal int Out { get; private set; }
 
         //Сигнал недостоверности
-        internal CloneSignal StateSignal { get; private set; }
+        internal ListSignal StateSignal { get; private set; }
         //Сигнал ПОК
-        internal CloneSignal PokSignal { get; private set; }
+        internal ListSignal PokSignal { get; private set; }
 
         //Чтение значений по одному выходу из рекордсета источника
         //Возвращает количество сформированных значений

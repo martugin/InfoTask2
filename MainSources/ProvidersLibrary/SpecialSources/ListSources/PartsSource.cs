@@ -6,6 +6,8 @@ namespace ProvidersLibrary
     //Источник c функцией чтения по блокам
     public abstract class PartsSource : ListSource
     {
+
+
         //Чтение значений по блокам объектов
         protected ValuesCount ReadByParts(IEnumerable<ListSourceOut> objects, //список объектов
                                                            int partSize, //Размер одного блока
@@ -170,7 +172,7 @@ namespace ProvidersLibrary
                                 queue.Enqueue(p.GetRange(0, m));
                                 queue.Enqueue(p.GetRange(m, part.Count - m));
                             }
-                            else SourceConnect.AddErrorOut(p[0].Context, KeepedError);
+                            else AddErrorOut(p[0].Context, KeepedError);
                         }
                     }
             }

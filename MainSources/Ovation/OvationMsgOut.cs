@@ -15,27 +15,27 @@ namespace Ovation
         internal string OutType { get; private set; }
 
         //Флажки сообщений
-        internal CloneSignal MsgFlagsSignal { get; private set; }
+        internal ListSignal MsgFlagsSignal { get; private set; }
         //Тип сообщения
-        internal CloneSignal MsgTypeSignal { get; private set; }
+        internal ListSignal MsgTypeSignal { get; private set; }
         //Подтип
-        internal CloneSignal SubTypeSignal { get; private set; }
+        internal ListSignal SubTypeSignal { get; private set; }
         //Номер системы
-        internal CloneSignal SystemSignal { get; private set; }
+        internal ListSignal SystemSignal { get; private set; }
         //Узел - источник сообщения
-        internal CloneSignal NodeSignal { get; private set; }
+        internal ListSignal NodeSignal { get; private set; }
         //Имя точки
-        internal CloneSignal AlmNameSignal { get; private set; }
+        internal ListSignal AlmNameSignal { get; private set; }
         //Текст сообщения
-        internal CloneSignal PrimTextSignal { get; private set; }
+        internal ListSignal PrimTextSignal { get; private set; }
         //Дополнительный текст
-        internal CloneSignal SuppTextSignal { get; private set; }
+        internal ListSignal SuppTextSignal { get; private set; }
         //Дополнительная информация
-        internal CloneSignal Info1Signal { get; private set; }
-        internal CloneSignal Info2Signal { get; private set; }
+        internal ListSignal Info1Signal { get; private set; }
+        internal ListSignal Info2Signal { get; private set; }
 
         //Добавить к выходу сигнал, если такого еще не было
-        protected override CloneSignal AddInitialSignal(CloneSignal sig)
+        protected override ListSignal AddSourceSignal(ListSignal sig)
         {
             switch (sig.Inf["Prop"])
             {

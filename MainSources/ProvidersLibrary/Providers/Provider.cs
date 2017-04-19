@@ -21,7 +21,7 @@ namespace ProvidersLibrary
         }
 
         //Тип значения сигналов
-        public abstract SignalType ValueType { get; }
+        public abstract SignalType SignalType { get; }
 
         //Загрузка настроек провайдера
         private string _inf;
@@ -129,13 +129,7 @@ namespace ProvidersLibrary
             {
                 AddEvent("Подготовка выходов");
                 ClearOuts();
-                foreach (var sig in ProviderConnect.ProviderSignals.Values)
-                    if (sig.Type != SignalType.Calc)
-                    {
-                        var ob = AddOut(sig);
-                        ob.Context = sig.ContextOut;
-                        ob.AddSignal(sig);
-                    }
+                PrepareOuts();
                 Procent = 20;
                 if (connectBefore && !Connect()) return false;
                 IsPrepared = StartDanger(0, 100, 2, LoggerStability.Periodic, "Подготовка провайдера")
@@ -149,6 +143,9 @@ namespace ProvidersLibrary
                 return false;
             }
         }
+        //Подготовка выходов
+        protected abstract void PrepareOuts();
+
 
         //Создать пул ошибок
         protected virtual void MakeErrPool() { }

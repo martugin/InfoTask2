@@ -91,20 +91,24 @@
             switch (t.ToLower())
             {
                 case "mom":
+                case "мгновенный":
                     return SignalType.Mom;
                 case "list":
+                case "список":
                     return SignalType.List;
                 case "uniform":
-                    return SignalType.List;
+                case "список со срезом":
+                    return SignalType.Uniform;
                 case "calc":
+                case "расчетный":
                     return SignalType.Calc;
                 case "receiver":
+                case "приемник":
                     return SignalType.Receiver;
             }
             return SignalType.Error;
         }
 
-   
         //Перевод из SignalType в английское имя
         public static string ToEnglish(this SignalType t)
         {
@@ -122,6 +126,25 @@
                     return "Receiver";
             }
             return "Error";
+        }
+
+        //Перевод из SignalType в русское имя
+        public static string ToRussian(this SignalType t)
+        {
+            switch (t)
+            {
+                case SignalType.Mom:
+                    return "Мгновенный";
+                case SignalType.List:
+                    return "Список";
+                case SignalType.Uniform:
+                    return "Список со срезом";
+                case SignalType.Calc:
+                    return "Расчетный";
+                case SignalType.Receiver:
+                    return "Приемник";
+            }
+            return "Ошибка";
         }
     }
 }

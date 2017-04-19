@@ -11,12 +11,12 @@ namespace ProvidersTest
     [TestClass]
     public class LogikaTest
     {
-        private ListSourceConnect MakeProviders(string prefix)
+        private SourceConnect MakeProviders(string prefix)
         {
             TestLib.CopyFile(@"Providers\Logika", "prolog.mdb", prefix + "Prolog.mdb");
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalType.List, "SourceCon", "Logika", logger);
+            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Logika", logger);
             var prov = factory.CreateProvider("LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\" + prefix + "Prolog.mdb");
             con.JoinProvider(prov);
             return con;
@@ -48,16 +48,16 @@ namespace ProvidersTest
             Assert.IsFalse(prov.IsPrepared);
             Assert.AreEqual(Static.MinDate, ti.Begin);
 
-            con.AddSignal("T941M_412.t1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=t1");
-            con.AddSignal("T941M_412.t2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=t2");
-            con.AddSignal("T941M_412.V1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V1");
-            con.AddSignal("T941M_412.V2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V2");
-            con.AddSignal("T941M_412.V3", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V3");
-            con.AddSignal("T941M_412.M1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M1");
-            con.AddSignal("T941M_412.M2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M2");
-            con.AddSignal("T941M_412.M3", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M3");
-            con.AddSignal("T941M_412.Q", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=Q");
-            con.AddSignal("T941M_412.Tи", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=Tи");
+            con.AddSignal("T941M_412.t1", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=t1");
+            con.AddSignal("T941M_412.t2", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=t2");
+            con.AddSignal("T941M_412.V1", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=V1");
+            con.AddSignal("T941M_412.V2", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=V2");
+            con.AddSignal("T941M_412.V3", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=V3");
+            con.AddSignal("T941M_412.M1", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=M1");
+            con.AddSignal("T941M_412.M2", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=M2");
+            con.AddSignal("T941M_412.M3", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=M3");
+            con.AddSignal("T941M_412.Q", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=Q");
+            con.AddSignal("T941M_412.Tи", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=Tи");
 
             Assert.AreEqual(10, con.Signals.Count);
             Assert.AreEqual(10, con.InitialSignals.Count);
@@ -133,16 +133,16 @@ namespace ProvidersTest
         public void Values()
         {
             var con = MakeProviders("Values");
-            con.AddSignal("T941M_412.t1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=t1");
-            con.AddSignal("T941M_412.t2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=t2");
-            con.AddSignal("T941M_412.V1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V1");
-            con.AddSignal("T941M_412.V2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V2");
-            con.AddSignal("T941M_412.V3", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=V3");
-            con.AddSignal("T941M_412.M1", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M1");
-            con.AddSignal("T941M_412.M2", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M2");
-            con.AddSignal("T941M_412.M3", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=M3");
-            con.AddSignal("T941M_412.Q", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=Q");
-            con.AddSignal("T941M_412.Tи", DataType.Real, "TableName=T941M;NodeId=412", "NeedCut=False", "SignalCode=Tи");
+            con.AddSignal("T941M_412.t1", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=t1");
+            con.AddSignal("T941M_412.t2", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=t2");
+            con.AddSignal("T941M_412.V1", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=V1");
+            con.AddSignal("T941M_412.V2", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=V2");
+            con.AddSignal("T941M_412.V3", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=V3");
+            con.AddSignal("T941M_412.M1", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=M1");
+            con.AddSignal("T941M_412.M2", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=M2");
+            con.AddSignal("T941M_412.M3", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=M3");
+            con.AddSignal("T941M_412.Q", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=Q");
+            con.AddSignal("T941M_412.Tи", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=Tи");
 
             using (con.StartPeriod(D(0), D(24), "Single"))
             {

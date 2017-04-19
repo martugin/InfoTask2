@@ -10,11 +10,11 @@ namespace ProvidersTest
     [TestClass]
     public class WonderwareTest
     {
-        private ListSourceConnect MakeProviders()
+        private SourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (ListSourceConnect)factory.CreateConnect(ProviderType.Source, SignalType.List, "SourceCon", "Wonderware", logger);
+            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Wonderware", logger);
             var prov = factory.CreateProvider("WonderwareSource", TestLib.TestSqlInf("RunTime"));
             con.JoinProvider(prov);
             return con;
@@ -43,10 +43,10 @@ namespace ProvidersTest
             Assert.AreEqual(0, con.Signals.Count);
             con.ClearSignals();
             Assert.AreEqual(0, con.Signals.Count);
-            con.AddSignal("A00RL31H02KNB0.Пар", DataType.Real, "TagName=A00RL31H02KNB0", "NeedCut=True");
-            con.AddSignal("A00RL31S01ZSST.Пар", DataType.Real, "TagName=A00RL31S01ZSST", "NeedCut=True");
-            con.AddSignal("D1_NKK03B01.Пар", DataType.Boolean, "TagName=D1_NKK03B01", "NeedCut=True");
-            con.AddSignal("D2CAUP02ON.Пар", DataType.Boolean, "TagName=D2CAUP02ON", "NeedCut=True");
+            con.AddSignal("A00RL31H02KNB0.Пар", DataType.Real, SignalType.Uniform, "TagName=A00RL31H02KNB0");
+            con.AddSignal("A00RL31S01ZSST.Пар", DataType.Real, SignalType.Uniform, "TagName=A00RL31S01ZSST");
+            con.AddSignal("D1_NKK03B01.Пар", DataType.Boolean, SignalType.Uniform, "TagName=D1_NKK03B01");
+            con.AddSignal("D2CAUP02ON.Пар", DataType.Boolean, SignalType.Uniform, "TagName=D2CAUP02ON");
 
             Assert.AreEqual(4, con.Signals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);

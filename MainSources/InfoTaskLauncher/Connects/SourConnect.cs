@@ -30,6 +30,7 @@ namespace ComLaunchers
         //Добавить исходный сигнал
         RSourSignal AddSignal(string fullCode, //Полный код сигнала
                                             string dataType, //Тип данных
+                                            string valueType, //Тип значений сисгнала
                                             string infObject, //Свойства объекта
                                             string infOut, //Свойства выхода относительно объекта
                                             string infProp); //Свойства сигнала относительно выхода
@@ -59,14 +60,14 @@ namespace ComLaunchers
     [ClassInterface(ClassInterfaceType.None)]
     public class RSourConnect : SourConnect
     {
-        internal RSourConnect(ListSourceConnect connect, ProvidersFactory factory)
+        internal RSourConnect(SourceConnect connect, ProvidersFactory factory)
         {
             Connect = connect;
             _factory = factory;
         }
            
         //Ссылка на соединение
-        internal ListSourceConnect Connect { get; private set; }
+        internal SourceConnect Connect { get; private set; }
         //Фабрика провайдеров
         private readonly ProvidersFactory _factory;
         //Ссылка на логгер
@@ -112,11 +113,12 @@ namespace ComLaunchers
         //Добавить исходный сигнал
         public RSourSignal AddSignal(string fullCode, //Полный код сигнала
                                                      string dataType, //Тип данных
+                                                     string valueType, //Тип значений сигнала
                                                      string infObject, //Свойства объекта
                                                      string infOut, //Свойства выхода относительно объекта
                                                      string infProp) //Свойства сигнала относительно выхода
         {
-            return new RSourSignal((ListSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), infObject, infOut, infProp));
+            return new RSourSignal((ListSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), valueType.ToSignalType(), infObject, infOut, infProp));
         }
 
         //Добавить расчетный сигнал
