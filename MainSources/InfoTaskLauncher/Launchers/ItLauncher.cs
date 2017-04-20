@@ -128,14 +128,6 @@ namespace ComLaunchers
             AppCode = appCode;
         }
 
-        //Загрузка проекта
-        public void LoadProject(string projectDir) //Каталог проекта
-        {
-            CloseProject();
-            _project = new AppProject(this,  projectDir);
-            Logger.ExecutionFinished += OnExecutionFinished;
-        }
-
         //Закрытие клиента
         public void Close()
         {
@@ -146,6 +138,14 @@ namespace ComLaunchers
         }
         //Клиент уже был закрыт
         protected internal bool IsClosed { get; private set; }
+
+        //Загрузка проекта
+        public void LoadProject(string projectDir) //Каталог проекта
+        {
+            CloseProject();
+            _project = new AppProject(this, projectDir);
+            Logger.ExecutionFinished += OnExecutionFinished;
+        }
 
         //Закрытие проекта
         private void CloseProject()

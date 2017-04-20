@@ -47,7 +47,8 @@ namespace ProvidersLibrary
         //Добавляет значение среза на начало периода в  клон, возвращает 1, если срез был получен, иначе 0
         internal override int MakeBegin()
         {
-            return _beginMom.Time == Static.MinDate ? 0 : PutClone(_beginMom, false);
+            if (_beginMom.Time == Static.MinDate) return 0;
+            return PutClone(_beginMom, false);
         }
 
         //Формирует значение на конец периода и дополняет значения в клоне до конца периода
@@ -58,7 +59,6 @@ namespace ProvidersLibrary
         }
 
         //Запись значения в клон
-        //Чтение одной строчки значений из рекордсета, и запись ее в клон
         protected override int PutClone(IReadMean mom, //Рекордсет срезов клона
                                                        bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {

@@ -61,7 +61,10 @@
     <Compile Include="Antlr\ParsingKeeper.cs" />
     <Compile Include="Common\ItStatic.cs" />
     <Compile Include="Common\Enums.cs" />
-    <Compile Include="Common\Project.cs" />
+    <Compile Include="Project\BaseApp.cs" />
+    <Compile Include="Project\BaseConnect.cs" />
+    <Compile Include="Project\Module.cs" />
+    <Compile Include="Project\Project.cs" />
     <Compile Include="ErrMoms\ErrDescr.cs" />
     <Compile Include="ErrMoms\MomErr.cs" />
     <Compile Include="ErrMoms\MomErrFactory.cs" />

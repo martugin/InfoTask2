@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Project\TablikModule.cs" />
+    <Compile Include="Project\TablikProject.cs" />
+    <Compile Include="Project\TablikProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

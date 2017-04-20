@@ -27,23 +27,12 @@ namespace ProvidersLibrary
             get
             {
                 bool res = true;
-                foreach (var sig in Signals)
-                {
-                    if (sig is UniformSignal)
-                        res &= ((UniformSignal)sig).HasBegin;
-                }
+                foreach (ListSignal sig in Signals)
+                    res &= sig.HasBegin;
                 return res;
             }
         }
-        
-        //Добавляет в сигналы объекта срез, если возможно, возвращает, сколько добавлено значений
-        internal int AddBegin()
-        {
-            int nwrite = 0;
-            foreach (ListSignal sig in Signals)
-                nwrite += sig.MakeBegin();
-            return nwrite;
-        }
+      
         
         //Добавление мгновенных значений во все сигналы объекта, используется только если источник - наследник AdoSource
         //Возвращает количество добавленных значений

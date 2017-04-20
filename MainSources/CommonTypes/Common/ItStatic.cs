@@ -21,9 +21,6 @@ namespace CommonTypes
             //return dir.EndDir();
         }
 
-        //Todo реализовать через VerSyn
-        //Номер програмного продукта
-        public static int AppProductNumber(string appCode) { return 1; }
         //Имя организации-пользователя
         public static string UserOrg { get { return "УТЭ"; } }
         //Версия InfoTask
@@ -37,29 +34,62 @@ namespace CommonTypes
             get { return InfoTaskDir() + @"Templates\"; }
         }
 
-        //Каталог локальных данных проекта
-        public static string LocalProjectDir(string appCode, //Приложение
-                                                              string projectCode) //Проект
+        //Перевод из строки в ProviderType
+        public static ProviderType ToProviderType(this string t)
         {
-            return InfoTaskDir() + @"LocalData\" + appCode + @"\" + projectCode + @"\";
+            if (t == null) return ProviderType.Error;
+            switch (t.ToLower())
+            {
+                case "источник":
+                case "source":
+                    return ProviderType.Source;
+                case "ручнойввод":
+                case "handinput":
+                    return ProviderType.HandInput;
+                case "архив":
+                case "archive":
+                    return ProviderType.Archive;
+                case "приемник":
+                case "receiver":
+                    return ProviderType.Receiver;
+            }
+            return ProviderType.Error;
         }
 
-        //Создание логгера потока приложения
-        public static Logger CreateAppLogger(string historyFile, //Путь к файлу истории относительно каталога History
-                                                                 LoggerStability stability = LoggerStability.Single) //Уровень важности безошибочности
+        //Перевод из ProviderType в русское имя
+
+        public static string ToRussian(this ProviderType t)
         {
-            var history = new AccessHistory(InfoTaskDir() + @"LocalData\History\" + historyFile, TemplatesDir + @"LocalData\History.accdb");
-            var indicator = new AppIndicator();
-            return new Logger(history, indicator, stability);
+            switch (t)
+            {
+                case ProviderType.Source:
+                    return "Источник";
+                case ProviderType.HandInput:
+                    return "РучнойВвод";
+                case ProviderType.Archive:
+                    return "Архив";
+                case ProviderType.Receiver:
+                    return "Приемник";
+            }
+            return "Ошибка";
         }
 
-        //Создание логгера потока службы
-        public static Logger CreateServiceLogger(string historyFile, //Путь к файлу истории относительно каталога History
-                                                                      LoggerStability stability = LoggerStability.Periodic) //Уровень важности безошибочности
+        //Перевод из ProviderType в английское имя
+
+        public static string ToEnglish(this ProviderType t)
         {
-            var history = new AccessHistory(InfoTaskDir() + @"LocalData\History\" + historyFile, TemplatesDir + @"LocalData\History.accdb");
-            var indicator = new AppIndicator();
-            return new Logger(history, indicator, stability);
+            switch (t)
+            {
+                case ProviderType.Source:
+                    return "Source";
+                case ProviderType.HandInput:
+                    return "HandInput";
+                case ProviderType.Archive:
+                    return "Archive";
+                case ProviderType.Receiver:
+                    return "Receiver";
+            }
+            return "Error";
         }
 
         //Возвращает тип ошибки как строку

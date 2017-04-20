@@ -1,30 +1,15 @@
 ﻿using System;
 using BaseLibrary;
+using CommonTypes;
 
 namespace ProvidersLibrary
 {
     //Базовый класс для соединений с провайдерами
-    public abstract class ProviderConnect : ExternalLogger
+    public abstract class ProviderConnect : BaseConnect
     {
         protected ProviderConnect(string name, string complect, Logger logger)
-            : base(logger)
-        {
-            Name = name;
-            Complect = complect;
-        }
-        
-        //Код соединения
-        public string Name { get; private set; }
-        //Тип провайдера
-        public abstract ProviderType Type { get; }
-        //Комплект провайдеров
-        public string Complect { get; private set; }
-        //Контекст для логгера
-        public override string Context
-        {
-            get { return Type.ToRussian() + ": " + Name; }
-        }
-
+            : base(name, complect, logger) { }
+     
         //Основной и резервный провайдеры
         private Provider _mainProvider;
         private Provider _reserveProvider;

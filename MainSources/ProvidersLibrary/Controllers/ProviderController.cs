@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BaseLibrary;
+using CommonTypes;
 
 namespace ProvidersLibrary
 {
     //Базовый класс для SourceController и ReceiverController
-    public abstract class ProviderController
+    public abstract class ProviderController : ExternalLogger
     {
-        protected ProviderController(ProviderConnect connect)
+        protected ProviderController(Project project, ProviderConnect connect)
         {
             Connect = connect;
+            Logger = new Logger(project.CreateHistory(@"Threads\" + connect.Name + "History.accdb"), null);
         }
 
         //Соединение 
@@ -23,20 +26,20 @@ namespace ProvidersLibrary
         private bool _isFinishing;
 
         //Запуск процесса
-        public void Start()
+        public void StartProcess()
         {
             new Task(Run).Start();
         }
 
         //Завершение процесса 
-        public void Finish()
+        public void FinishProcess()
         {
             lock (_finishLocker)
                 _isFinishing = true;
         }
 
         //Команда, выполняемая в потоке
-        public void Run()
+        private void Run()
         {
             while (true)
             {
@@ -47,6 +50,10 @@ namespace ProvidersLibrary
                         _isFinishing = false;
                         break;
                     }
+                using (disposable)
+                {
+                    
+                }
                 RunCycle();
                 int t = Convert.ToInt32(lastTime.AddMilliseconds(IntervalLength).Subtract(DateTime.Now).TotalMilliseconds);
                 if (t > 0) Thread.Sleep(t);

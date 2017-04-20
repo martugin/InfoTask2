@@ -1,5 +1,16 @@
 ﻿namespace CommonTypes
 {
+    //Тип провайдера
+    public enum ProviderType
+    {
+        Source,
+        Receiver,
+        HandInput,
+        Archive,
+        Error
+    }
+
+    //---------------------------------------------------------------------------------------------------------------------------
     //Тип значения
     public enum ValueType
     {

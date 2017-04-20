@@ -53,6 +53,9 @@
     <Compile Include="Funs\Oka.cs" />
     <Compile Include="Funs\ScalarFun.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Threads\CalcModule.cs" />
+    <Compile Include="Threads\CalcThread.cs" />
+    <Compile Include="Threads\RealTimeThread.cs" />
     <Compile Include="Values\Segment.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +72,7 @@
       <Name>ProvidersLibrary</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
