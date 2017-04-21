@@ -4,7 +4,7 @@ using CommonTypes;
 namespace Tablik
 {
     //Модуль для компиляции
-    public class TablikModule : Module
+    public class TablikModule : BaseModule
     {
         public TablikModule(TablikProject tablik, string code)
             : base(tablik, code)

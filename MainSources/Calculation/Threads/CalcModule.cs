@@ -5,7 +5,7 @@ using ProvidersLibrary;
 namespace Calculation
 {
     //Модуль для расчета
-    public class CalcModule : Module
+    public class CalcModule : BaseModule
     {
         public CalcModule(CalcThread thread, string code)
             : base(thread, code)

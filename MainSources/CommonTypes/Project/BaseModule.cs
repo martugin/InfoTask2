@@ -4,9 +4,9 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Один модуль из проекта
-    public abstract class Module : ExternalLogger
+    public abstract class BaseModule : ExternalLogger
     {
-        protected Module(ExternalProject project, string code) : base(project.Logger)
+        protected BaseModule(ExternalProject project, string code) : base(project.Logger)
         {
             Code = code;
             Dir = project.Project.Dir.EndDir() + @"\Modules\" + code + "\\";

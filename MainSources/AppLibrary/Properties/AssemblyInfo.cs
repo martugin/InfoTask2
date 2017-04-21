@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("Integrated")]
-[assembly: AssemblyDescription("Сборка, объединяющая вызов всех библиотет InfoTask")]
+[assembly: AssemblyTitle("AppLibrary")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("InfoTask")]
-[assembly: AssemblyProduct("Integrated")]
-[assembly: AssemblyCopyright("Copyright © InfoTask 2017")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("AppLibrary")]
+[assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
-[assembly: Guid("7655c873-16ca-41b0-823c-4e21902f7e2c")]
+[assembly: Guid("c4c72d5c-2762-4b3e-991f-d5f89babcf89")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //
@@ -32,8 +32,8 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номер построения и номер редакции по умолчанию, 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: InternalsVisibleTo("BaseLibraryTest")]
 [assembly: InternalsVisibleTo("CommonTypesTest")]
