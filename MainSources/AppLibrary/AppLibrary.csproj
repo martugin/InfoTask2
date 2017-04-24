@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>c4c72d5c-2762-4b3e-991f-d5f89babcf89</ProjectGuid>
+    <ProjectGuid>{6665F569-A138-4011-94D2-6EDD503BD4E0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AppLibrary</RootNamespace>
@@ -31,8 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Office.interop.access.dao, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,8 +44,37 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="App.cs" />
+    <Compile Include="AppCalcProject.cs" />
+    <Compile Include="AppProject.cs" />
+    <Compile Include="AppRealTimeProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
+      <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
+      <Name>BaseLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Calculation\Calculation.csproj">
+      <Project>{A4B84B9B-4130-4066-971D-3D597C141097}</Project>
+      <Name>Calculation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
+      <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
+      <Name>CommonTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Generator\Generator.csproj">
+      <Project>{267562A7-4B4A-4B81-B417-33C57CD869FE}</Project>
+      <Name>Generator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProvidersLibrary\ProvidersLibrary.csproj">
+      <Project>{819FEFDE-4840-45CD-BF58-B528821E3098}</Project>
+      <Name>ProvidersLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tablik\Tablik.csproj">
+      <Project>{2828EE50-3906-40D8-BBAC-2B75F9BEE24E}</Project>
+      <Name>Tablik</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

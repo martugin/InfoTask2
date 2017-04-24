@@ -5,20 +5,20 @@ using ProvidersLibrary;
 namespace Calculation
 {
     //Модуль для расчета
-    public class CalcModule : BaseModule
+    public class Module : BaseModule
     {
-        public CalcModule(CalcThread thread, string code)
-            : base(thread, code)
+        public Module(DataThread thread, string code)
+            : base(thread.Project, code)
         {
             Thread = thread;
         }
 
-        //Поток расчета
-        public CalcThread Thread { get; private set; }
+        //Поток
+        public DataThread Thread { get; private set; }
 
         //Список связанных модулей
-        private readonly List<CalcModule> _linkedModules = new List<CalcModule>();
-        public List<CalcModule> LinkedModules { get { return _linkedModules; } }
+        private readonly List<Module> _linkedModules = new List<Module>();
+        public List<Module> LinkedModules { get { return _linkedModules; } }
         //Список связанных источников
         private readonly List<SourceConnect> _linkedSources = new List<SourceConnect>();
         public List<SourceConnect> LinkedSources { get { return _linkedSources; } }

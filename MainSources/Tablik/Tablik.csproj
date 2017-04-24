@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="Project\TablikModule.cs" />
     <Compile Include="Project\TablikProject.cs" />
-    <Compile Include="Project\TablikProvider.cs" />
+    <Compile Include="Project\TablikConnect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +58,10 @@
     <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Generator\Generator.csproj">
+      <Project>{267562A7-4B4A-4B81-B417-33C57CD869FE}</Project>
+      <Name>Generator</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

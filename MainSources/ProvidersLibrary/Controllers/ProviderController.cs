@@ -50,10 +50,6 @@ namespace ProvidersLibrary
                         _isFinishing = false;
                         break;
                     }
-                using (disposable)
-                {
-                    
-                }
                 RunCycle();
                 int t = Convert.ToInt32(lastTime.AddMilliseconds(IntervalLength).Subtract(DateTime.Now).TotalMilliseconds);
                 if (t > 0) Thread.Sleep(t);

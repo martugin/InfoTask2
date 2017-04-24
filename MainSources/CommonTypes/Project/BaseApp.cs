@@ -1,11 +1,14 @@
-﻿namespace CommonTypes
+﻿using BaseLibrary;
+
+namespace CommonTypes
 {
     //Одно приложение InfoTask
-    public class BaseApp
+    public class BaseApp : Logger
     {
-        public BaseApp(string code)
+        public BaseApp(string code, IIndicator indicator) 
         {
             Code = code;
+            History = CreateHistory(code);
         }
 
         //Код приложения
@@ -13,7 +16,7 @@
 
         //Todo реализовать через VerSyn
         //Номер програмного продукта
-        public static int ProductNumber
+        public int ProductNumber
         {
             get { return 1; }
         }
@@ -21,6 +24,14 @@
         public bool IsActivated
         {
             get { return true; }
+        }
+
+        //Инициализация истории
+        public AccessHistory CreateHistory(string historyFilePrefix) //Путь к файлу истории относительно каталога истории прриложения
+        {
+            return new AccessHistory(
+                    ItStatic.InfoTaskDir() + @"LacalData\History\" + Code + "\\" + historyFilePrefix + "History.accdb",
+                    ItStatic.TemplatesDir + @"LocalData\History.accdb");
         }
     }
 }

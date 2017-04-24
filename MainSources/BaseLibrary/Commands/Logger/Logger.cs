@@ -24,7 +24,7 @@ namespace BaseLibrary
         public IHistory History
         {
             get { return _history; } 
-            protected internal set 
+            set 
             { 
                 _history = value;
                 _history.Logger = this;
@@ -211,12 +211,13 @@ namespace BaseLibrary
         //Запуск команды логирования в SuperHistory и отображения индикатора
         public ProgressCommand StartProgress(string name, //Имя команды
                                                                   string pars = "", //Параметры команды
+                                                                  string context = null, //Конекст команды
                                                                   DateTime? endTime = null) //Если не null, то время конца обратного отсчета
         {
             FinishCommand(ProgressCommand);
             FinishCommand(LogCommand);
             FinishCommand(IndicatorTextCommand);
-            Command = ProgressCommand = new ProgressCommand(this, Command, name, pars, endTime);
+            Command = ProgressCommand = new ProgressCommand(this, Command, name, pars, context, endTime);
             return ProgressCommand;
         }
         
@@ -229,16 +230,16 @@ namespace BaseLibrary
         //-----
 
         //Запуск команды логирования
-        public LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
+        public LogCommand StartLog(double startProcent, double finishProcent, string name, string pars = "", string context = null)
         {
             FinishCommand(LogCommand);
             FinishCommand(IndicatorTextCommand);
-            Command = LogCommand = new LogCommand(this, Command, startProcent, finishProcent, name, context, pars);
+            Command = LogCommand = new LogCommand(this, Command, startProcent, finishProcent, name, pars, context);
             return LogCommand;
         }
-        public LogCommand StartLog(string name, string context = "", string pars = "")
+        public LogCommand StartLog(string name, string pars = "", string context = null)
         {
-            return StartLog(Procent, Procent, name, context, pars);
+            return StartLog(Procent, Procent, name, pars, context);
         }
         //Завершение команды логирования
         public LogCommand FinishLog(string results = null)

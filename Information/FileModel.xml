@@ -71,13 +71,16 @@
       <!--Файлы истории (значения)-->
       <!--Шаблон каждого файла LocalData\History\History.accdb-->
       <Constructor>
-        <_КодПроектаHistory.accdb>История одного проекта в конструкторе</_КодПроектаHistory.accdb>
+        <ConstructorHistory.accdb>История конструктора</ConstructorHistory.accdb>
+        <CalcHistory.accdb>История расчета в конструкторе</CalcHistory.accdb>
       </Constructor>
       <Analyzer>
-        <_КодПроектаHistory.accdb>История одного проекта в анализаторе</_КодПроектаHistory.accdb>
+        <AnalyzerHistory.accdb>История анализатора</AnalyzerHistory.accdb>
+        <CalcHistory.accdb>История расчета в анализаторе</CalcHistory.accdb>
       </Analyzer>
       <Comm>
-        <_КодПроектаHistory.accdb>История коммуникатора</_КодПроектаHistory.accdb>
+        <CommHistory.accdb>История коммуникатора</CommHistory.accdb>
+        <CalcHistory.accdb>История расчета в коммуникаторе</CalcHistory.accdb>
       </Comm>
       <Server>
         <_КодПроекта_НомерПотокаHistory.accdb>История работы потока</_КодПроекта_НомерПотокаHistory.accdb>
@@ -85,7 +88,7 @@
       </Server>
       <Client>
         <!--История клиента-->
-        <_КодПроектаHistory.accdb>История клиента, включая администрирование и формирование отчетов</_КодПроектаHistory.accdb>
+        <ClientHistory.accdb>История клиента, включая администрирование и формирование отчетов</ClientHistory.accdb>
       </Client>
       <ReporterExcel>
         <!--История построителя отчетов Excel-->

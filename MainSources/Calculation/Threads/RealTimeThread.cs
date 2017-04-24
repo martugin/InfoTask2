@@ -5,9 +5,9 @@ using ProvidersLibrary;
 namespace Calculation
 {
     //Поток для работы в реальном времени
-    public class RealTimeProject : ExternalLogger
+    public class RealTimeThread : ExternalLogger
     {
-        public RealTimeProject(Project project)
+        public RealTimeThread(Project project)
             : base(project)
         {
             Project = project;

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using BaseLibrary;
+using AppLibrary;
 using CommonTypes;
-using ProvidersLibrary;
 
 namespace ComLaunchers
 {
@@ -16,46 +15,30 @@ namespace ComLaunchers
         //Закрытие клиента
         void Close();
 
-        //Ошибка и результат последней операции
-        string ErrMess { get; }
-        string ResultMess { get; }
-
         //Путь к каталогу InfoTask
         string InfoTaskDir { get; }
-
-        //Код приложения
-        string AppCode { get; }
-        //Номер програмного продукта
-        int ProductNumber{ get; }
         //Имя организации-пользователя
         string UserOrg { get; }
         //Версия InfoTask
         string InfoTaskVersion { get; }
         //Дата версии InfoTask
         DateTime InfoTaskVersionDate { get; }
+        
+        //Код приложения
+        string AppCode { get; }
+        //Номер програмного продукта
+        int ProductNumber{ get; }
         //Проверка активации приложения
         bool AppActivated { get; }
 
         //Загрузка проекта
-        void LoadProject(string projectDir);
+        ILauncherProject LoadProject(string projectDir);
 
-        //Код проекта
-        string ProjectCode { get; }
-        //Имя проекта
-        string ProjectName { get; }
-        //Каталог проекта
-        string ProjectDir { get; }
-        //Каталог локальных данных проекта
-        string ProjectLocalDir { get; }
-
-        //Генерация параметров
-        void GenerateParams(string moduleDir);
-
-        //Создание соединения
-        SourConnect CreateSourConnect(string name, //Имя соединения
-                                                         string complect); //Комплект
-        ReceivConnect CreateReceivConnect(string name, //Имя соединения
-                                                              string complect); //Комплект
+        //Переопределение команд логгера
+        #region Logger
+        //Ошибка и результат последней операции
+        string ErrMess { get; }
+        string ResultMess { get; }
 
         //Прервать выполнение
         void Break();
@@ -103,35 +86,40 @@ namespace ComLaunchers
         void StartIndicatorText(string text);
         //Завершение текущей команды отображения текста индикатора 2-ого уровня
         void FinishIndicatorText();
+        #endregion
     }
 
     //------------------------------------------------------------------------------------------------
-
-    //Интерфейс событий для LoggerClient
+    //Интерфейс событий для LauncherProject
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface ILoggerClientEvents
+    public interface ILauncherEvents
     {
         [DispId(1)]
         void Finished();
     }
 
     //------------------------------------------------------------------------------------------------------------------------------
-
     //Клиент работы с функциями InfoTask, написанными на C#, вызываемыми из внешних приложений через COM
     [ClassInterface(ClassInterfaceType.None),
-    ComSourceInterfaces(typeof(ILoggerClientEvents))]
+    ComSourceInterfaces(typeof(ILauncherEvents))]
     public class ItLauncher :  IItLauncher
     {
         //Инициализация для нового приложения
         public void Initialize(string appCode) //Код приложения
         {
-            AppCode = appCode;
+            _app = new App(appCode);
+            _app.ExecutionFinished += OnExecutionFinished;
         }
+
+        //Ссылка на приложение
+        private App _app;
 
         //Закрытие клиента
         public void Close()
         {
-            CloseProject();
+            _app.ExecutionFinished -= OnExecutionFinished;
+            _app.Dispose();
+            _app = null;
             Thread.Sleep(100);
             GC.Collect();
             IsClosed = true;
@@ -139,40 +127,9 @@ namespace ComLaunchers
         //Клиент уже был закрыт
         protected internal bool IsClosed { get; private set; }
 
-        //Загрузка проекта
-        public void LoadProject(string projectDir) //Каталог проекта
-        {
-            CloseProject();
-            _project = new AppProject(this, projectDir);
-            Logger.ExecutionFinished += OnExecutionFinished;
-        }
-
-        //Закрытие проекта
-        private void CloseProject()
-        {
-            if (_project != null)
-            {
-                Logger.ExecutionFinished -= OnExecutionFinished;
-                Logger.Dispose();
-                _project = null;
-            }
-        }
-
-        //Ошибка и результат последней операции
-        public string ErrMess { get { return Logger.CollectedError; }}
-        public string ResultMess { get { return Logger.CollectedResults; }}
-
         //Путь к каталогу InfoTask
         public string InfoTaskDir { get { return ItStatic.InfoTaskDir(); } }
 
-        //Код приложения
-        public string AppCode { get; private set; }
-
-        //Номер програмного продукта
-        public int ProductNumber 
-        { 
-            get { return ItStatic.AppProductNumber(AppCode); }
-        }
         //Имя организации-пользователя
         public string UserOrg
         {
@@ -188,76 +145,38 @@ namespace ComLaunchers
         {
             get { return ItStatic.InfoTaskVersionDate; }
         }
+        
+        //Код приложения
+        public string AppCode { get { return _app.Code; } }
+        
+        //Номер програмного продукта
+        public int ProductNumber 
+        { 
+            get { return _app.ProductNumber; }
+        }
         //Проверка активации приложения
         public bool AppActivated
         {
             //Todo реализовать
-            get { return true; }
+            get { return _app.IsActivated; }
         }
 
-        //Текущий проект
-        internal AppProject _project;
-        internal AppProject Project
+        //Загрузка проекта
+        public ILauncherProject LoadProject(string projectDir) //Каталог проекта
         {
-            get
-            {
-                if (_project == null)
-                    Static.MessageError("Не задан проект");
-                return _project;
-            }
-        }
-
-        //Код проекта
-        public string ProjectCode { get { return Project.ProjectCode; } }
-        //Имя проекта
-        public string ProjectName { get { return Project.ProjectName; } }
-        //Каталог проекта
-        public string ProjectDir { get { return Project.ProjectDir; } }
-        //Каталог локальных данных проекта
-        public string ProjectLocalDir { get { return ItStatic.LocalProjectDir(AppCode, ProjectCode); }}
-
-        //Генерация параметров
-        public void GenerateParams(string moduleDir)
-        {
-            Project.GenerateParams(moduleDir);
-        }
-
-        //Создание соединения-источника
-        public SourConnect CreateSourConnect(string name, string complect)
-        {
-            SourceConnect s = null;
-            Logger.RunSyncCommand(() => { 
-                s = (SourceConnect)Factory.CreateConnect(ProviderType.Source, name, complect, Logger);
-            });
-            return new RSourConnect(s, Factory);
-        }
-
-        //Создание соединения-приемника
-        public ReceivConnect CreateReceivConnect(string name, string complect)
-        {
-            ReceiverConnect r = null;
-            Logger.RunSyncCommand(() => {
-                r = (ReceiverConnect)Factory.CreateConnect(ProviderType.Receiver, name, complect, Logger);
-            });
-            return new RReceivConnect(r, Factory);
-        }
-
-        //Фабрика провайдеров
-        private ProvidersFactory _factory;
-        protected ProvidersFactory Factory
-        {
-            get { return _factory ?? (_factory = new ProvidersFactory()); }
+            return new LauncherProject(new AppProject(_app, projectDir));
         }
 
         //Работа с логгером
         #region Logger
-        //Логгер
-        internal Logger Logger { get { return Project.Logger; } }
+        //Ошибка и результат последней операции
+        public string ErrMess { get { return _app.CollectedError; } }
+        public string ResultMess { get { return _app.CollectedResults; } }
 
         //Прервать выполнение
         public void Break()
         {
-            Logger.Break();
+            _app.Break();
         }
 
         //Событие, сообщающее внешнему приложению, что выполнение было прервано
@@ -269,44 +188,44 @@ namespace ComLaunchers
         {
             if (Finished != null) Finished();
         }
-        
+
         //Добавить событие в историю
         public void AddEvent(string text, //Описание
                                         string pars = "") //Дополнительная информация
         {
-            Logger.AddEvent(text, pars);
+            _app.AddEvent(text, pars);
         }
 
         //Добавить предупреждение в историю
         public void AddWarning(string text, //Описание
                                             string pars = "") //Дополнительная информация
         {
-            Logger.AddWarning(text, null, pars);
+            _app.AddWarning(text, null, pars);
         }
 
         //Добавить предупреждение в историю
         public void AddError(string text, //Описание
                                         string pars = "") //Дополнительная информация
         {
-            Logger.AddError(text, null, pars);
+            _app.AddError(text, null, pars);
         }
 
         //Установить процент текущей комманды
         public void SetProcent(double procent)
         {
-            Logger.Procent = procent;
+            _app.Procent = procent;
         }
 
         //Запуск простой команды
         public void StartProcent(double startProcent, double finishProcent)
         {
-            Logger.Start(startProcent, finishProcent);
+            _app.Start(startProcent, finishProcent);
         }
 
         //Завершение комманды
         public void Finish(string results = null)
         {
-            Logger.Finish(results);
+            _app.Finish(results);
         }
 
         //Запуск команды для записи в History
@@ -314,55 +233,55 @@ namespace ComLaunchers
                                        string pars = "",  //Дополнительная информация
                                        string context = "") //Контекст выполнения команды
         {
-            Logger.StartLog(name, pars, context);
+            _app.StartLog(name, pars, context);
         }
         public void StartLogProcent(double startProcent, double finishProcent, string name, string pars = "", string context = "")
         {
-            Logger.StartLog(startProcent, finishProcent, name, pars, context);
+            _app.StartLog(startProcent, finishProcent, name, pars, context);
         }
         //Завершение текущей команды логирования
         public void FinishLog(string results = null)
         {
-            Logger.FinishLog(results);
+            _app.FinishLog(results);
         }
 
         //Запуск команды, задающей период обработки
         public void StartPeriod(DateTime beg, DateTime en, string mode = "")
         {
-            Logger.StartPeriod(beg, en, mode);
+            _app.StartPeriod(beg, en, mode);
         }
         //Завершение команды, задающей период обработки
         public void FinishPeriod()
         {
-            Logger.FinishPeriod();
+            _app.FinishPeriod();
         }
 
         //Запуск команды для записи в SuperHistory
         public void StartProgress(string name,  //Имя команды
                                                string pars = "")  //Дополнительная информация
         {
-            Logger.StartProgress(name, pars);
+            _app.StartProgress(name, pars);
         }
 
         //Звершение текущей команды отображения индикатора
         public void FinishProgress()
         {
-            Logger.FinishProgress();
+            _app.FinishProgress();
         }
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
         public void StartIndicatorText(string text)
         {
-            Logger.StartIndicatorText(text);
+            _app.StartIndicatorText(text);
         }
         public void StartIndicatorTextProcent(double startProcent, double finishProcent, string text)
         {
-            Logger.StartIndicatorText(startProcent, finishProcent, text);
+            _app.StartIndicatorText(startProcent, finishProcent, text);
         }
         //Завершение текущей команды отображения текста индикатора 2-ого уровня
         public void FinishIndicatorText()
         {
-            Logger.FinishIndicatorText();
+            _app.FinishIndicatorText();
         }
         #endregion
     }

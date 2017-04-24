@@ -5,7 +5,8 @@ namespace CommonTypes
     //Базовый класс для соединений Таблика и расчетов
     public abstract class BaseConnect : ExternalLogger
     {
-        protected BaseConnect(string name, string complect, Logger logger) : base(logger)
+        protected BaseConnect(Project project, string name, string complect) 
+            : base(project.App, name, project.Code)
         {
             Name = name;
             Complect = complect;
@@ -17,10 +18,5 @@ namespace CommonTypes
         public abstract ProviderType Type { get; }
         //Комплект провайдеров
         public string Complect { get; private set; }
-        //Контекст для логгера
-        public override string Context
-        {
-            get { return Type.ToRussian() + ": " + Name; }
-        }
     }
 }

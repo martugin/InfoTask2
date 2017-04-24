@@ -53,8 +53,10 @@
     <Compile Include="Funs\Oka.cs" />
     <Compile Include="Funs\ScalarFun.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Threads\CalcModule.cs" />
+    <Compile Include="Modules\Module.cs" />
+    <Compile Include="Threads\BaseThread.cs" />
     <Compile Include="Threads\CalcThread.cs" />
+    <Compile Include="Threads\ProcessProject.cs" />
     <Compile Include="Threads\RealTimeThread.cs" />
     <Compile Include="Values\Segment.cs" />
   </ItemGroup>

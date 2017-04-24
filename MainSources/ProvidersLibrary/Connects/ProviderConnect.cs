@@ -7,8 +7,8 @@ namespace ProvidersLibrary
     //Базовый класс для соединений с провайдерами
     public abstract class ProviderConnect : BaseConnect
     {
-        protected ProviderConnect(string name, string complect, Logger logger)
-            : base(name, complect, logger) { }
+        protected ProviderConnect(Project project, string name, string complect)
+            : base(project, name, complect) { }
      
         //Основной и резервный провайдеры
         private Provider _mainProvider;

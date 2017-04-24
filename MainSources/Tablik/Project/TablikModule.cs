@@ -7,7 +7,7 @@ namespace Tablik
     public class TablikModule : BaseModule
     {
         public TablikModule(TablikProject tablik, string code)
-            : base(tablik, code)
+            : base(tablik.Project, code)
         {
             Tablik = tablik;
         }

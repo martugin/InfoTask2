@@ -162,7 +162,7 @@ namespace ComLaunchers
         private void RunMakeClone(string cloneDir)
         {
             using (Logger.StartProgress("Создание клона"))
-                using (Logger.StartLog(0, 100, "Создание клона источника", Connect.Name))
+                using (Logger.StartLog(0, 100, "Создание клона источника", "", Connect.Name))
                     Connect.MakeClone(cloneDir);
         }
     }

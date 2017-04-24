@@ -7,8 +7,8 @@ namespace ProvidersLibrary
     //Соединение - приемник
     public class ReceiverConnect : ProviderConnect
     {
-        public ReceiverConnect(string name, string complect, Logger logger) 
-            : base(name, complect, logger) { }
+        public ReceiverConnect(Project project, string name, string complect) 
+            : base(project, name, complect) { }
 
         //Тип провайдера
         public override ProviderType Type

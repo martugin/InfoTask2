@@ -9,17 +9,20 @@ namespace ProvidersLibrary
     public abstract class Provider : ExternalLogger, IDisposable
     {
         //Ссылка на соединение
-        public ProviderConnect ProviderConnect { get; set; }
+        private ProviderConnect _providerConnect;
+        public ProviderConnect ProviderConnect
+        {
+            get { return _providerConnect; }
+            set
+            {
+                _providerConnect = value;
+                Context = ProviderConnect.Name;
+            }
+        }
         
         //Код провайдера
         public abstract string Code { get; }
         
-        //Контекст для логгера
-        public override string Context
-        {
-            get { return ProviderConnect.Context + ", " + Code; }
-        }
-
         //Тип значения сигналов
         public abstract SignalType SignalType { get; }
 

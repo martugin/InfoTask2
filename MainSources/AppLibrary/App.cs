@@ -1,17 +1,12 @@
 ﻿using BaseLibrary;
 using CommonTypes;
 
-namespace Integrated
+namespace AppLibrary
 {
     //Внешнее приложение, вызывающее библиотеки
     public class App : BaseApp
     {
-        public App(string code) : base(code)
-        {
-            Indicator = new AppIndicator();
-        }
-
-        //Индикатор
-        internal AppIndicator Indicator { get; private set; }
+        public App(string code) 
+            : base(code, new AppIndicator()) { }
     }
 }

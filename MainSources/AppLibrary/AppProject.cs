@@ -1,17 +1,13 @@
 ﻿using CommonTypes;
-using Generator;
 using Tablik;
 
-namespace Integrated
+namespace AppLibrary
 {
     //Проект, вызываемый из приложения
-    public class AppProject : Project
+    public class AppProject : ServerProject
     {
-        public AppProject(App app)
-            : base(app, app.Indicator)
-        {
-            
-        }
+        public AppProject(App app, string projectDir)
+            : base(app, projectDir) { }
 
         //Проект Таблика
         private TablikProject _tablik;
@@ -20,15 +16,18 @@ namespace Integrated
             get { return _tablik = _tablik ?? new TablikProject(this); }
         }
 
-        //Ссылка на генератор параметров
-        internal TablGenerator Generator { get; private set; }
-
-        //Генерация параметров
-        public void GenerateParams(string moduleDir)
+        //Расчетный проект
+        private AppCalcProject _calc;
+        public AppCalcProject Calc
         {
-            if (Generator == null)
-                Generator = new TablGenerator(this);
-            RunSyncCommand(() => Generator.GenerateParams(moduleDir));
+            get { return _calc = _calc ?? new AppCalcProject(this); }
+        }
+
+        //Проект реального времени
+        private AppRealTimeProject _realTime;
+        public AppRealTimeProject RealTime
+        {
+            get { return _realTime = _realTime ?? new AppRealTimeProject(this); }
         }
     }
 }

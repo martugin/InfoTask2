@@ -4,10 +4,9 @@ using BaseLibrary;
 namespace CommonTypes
 {
     //Базовый класс проекта 
-    public class Project : Logger
+    public class Project : ExternalLogger
     {
-        public Project(BaseApp app, IIndicator indicator) 
-            : base(null, indicator)
+        public Project(BaseApp app) : base(app)
         {
             App = app;
         }
@@ -25,13 +24,13 @@ namespace CommonTypes
         {
             Code = projectCode;
             Name = projectName;
-            History = new AccessHistory(AppCode + "\\" + projectCode + "History.accdb", ItStatic.TemplatesDir + @"LocalData\History.accdb");
+            ProgressContext = Context = projectCode;
         }
 
         //Создание истории
         public IHistory CreateHistory(string fileName) //Добавка к имени файла
         {
-            new AccessHistory(AppCode + "\\" + Code + fileName, ItStatic.TemplatesDir + @"LocalData\History.accdb");
+            return new AccessHistory(AppCode + "\\" + Code + fileName, ItStatic.TemplatesDir + @"LocalData\History.accdb");
         }
 
         //Приложение

@@ -6,8 +6,12 @@ namespace BaseLibrary
     public abstract class ExternalLogger : ILogger, IContextable
     {
         protected ExternalLogger() { }
-        protected ExternalLogger(Logger logger)
+        protected ExternalLogger(Logger logger, //Логгер
+                                               string logContext = null, //Контекст для команды Log
+                                               string progressContext = null) //Контекст для команды Progress
         {
+            Context = logContext;
+            ProgressContext = progressContext;
             Logger = logger;
         }
 
@@ -17,8 +21,10 @@ namespace BaseLibrary
         //Режим работы потока
         public LoggerStability Stability { get { return Logger.Stability; } }
 
-        //Контекст
-        public virtual string Context { get { return ""; } }
+        //Контекст команды LogCommand
+        public string Context { get; set; }
+        //Контекст команды ProgressCommand
+        public string ProgressContext { get; set; }
 
         //Запуск простой комманды
         public Command Start(double startProcent, double finishProcent)
@@ -45,6 +51,17 @@ namespace BaseLibrary
         public CollectCommand FinishCollect(string results = null)
         {
             return Logger.FinishCollect(results);
+        }
+
+        //Запускает команду Collect и дожидается ее завершения
+        public void RunSyncCommand(Action action)
+        {
+            Logger.RunSyncCommand(action);
+        }
+        //То же самое. только с запуском вложенной PeriodCommand
+        public void RunSyncCommand(DateTime beg, DateTime en, Action action)
+        {
+            Logger.RunSyncCommand(beg, en, action);
         }
 
         //Запись результатов в команду Collect
@@ -79,9 +96,9 @@ namespace BaseLibrary
         public string PeriodMode { get { return Logger.PeriodMode; } }
 
         //Запуск команды логирования в SuperHistory и отображения индикатора
-        public ProgressCommand StartProgress(string name, string pars = "", DateTime? endTime = null)
+        public ProgressCommand StartProgress(string name, string pars = "", string context = null, DateTime? endTime = null)
         {
-            return Logger.StartProgress(name, pars, endTime);
+            return Logger.StartProgress(name, pars, context ?? ProgressContext, endTime);
         }
         //Завершение команды логирования в SuperHistory
         public ProgressCommand FinishProgress()
@@ -90,13 +107,13 @@ namespace BaseLibrary
         }
 
         //Запуск команды логирования
-        public LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "")
+        public LogCommand StartLog(double startProcent, double finishProcent, string name, string pars = null, string context = null)
         {
-            return Logger.StartLog(startProcent, finishProcent, name, context, pars);
+            return Logger.StartLog(startProcent, finishProcent, name, pars, context ?? Context);
         }
-        public LogCommand StartLog(string name, string context = "", string pars = "")
+        public LogCommand StartLog(string name, string pars = null, string context = null)
         {
-            return Logger.StartLog(name, context, pars);
+            return Logger.StartLog(name, pars, context ?? Context);
         }
         //Завершение команды логирования
         public LogCommand FinishLog(string results = "")

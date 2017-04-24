@@ -8,8 +8,8 @@ namespace ProvidersLibrary
     //Соединение-источник
     public class SourceConnect : ProviderConnect
     {
-        public SourceConnect(string name, string complect, Logger logger) 
-            : base(name, complect, logger) { }
+        public SourceConnect(Project project, string name, string complect) 
+            : base(project, name, complect) { }
 
         //Тип провайдера
         public override ProviderType Type
@@ -34,11 +34,11 @@ namespace ProvidersLibrary
 
         //Добавить сигнал
         public SourceSignal AddSignal(string fullCode, //Полный код сигнала
-                                                        DataType dataType, //Тип данных
-                                                        SignalType signalType, //Тип сигнала
-                                                        string infObject, //Свойства объекта
-                                                        string infOut = "", //Свойства выхода относительно объекта
-                                                        string infProp = "") //Свойства сигнала относительно выхода
+                                                      DataType dataType, //Тип данных
+                                                      SignalType signalType, //Тип сигнала
+                                                      string infObject, //Свойства объекта
+                                                      string infOut = "", //Свойства выхода относительно объекта
+                                                      string infProp = "") //Свойства сигнала относительно выхода
         {
             if (_signals.ContainsKey(fullCode))
                 return _signals[fullCode];

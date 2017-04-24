@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Windows.Forms;
 
 namespace BaseLibrary
 {
     //Команда для отображения индикатора и записи в SuperHistory
     public class ProgressCommand : LogBaseCommand
     {
-        //Конструктор с указанием периода обработки
-        protected internal ProgressCommand(Logger logger, Command parent, string name, string pars, DateTime? endTime)
-            : base(logger, parent, 0, 100, name, pars)
+        protected internal ProgressCommand(Logger logger, Command parent, string name, string pars, string context, DateTime? endTime) //Время окончания индикатора для отсчета времени
+            : base(logger, parent, 0, 100, name, pars, context)
         {
             if (Indicator != null)
             {

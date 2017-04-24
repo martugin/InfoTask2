@@ -1,21 +1,22 @@
 ﻿using System;
 using BaseLibrary;
 using CommonTypes;
+using Generator;
 
 namespace Tablik
 {
     //Проект для Таблика
     public class TablikProject : ExternalLogger
     {
-        public TablikProject(Project project)
-            : base(project)
+        public TablikProject(ServerProject project)
+            : base(project.App, project.Code, project.Code)
         {
             Project = project;
         }
 
         //Проект
-        public Project Project { get; private set; }
-
+        public ServerProject Project { get; private set; }
+        
         //Словарь модулей
         private readonly DicS<TablikModule> _modules = new DicS<TablikModule>();
         public IDicSForRead<TablikModule> Modules { get { return _modules; } }
@@ -41,6 +42,17 @@ namespace Tablik
         public void LoadConnects()
         {
             throw new NotImplementedException();
+        }
+
+        //Ссылка на генератор параметров
+        internal TablGenerator Generator { get; private set; }
+
+        //Генерация параметров
+        public void GenerateParams(string moduleDir)
+        {
+            if (Generator == null)
+                Generator = new TablGenerator(Project.App);
+            RunSyncCommand(() => Generator.GenerateParams(moduleDir));
         }
     }
 }

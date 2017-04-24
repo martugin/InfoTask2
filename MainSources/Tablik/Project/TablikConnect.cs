@@ -1,21 +1,20 @@
-﻿using BaseLibrary;
-using CommonTypes;
+﻿using CommonTypes;
 
 namespace Tablik
 {
     //Проайдер для компилятора
-    public abstract class TablikProvider : BaseConnect
+    public abstract class TablikConnect : BaseConnect
     {
-        protected TablikProvider(string name, string complect, Logger logger) 
-            : base(name, complect, logger) { }
+        protected TablikConnect(Project project, string name, string complect) 
+            : base(project, name, complect) { }
     }
 
     //--------------------------------------------------------------------------------------------------------
     //Источник для компилятора
-    public class TablikSource : TablikProvider
+    public class TablikSource : TablikConnect
     {
-        protected TablikSource(string name, string complect, Logger logger)
-            : base(name, complect, logger) { }
+        protected TablikSource(Project project, string name, string complect)
+            : base(project, name, complect) { }
 
         //Тип
         public override ProviderType Type { get { return ProviderType.Source; }}
@@ -23,10 +22,10 @@ namespace Tablik
 
     //--------------------------------------------------------------------------------------------------------
     //Приемник для компилятора
-    public class TablikReceiver : TablikProvider
+    public class TablikReceiver : TablikConnect
     {
-        protected TablikReceiver(string name, string complect, Logger logger)
-            : base(name, complect, logger) { }
+        protected TablikReceiver(Project project, string name, string complect)
+            : base(project, name, complect) { }
 
         //Тип
         public override ProviderType Type { get { return ProviderType.Receiver; } }

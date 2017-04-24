@@ -6,10 +6,11 @@ namespace CommonTypes
     //Один модуль из проекта
     public abstract class BaseModule : ExternalLogger
     {
-        protected BaseModule(ExternalProject project, string code) : base(project.Logger)
+        protected BaseModule(ServerProject project, string code) 
+            : base(project.App, code, project.Code)
         {
             Code = code;
-            Dir = project.Project.Dir.EndDir() + @"\Modules\" + code + "\\";
+            Dir = project.Dir.EndDir() + @"\Modules\" + code + "\\";
         }
 
         //Код модуля
