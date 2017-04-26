@@ -1,6 +1,6 @@
 ﻿using System;
 using BaseLibrary;
-using CommonTypes;
+using Calculation;
 
 namespace Generator
 {
@@ -32,7 +32,7 @@ namespace Generator
                         var generator = new ModuleGenerator(Logger, dataTabls, dir + "CalcParams.accdb", table, subTable);
                         generator.Generate(dir + "Compiled.accdb", "GeneratedParams", "GeneratedSubParams");
                         AddEvent("Генерация завершена", generator.GenErrorsCount + " ошибок");
-                        if (generator.GenErrorsCount != 0) ;
+                        if (generator.GenErrorsCount != 0) 
                         {
                             SetLogResults(generator.GenErrorsCount + " ошибок");
                             AddCollectResult("Шаблон генерации содержит " + generator.GenErrorsCount + " ошибок");

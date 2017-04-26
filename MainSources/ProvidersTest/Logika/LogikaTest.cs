@@ -28,7 +28,7 @@ namespace ProvidersTest
             var con = MakeProviders("Signals");
             var prov = (LogikaSource)con.Provider;
 
-            Assert.AreEqual("SourceCon", con.Name);
+            Assert.AreEqual("SourceCon", con.Code);
             Assert.AreEqual("Logika", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
@@ -59,19 +59,19 @@ namespace ProvidersTest
             con.AddSignal("T941M_412.Q", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=Q");
             con.AddSignal("T941M_412.Tи", DataType.Real, SignalType.List,  "TableName=T941M;NodeId=412", "", "SignalCode=Tи");
 
-            Assert.AreEqual(10, con.Signals.Count);
+            Assert.AreEqual(10, con.ReadingSignals.Count);
             Assert.AreEqual(10, con.InitialSignals.Count);
-            Assert.IsTrue(con.Signals.ContainsKey("T941M_412.t1"));
-            Assert.AreEqual(DataType.Real, con.Signals["T941M_412.t1"].DataType);
-            Assert.IsTrue(con.Signals.ContainsKey("T941M_412.t2"));
-            Assert.IsTrue(con.Signals.ContainsKey("T941M_412.V1"));
-            Assert.IsTrue(con.Signals.ContainsKey("T941M_412.V2"));
-            Assert.IsTrue(con.Signals.ContainsKey("T941M_412.V3"));
-            Assert.IsTrue(con.Signals.ContainsKey("T941M_412.M1"));
-            Assert.IsTrue(con.Signals.ContainsKey("T941M_412.M2"));
-            Assert.IsTrue(con.Signals.ContainsKey("T941M_412.M3"));
-            Assert.IsTrue(con.Signals.ContainsKey("T941M_412.Q"));
-            Assert.IsTrue(con.Signals.ContainsKey("T941M_412.Tи"));
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("T941M_412.t1"));
+            Assert.AreEqual(DataType.Real, con.ReadingSignals["T941M_412.t1"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("T941M_412.t2"));
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("T941M_412.V1"));
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("T941M_412.V2"));
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("T941M_412.V3"));
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("T941M_412.M1"));
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("T941M_412.M2"));
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("T941M_412.M3"));
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("T941M_412.Q"));
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("T941M_412.Tи"));
 
             Assert.IsFalse(prov.IsPrepared);
             prov.Prepare(false);
@@ -86,7 +86,7 @@ namespace ProvidersTest
 
             con.ClearSignals();
             Assert.IsFalse(prov.IsPrepared);
-            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.ReadingSignals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.AreEqual(0, con.InitialSignals.Count);
             Assert.AreEqual(0, prov.Outs.Count);
@@ -106,27 +106,27 @@ namespace ProvidersTest
 
         private void CheckTimeAndErr(ListSignal sig)
         {
-            Assert.AreEqual(25, sig.Value.Count);
-            Assert.AreEqual(D(0), sig.Value.TimeI(0));
-            Assert.AreEqual(D(1), sig.Value.TimeI(1));
-            Assert.AreEqual(D(6), sig.Value.TimeI(6));
-            Assert.AreEqual(D(10), sig.Value.TimeI(10));
-            Assert.AreEqual(D(20), sig.Value.TimeI(20));
-            Assert.AreEqual(D(23), sig.Value.TimeI(23));
-            Assert.AreEqual(D(24), sig.Value.TimeI(24));
+            Assert.AreEqual(25, sig.OutValue.Count);
+            Assert.AreEqual(D(0), sig.OutValue.TimeI(0));
+            Assert.AreEqual(D(1), sig.OutValue.TimeI(1));
+            Assert.AreEqual(D(6), sig.OutValue.TimeI(6));
+            Assert.AreEqual(D(10), sig.OutValue.TimeI(10));
+            Assert.AreEqual(D(20), sig.OutValue.TimeI(20));
+            Assert.AreEqual(D(23), sig.OutValue.TimeI(23));
+            Assert.AreEqual(D(24), sig.OutValue.TimeI(24));
 
-            Assert.AreEqual(null, sig.Value.ErrorI(0));
-            Assert.AreEqual(null, sig.Value.ErrorI(1));
-            Assert.AreEqual(null, sig.Value.ErrorI(7));
-            Assert.AreEqual(null, sig.Value.ErrorI(11));
-            Assert.AreEqual(null, sig.Value.ErrorI(21));
-            Assert.AreEqual(null, sig.Value.ErrorI(23));
-            Assert.AreEqual(null, sig.Value.ErrorI(24));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(0));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(1));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(7));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(11));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(21));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(23));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(24));
         }
 
         private void CheckValue(double v, ListSignal sig, int num, int round = 5)
         {
-            Assert.AreEqual(v, Math.Round(sig.Value.RealI(num), round));
+            Assert.AreEqual(v, Math.Round(sig.OutValue.RealI(num), round));
         }
 
         [TestMethod]
@@ -149,7 +149,7 @@ namespace ProvidersTest
                 con.GetValues();
                 Assert.IsTrue(con.Source.IsConnected);
                 Assert.IsTrue(con.Source.IsPrepared);
-                var sig = (ListSignal)con.Signals["T941M_412.t1"];
+                var sig = (ListSignal)con.ReadingSignals["T941M_412.t1"];
                 CheckTimeAndErr(sig);
                 CheckValue(71.65745, sig, 0);
                 CheckValue(71.7553, sig, 1);
@@ -157,7 +157,7 @@ namespace ProvidersTest
                 CheckValue(71.74596, sig, 14);
                 CheckValue(71.55679, sig, 23);
 
-                sig = (ListSignal)con.Signals["T941M_412.t2"];
+                sig = (ListSignal)con.ReadingSignals["T941M_412.t2"];
                 CheckTimeAndErr(sig);
                 CheckValue(58.88191, sig, 0);
                 CheckValue(58.84616, sig, 1);
@@ -165,7 +165,7 @@ namespace ProvidersTest
                 CheckValue(59.96256, sig, 14);
                 CheckValue(58.90205, sig, 23);
 
-                sig = (ListSignal)con.Signals["T941M_412.V1"];
+                sig = (ListSignal)con.ReadingSignals["T941M_412.V1"];
                 CheckTimeAndErr(sig);
                 CheckValue(289.9, sig, 0, 1);
                 CheckValue(290.1, sig, 1, 1);
@@ -173,7 +173,7 @@ namespace ProvidersTest
                 CheckValue(290.3, sig, 14, 1);
                 CheckValue(290.5, sig, 23, 1);
 
-                sig = (ListSignal)con.Signals["T941M_412.V2"];
+                sig = (ListSignal)con.ReadingSignals["T941M_412.V2"];
                 CheckTimeAndErr(sig);
                 CheckValue(285.4, sig, 0, 1);
                 CheckValue(285.5, sig, 1, 1);
@@ -181,7 +181,7 @@ namespace ProvidersTest
                 CheckValue(285.6, sig, 14, 1);
                 CheckValue(285.5, sig, 23, 1);
 
-                sig = (ListSignal)con.Signals["T941M_412.V3"];
+                sig = (ListSignal)con.ReadingSignals["T941M_412.V3"];
                 CheckTimeAndErr(sig);
                 CheckValue(0, sig, 0);
                 CheckValue(0, sig, 1);
@@ -189,7 +189,7 @@ namespace ProvidersTest
                 CheckValue(0, sig, 14);
                 CheckValue(0, sig, 23);
 
-                sig = (ListSignal)con.Signals["T941M_412.M1"];
+                sig = (ListSignal)con.ReadingSignals["T941M_412.M1"];
                 CheckTimeAndErr(sig);
                 CheckValue(283.2027, sig, 0);
                 CheckValue(283.38159, sig, 1);
@@ -197,7 +197,7 @@ namespace ProvidersTest
                 CheckValue(283.57852, sig, 14);
                 CheckValue(283.80579, sig, 23);
 
-                sig = (ListSignal)con.Signals["T941M_412.M2"];
+                sig = (ListSignal)con.ReadingSignals["T941M_412.M2"];
                 CheckTimeAndErr(sig);
                 CheckValue(280.79285, sig, 0);
                 CheckValue(280.89642, sig, 1);
@@ -205,7 +205,7 @@ namespace ProvidersTest
                 CheckValue(280.83179, sig, 14);
                 CheckValue(280.88831, sig, 23);
 
-                sig = (ListSignal)con.Signals["T941M_412.M3"];
+                sig = (ListSignal)con.ReadingSignals["T941M_412.M3"];
                 CheckTimeAndErr(sig);
                 CheckValue(0, sig, 0);
                 CheckValue(0, sig, 1);
@@ -213,7 +213,7 @@ namespace ProvidersTest
                 CheckValue(0, sig, 14);
                 CheckValue(0, sig, 23);
 
-                sig = (ListSignal)con.Signals["T941M_412.Q"];
+                sig = (ListSignal)con.ReadingSignals["T941M_412.Q"];
                 CheckTimeAndErr(sig);
                 CheckValue(3.590067, sig, 0, 6);
                 CheckValue(3.629146, sig, 1, 6);
@@ -221,7 +221,7 @@ namespace ProvidersTest
                 CheckValue(3.311962, sig, 14, 6);
                 CheckValue(3.557389, sig, 23, 6);
 
-                sig = (ListSignal)con.Signals["T941M_412.Tи"];
+                sig = (ListSignal)con.ReadingSignals["T941M_412.Tи"];
                 CheckTimeAndErr(sig);
                 CheckValue(1, sig, 0);
                 CheckValue(1, sig, 1);

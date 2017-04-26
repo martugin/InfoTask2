@@ -164,7 +164,7 @@ namespace ProvidersLibrary
                             {
                                 var item = _itemsList[i];
                                 serverHandles.SetValue(item.ServerHandler, i);
-                                valuesArr.SetValue(item.ValueSignal.Value.Object, i);
+                                valuesArr.SetValue(item.ValueSignal.InValue.Object, i);
                             }
                             _group.SyncWrite(m - 1, ref serverHandles, ref valuesArr, out errorsArr);
                         });

@@ -1,4 +1,8 @@
-﻿namespace CommonTypes
+﻿using Calculation;
+using CommonTypes;
+using CompileLibrary;
+
+namespace Generator
 {
     //Интерфейс для узлов, у которых может быть вычислено значение
     internal interface IExprNode : INode

@@ -16,7 +16,7 @@ namespace ProvidersLibrary
             set
             {
                 _providerConnect = value;
-                Context = ProviderConnect.Name;
+                Context = ProviderConnect.Code;
             }
         }
         
@@ -55,7 +55,7 @@ namespace ProvidersLibrary
         //Сигналы провайдера подготовлены
         protected internal bool IsPrepared { get; set; }
 
-        //Время в мс, которое нудно ожидать после неудачного соединения
+        //Время в мс, которое нужно ожидать после неудачного соединения
         protected virtual int ConnectErrorWaitingTime { get { return 300; } }
 
         //Первичное подключение к провайдеру, true - соединение удачное
@@ -163,21 +163,17 @@ namespace ProvidersLibrary
         {
             Disconnect();
         }
-        
+
         //Настройка
-        #region
+        #region Setup
+        //ToDo использовать в клиенте
         //Проверка соединения в форме настроек возвращает true, если соединение успешное
         //Проверка соединения
         protected bool CheckConnection()
         {
             if (Reconnect())
             {
-                if (!(this is ListSource))
-                {
-                    CheckConnectionMessage = "Успешное соединение";
-                    return true;
-                }
-                var ti = ((ListSource)this).GetTime();
+                var ti = GetTime();
                 if (ti != null && !ti.IsDefault)
                 {
                     CheckConnectionMessage = "Успешное соединение" + (ti.Begin == Static.MinDate ? "" : ". Диапазон источника: " + ti.Begin + " - " + ti.End);

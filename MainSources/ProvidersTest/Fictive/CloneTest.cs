@@ -38,13 +38,13 @@ namespace ProvidersTest
             var source = (CloneSource)connect.Provider;
             Assert.IsNotNull(connect);
             Assert.AreEqual(ProviderType.Source, connect.Type);
-            Assert.AreEqual("TestSource", connect.Name);
+            Assert.AreEqual("TestSource", connect.Code);
             Assert.AreEqual("CloneSource", connect.Provider.Code);
             Assert.AreEqual("Clones", connect.Complect);
             Assert.AreEqual("Источник: TestSource", connect.Context);
             Assert.IsNotNull(connect.Logger);
             Assert.AreEqual(0, connect.CalcSignals.Count);
-            Assert.AreEqual(0, connect.Signals.Count);
+            Assert.AreEqual(0, connect.ReadingSignals.Count);
 
             Assert.AreEqual(TestLib.TestRunDir + @"Providers\Fictive\CloneProps\Clone.accdb", source.CloneFile);
             Assert.AreEqual("Источник: TestSource", connect.Context);

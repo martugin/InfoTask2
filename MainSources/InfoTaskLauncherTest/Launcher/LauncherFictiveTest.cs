@@ -36,7 +36,7 @@ namespace InfoTaskLauncherTest
             Assert.AreEqual(con.EndTime, new DateTime(2100, 1, 1));
 
             con.ClearSignals();
-            Assert.AreEqual(0, con.Connect.Signals.Count);
+            Assert.AreEqual(0, con.Connect.ReadingSignals.Count);
             var sigBool = con.AddSignal("Out1.Bool", "bool", "Список со срезом", "NumObject=1;ValuesInterval=30000", "", "Signal=Bool");
             Assert.AreEqual("Out1.Bool", sigBool.Code);
             Assert.AreEqual("Логич", sigBool.DataType);
@@ -60,14 +60,14 @@ namespace InfoTaskLauncherTest
             Assert.AreEqual("Out2.State", sigState.Code);
             Assert.AreEqual("Целое", sigState.DataType);
 
-            Assert.AreEqual(7, con.Connect.Signals.Count);
-            Assert.IsTrue(con.Connect.Signals.ContainsKey("Out1.Bool"));
-            Assert.IsTrue(con.Connect.Signals.ContainsKey("Out1.Int"));
-            Assert.IsTrue(con.Connect.Signals.ContainsKey("Out1.Real"));
-            Assert.IsTrue(con.Connect.Signals.ContainsKey("Out1.Time"));
-            Assert.IsTrue(con.Connect.Signals.ContainsKey("Out1.String"));
-            Assert.IsTrue(con.Connect.Signals.ContainsKey("Out2.Value"));
-            Assert.IsTrue(con.Connect.Signals.ContainsKey("Out2.State"));
+            Assert.AreEqual(7, con.Connect.ReadingSignals.Count);
+            Assert.IsTrue(con.Connect.ReadingSignals.ContainsKey("Out1.Bool"));
+            Assert.IsTrue(con.Connect.ReadingSignals.ContainsKey("Out1.Int"));
+            Assert.IsTrue(con.Connect.ReadingSignals.ContainsKey("Out1.Real"));
+            Assert.IsTrue(con.Connect.ReadingSignals.ContainsKey("Out1.Time"));
+            Assert.IsTrue(con.Connect.ReadingSignals.ContainsKey("Out1.String"));
+            Assert.IsTrue(con.Connect.ReadingSignals.ContainsKey("Out2.Value"));
+            Assert.IsTrue(con.Connect.ReadingSignals.ContainsKey("Out2.State"));
 
             con.GetValues(new DateTime(2017, 1, 1), new DateTime(2017, 1, 1, 0, 10, 0));
             Assert.AreEqual(2, source.Outs.Count);
@@ -163,7 +163,7 @@ namespace InfoTaskLauncherTest
             Assert.AreEqual(10, sigState.Integer(3));
 
             con.ClearSignals();
-            Assert.AreEqual(0, con.Connect.Signals.Count);
+            Assert.AreEqual(0, con.Connect.ReadingSignals.Count);
 
             launcher.Close();
             Assert.IsTrue(launcher.IsClosed);
@@ -212,7 +212,7 @@ namespace InfoTaskLauncherTest
             Assert.AreEqual(con.EndTime, Time(30));
 
             con.ClearSignals();
-            Assert.AreEqual(0, con.Connect.Signals.Count);
+            Assert.AreEqual(0, con.Connect.ReadingSignals.Count);
             var sigBool = con.AddSignal("Out1.Bool", "bool", "Список со срезом", "Table=MomValues;ObjectCode=Ob1", "", "Signal=Bool");
             Assert.AreEqual("Out1.Bool", sigBool.Code);
             Assert.AreEqual("Логич", sigBool.DataType);
@@ -241,7 +241,7 @@ namespace InfoTaskLauncherTest
             Assert.AreEqual("OutX.Value2", sigValue2X.Code);
             Assert.AreEqual("Действ", sigValue2X.DataType);
 
-            Assert.AreEqual(9, con.Connect.Signals.Count);
+            Assert.AreEqual(9, con.Connect.ReadingSignals.Count);
             con.GetValues(Time(10), Time(20));
             Assert.AreEqual(2, source.Outs.Count);
             Assert.IsTrue(source.Outs.ContainsKey("Ob1"));
@@ -330,7 +330,7 @@ namespace InfoTaskLauncherTest
             Assert.AreEqual("2,5s", sigString.String(10));
 
             con.ClearSignals();
-            Assert.AreEqual(0, con.Connect.Signals.Count);
+            Assert.AreEqual(0, con.Connect.ReadingSignals.Count);
             launcher.Close();
         }
 

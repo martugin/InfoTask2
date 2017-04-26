@@ -25,7 +25,7 @@ namespace ProvidersTest
         {
             var con = MakeProviders();
             var prov = (WonderwareSource)con.Provider;
-            Assert.AreEqual("SourceCon", con.Name);
+            Assert.AreEqual("SourceCon", con.Code);
             Assert.AreEqual("Wonderware", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
@@ -40,25 +40,25 @@ namespace ProvidersTest
             Assert.IsFalse(prov.IsConnected);
             Assert.IsFalse(prov.IsPrepared);
 
-            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.ReadingSignals.Count);
             con.ClearSignals();
-            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.ReadingSignals.Count);
             con.AddSignal("A00RL31H02KNB0.Пар", DataType.Real, SignalType.Uniform, "TagName=A00RL31H02KNB0");
             con.AddSignal("A00RL31S01ZSST.Пар", DataType.Real, SignalType.Uniform, "TagName=A00RL31S01ZSST");
             con.AddSignal("D1_NKK03B01.Пар", DataType.Boolean, SignalType.Uniform, "TagName=D1_NKK03B01");
             con.AddSignal("D2CAUP02ON.Пар", DataType.Boolean, SignalType.Uniform, "TagName=D2CAUP02ON");
 
-            Assert.AreEqual(4, con.Signals.Count);
+            Assert.AreEqual(4, con.ReadingSignals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.AreEqual(4, con.InitialSignals.Count);
-            Assert.IsTrue(con.Signals.ContainsKey("A00RL31H02KNB0.Пар"));
-            Assert.AreEqual(DataType.Real, con.Signals["A00RL31H02KNB0.Пар"].DataType);
-            Assert.IsTrue(con.Signals.ContainsKey("A00RL31S01ZSST.Пар"));
-            Assert.AreEqual(DataType.Real, con.Signals["A00RL31S01ZSST.Пар"].DataType);
-            Assert.IsTrue(con.Signals.ContainsKey("D1_NKK03B01.Пар"));
-            Assert.AreEqual(DataType.Boolean, con.Signals["D1_NKK03B01.Пар"].DataType);
-            Assert.IsTrue(con.Signals.ContainsKey("D2CAUP02ON.Пар"));
-            Assert.AreEqual(DataType.Boolean, con.Signals["D2CAUP02ON.Пар"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("A00RL31H02KNB0.Пар"));
+            Assert.AreEqual(DataType.Real, con.ReadingSignals["A00RL31H02KNB0.Пар"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("A00RL31S01ZSST.Пар"));
+            Assert.AreEqual(DataType.Real, con.ReadingSignals["A00RL31S01ZSST.Пар"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("D1_NKK03B01.Пар"));
+            Assert.AreEqual(DataType.Boolean, con.ReadingSignals["D1_NKK03B01.Пар"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("D2CAUP02ON.Пар"));
+            Assert.AreEqual(DataType.Boolean, con.ReadingSignals["D2CAUP02ON.Пар"].DataType);
 
             Assert.AreEqual(0, prov.Outs.Count);
             Assert.IsFalse(prov.IsPrepared);
@@ -76,7 +76,7 @@ namespace ProvidersTest
 
             con.ClearSignals();
             Assert.IsFalse(prov.IsPrepared);
-            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.ReadingSignals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.AreEqual(0, con.InitialSignals.Count);
             Assert.AreEqual(0, prov.Outs.Count);

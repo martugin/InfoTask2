@@ -33,6 +33,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,10 +43,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Projects\ClientApp.cs" />
+    <Compile Include="Providers\ClientConnect.cs" />
+    <Compile Include="Projects\ClientModule.cs" />
     <Compile Include="Projects\ClientProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\ProviderSetupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Providers\ProviderSetupForm.designer.cs">
+      <DependentUpon>ProviderSetupForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Providers\ProviderSetupForm.resx">
+      <DependentUpon>ProviderSetupForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
       <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
@@ -53,6 +67,10 @@
     <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProvidersLibrary\ProvidersLibrary.csproj">
+      <Project>{819FEFDE-4840-45CD-BF58-B528821E3098}</Project>
+      <Name>ProvidersLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

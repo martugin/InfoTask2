@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BaseLibrary;
+using Calculation;
 using CommonTypes;
 
 namespace Generator

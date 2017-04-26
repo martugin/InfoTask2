@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Debug\Applications\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Release\Applications\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -55,21 +55,21 @@
       <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
       <Name>BaseLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Calculation\Calculation.csproj">
-      <Project>{A4B84B9B-4130-4066-971D-3D597C141097}</Project>
-      <Name>Calculation</Name>
+    <ProjectReference Include="..\ClientLibrary\ClientLibrary.csproj">
+      <Project>{9C5A65D2-7D93-4772-A59D-CB741F304926}</Project>
+      <Name>ClientLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Generator\Generator.csproj">
-      <Project>{267562A7-4B4A-4B81-B417-33C57CD869FE}</Project>
-      <Name>Generator</Name>
+    <ProjectReference Include="..\ProcessingLibrary\ProcessingLibrary.csproj">
+      <Project>{8979E35E-C778-4D90-BB5E-74D63D9C5C55}</Project>
+      <Name>ProcessingLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProvidersLibrary\ProvidersLibrary.csproj">
-      <Project>{819FEFDE-4840-45CD-BF58-B528821E3098}</Project>
-      <Name>ProvidersLibrary</Name>
+    <ProjectReference Include="..\ReportsConstructorLibrary\ReportsConstructorLibrary.csproj">
+      <Project>{FA2D5C72-44E5-4CB7-9066-C422C3720D49}</Project>
+      <Name>ReportsConstructorLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tablik\Tablik.csproj">
       <Project>{2828EE50-3906-40D8-BBAC-2B75F9BEE24E}</Project>

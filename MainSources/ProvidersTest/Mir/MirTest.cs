@@ -26,7 +26,7 @@ namespace ProvidersTest
         {
             var con = MakeProviders();
             var prov = (MirSource)con.Provider;
-            Assert.AreEqual("SourceCon", con.Name);
+            Assert.AreEqual("SourceCon", con.Code);
             Assert.AreEqual("Mir", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
@@ -41,9 +41,9 @@ namespace ProvidersTest
             Assert.IsFalse(prov.IsConnected);
             Assert.IsFalse(prov.IsPrepared);
 
-            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.ReadingSignals.Count);
             con.ClearSignals();
-            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.ReadingSignals.Count);
 
             con.AddSignal("ГТЭС 4х6 Игольская.В-6 2Г.Активная прямая.Unit", DataType.Real, SignalType.List, 
                 "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Активная прямая", "ValueType=Unit");
@@ -62,22 +62,22 @@ namespace ProvidersTest
             con.AddSignal("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная обратная.Indication", DataType.Real, SignalType.List, 
                 "NAME_OBJECT=ГТЭС 4х6 Игольская;NAME_DEVICE=В-6 2Г", "NAME_TYPE=Реактивная обратная", "ValueType=Indication");
 
-            Assert.AreEqual(8, con.Signals.Count);
+            Assert.AreEqual(8, con.ReadingSignals.Count);
             Assert.AreEqual(8, con.InitialSignals.Count);
-            Assert.IsTrue(con.Signals.ContainsKey("ГТЭС 4х6 Игольская.В-6 2Г.Активная прямая.Unit"));
-            Assert.AreEqual(DataType.Real, con.Signals["ГТЭС 4х6 Игольская.В-6 2Г.Активная прямая.Unit"].DataType);
-            Assert.IsTrue(con.Signals.ContainsKey("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная прямая.Indication"));
-            Assert.AreEqual(DataType.Real, con.Signals["ГТЭС 4х6 Игольская.В-6 2Г.Реактивная прямая.Indication"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("ГТЭС 4х6 Игольская.В-6 2Г.Активная прямая.Unit"));
+            Assert.AreEqual(DataType.Real, con.ReadingSignals["ГТЭС 4х6 Игольская.В-6 2Г.Активная прямая.Unit"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("ГТЭС 4х6 Игольская.В-6 2Г.Реактивная прямая.Indication"));
+            Assert.AreEqual(DataType.Real, con.ReadingSignals["ГТЭС 4х6 Игольская.В-6 2Г.Реактивная прямая.Indication"].DataType);
 
             con.AddSignal("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit", DataType.Real, SignalType.List, 
                 "NAME_OBJECT=ГТЭС 2х6МВт Игольско-Талового нмр.;NAME_DEVICE=Яч.14 Ввод 6Г", "NAME_TYPE=Активная прямая", "ValueType=Unit");
             con.AddSignal("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная обратная.Unit", DataType.Real, SignalType.List, 
                 "NAME_OBJECT=ГТЭС 2х6МВт Игольско-Талового нмр.;NAME_DEVICE=Яч.14 Ввод 6Г", "NAME_TYPE=Активная обратная", "ValueType=Unit");
 
-            Assert.AreEqual(10, con.Signals.Count);
+            Assert.AreEqual(10, con.ReadingSignals.Count);
             Assert.AreEqual(10, con.InitialSignals.Count);
-            Assert.IsTrue(con.Signals.ContainsKey("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit"));
-            Assert.AreEqual(DataType.Real, con.Signals["ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit"));
+            Assert.AreEqual(DataType.Real, con.ReadingSignals["ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit"].DataType);
 
             Assert.IsFalse(prov.IsPrepared);
             Assert.IsFalse(prov.IsConnected);
@@ -117,7 +117,7 @@ namespace ProvidersTest
 
             con.ClearSignals();
             Assert.IsFalse(prov.IsPrepared);
-            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.ReadingSignals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.AreEqual(0, con.InitialSignals.Count);
             Assert.AreEqual(0, prov.Outs.Count);
@@ -131,27 +131,27 @@ namespace ProvidersTest
 
         private void CheckTimeAndErr(ListSignal sig)
         {
-            Assert.AreEqual(49, sig.Value.Count);
-            Assert.AreEqual(D(0), sig.Value.TimeI(0));
-            Assert.AreEqual(D(0, 30), sig.Value.TimeI(1));
-            Assert.AreEqual(D(6), sig.Value.TimeI(12));
-            Assert.AreEqual(D(10, 30), sig.Value.TimeI(21));
-            Assert.AreEqual(D(20), sig.Value.TimeI(40));
-            Assert.AreEqual(D(23, 30), sig.Value.TimeI(47));
-            Assert.AreEqual(D(24), sig.Value.TimeI(48));
+            Assert.AreEqual(49, sig.OutValue.Count);
+            Assert.AreEqual(D(0), sig.OutValue.TimeI(0));
+            Assert.AreEqual(D(0, 30), sig.OutValue.TimeI(1));
+            Assert.AreEqual(D(6), sig.OutValue.TimeI(12));
+            Assert.AreEqual(D(10, 30), sig.OutValue.TimeI(21));
+            Assert.AreEqual(D(20), sig.OutValue.TimeI(40));
+            Assert.AreEqual(D(23, 30), sig.OutValue.TimeI(47));
+            Assert.AreEqual(D(24), sig.OutValue.TimeI(48));
 
-            Assert.AreEqual(null, sig.Value.ErrorI(0));
-            Assert.AreEqual(null, sig.Value.ErrorI(1));
-            Assert.AreEqual(null, sig.Value.ErrorI(7));
-            Assert.AreEqual(null, sig.Value.ErrorI(21));
-            Assert.AreEqual(null, sig.Value.ErrorI(31));
-            Assert.AreEqual(null, sig.Value.ErrorI(43));
-            Assert.AreEqual(null, sig.Value.ErrorI(44));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(0));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(1));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(7));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(21));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(31));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(43));
+            Assert.AreEqual(null, sig.OutValue.ErrorI(44));
         }
 
         private void CheckValue(double v, ListSignal sig, int num, int round = 4)
         {
-            Assert.AreEqual(v, Math.Round(sig.Value.RealI(num), round));
+            Assert.AreEqual(v, Math.Round(sig.OutValue.RealI(num), round));
         }
 
         [TestMethod]
@@ -181,12 +181,12 @@ namespace ProvidersTest
             con.AddSignal("ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная обратная.Unit", DataType.Real, SignalType.List, 
                 "NAME_OBJECT=ГТЭС 2х6МВт Игольско-Талового нмр.;NAME_DEVICE=Яч.14 Ввод 6Г", "NAME_TYPE=Активная обратная", "ValueType=Unit");
             
-            Assert.AreEqual(10, con.Signals.Count);
+            Assert.AreEqual(10, con.ReadingSignals.Count);
 
             using (con.StartPeriod(D(0), D(24), "Single"))
             {
                 con.GetValues();
-                var sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Unit"];
+                var sig = (ListSignal)con.ReadingSignals["ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(2289.6, sig, 0);
                 CheckValue(2292.48, sig, 1);
@@ -198,7 +198,7 @@ namespace ProvidersTest
                 CheckValue(2287.68, sig, 47);
                 CheckValue(2290.56, sig, 48);
 
-                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Indication"];
+                sig = (ListSignal)con.ReadingSignals["ГТЭС 4х6 Игольская.В-6 1Г.Активная прямая.Indication"];
                 CheckTimeAndErr(sig);
                 CheckValue(41606.4227, sig, 0);
                 CheckValue(41606.6615, sig, 1);
@@ -210,7 +210,7 @@ namespace ProvidersTest
                 CheckValue(41617.4368, sig, 47);
                 CheckValue(41617.6754, sig, 48);
 
-                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Unit"];
+                sig = (ListSignal)con.ReadingSignals["ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(0, sig, 0);
                 CheckValue(0, sig, 1);
@@ -222,7 +222,7 @@ namespace ProvidersTest
                 CheckValue(0, sig, 47);
                 CheckValue(0, sig, 48);
 
-                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Indication"];
+                sig = (ListSignal)con.ReadingSignals["ГТЭС 4х6 Игольская.В-6 1Г.Активная обратная.Indication"];
                 CheckTimeAndErr(sig);
                 CheckValue(0.0988, sig, 0);
                 CheckValue(0.0988, sig, 1);
@@ -234,7 +234,7 @@ namespace ProvidersTest
                 CheckValue(0.0988, sig, 47);
                 CheckValue(0.0988, sig, 48);
 
-                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Unit"];
+                sig = (ListSignal)con.ReadingSignals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(214.08, sig, 0);
                 CheckValue(213.12, sig, 1);
@@ -247,7 +247,7 @@ namespace ProvidersTest
                 CheckValue(158.4, sig, 47);
                 CheckValue(163.2, sig, 48);
 
-                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Indication"];
+                sig = (ListSignal)con.ReadingSignals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная прямая.Indication"];
                 CheckTimeAndErr(sig);
                 CheckValue(5795.1083, sig, 0);
                 CheckValue(5795.1305, sig, 1);
@@ -259,7 +259,7 @@ namespace ProvidersTest
                 CheckValue(5796.0499, sig, 47);
                 CheckValue(5796.0669, sig, 48);
 
-                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Unit"];
+                sig = (ListSignal)con.ReadingSignals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(0, sig, 0);
                 CheckValue(0, sig, 1);
@@ -271,7 +271,7 @@ namespace ProvidersTest
                 CheckValue(0, sig, 47);
                 CheckValue(0, sig, 48);
 
-                sig = (ListSignal)con.Signals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Indication"];
+                sig = (ListSignal)con.ReadingSignals["ГТЭС 4х6 Игольская.В-6 1Г.Реактивная обратная.Indication"];
                 CheckTimeAndErr(sig);
                 CheckValue(0.8527, sig, 0);
                 CheckValue(0.8527, sig, 1);
@@ -283,7 +283,7 @@ namespace ProvidersTest
                 CheckValue(0.8527, sig, 47);
                 CheckValue(0.8527, sig, 48);
 
-                sig = (ListSignal)con.Signals["ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit"];
+                sig = (ListSignal)con.ReadingSignals["ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная прямая.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(2491.20, sig, 0);
                 CheckValue(2484, sig, 1);
@@ -295,7 +295,7 @@ namespace ProvidersTest
                 CheckValue(2481.6, sig, 47);
                 CheckValue(2488.8, sig, 48);
 
-                sig = (ListSignal)con.Signals["ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная обратная.Unit"];
+                sig = (ListSignal)con.ReadingSignals["ГТЭС 2х6МВт Игольско-Талового нмр..Яч.14 Ввод 6Г.Активная обратная.Unit"];
                 CheckTimeAndErr(sig);
                 CheckValue(0, sig, 0);
                 CheckValue(0, sig, 1);
@@ -310,7 +310,7 @@ namespace ProvidersTest
 
             con.ClearSignals();
             Assert.IsFalse(prov.IsPrepared);
-            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.ReadingSignals.Count);
         }
 
         [TestMethod]

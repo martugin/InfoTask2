@@ -53,7 +53,7 @@ namespace ComLaunchers
         private Logger Logger { get { return Connect.Logger; }}
 
         //Код соединения
-        public string Name { get { return Connect.Name; } }
+        public string Name { get { return Connect.Code; } }
         //Комплект провайдеров
         public string Complect { get { return Connect.Complect; } }
 

@@ -18,7 +18,7 @@
         protected override void ClearSignalsValues()
         {
             AddEvent("Очистка значений сигналов");
-            foreach (ListSignal sig in SourceConnect.Signals.Values)
+            foreach (ListSignal sig in SourceConnect.ReadingSignals.Values)
                 sig.ClearMoments();
         }
 

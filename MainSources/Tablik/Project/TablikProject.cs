@@ -1,6 +1,6 @@
 ﻿using System;
 using BaseLibrary;
-using CommonTypes;
+using Calculation;
 using Generator;
 
 namespace Tablik
@@ -8,14 +8,14 @@ namespace Tablik
     //Проект для Таблика
     public class TablikProject : ExternalLogger
     {
-        public TablikProject(ServerProject project)
+        public TablikProject(DataProject project)
             : base(project.App, project.Code, project.Code)
         {
             Project = project;
         }
 
         //Проект
-        public ServerProject Project { get; private set; }
+        public DataProject Project { get; private set; }
         
         //Словарь модулей
         private readonly DicS<TablikModule> _modules = new DicS<TablikModule>();

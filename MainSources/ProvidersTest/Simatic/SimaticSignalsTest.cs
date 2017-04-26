@@ -25,7 +25,7 @@ namespace ProvidersTest
         {
             var con = MakeProviders();
             var prov = (SimaticSource)con.Provider;
-            Assert.AreEqual("SourceCon", con.Name);
+            Assert.AreEqual("SourceCon", con.Code);
             Assert.AreEqual("Simatic", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
@@ -40,9 +40,9 @@ namespace ProvidersTest
             Assert.IsFalse(prov.IsConnected);
             Assert.IsFalse(prov.IsPrepared);
 
-            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.ReadingSignals.Count);
             con.ClearSignals();
-            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.ReadingSignals.Count);
 
             con.AddSignal("09ASV00CT002/Т$СК-2А.PV_Out#Value", DataType.Real, SignalType.Uniform, "Id=1136;Tag=09ASV00CT002/Т$СК-2А.PV_Out#Value;Archive=SystemArchive");
             con.AddSignal("09ASV00CT002/Т$СК-2А.PV_Out#Value.Quality", DataType.Integer, SignalType.Uniform, "Id=1136;Tag=09ASV00CT002/Т$СК-2А.PV_Out#Value;Archive=SystemArchive", "", "Prop=Quality");
@@ -50,19 +50,19 @@ namespace ProvidersTest
             con.AddSignal("09LBA55CN001XG02/DI.Out#Value", DataType.Boolean, SignalType.Uniform, "Id=1947;Tag=09LBA55CN001XG02/DI.Out#Value;Archive=SystemArchive;");
             con.AddSignal("09LBA55CN001XG02/DI.Out#Value.Quality", DataType.Integer, SignalType.Uniform, "Id=1947;Tag=09LBA55CN001XG02/DI.Out#Value;Archive=SystemArchive;", "", "Prop=Quality");
             
-            Assert.AreEqual(5, con.Signals.Count);
+            Assert.AreEqual(5, con.ReadingSignals.Count);
             Assert.AreEqual(5, con.InitialSignals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
-            Assert.IsTrue(con.Signals.ContainsKey("09ASV00CT002/Т$СК-2А.PV_Out#Value"));
-            Assert.AreEqual(DataType.Real, con.Signals["09ASV00CT002/Т$СК-2А.PV_Out#Value"].DataType);
-            Assert.IsTrue(con.Signals.ContainsKey("09ASV00CT002/Т$СК-2А.PV_Out#Value.Quality"));
-            Assert.AreEqual(DataType.Integer, con.Signals["09ASV00CT002/Т$СК-2А.PV_Out#Value.Quality"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("09ASV00CT002/Т$СК-2А.PV_Out#Value"));
+            Assert.AreEqual(DataType.Real, con.ReadingSignals["09ASV00CT002/Т$СК-2А.PV_Out#Value"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("09ASV00CT002/Т$СК-2А.PV_Out#Value.Quality"));
+            Assert.AreEqual(DataType.Integer, con.ReadingSignals["09ASV00CT002/Т$СК-2А.PV_Out#Value.Quality"].DataType);
             Assert.IsTrue(con.InitialSignals.ContainsKey("09ASV00CT002/Т$СК-2А.PV_Out#Value.Flags"));
             Assert.AreEqual(DataType.Integer, con.InitialSignals["09ASV00CT002/Т$СК-2А.PV_Out#Value.Flags"].DataType);
-            Assert.IsTrue(con.Signals.ContainsKey("09LBA55CN001XG02/DI.Out#Value"));
-            Assert.AreEqual(DataType.Boolean, con.Signals["09LBA55CN001XG02/DI.Out#Value"].DataType);
-            Assert.IsTrue(con.Signals.ContainsKey("09LBA55CN001XG02/DI.Out#Value.Quality"));
-            Assert.AreEqual(DataType.Integer, con.Signals["09LBA55CN001XG02/DI.Out#Value.Quality"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("09LBA55CN001XG02/DI.Out#Value"));
+            Assert.AreEqual(DataType.Boolean, con.ReadingSignals["09LBA55CN001XG02/DI.Out#Value"].DataType);
+            Assert.IsTrue(con.ReadingSignals.ContainsKey("09LBA55CN001XG02/DI.Out#Value.Quality"));
+            Assert.AreEqual(DataType.Integer, con.ReadingSignals["09LBA55CN001XG02/DI.Out#Value.Quality"].DataType);
 
             Assert.IsFalse(prov.IsPrepared);
             prov.Prepare(false);
@@ -84,7 +84,7 @@ namespace ProvidersTest
             Assert.IsTrue(prov.IsPrepared);
             con.ClearSignals();
             Assert.IsFalse(prov.IsPrepared);
-            Assert.AreEqual(0, con.Signals.Count);
+            Assert.AreEqual(0, con.ReadingSignals.Count);
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.AreEqual(0, con.InitialSignals.Count);
             Assert.AreEqual(0, prov.OutsId.Count);

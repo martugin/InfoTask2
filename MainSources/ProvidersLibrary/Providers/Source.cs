@@ -16,7 +16,7 @@ namespace ProvidersLibrary
         //Подготовка выходов
         protected override void PrepareOuts()
         {
-            foreach (var sig in SourceConnect.Signals.Values)
+            foreach (var sig in SourceConnect.InitialSignals.Values)
                 if (sig.Type != SignalType.Calc)
                 {
                     var ob = AddOut(sig);
@@ -35,7 +35,7 @@ namespace ProvidersLibrary
         //Создание фабрики ошибок
         protected virtual IMomErrFactory MakeErrFactory()
         {
-            var factory = new MomErrFactory(ProviderConnect.Name, MomErrType.Source);
+            var factory = new MomErrFactory(ProviderConnect.Code, MomErrType.Source);
             factory.AddGoodDescr(0);
             return factory;
         }
@@ -78,7 +78,7 @@ namespace ProvidersLibrary
                     foreach (var sig in SourceConnect.CalcSignals.Values)
                     {
                         sig.Calculate();
-                        calc += sig.Value.Count;
+                        calc += sig.OutValue.Count;
                     }
                     AddEvent("Значения расчетных сигналов прочитаны", calc + " значений сформировано");
                     vcount.WriteCount += calc;

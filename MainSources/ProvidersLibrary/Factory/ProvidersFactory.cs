@@ -40,7 +40,7 @@ namespace ProvidersLibrary
         public DicS<ComplectConfig> ComplectConfigs { get { return _complectConfigs; } }
 
         //Создание соединения
-        public ProviderConnect CreateConnect(Project project, //Проект
+        public ProviderConnect CreateConnect(BaseProject project, //Проект
                                                                  ProviderType type, //Тип провайдера
                                                                  string name, //Имя соединения
                                                                  string complect) //Комплект
@@ -58,7 +58,7 @@ namespace ProvidersLibrary
         //Создание провайдера
         public Provider CreateProvider(string code, //Код провайдера
                                                        string inf, //Настройки
-                                                       Project project) //Проект
+                                                       BaseProject project) //Проект
         {
             var prc = ProviderConfigs[code];
             var pr = prc.Complect.Complect == "Clones" || prc.Complect.Complect == "Archives"

@@ -45,6 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseObjects\DataModule.cs" />
+    <Compile Include="BaseObjects\DataProject.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="FunsCalc\BaseFunctions.cs" />
+    <Compile Include="FunsCalc\CalcBaseFun.cs" />
+    <Compile Include="FunsCalc\FunctionsRealisationScalar.cs" />
+    <Compile Include="FunsCalc\ScalarBaseFun.cs" />
     <Compile Include="FunsRealisation\FunctionsMoment.cs" />
     <Compile Include="Funs\CalcFunctions.cs" />
     <Compile Include="FunsRealisation\FunctionsWsp.cs" />
@@ -53,11 +60,13 @@
     <Compile Include="Funs\Oka.cs" />
     <Compile Include="Funs\ScalarFun.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Modules\Module.cs" />
-    <Compile Include="Threads\BaseThread.cs" />
-    <Compile Include="Threads\CalcThread.cs" />
-    <Compile Include="Threads\ProcessProject.cs" />
-    <Compile Include="Threads\RealTimeThread.cs" />
+    <Compile Include="Modules\CalcModule.cs" />
+    <Compile Include="Tabls\SubRows.cs" />
+    <Compile Include="Tabls\Tabl.cs" />
+    <Compile Include="Tabls\TablGroup.cs" />
+    <Compile Include="Tabls\TablRow.cs" />
+    <Compile Include="Tabls\TablsList.cs" />
+    <Compile Include="Tabls\TablStruct.cs" />
     <Compile Include="Values\Segment.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,10 +77,6 @@
     <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ProvidersLibrary\ProvidersLibrary.csproj">
-      <Project>{819FEFDE-4840-45CD-BF58-B528821E3098}</Project>
-      <Name>ProvidersLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -5,7 +5,7 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Сигнал источника
-    public abstract class SourceSignal : ProviderSignal
+    public abstract class SourceSignal : ProviderSignal, IReadSignal
     {
         //Значение или список значений
         protected SourceSignal(SourceConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf) 
@@ -21,7 +21,7 @@ namespace ProvidersLibrary
         }
 
         //Значение
-        public abstract IReadMean Value { get; }
+        public abstract IReadMean OutValue { get; }
         //Мгновенное значение сигнала или буферное значение
         internal abstract Mean BufMom { get; }
 

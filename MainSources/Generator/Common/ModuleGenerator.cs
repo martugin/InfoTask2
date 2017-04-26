@@ -1,6 +1,7 @@
 ﻿using System;
 using BaseLibrary;
-using CommonTypes;
+using Calculation;
+using CompileLibrary;
 
 namespace Generator
 {

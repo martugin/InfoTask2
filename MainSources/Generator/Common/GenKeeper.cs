@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Tree;
 using BaseLibrary;
 using CommonTypes;
+using CompileLibrary;
 
 namespace Generator
 {

@@ -5,10 +5,10 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Соединение - приемник
-    public class ReceiverConnect : ProviderConnect
+    public class ReceiverConnect : ProviderConnect, IWriteConnect
     {
-        public ReceiverConnect(Project project, string name, string complect) 
-            : base(project, name, complect) { }
+        public ReceiverConnect(BaseProject project, string code, string complect) 
+            : base(project, code, complect) { }
 
         //Тип провайдера
         public override ProviderType Type
@@ -22,8 +22,9 @@ namespace ProvidersLibrary
         }
        
         //Список сигналов, содержащих возвращаемые значения
-        private readonly DicS<ReceiverSignal> _signals = new DicS<ReceiverSignal>();
-        public IDicSForRead<ReceiverSignal> Signals { get { return _signals; } }
+        private readonly DicS<ReceiverSignal> _receiverSignals = new DicS<ReceiverSignal>();
+        internal DicS<ReceiverSignal> ReceiverSignals {get { return _receiverSignals; }}
+        public IDicSForRead<IWriteSignal> WritingSignals { get { return ReceiverSignals; } }
 
         //Добавить сигнал
         public ReceiverSignal AddSignal(string fullCode, //Полный код сигнала
@@ -33,12 +34,12 @@ namespace ProvidersLibrary
                                                          string infOut = "", //Свойства выхода относительно объекта
                                                          string infProp = "") //Свойства сигнала относительно выхода
         {
-            if (_signals.ContainsKey(fullCode))
-                return _signals[fullCode];
+            if (ReceiverSignals.ContainsKey(fullCode))
+                return ReceiverSignals[fullCode];
             Provider.IsPrepared = false;
             var contextOut = infObject + (infOut.IsEmpty() ? "" : ";" + infOut);
             var inf = infObject.ToPropertyDicS().AddDic(infOut.ToPropertyDicS()).AddDic(infProp.ToPropertyDicS());
-            return _signals.Add(fullCode, new ReceiverSignal(this, fullCode, dataType, contextOut, inf));
+            return ReceiverSignals.Add(fullCode, new ReceiverSignal(this, fullCode, dataType, contextOut, inf));
         }
 
         //Запись значений в приемник

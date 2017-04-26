@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Debug\Servers\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,23 +26,17 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Release\Servers\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
-      <HintPath>..\packages\Antlr4.Runtime.4.5.3\lib\net40-client\Antlr4.Runtime.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.Office.interop.access.dao, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,37 +44,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Antlr\ErrorListeners.cs" />
-    <Compile Include="Antlr\Node.cs" />
-    <Compile Include="Antlr\KeeperNode.cs" />
-    <Compile Include="Antlr\ListNode.cs" />
-    <Compile Include="Antlr\Parsing.cs" />
-    <Compile Include="Antlr\INode.cs" />
-    <Compile Include="Antlr\ConstNode.cs" />
-    <Compile Include="Antlr\ParsingError.cs" />
-    <Compile Include="Antlr\ParsingKeeper.cs" />
+    <Compile Include="BaseObjects\IConnect.cs" />
+    <Compile Include="BaseObjects\ISignal.cs" />
     <Compile Include="Common\ItStatic.cs" />
     <Compile Include="Common\Enums.cs" />
-    <Compile Include="Project\BaseApp.cs" />
-    <Compile Include="Project\BaseConnect.cs" />
-    <Compile Include="Project\BaseModule.cs" />
-    <Compile Include="Project\Project.cs" />
+    <Compile Include="BaseObjects\BaseApp.cs" />
+    <Compile Include="BaseObjects\BaseConnect.cs" />
+    <Compile Include="BaseObjects\BaseModule.cs" />
+    <Compile Include="BaseObjects\BaseProject.cs" />
     <Compile Include="ErrMoms\ErrDescr.cs" />
     <Compile Include="ErrMoms\MomErr.cs" />
     <Compile Include="ErrMoms\MomErrFactory.cs" />
     <Compile Include="ErrMoms\MomErrPool.cs" />
-    <Compile Include="FunsCalc\ScalarBaseFun.cs" />
-    <Compile Include="FunsCompile\FunCompile.cs" />
-    <Compile Include="FunsCalc\FunctionsRealisationScalar.cs" />
-    <Compile Include="FunsCalc\CalcBaseFun.cs" />
-    <Compile Include="FunsCalc\BaseFunctions.cs" />
-    <Compile Include="FunsCompile\FunOverload.cs" />
-    <Compile Include="FunsCompile\FunParam.cs" />
-    <Compile Include="FunsCompile\FunsChecker.cs" />
-    <Compile Include="Project\ServerProject.cs" />
-    <Compile Include="Tabls\SubRows.cs" />
-    <Compile Include="Tabls\TablStruct.cs" />
-    <Compile Include="Tabls\TablGroup.cs" />
     <Compile Include="Values\DataType.cs" />
     <Compile Include="Values\IMean.cs" />
     <Compile Include="Values\Mom\Mean.cs" />
@@ -93,9 +68,6 @@
     <Compile Include="Values\MomList\MomList.cs" />
     <Compile Include="Values\Val.cs" />
     <Compile Include="Values\Mom\Means.cs" />
-    <Compile Include="Tabls\TablRow.cs" />
-    <Compile Include="Tabls\TablsList.cs" />
-    <Compile Include="Tabls\Tabl.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
@@ -104,9 +76,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
