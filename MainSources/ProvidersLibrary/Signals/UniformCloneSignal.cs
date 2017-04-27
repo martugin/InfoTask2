@@ -63,13 +63,13 @@ namespace ProvidersLibrary
                                                        bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {
             bool isReal = DataType.LessOrEquals(DataType.Real);
-            var rec = isReal ? SourceConnect.CloneRec : SourceConnect.CloneStrRec;
-            var recCut = isReal ? SourceConnect.CloneCutRec : SourceConnect.CloneStrCutRec;
+            var rec = isReal ? ClonerConnect.CloneRec : ClonerConnect.CloneStrRec;
+            var recCut = isReal ? ClonerConnect.CloneCutRec : ClonerConnect.CloneStrCutRec;
             int nwrite = 0;
             if (_prevMom.Time >= Connect.PeriodBegin)
             {
-                var d1 = SourceConnect.RemoveMinultes(mom.Time);
-                var d = SourceConnect.RemoveMinultes(_prevMom.Time).AddMinutes(10);
+                var d1 = ClonerConnect.RemoveMinultes(mom.Time);
+                var d = ClonerConnect.RemoveMinultes(_prevMom.Time).AddMinutes(10);
                 while (d <= d1)
                 {
                     if (d != mom.Time)

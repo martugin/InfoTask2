@@ -1,5 +1,6 @@
 ﻿using BaseLibrary;
 using Calculation;
+using CommonTypes;
 using ProvidersLibrary;
 
 namespace ProcessingLibrary
@@ -27,25 +28,15 @@ namespace ProcessingLibrary
 
         //Словарь модулей
         private readonly DicS<CalcModule> _modules = new DicS<CalcModule>();
-        public IDicSForRead<CalcModule> Modules { get { return _modules; } }
+        public DicS<CalcModule> Modules { get { return _modules; } }
 
         //Словарь соединений источников
         private readonly DicS<SourceConnect> _sources = new DicS<SourceConnect>();
-        public IDicSForRead<SourceConnect> Sources { get { return _sources; } }
+        public DicS<SourceConnect> Sources { get { return _sources; } }
         //Словарь соединений приемников
         private readonly DicS<ReceiverConnect> _receivers = new DicS<ReceiverConnect>();
-        public IDicSForRead<ReceiverConnect> Receivers { get { return _receivers; } }
-
-        //Добавить модуль
-        public CalcModule AddModule(string code)
-        {
-            return _modules.Add(code, new CalcModule(Project, code));
-        }
-        //Добавить соединение
-        public ProviderConnect AddConnect()
-        {
-            
-        }
+        public DicS<ReceiverConnect> Receivers { get { return _receivers; } }
+        
 
         //Очистить список молулей
         public virtual void ClearConnects()

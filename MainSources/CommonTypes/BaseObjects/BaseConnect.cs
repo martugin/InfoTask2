@@ -5,18 +5,18 @@ namespace CommonTypes
     //Базовый класс для соединений Таблика и расчетов
     public abstract class BaseConnect : ExternalLogger
     {
-        protected BaseConnect(BaseProject project, string code, string complect) 
-            : base(project.App, code, project.Code)
+        protected BaseConnect(Logger logger, string code, string complect, string projectCode) 
+            : base(logger, code, projectCode)
         {
             Code = code;
             Complect = complect;
         }
 
         //Код соединения
-        public string Code { get; private set; }
+        public string Code { get; protected set; }
         //Тип провайдера
         public abstract ProviderType Type { get; }
         //Комплект провайдеров
-        public string Complect { get; private set; }
+        public string Complect { get; protected set; }
     }
 }

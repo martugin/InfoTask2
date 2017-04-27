@@ -48,9 +48,6 @@ namespace ProvidersLibrary
             return ErrPool.MakeError(number, addr);
         }
 
-        //Конец предыдущего периода чтения значений
-        internal DateTime PrevPeriodEnd { get; set; }
-
         //Очистка значений сигналов
         protected virtual void ClearSignalsValues() {}
 

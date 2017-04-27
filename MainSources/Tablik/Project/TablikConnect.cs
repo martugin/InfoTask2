@@ -5,16 +5,16 @@ namespace Tablik
     //Проайдер для компилятора
     public abstract class TablikConnect : BaseConnect
     {
-        protected TablikConnect(BaseProject project, string code, string complect) 
-            : base(project, code, complect) { }
+        protected TablikConnect(TablikProject tablik, string code, string complect) 
+            : base(tablik.Project.App, code, complect, tablik.Project.Code) { }
     }
 
     //--------------------------------------------------------------------------------------------------------
     //Источник для компилятора
     public class TablikSource : TablikConnect
     {
-        protected TablikSource(BaseProject project, string code, string complect)
-            : base(project, code, complect) { }
+        protected TablikSource(TablikProject tablik, string code, string complect)
+            : base(tablik, code, complect) { }
 
         //Тип
         public override ProviderType Type { get { return ProviderType.Source; }}
@@ -24,8 +24,8 @@ namespace Tablik
     //Приемник для компилятора
     public class TablikReceiver : TablikConnect
     {
-        protected TablikReceiver(BaseProject project, string code, string complect)
-            : base(project, code, complect) { }
+        protected TablikReceiver(TablikProject tablik, string code, string complect)
+            : base(tablik, code, complect) { }
 
         //Тип
         public override ProviderType Type { get { return ProviderType.Receiver; } }

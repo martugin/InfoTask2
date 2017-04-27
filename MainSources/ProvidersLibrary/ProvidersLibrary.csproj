@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Connects\ClonerConnect.cs" />
     <Compile Include="Outs\SourceOut.cs" />
     <Compile Include="Signals\MomSignal.cs" />
     <Compile Include="Outs\ProviderOut.cs" />

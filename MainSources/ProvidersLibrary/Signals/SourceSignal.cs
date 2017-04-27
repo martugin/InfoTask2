@@ -14,12 +14,6 @@ namespace ProvidersLibrary
         protected SourceSignal(SourceConnect connect, string code) 
             : base(connect, code) { }
 
-        //Соединение с источником
-        public SourceConnect SourceConnect
-        {
-            get { return (SourceConnect)Connect; }
-        }
-
         //Значение
         public abstract IReadMean OutValue { get; }
         //Мгновенное значение сигнала или буферное значение

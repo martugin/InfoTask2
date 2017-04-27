@@ -149,7 +149,6 @@ namespace ProvidersLibrary
         //Подготовка выходов
         protected abstract void PrepareOuts();
 
-
         //Создать пул ошибок
         protected virtual void MakeErrPool() { }
 
@@ -157,6 +156,9 @@ namespace ProvidersLibrary
         protected internal abstract void ClearOuts();
         //Добавить объект содержащий заданный сигнал
         protected abstract ProviderOut AddOut(ProviderSignal sig);
+
+        //Конец предыдущего периода обработки
+        internal DateTime PrevPeriodEnd { get; set; }
 
         //Очистка ресурсов
         public virtual void Dispose()
