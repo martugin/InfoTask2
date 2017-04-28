@@ -70,7 +70,7 @@ namespace ProvidersLibrary
         }
 
         //Определяет время среза в клоне для указанного момента времени 
-        internal DateTime RemoveMinultes(DateTime time)
+        internal static DateTime RemoveMinultes(DateTime time)
         {
             int m = time.Minute;
             int k = m / 10;

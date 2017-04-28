@@ -30,7 +30,7 @@ namespace ComLaunchers
         //Добавить исходный сигнал
         RSourSignal AddSignal(string fullCode, //Полный код сигнала
                                             string dataType, //Тип данных
-                                            string valueType, //Тип значений сисгнала
+                                            string valueType, //Тип значений сигнала
                                             string infObject, //Свойства объекта
                                             string infOut, //Свойства выхода относительно объекта
                                             string infProp); //Свойства сигнала относительно выхода

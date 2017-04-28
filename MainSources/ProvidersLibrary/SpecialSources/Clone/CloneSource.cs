@@ -128,7 +128,7 @@ namespace ProvidersLibrary
         protected internal override ValuesCount ReadCut()
         {
             var vc = new ValuesCount();
-            DateTime d = SourceConnect.RemoveMinultes(PeriodBegin);
+            DateTime d = ClonerConnect.RemoveMinultes(PeriodBegin);
             AddEvent("Чтение среза действительных значений из таблицы изменений");
             _useStrTable = false;
             _useCutTable = false;

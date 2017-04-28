@@ -1,18 +1,17 @@
 ﻿using BaseLibrary;
 using Calculation;
+using CommonTypes;
 
 namespace ProcessingLibrary
 {
-    //Управление обработкой мгновенных данных (расчеты и т.п.)
-    public class ProcessProject : ExternalLogger
+    //Проект с возможностью управления обработкой мгновенных данных (расчеты и т.п.)
+    public class ProcessProject : SchemeProject
     {
-        public ProcessProject(DataProject project) 
-            : base(project.App, project.Code, project.Code)
-        {
-            Project = project;
-        }
+        protected ProcessProject(ProcessApp app, string projectDir) 
+            : base(app, projectDir) { }
 
-        //Проект
-        public DataProject Project { get; private set; }
+        //Потоки расчета
+        private readonly DicI<BaseThread> _threads = new DicI<BaseThread>();
+        public DicI<BaseThread> Threads { get { return _threads; } }
     }
 }

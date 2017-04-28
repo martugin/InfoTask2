@@ -7,8 +7,8 @@ namespace ProcessingLibrary
     //Постоянное получение данных с источника в реальном времени
     public class SourceController : ProviderController
     {
-        public SourceController(SourceConnect connect) 
-            :base(connect) { }
+        public SourceController(BaseProject project, SourceConnect connect) 
+            :base(project, connect) { }
 
         //Соединение 
         public SourceConnect SourceConnect { get { return (SourceConnect) Connect; } }

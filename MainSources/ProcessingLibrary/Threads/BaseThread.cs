@@ -8,23 +8,25 @@ namespace ProcessingLibrary
     //Базовый класс для всех потоков
     public class BaseThread : ExternalLogger
     {
-        public BaseThread(ProcessProject processProject, int id, string name, string description)
-            : base(processProject.Logger, processProject.Context, processProject.ProgressContext)
+        public BaseThread(ProcessProject project, int id, string name)
+            : base(project.Logger, project.Context, project.ProgressContext)
         {
-            Project = processProject.Project;
+            Project = project;
             Id = id;
             Name = name;
-            Description = description;
+            ThreadLogger = new Logger(Project.App.CreateHistory(Project.Code + Id), new ServiceIndicator(), LoggerStability.Periodic); 
         }
 
+        //Логгер для запуска выполнения в отдельном потоке
+        public Logger ThreadLogger { get; private set; }
+
         //Проект
-        public DataProject Project { get; private set; }
+        public ProcessProject Project { get; private set; }
 
         //Номер потока
         public int Id { get; private set; }
-        //Имя и описание потока
+        //Имя потока
         public string Name { get; private set; }
-        public string Description { get; private set; }
 
         //Словарь модулей
         private readonly DicS<CalcModule> _modules = new DicS<CalcModule>();

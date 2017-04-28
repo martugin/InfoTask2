@@ -46,7 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseObjects\DataModule.cs" />
-    <Compile Include="BaseObjects\DataProject.cs" />
+    <Compile Include="BaseObjects\SchemeConnect.cs" />
+    <Compile Include="BaseObjects\SchemeModule.cs" />
+    <Compile Include="BaseObjects\ISchemeConnect.cs" />
+    <Compile Include="BaseObjects\SchemeProject.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="FunsCalc\BaseFunctions.cs" />
     <Compile Include="FunsCalc\CalcBaseFun.cs" />

@@ -57,10 +57,10 @@ namespace ProvidersLibrary
                     sig = _initialSignals.Add(fullCode, new ListSignal(this, fullCode, dataType, contextOut, inf));
                     break;
                 case SignalType.Clone:
-                    sig =  _initialSignals.Add(fullCode, new CloneSignal(this, fullCode, dataType, contextOut, inf));
+                    sig =  _initialSignals.Add(fullCode, new CloneSignal((ClonerConnect)this, fullCode, dataType, contextOut, inf));
                     break;
                 case SignalType.UniformClone:
-                    sig = _initialSignals.Add(fullCode, new UniformCloneSignal(this, fullCode, dataType, contextOut, inf));
+                    sig = _initialSignals.Add(fullCode, new UniformCloneSignal((ClonerConnect)this, fullCode, dataType, contextOut, inf));
                     break;
             }
             return _outSignals.Add(fullCode, sig);

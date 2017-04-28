@@ -4,10 +4,10 @@ using ProvidersLibrary;
 
 namespace ProcessingLibrary
 {
-    //Приложение с доступом к проектам и исходным данным
-    public class DataApp : BaseApp
+    //Приложение с возможностью управления обработкой
+    public class ProcessApp : BaseApp
     {
-        public DataApp(string code, IIndicator indicator)
+        public ProcessApp(string code, IIndicator indicator)
             : base(code, indicator)
         {
             ProvidersFactory = new ProvidersFactory();

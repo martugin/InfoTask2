@@ -157,7 +157,6 @@ namespace ComLaunchers
         //Проверка активации приложения
         public bool AppActivated
         {
-            //Todo реализовать
             get { return _app.IsActivated; }
         }
 
@@ -166,6 +165,8 @@ namespace ComLaunchers
         {
             return new LauncherProject(new AppProject(_app, projectDir));
         }
+
+
 
         //Работа с логгером
         #region Logger

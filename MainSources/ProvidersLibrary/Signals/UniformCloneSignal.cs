@@ -7,7 +7,7 @@ namespace ProvidersLibrary
     //Сигнал архивного источника, с работой со срезами
     public class UniformCloneSignal : CloneSignal
     {
-        public UniformCloneSignal(SourceConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
+        public UniformCloneSignal(ClonerConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
             : base(connect, code, dataType, contextOut, inf)
         {
             _prevMom = new EditMom(dataType);

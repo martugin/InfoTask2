@@ -13,7 +13,7 @@ namespace ProcessingLibrary
         protected ProviderController(BaseProject project, ProviderConnect connect)
         {
             Connect = connect;
-            Logger = new Logger(project.CreateHistory(@"Threads\" + connect.Code + "History.accdb"), null);
+            //Logger = new Logger(project.CreateHistory(@"Threads\" + connect.Code + "History.accdb"), null);
         }
 
         //Соединение 

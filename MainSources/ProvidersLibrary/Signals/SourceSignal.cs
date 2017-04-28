@@ -16,6 +16,12 @@ namespace ProvidersLibrary
 
         //Значение
         public abstract IReadMean OutValue { get; }
+        //Забрать значение
+        public IReadMean GetValue()
+        {
+            throw new NotImplementedException();
+        }
+
         //Мгновенное значение сигнала или буферное значение
         internal abstract Mean BufMom { get; }
 

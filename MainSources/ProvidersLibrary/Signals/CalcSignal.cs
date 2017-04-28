@@ -9,7 +9,7 @@ namespace ProvidersLibrary
     public class CalcSignal : ListSignal
     {
         public CalcSignal(string code, SourceSignal initialSignal, string formula)
-            : base(initialSignal.SourceConnect, code)
+            : base((SourceConnect)initialSignal.Connect, code)
         {
             _initialSignal = initialSignal;
             ParseFormula(formula);

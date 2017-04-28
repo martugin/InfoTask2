@@ -8,14 +8,8 @@ namespace Calculation
     //Модуль для расчета
     public class CalcModule : DataModule, IReadConnect
     {
-        public CalcModule(DataProject project, string code)
-            : base(project, code)
-        {
-            Project = project;
-        }
-
-        //Проект
-        public DataProject Project { get; private set; }
+        public CalcModule(SchemeProject project, string code)
+            : base(project, code) { }
 
         //Список связанных модулей
         private readonly List<CalcModule> _linkedModules = new List<CalcModule>();
