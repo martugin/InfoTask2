@@ -41,6 +41,7 @@ namespace BaseLibraryTest
         internal string Status { get; set; }
         internal DateTime Time { get; set; }
         internal double ProcessLength { get; set; }
+        internal string Context { get; set; }
         internal string Results { get; set; }
 
         internal List<TestCommandLog> Logs = new List<TestCommandLog>();
@@ -87,6 +88,7 @@ namespace BaseLibraryTest
             CommandSuper.PeriodMode = Logger.PeriodMode;
             CommandSuper.Status = command.Status;
             CommandSuper.Time = command.StartTime;
+            CommandSuper.Context = command.Context;
         }
 
         public void WriteStart(LogCommand command)

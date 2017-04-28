@@ -55,7 +55,7 @@ namespace ProvidersLibrary
         public void Bit()
         {
             int bit = _pars[0].Integer;
-            var moms = _initialSignal.Value;
+            var moms = _initialSignal.OutValue;
             for (int i = 0; i < moms.Count; i++)
                 MomList.AddMom(moms.TimeI(i), moms.IntegerI(i).GetBit(bit), moms.ErrorI(i));
         }
@@ -63,7 +63,7 @@ namespace ProvidersLibrary
         //Взятие битов и сложение по Or, pars - номера битов
         public void BitOr()
         {
-            var moms = _initialSignal.Value;
+            var moms = _initialSignal.OutValue;
             for (int i = 0; i < moms.Count; i++)
             {
                 var v = moms.IntegerI(i);
@@ -77,7 +77,7 @@ namespace ProvidersLibrary
         //Взятие битов и сложение по And, pars - номера битов
         public void BitAnd()
         {
-            var moms = _initialSignal.Value;
+            var moms = _initialSignal.OutValue;
             for (int i = 0; i < moms.Count; i++)
             {
                 var v = moms.IntegerI(i);
@@ -138,7 +138,7 @@ namespace ProvidersLibrary
         private void Agregate(Action<EditMom, MomList, int, DateTime> fun)
         {
             double seglen = _pars[0].Real, segshift = _pars.Length < 2 ? 0 : _pars[1].Real * seglen;
-            var moms = _initialSignal.Value;
+            var moms = _initialSignal.OutValue;
             if (moms.Count == 0) return;
             var mlist = MFactory.NewList(DataType);
             //Добавляем в список границы сегментов

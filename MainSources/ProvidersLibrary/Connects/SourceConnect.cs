@@ -6,10 +6,10 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Соединение-источник
-    public class SourceConnect : ProviderConnect
+    public class SourceConnect : ProviderConnect, IReadConnect
     {
-        public SourceConnect(string name, string complect, Logger logger) 
-            : base(name, complect, logger) { }
+        public SourceConnect(BaseProject project, string code, string complect) 
+            : base(project, code, complect) { }
 
         //Тип провайдера
         public override ProviderType Type
@@ -23,8 +23,8 @@ namespace ProvidersLibrary
         }
 
         //Список сигналов, содержащих возвращаемые значения
-        private readonly DicS<SourceSignal> _signals = new DicS<SourceSignal>();
-        public IDicSForRead<SourceSignal> Signals { get { return _signals; } }
+        private readonly DicS<SourceSignal> _outSignals = new DicS<SourceSignal>();
+        public IDicSForRead<IReadSignal> ReadingSignals { get { return _outSignals; } }
         //Словарь исходных сигналов
         private readonly DicS<SourceSignal> _initialSignals = new DicS<SourceSignal>();
         internal DicS<SourceSignal> InitialSignals { get { return _initialSignals; } }
@@ -34,14 +34,14 @@ namespace ProvidersLibrary
 
         //Добавить сигнал
         public SourceSignal AddSignal(string fullCode, //Полный код сигнала
-                                                        DataType dataType, //Тип данных
-                                                        SignalType signalType, //Тип сигнала
-                                                        string infObject, //Свойства объекта
-                                                        string infOut = "", //Свойства выхода относительно объекта
-                                                        string infProp = "") //Свойства сигнала относительно выхода
+                                                      DataType dataType, //Тип данных
+                                                      SignalType signalType, //Тип сигнала
+                                                      string infObject, //Свойства объекта
+                                                      string infOut = "", //Свойства выхода относительно объекта
+                                                      string infProp = "") //Свойства сигнала относительно выхода
         {
-            if (_signals.ContainsKey(fullCode))
-                return _signals[fullCode];
+            if (_outSignals.ContainsKey(fullCode))
+                return _outSignals[fullCode];
             Provider.IsPrepared = false;
             var contextOut = infObject + (infOut.IsEmpty() ? "" : ";" + infOut);
             var inf = infObject.ToPropertyDicS().AddDic(infOut.ToPropertyDicS()).AddDic(infProp.ToPropertyDicS());
@@ -64,7 +64,7 @@ namespace ProvidersLibrary
                     sig = _initialSignals.Add(fullCode, new UniformCloneSignal(this, fullCode, dataType, contextOut, inf));
                     break;
             }
-            return _signals.Add(fullCode, sig);
+            return _outSignals.Add(fullCode, sig);
         }
 
         //Добавить расчетный сигнал
@@ -80,7 +80,7 @@ namespace ProvidersLibrary
                 throw new InstanceNotFoundException("Не найден исходный сигнал " + icode);
             Provider.IsPrepared = false;
             var calc = new CalcSignal(fullCode, _initialSignals[icode], formula);
-            _signals.Add(fullCode, calc);
+            _outSignals.Add(fullCode, calc);
             return CalcSignals.Add(fullCode, calc);
         }
 
@@ -88,7 +88,7 @@ namespace ProvidersLibrary
         public override void ClearSignals()
         {
             base.ClearSignals();
-            _signals.Clear();
+            _outSignals.Clear();
             InitialSignals.Clear();
             CalcSignals.Clear();
         }
@@ -97,7 +97,7 @@ namespace ProvidersLibrary
         internal void ClearSignalsValues(bool clearBegin)
         {
             AddEvent("Очистка значений сигналов");
-            foreach (ListSignal sig in _signals.Values)
+            foreach (ListSignal sig in _outSignals.Values)
                 sig.ClearMoments();
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using BaseLibrary;
+﻿using BaseLibrary;
 using CommonTypes;
 
 namespace ProvidersLibrary
@@ -7,8 +6,8 @@ namespace ProvidersLibrary
     //Базовый класс для соединений с провайдерами
     public abstract class ProviderConnect : BaseConnect
     {
-        protected ProviderConnect(string name, string complect, Logger logger)
-            : base(name, complect, logger) { }
+        protected ProviderConnect(BaseProject project, string code, string complect)
+            : base(project, code, complect) { }
      
         //Основной и резервный провайдеры
         private Provider _mainProvider;
@@ -53,21 +52,6 @@ namespace ProvidersLibrary
                 return true;
             }
             return false;
-        }
-
-        //Вызов окна настройки
-        public string Setup()
-        {
-            throw new NotImplementedException();
-            //if (MenuCommands == null)
-            //{
-            //    MenuCommands = new DicS<Dictionary<string, IMenuCommand>>();
-            //    AddMenuCommands();
-            //}
-            //IsSetup = true;
-            //new ProviderSetupForm { Conn = this }.ShowDialog();
-            //while (IsSetup) Thread.Sleep(500);
-            //return ProviderInf;
         }
 
         //Получение диапазона времени провайдера

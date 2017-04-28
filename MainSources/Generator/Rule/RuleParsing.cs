@@ -1,6 +1,6 @@
 ﻿using System;
 using Antlr4.Runtime;
-using CommonTypes;
+using CompileLibrary;
 using Generator.Grammars;
 
 namespace Generator

@@ -103,7 +103,7 @@ namespace BaseLibrary
             {
                 try
                 {
-                    Logger.StartLog(0, 0, "Создание нового файла истории", "", _updateReason).Finish();
+                    Logger.StartLog(0, 0, "Создание нового файла истории", _updateReason).Finish();
                     _updateReason = null;
                 }
                 catch (OutOfMemoryException) { }
@@ -146,6 +146,7 @@ namespace BaseLibrary
                 _superHistory.AddNew();
                 _superHistory.Put("Command", command.Name);
                 _superHistory.Put("Params", command.Params);
+                _superHistory.Put("Context", command.Context, true);
                 if (Logger.PeriodCommand != null)
                 {
                     _superHistory.Put("PeriodBegin", Logger.PeriodBegin);

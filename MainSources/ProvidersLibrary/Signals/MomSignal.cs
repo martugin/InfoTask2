@@ -20,7 +20,7 @@ namespace ProvidersLibrary
 
         //Занчение
         private readonly Mean _value;
-        public override IReadMean Value { get { return _value; } }
+        public override IReadMean OutValue { get { return _value; } }
         //Значение само в роли буферного
         internal override Mean BufMom { get { return _value; }}
 

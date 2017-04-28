@@ -40,29 +40,32 @@ namespace ProvidersLibrary
         public DicS<ComplectConfig> ComplectConfigs { get { return _complectConfigs; } }
 
         //Создание соединения
-        public ProviderConnect CreateConnect(ProviderType type, //Тип провайдера
+        public ProviderConnect CreateConnect(BaseProject project, //Проект
+                                                                 ProviderType type, //Тип провайдера
                                                                  string name, //Имя соединения
-                                                                 string complect, //Комплект
-                                                                 Logger logger) //Логгер (поток)
+                                                                 string complect) //Комплект
         {
             switch (type)
             {
                 case ProviderType.Source:
-                    return new SourceConnect(name, complect, logger);
+                    return new SourceConnect(project, name, complect);
                 case ProviderType.Receiver:
-                    return new ReceiverConnect(name, complect, logger);
+                    return new ReceiverConnect(project, name, complect);
             }
             return null;
         }
 
         //Создание провайдера
         public Provider CreateProvider(string code, //Код провайдера
-                                                       string inf) //Настройки
+                                                       string inf, //Настройки
+                                                       BaseProject project) //Проект
         {
             var prc = ProviderConfigs[code];
             var pr = prc.Complect.Complect == "Clones" || prc.Complect.Complect == "Archives"
                          ? NewStandardProvider(prc)
                          : NewProvider(prc);
+            pr.Logger = project.App;
+            pr.ProgressContext = project.Code;
             pr.Inf = inf;
             return pr;
         }

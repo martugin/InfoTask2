@@ -12,7 +12,7 @@
         //Подготовка выходов
         protected override void PrepareOuts()
         {
-            foreach (var sig in ReceiverConnect.Signals.Values)
+            foreach (var sig in ReceiverConnect.ReceiverSignals.Values)
                 if (sig.Type != SignalType.Calc)
                 {
                     var ob = AddOut(sig);

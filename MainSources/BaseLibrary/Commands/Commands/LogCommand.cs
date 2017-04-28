@@ -5,17 +5,14 @@ namespace BaseLibrary
     //Команда для записи в History
     public class LogCommand : LogBaseCommand
     {
-        protected internal LogCommand(Logger logger, Command parent, double startProcent, double finishProcent, string name, string context, string pars) 
-            : base(logger, parent, startProcent, finishProcent, name, pars)
+        protected internal LogCommand(Logger logger, Command parent, double startProcent, double finishProcent, string name, string pars, string context) 
+            : base(logger, parent, startProcent, finishProcent, name, pars, context)
         {
-            Context = context;
             Logger.SetTabloText(1, name + (context.IsEmpty() ? "" : (" (" + context + ")")));
             if (History != null)
                 History.WriteStart(this);
         }
-     
-        //Контекст выполнения 
-        protected internal string Context { get; private set; }
+        
         //Результаты выполнения
         internal string Results { get; set; }
 

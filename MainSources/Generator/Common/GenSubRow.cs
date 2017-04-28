@@ -1,5 +1,5 @@
 ﻿using BaseLibrary;
-using CommonTypes;
+using Calculation;
 
 namespace Generator
 {

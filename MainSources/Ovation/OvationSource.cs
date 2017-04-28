@@ -74,7 +74,7 @@ namespace Ovation
         //Создание фабрики ошибок
         protected override IMomErrFactory MakeErrFactory()
         {
-            var factory = new MomErrFactory(ProviderConnect.Name, MomErrType.Source);
+            var factory = new MomErrFactory(ProviderConnect.Code, MomErrType.Source);
             factory.AddGoodDescr(0);
             factory.AddDescr(1, "FAIR", ErrQuality.Warning);
             factory.AddDescr(2, "POOR", ErrQuality.Warning);

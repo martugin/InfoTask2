@@ -71,7 +71,7 @@ namespace ProvidersLibrary
         protected override IMomErrFactory MakeErrFactory()
         {
             AddEvent("Создание фабрики ошибок");
-            var factory = new MomErrFactory(ProviderConnect.Name, MomErrType.Source);
+            var factory = new MomErrFactory(ProviderConnect.Code, MomErrType.Source);
             using (var rec = new DaoRec(CloneFile, "MomentErrors"))
                 while (rec.Read())
                 {

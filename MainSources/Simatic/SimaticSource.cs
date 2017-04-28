@@ -74,7 +74,7 @@ namespace Simatic
         //Создание фабрики ошибок
         protected override IMomErrFactory MakeErrFactory()
         {
-            var factory = new MomErrFactory(ProviderConnect.Name, MomErrType.Source) {UndefinedErrorText = "Ошибка"};
+            var factory = new MomErrFactory(ProviderConnect.Code, MomErrType.Source) {UndefinedErrorText = "Ошибка"};
             factory.AddGoodDescr(128);
             return factory;
         }

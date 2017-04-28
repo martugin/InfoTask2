@@ -61,7 +61,7 @@ namespace BaseLibrary
             {
                 try
                 {
-                    Logger.StartLog(0, 0, "Создание нового файла истории", "", _updateReason).Finish();
+                    Logger.StartLog(0, 0, "Создание нового файла истории", _updateReason).Finish();
                     _updateReason = null;
                 }
                 catch (OutOfMemoryException) { }
@@ -113,13 +113,17 @@ namespace BaseLibrary
             _writer.Write(command.Name + ", ");
             if (Logger.PeriodBegin != Static.MinDate)
                 _writer.Write("Период: " + Logger.PeriodBegin + " - " + Logger.PeriodEnd + ", " + Logger.PeriodMode + ", ");
+            if (!command.Context.IsEmpty())
+                _writer.Write(", Контекст: " + command.Context);
+            if (!command.Params.IsEmpty())
+                _writer.Write(", " + command.Params);
             _writer.WriteLine(command.StartTime);
         }
 
         public void WriteFinishSuper(string results)
         {
             var command = Logger.ProgressCommand;
-            _writer.WriteLine(@"\" + command.Name + ", " + command.Status + ", Длительность: " + command.FromStart + (results.IsEmpty() ? "" : (", " + results)));
+            _writer.WriteLine(@"\" + command.Name + ", " + command.Status + ", Длительность: " + command.FromStart + (results.IsEmpty() ? "" : ", " + results));
         }
         
         public void WriteStart(LogCommand command)

@@ -4,7 +4,7 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Сигнал приемника
-    public class ReceiverSignal : ProviderSignal
+    public class ReceiverSignal : ProviderSignal, IWriteSignal
     {
         public ReceiverSignal(ProviderConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf) 
             : base(connect, code, dataType, contextOut, inf) { }
@@ -22,6 +22,6 @@ namespace ProvidersLibrary
         }
 
         //Значение
-        public IReadMean Value { get; set; }
+        public IReadMean InValue { get; set; }
     }
 }

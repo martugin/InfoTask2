@@ -172,7 +172,7 @@ namespace BaseLibraryTest
         public void CommProgress()
         {
             RunHistory();
-            StartProgress("Процесс", "Pars", DateTime.Now.AddHours(1));
+            StartProgress("Процесс", "Pars", "", DateTime.Now.AddHours(1));
             Assert.IsNotNull(ProgressCommand);
             Assert.AreSame(ProgressCommand, Command);
             Assert.AreEqual(1, Supers.Count);
@@ -210,7 +210,7 @@ namespace BaseLibraryTest
                     Assert.AreEqual("Text3", _indicator.TabloText2);
                 });
 
-            StartLog(40, 80, "Log", "Mod");
+            StartLog(40, 80, "Log", "", "Mod");
             Assert.IsNotNull(LogCommand);
             Assert.AreEqual(ProgressCommand, LogCommand.Parent.Parent);
             Assert.AreEqual(Command, LogCommand);
@@ -250,7 +250,7 @@ namespace BaseLibraryTest
             Assert.AreEqual("Процесс", _indicator.TabloText0);
             Assert.AreEqual("", _indicator.TabloText1);
 
-            var c = StartLog(80, 100, "Log2", "Mod2").Run(() =>
+            var c = StartLog(80, 100, "Log2", "", "Mod2").Run(() =>
                 {
                     Assert.AreEqual("Процесс", _indicator.TabloText0);
                     Assert.AreEqual("Log2 (Mod2)", _indicator.TabloText1);

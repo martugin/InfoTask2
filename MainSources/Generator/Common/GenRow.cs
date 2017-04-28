@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using BaseLibrary;
-using CommonTypes;
+using Calculation;
 
 namespace Generator
 {

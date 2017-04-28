@@ -54,7 +54,7 @@ namespace Wonderware
         //Создание фабрики ошибок
         protected override IMomErrFactory MakeErrFactory()
         {
-            var factory = new MomErrFactory(ProviderConnect.Name, MomErrType.Source);
+            var factory = new MomErrFactory(ProviderConnect.Code, MomErrType.Source);
             factory.AddGoodDescr(192);
             factory.AddDescr(0, "Bad Quality of undetermined state");
             factory.AddDescr(1, "No data available, tag did not exist at the time");

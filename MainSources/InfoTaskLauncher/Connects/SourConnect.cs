@@ -74,7 +74,7 @@ namespace ComLaunchers
         private Logger Logger { get { return Connect.Logger; }}
 
         //Код соединения
-        public string Name { get { return Connect.Name; } }
+        public string Name { get { return Connect.Code; } }
         //Комплект провайдеров
         public string Complect { get { return Connect.Complect; } }
 
@@ -162,7 +162,7 @@ namespace ComLaunchers
         private void RunMakeClone(string cloneDir)
         {
             using (Logger.StartProgress("Создание клона"))
-                using (Logger.StartLog(0, 100, "Создание клона источника", Connect.Name))
+                using (Logger.StartLog(0, 100, "Создание клона источника", "", Connect.Code))
                     Connect.MakeClone(cloneDir);
         }
     }

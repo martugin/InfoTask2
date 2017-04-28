@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using CommonTypes;
+using Calculation;
 
 namespace Tablik
 {
     //Модуль для компиляции
-    public class TablikModule : Module
+    public class TablikModule : DataModule
     {
         public TablikModule(TablikProject tablik, string code)
-            : base(tablik, code)
+            : base(tablik.Project, code)
         {
             Tablik = tablik;
         }
@@ -24,19 +24,5 @@ namespace Tablik
         //Список связанных приемников
         private readonly List<TablikReceiver> _linkedReceivers = new List<TablikReceiver>();
         public List<TablikReceiver> LinkedReceivers { get { return _linkedReceivers; } }
-
-        //Добавить связанный модуль
-        protected override void AddLinkedModule(string moduleCode)
-        {
-            LinkedModules.Add(Tablik.Modules[moduleCode]);
-        }
-
-        //Добавить связанное соединение
-        protected override void AddLinkedConnect(string connectCode)
-        {
-            if (Tablik.Sources.ContainsKey(connectCode))
-                LinkedSources.Add(Tablik.Sources[connectCode]);
-            else LinkedReceivers.Add(Tablik.Receivers[connectCode]);
-        }
     }
 }

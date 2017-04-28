@@ -31,7 +31,7 @@ namespace ProvidersLibrary
         }
 
         //Возвращаемый список значений
-        public override IReadMean Value
+        public override IReadMean OutValue
         {
             get { return MomList; }
         }

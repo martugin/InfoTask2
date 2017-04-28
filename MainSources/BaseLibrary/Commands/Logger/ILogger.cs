@@ -33,6 +33,11 @@ namespace BaseLibrary
                                                     bool isCollect); //Формировать общую ошибку
         CollectCommand FinishCollect(string results = null);
 
+        //Запускает команду Collect и дожидается ее завершения
+        void RunSyncCommand(Action action);
+        //То же самое. только с запуском вложенной PeriodCommand
+        void RunSyncCommand(DateTime beg, DateTime en, Action action);
+
         //Запись результатов в команду Collect
         void AddCollectResult(string result);
         //Итоговая ошибка комманды Collect
@@ -53,13 +58,14 @@ namespace BaseLibrary
         //Запуск команды отображения индикатора
         ProgressCommand StartProgress(string name, //Имя комманды, оно же текст 0-го уровня для формы индикатора
                                                         string pars = "", //Параметры команды
+                                                        string context = null, //Контекст команды
                                                         DateTime? endTime = null); //Если не null, то время конца обратного отсчета
         //Завершение текущей команды отображения индикатора
         ProgressCommand FinishProgress();
-
+        
         //Запуск команды логирования
-        LogCommand StartLog(double startProcent, double finishProcent, string name, string context = "", string pars = "");
-        LogCommand StartLog(string name, string context = "", string pars = "");
+        LogCommand StartLog(double startProcent, double finishProcent, string name, string pars = "", string context = null);
+        LogCommand StartLog(string name, string pars = "", string context = null);
         //Завершение текущей команды логирования
         LogCommand FinishLog(string results = null);
         //Присвоение результата в команду логирования
