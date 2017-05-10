@@ -79,10 +79,6 @@
       <Project>{D64B5872-98C2-444A-A449-9FFD2D881D9A}</Project>
       <Name>Fictive</Name>
     </ProjectReference>
-    <ProjectReference Include="..\InfoTaskLauncherTest\InfoTaskLauncherTest.csproj">
-      <Project>{4365333D-C73F-422E-A7A0-BF138B7186BB}</Project>
-      <Name>InfoTaskLauncherTest</Name>
-    </ProjectReference>
     <ProjectReference Include="..\InfoTaskLauncher\InfoTaskLauncher.csproj">
       <Project>{BD29E947-8542-4B33-B209-87F5A98593A8}</Project>
       <Name>InfoTaskLauncher</Name>

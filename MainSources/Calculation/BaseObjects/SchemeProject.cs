@@ -14,7 +14,6 @@ namespace Calculation
             Dir = projectDir;
             var elem = XDocument.Load(projectDir.EndDir() + "ProjectProperties.xml").Element("ProjectProperties");
             Initialize(elem.GetAttr("ProjectCode"), elem.GetAttr("ProjectName"));
-
         }
 
         //Каталог проекта

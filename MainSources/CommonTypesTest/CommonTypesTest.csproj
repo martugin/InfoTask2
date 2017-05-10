@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="ErrMoms\ErrMomTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tabls\TablsTest.cs" />
     <Compile Include="Values\DataTypeTest.cs" />
     <Compile Include="Values\MeanTest.cs" />
     <Compile Include="Values\MomListTest.cs" />
@@ -72,10 +71,6 @@
     <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\InfoTaskLauncherTest\InfoTaskLauncherTest.csproj">
-      <Project>{4365333D-C73F-422E-A7A0-BF138B7186BB}</Project>
-      <Name>InfoTaskLauncherTest</Name>
     </ProjectReference>
     <ProjectReference Include="..\InfoTaskLauncher\InfoTaskLauncher.csproj">
       <Project>{BD29E947-8542-4B33-B209-87F5A98593A8}</Project>

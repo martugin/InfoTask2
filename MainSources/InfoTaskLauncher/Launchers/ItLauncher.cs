@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using AppLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace ComLaunchers
 {
@@ -33,6 +34,9 @@ namespace ComLaunchers
 
         //Загрузка проекта
         ILauncherProject LoadProject(string projectDir);
+
+        //Создание клона
+        void MakeClone(string cloneDir); //Каталог клона
 
         //Переопределение команд логгера
         #region Logger
@@ -166,7 +170,11 @@ namespace ComLaunchers
             return new LauncherProject(new AppProject(_app, projectDir));
         }
 
-
+        //Создание клона
+        public void MakeClone(string cloneDir) //Каталог клона
+        {
+            _app.MakeClone(cloneDir);
+        }
 
         //Работа с логгером
         #region Logger

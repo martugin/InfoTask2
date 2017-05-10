@@ -7,8 +7,14 @@ namespace ProvidersLibrary
     //Соединение с источником для получения клона
     public class ClonerConnect : SourceConnect
     {
-        public ClonerConnect(Logger logger, string complect) 
-            : base(logger, "Clone", complect) { }
+        public ClonerConnect(Logger logger, ProvidersFactory providersFactory)
+            : base(logger, "Clone", "")
+        {
+            _providersFactory = providersFactory;
+        }
+
+        //Ссылка на приложение
+        private readonly ProvidersFactory _providersFactory;
 
         //Рекордсеты таблиц значений клона
         internal DaoRec CloneRec { get; private set; }
@@ -50,9 +56,14 @@ namespace ProvidersLibrary
         {
             try
             {
-                if (PeriodIsUndefined()) return;
                 using (var db = new DaoDb(cloneDir.EndDir() + "Clone.accdb"))
                 {
+                    using (var sys = new SysTabl(db))
+                    {
+                        Complect = sys.Value("CloneComplect");
+                        var pr = _providersFactory.CreateProvider(Logger, sys.Value("SourceCode"), sys.Value("SourceInf"));
+                        JoinProvider(pr);
+                    }
                     ReadCloneSignals(db);
                     using (CloneRec = new DaoRec(db, "MomentValues"))
                     using (CloneCutRec = new DaoRec(db, "MomentValuesCut"))
@@ -60,7 +71,7 @@ namespace ProvidersLibrary
                     using (CloneStrCutRec = new DaoRec(db, "MomentStrValuesCut"))
                     using (CloneErrorsRec = new DaoRec(db, "ErrorsObjects"))
                         GetValues();
-                    WriteMomentErrors(db);
+                    WriteMomentErrors(db);        
                 }
             }
             catch (Exception ex)

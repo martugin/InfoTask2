@@ -14,8 +14,8 @@ namespace ProvidersTest
         {
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Ovation", logger);
-            var prov = factory.CreateProvider("OvationSource", "DataSource=DROP200");
+            var con = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source, "SourceCon", "Ovation");
+            var prov = factory.CreateProvider(logger, "OvationSource", "DataSource=DROP200");
             con.JoinProvider(prov);
             return con;
         }
@@ -29,11 +29,11 @@ namespace ProvidersTest
             Assert.AreEqual("Ovation", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
-            Assert.AreEqual(con.Context, "Источник: SourceCon");
+            Assert.AreEqual("SourceCon", con.Context);
             Assert.IsNotNull(con.Provider);
             Assert.IsTrue(con.Provider is OvationSource);
             Assert.AreEqual("OvationSource", prov.Code);
-            Assert.AreEqual("Источник: SourceCon, OvationSource", prov.Context);
+            Assert.AreEqual("SourceCon", prov.Context);
             Assert.AreEqual("DataSource=DROP200", prov.Inf);
             Assert.AreSame(con, prov.ProviderConnect);
             Assert.IsNotNull(prov.Logger);
@@ -57,19 +57,14 @@ namespace ProvidersTest
             Assert.AreEqual(0, con.CalcSignals.Count);
             Assert.IsTrue(con.ReadingSignals.ContainsKey("11ASV00CT001.Пар"));
             Assert.AreEqual(DataType.Real, con.ReadingSignals["11ASV00CT001.Пар"].DataType);
-            Assert.AreEqual("ID=45259;", con.ReadingSignals["11ASV00CT001.Пар"].Inf.ToPropertyString());
             Assert.IsTrue(con.ReadingSignals.ContainsKey("11ASV00CT001.Stat"));
             Assert.AreEqual(DataType.Integer, con.ReadingSignals["11ASV00CT001.Stat"].DataType);
-            Assert.AreEqual("ID=45259;PROP=STAT;", con.ReadingSignals["11ASV00CT001.Stat"].Inf.ToPropertyString());
             Assert.IsTrue(con.ReadingSignals.ContainsKey("11ASV00CT002.Пар"));
             Assert.AreEqual(DataType.Real, con.ReadingSignals["11ASV00CT002.Пар"].DataType);
-            Assert.AreEqual("ID=45260;", con.ReadingSignals["11ASV00CT002.Пар"].Inf.ToPropertyString());
             Assert.IsTrue(con.ReadingSignals.ContainsKey("11BAT14CP051XG01.Пар"));
             Assert.AreEqual(DataType.Boolean, con.ReadingSignals["11BAT14CP051XG01.Пар"].DataType);
-            Assert.AreEqual("ID=46958;", con.ReadingSignals["11BAT14CP051XG01.Пар"].Inf.ToPropertyString());
             Assert.IsTrue(con.ReadingSignals.ContainsKey("11BAT14CP051XG01.Stat"));
             Assert.AreEqual(DataType.Integer, con.ReadingSignals["11BAT14CP051XG01.Stat"].DataType);
-            Assert.AreEqual("ID=46958;PROP=STAT;", con.ReadingSignals["11BAT14CP051XG01.Stat"].Inf.ToPropertyString());
             Assert.IsTrue(con.ReadingSignals.ContainsKey("11HHG50AA001-SOST1.Пар"));
             Assert.AreEqual(DataType.Integer, con.ReadingSignals["11HHG50AA001-SOST1.Пар"].DataType);
             Assert.IsTrue(con.ReadingSignals.ContainsKey("11HHG50AA001-SOST2.Пар"));
@@ -210,7 +205,7 @@ namespace ProvidersTest
             Assert.IsNull(prov.SoeOut);
             Assert.IsNull(prov.TextOut);
 
-            prov = (OvationSource)new ProvidersFactory().CreateProvider("OvationSource", "DataSource=DropNo");
+            prov = (OvationSource)new ProvidersFactory().CreateProvider(new Logger(), "OvationSource", "DataSource=DropNo");
             con.JoinProvider(prov);
             Assert.IsFalse(prov.IsConnected);
             Assert.IsFalse(prov.IsPrepared);

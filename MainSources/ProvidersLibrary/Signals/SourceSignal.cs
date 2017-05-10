@@ -19,7 +19,7 @@ namespace ProvidersLibrary
         //Забрать значение
         public IReadMean GetValue()
         {
-            throw new NotImplementedException();
+            return OutValue;
         }
 
         //Мгновенное значение сигнала или буферное значение

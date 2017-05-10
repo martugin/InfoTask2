@@ -22,9 +22,9 @@ namespace ComLaunchers
         void GenerateParams(string moduleDir);
 
         //Создание соединения
-        SourConnect CreateSourConnect(string name, //Имя соединения
+        LauncherSourceConnect CreateSourConnect(string name, //Имя соединения
                                                          string complect); //Комплект
-        ReceivConnect CreateReceivConnect(string name, //Имя соединения
+        LauncherReceiverConnect CreateReceivConnect(string name, //Имя соединения
                                                               string complect); //Комплект
     }
 
@@ -57,25 +57,25 @@ namespace ComLaunchers
         }
 
         //Создание соединения-источника
-        public SourConnect CreateSourConnect(string name, string complect)
+        public LauncherSourceConnect CreateSourConnect(string name, string complect)
         {
             SourceConnect s = null;
             _project.RunSyncCommand(() =>
             {
-                s = (SourceConnect)Factory.CreateConnect(_project, ProviderType.Source, name, complect);
+                s = new SourceConnect(_project.App, name, complect, _project.Code);
             });
-            return new RSourConnect(s, Factory);
+            return new RLauncherSourceConnect(s, Factory);
         }
 
         //Создание соединения-приемника
-        public ReceivConnect CreateReceivConnect(string name, string complect)
+        public LauncherReceiverConnect CreateReceivConnect(string name, string complect)
         {
             ReceiverConnect r = null;
             _project.RunSyncCommand(() =>
             {
-                r = (ReceiverConnect)Factory.CreateConnect(_project, ProviderType.Receiver, name, complect);
+                r = new ReceiverConnect(_project.App, name, complect, _project.Code);
             });
-            return new RReceivConnect(r, Factory);
+            return new RLauncherReceiverConnect(r, Factory);
         }
 
         //Фабрика провайдеров

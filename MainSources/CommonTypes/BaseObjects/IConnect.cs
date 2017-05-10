@@ -10,7 +10,7 @@ namespace CommonTypes
 
     //----------------------------------------------------------------------------------------
     //Соединение для чтения данных
-    public interface IReadConnect : IConnect
+    public interface IReadingConnect : IConnect
     {
         //Список сигналов для чтения значений
         IDicSForRead<IReadSignal> ReadingSignals { get; }
@@ -18,7 +18,7 @@ namespace CommonTypes
 
     //-----------------------------------------------------------------------------------------
     //Соединение для чтения данных
-    public interface IWriteConnect : IConnect
+    public interface IWritingConnect : IConnect
     {
         //Список сигналов для записи значений
         IDicSForRead<IWriteSignal> WritingSignals { get; }

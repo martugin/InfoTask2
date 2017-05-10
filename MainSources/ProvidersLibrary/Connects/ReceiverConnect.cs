@@ -5,7 +5,7 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Соединение - приемник
-    public class ReceiverConnect : ProviderConnect, IWriteConnect
+    public class ReceiverConnect : ProviderConnect, IWritingConnect
     {
         public ReceiverConnect(Logger logger, string code, string complect, string projectCode = "") 
             : base(logger, code, complect, projectCode) { }

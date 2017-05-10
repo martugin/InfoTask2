@@ -4,7 +4,7 @@ using CommonTypes;
 namespace ProcessingLibrary
 {
     //Прокси-соединение
-    public class ProxyConnect : IWriteConnect, IReadConnect
+    public class ProxyConnect : IWritingConnect, IReadingConnect
     {
         public ProxyConnect(IConnect connect) //Оборачиваемое соединение
         {

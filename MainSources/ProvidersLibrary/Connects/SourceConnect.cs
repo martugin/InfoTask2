@@ -5,7 +5,7 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Соединение с источником
-    public class SourceConnect : ProviderConnect, IReadConnect
+    public class SourceConnect : ProviderConnect, IReadingConnect
     {
         public SourceConnect(Logger logger, string code, string complect, string projectCode = "") 
             : base(logger, code, complect, projectCode) { }
@@ -22,8 +22,8 @@ namespace ProvidersLibrary
         }
 
         //Список сигналов, содержащих возвращаемые значения
-        private readonly DicS<SourceSignal> _outSignals = new DicS<SourceSignal>();
-        public IDicSForRead<IReadSignal> ReadingSignals { get { return _outSignals; } }
+        private readonly DicS<SourceSignal> _readingSignals = new DicS<SourceSignal>();
+        public IDicSForRead<IReadSignal> ReadingSignals { get { return _readingSignals; } }
         //Словарь исходных сигналов
         private readonly DicS<SourceSignal> _initialSignals = new DicS<SourceSignal>();
         internal DicS<SourceSignal> InitialSignals { get { return _initialSignals; } }
@@ -39,8 +39,8 @@ namespace ProvidersLibrary
                                                       string infOut = "", //Свойства выхода относительно объекта
                                                       string infProp = "") //Свойства сигнала относительно выхода
         {
-            if (_outSignals.ContainsKey(fullCode))
-                return _outSignals[fullCode];
+            if (_readingSignals.ContainsKey(fullCode))
+                return _readingSignals[fullCode];
             Provider.IsPrepared = false;
             var contextOut = infObject + (infOut.IsEmpty() ? "" : ";" + infOut);
             var inf = infObject.ToPropertyDicS().AddDic(infOut.ToPropertyDicS()).AddDic(infProp.ToPropertyDicS());
@@ -63,7 +63,7 @@ namespace ProvidersLibrary
                     sig = _initialSignals.Add(fullCode, new UniformCloneSignal((ClonerConnect)this, fullCode, dataType, contextOut, inf));
                     break;
             }
-            return _outSignals.Add(fullCode, sig);
+            return _readingSignals.Add(fullCode, sig);
         }
 
         //Добавить расчетный сигнал
@@ -79,7 +79,7 @@ namespace ProvidersLibrary
                 throw new InstanceNotFoundException("Не найден исходный сигнал " + icode);
             Provider.IsPrepared = false;
             var calc = new CalcSignal(fullCode, _initialSignals[icode], formula);
-            _outSignals.Add(fullCode, calc);
+            _readingSignals.Add(fullCode, calc);
             return CalcSignals.Add(fullCode, calc);
         }
 
@@ -87,7 +87,7 @@ namespace ProvidersLibrary
         public override void ClearSignals()
         {
             base.ClearSignals();
-            _outSignals.Clear();
+            _readingSignals.Clear();
             InitialSignals.Clear();
             CalcSignals.Clear();
         }
@@ -96,7 +96,7 @@ namespace ProvidersLibrary
         internal void ClearSignalsValues(bool clearBegin)
         {
             AddEvent("Очистка значений сигналов");
-            foreach (var sig in _outSignals.Values)
+            foreach (var sig in _readingSignals.Values)
                 if (sig is ListSignal)
                     ((ListSignal)sig).ClearMoments();
         }
