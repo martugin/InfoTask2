@@ -5,10 +5,17 @@ namespace InfoTaskLauncherTest
     //“есовый лаунчер, поекты груз€тс€ без указани€ каталогов
     public class TestItLauncher : ItLauncher
     {
-        //“естова€ загрузка проекта без указани€ каталога
-        internal void LoadProjectByCode(string projectCode)
+        //»нициализаци€ дл€ нового приложени€
+        public void TestInitialize(string appCode) // од приложени€
         {
-            _project = new TestAppProject(this, projectCode);
+            Initialize(appCode);
+            App = new TestApp(appCode);
+        }
+
+        //“естова€ загрузка проекта без указани€ каталога
+        internal LauncherProject LoadProjectByCode(string projectCode)
+        {
+            return new LauncherProject(new TestProject((TestApp) App, projectCode));
         }        
     }
 }

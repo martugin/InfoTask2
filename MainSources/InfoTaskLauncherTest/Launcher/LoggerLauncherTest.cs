@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Threading;
 using BaseLibraryTest;
-using ComLaunchers;
-using InfoTaskLauncherTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace InfoTaskLouncherTest
+namespace InfoTaskLauncherTest
 {
     [TestClass]
-    public class LoggerLauncherTest : ItLauncher
+    public class LoggerLauncherTest : TestItLauncher
     {
+        public LoggerLauncherTest()
+        {
+            TestInitialize("Test");
+        }
+
         public void MakeIndicatorEvents()
         {
             StartPeriod(new DateTime(2017, 1, 1, 10, 0, 0), new DateTime(2017, 1, 1, 11, 0, 0));
             StartProgress("Process");
-            StartLogProcent(0, 20, "Command", "SSS");
+            StartLogProcent(0, 20, "Command", "", "SSS");
             StartIndicatorTextProcent(0, 100, "Text");
             Thread.Sleep(10);
             SetProcent(50);
@@ -24,20 +27,20 @@ namespace InfoTaskLouncherTest
             Thread.Sleep(10);
             StartIndicatorTextProcent(50, 100, "More More");
             Thread.Sleep(10);
-            StartLogProcent(40, 70, "Third", "3");
+            StartLogProcent(40, 70, "Third", "", "3");
             Thread.Sleep(10);
             StartIndicatorTextProcent(30, 60, "ThirdText");
             Thread.Sleep(10);
             StartIndicatorTextProcent(60, 100, "ThirdMore");
             Thread.Sleep(10);
-            StartLogProcent(70, 100, "Last", "UUU", "Par");
+            StartLogProcent(70, 100, "Last", "Par", "UUU");
             Thread.Sleep(10);
             SetProcent(40);
             Thread.Sleep(10);
             StartIndicatorTextProcent(70, 100, "Last");
             Thread.Sleep(10);
-            Logger.StartPeriod(new DateTime(2017, 1, 1, 11, 0, 0), new DateTime(2017, 1, 1, 12, 0, 0), "Mode");
-            Logger.StartProgress("Process", "", new DateTime(2017, 1, 1, 12, 0, 0));
+            StartPeriod(new DateTime(2017, 1, 1, 11, 0, 0), new DateTime(2017, 1, 1, 12, 0, 0), "Mode");
+            StartProgress("Process");
             StartLogProcent(0, 100, "Log");
             StartIndicatorTextProcent(0, 50, "ProgressText");
             Thread.Sleep(10);
@@ -50,8 +53,8 @@ namespace InfoTaskLouncherTest
             Finish();
             Finish();
             FinishPeriod();
-            StartProgress("Process", "");
-            StartLogProcent(0, 50, "Com", "xxx", "P");
+            StartProgress("Process");
+            StartLogProcent(0, 50, "Com", "P", "xxx");
             StartIndicatorTextProcent(0, 50, "Text");
             Thread.Sleep(10);
             SetProcent(50);
@@ -60,7 +63,7 @@ namespace InfoTaskLouncherTest
             Thread.Sleep(10);
             SetProcent(50);
             Thread.Sleep(10);
-            StartLogProcent(50, 100, "Com", "yyy", "P2");
+            StartLogProcent(50, 100, "Com", "P2", "yyy");
             StartIndicatorTextProcent(0, 50, "TextTextText");
             Thread.Sleep(10);
             SetProcent(50);
@@ -77,9 +80,8 @@ namespace InfoTaskLouncherTest
         [TestMethod]
         public void Indicator()
         {
-            _project = new TestAppProject(this, "Indicator");
             MakeIndicatorEvents();
-            var ind = (TestIndicator)Logger.Indicator;
+            var ind = (TestIndicator)App.Indicator;
             Assert.AreEqual(86, ind.Events.Count);
             ind.Compare("ShowTimed");
             ind.Compare("PeriodBegin", "01.01.2017 10:00:00");
@@ -126,7 +128,7 @@ namespace InfoTaskLouncherTest
             ind.Compare("PeriodEnd", "01.01.2017 12:00:00");
             ind.Compare("PeriodMode", "Mode");
             ind.Compare("Text0", "Process");
-            ind.Compare("ProcessTimed", "01.01.2017 12:00:00");
+            ind.Compare("ProcessUsual");
             ind.Compare("Procent", "0");
             ind.Compare("Text1", "Log");
             ind.Compare("Text2", "ProgressText");
@@ -172,21 +174,20 @@ namespace InfoTaskLouncherTest
         [TestMethod]
         public void BreakIndicator()
         {
-            _project = new TestAppProject(this, "BreakIndicator");
-            Logger.StartCollect(false, true).Run(() =>
-                Logger.StartProgress("T", "N").Run(() =>
-                    Logger.StartLog(20, 60, "Log").Run(() =>
+            App.StartCollect(false, true).Run(() =>
+                App.StartProgress("T", "N").Run(() =>
+                    App.StartLog(20, 60, "Log").Run(() =>
                     {
-                        Logger.Procent = 50;
+                        App.Procent = 50;
                         Break();
                         Thread.Sleep(1000);
                         AddEvent("Text");
                         AddWarning("Warning", "Pars");
                         AddError("Error", "Pars");
-                        Logger.Procent = 75;
+                        App.Procent = 75;
                     })));
    
-            var ind = (TestIndicator)Logger.Indicator;
+            var ind = (TestIndicator)App.Indicator;
             Assert.AreEqual(12, ind.Events.Count);
             ind.Compare("ShowTexted");
             ind.Compare("Text0", "T");

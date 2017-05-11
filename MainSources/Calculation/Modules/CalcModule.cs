@@ -26,5 +26,11 @@ namespace Calculation
         {
             get { throw new NotImplementedException(); }
         }
+
+        //Произвести вычисления
+        public void Calculate()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading;
+using BaseLibrary;
 using BaseLibraryTest;
 using ComLaunchers;
+using CommonTypes;
 using Fictive;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ProvidersLibrary;
 
 namespace InfoTaskLauncherTest
 {
@@ -15,13 +16,13 @@ namespace InfoTaskLauncherTest
         public void FictiveSimple()
         {
             var launcher = new TestItLauncher();
-            launcher.Initialize("LauncherFictiveTest");
-            launcher.LoadProjectByCode("FictiveSimple");
+            launcher.TestInitialize("LauncherFictiveTest");
+            var pr = launcher.LoadProjectByCode("FictiveSimple");
             Assert.AreEqual("LauncherFictiveTest", launcher.AppCode);
-            Assert.AreEqual("FictiveSimple", launcher.ProjectCode);
+            Assert.AreEqual("FictiveSimple", pr.Code);
             Assert.IsFalse(launcher.IsClosed);
 
-            var con = (RLauncherSourceConnect)launcher.CreateSourConnect("Sour", "Fictive");
+            var con = (RLauncherSourceConnect)pr.CreateSourceConnect("Sour", "Fictive");
             Assert.IsNotNull(con);
             Assert.AreEqual("Sour", con.Name);
             Assert.AreEqual("Fictive", con.Complect);
@@ -174,14 +175,11 @@ namespace InfoTaskLauncherTest
         {
             TestLib.CopyDir(@"Providers\Fictive", "FictiveSimpleClone");
             var launcher = new TestItLauncher();
-            launcher.Initialize("LauncherFictiveTest");
-            launcher.LoadProjectByCode("FictiveSimpleClone");
+            launcher.TestInitialize("LauncherFictiveTest");
             Assert.IsFalse(launcher.IsClosed);
 
-            var con = (RLauncherSourceConnect)launcher.CreateSourConnect("Sour", "Fictive");
-            con.JoinProvider("FictiveSimpleSource", "Label=fic");
             var cloneDir = TestLib.TestRunDir + @"Providers\Fictive\FictiveSimpleClone";
-            con.MakeClone(new DateTime(2017, 1, 1), new DateTime(2017, 1, 1, 0, 10, 0), cloneDir);
+            launcher.MakeCloneSync(cloneDir);
             launcher.Close();
             Assert.IsTrue(launcher.IsClosed);
 
@@ -198,9 +196,9 @@ namespace InfoTaskLauncherTest
         {
             TestLib.CopyFile(@"Providers\Fictive", "Fictive.accdb", "FictiveLauncher.accdb");
             var launcher = new TestItLauncher();
-            launcher.Initialize("LauncherFictiveTest");
-            launcher.LoadProjectByCode("Fictive");
-            var con = (RLauncherSourceConnect)launcher.CreateSourConnect("Sour", "Fictive");
+            launcher.TestInitialize("LauncherFictiveTest");
+            var pr = launcher.LoadProjectByCode("Fictive");
+            var con = (RLauncherSourceConnect)pr.CreateSourceConnect("Sour", "Fictive");
             con.JoinProvider("FictiveSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\FictiveLauncher.accdb");
 
             var source = (FictiveSource)con.Connect.Provider;
@@ -341,13 +339,11 @@ namespace InfoTaskLauncherTest
             Thread.Sleep(500);
             TestLib.CopyFile(@"Providers\Fictive", "Fictive.accdb", @"FictiveClone\Fictive.accdb");
             var launcher = new TestItLauncher();
-            launcher.Initialize("LauncherFictiveTest");
+            launcher.TestInitialize("LauncherFictiveTest");
             launcher.LoadProjectByCode("FictiveClone");
-            var con = (RLauncherSourceConnect)launcher.CreateSourConnect("Sour", "Fictive");
             string cloneDir = TestLib.TestRunDir + @"Providers\Fictive\FictiveClone\";
-            con.JoinProvider("FictiveSource", "DbFile=" + cloneDir + "Fictive.accdb");
-            
-            con.MakeClone(new DateTime(2016, 7, 8), new DateTime(2016, 7, 8, 0, 30, 0), cloneDir);
+            SysTabl.PutValueS(cloneDir + "Clone.accdb", "SourceInf", "DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\FictiveClone\Fictive.accdb");
+            launcher.MakeCloneSync(cloneDir);
             launcher.Close();
             Assert.IsTrue(launcher.IsClosed);
             TestLib.CompareClones(cloneDir + @"\Clone.accdb", cloneDir + @"\CorrectClone.accdb");

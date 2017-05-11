@@ -1,14 +1,16 @@
-﻿using BaseLibrary;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using BaseLibrary;
 using Calculation;
-using CommonTypes;
 using ProvidersLibrary;
 
 namespace ProcessingLibrary
 {
     //Базовый класс для всех потоков
-    public class BaseThread : ExternalLogger
+    public abstract class BaseThread : ExternalLogger
     {
-        public BaseThread(ProcessProject project, int id, string name)
+        protected BaseThread(ProcessProject project, int id, string name)
             : base(project.Logger, project.Context, project.ProgressContext)
         {
             Project = project;
@@ -39,13 +41,56 @@ namespace ProcessingLibrary
         private readonly DicS<ReceiverConnect> _receivers = new DicS<ReceiverConnect>();
         public DicS<ReceiverConnect> Receivers { get { return _receivers; } }
         
-
-        //Очистить список молулей
+        //Очистить списки модулей и соединений
         public virtual void ClearConnects()
         {
             _modules.Clear();
             _sources.Clear();
             _receivers.Clear();
         }
+
+        //Пришла команда остановить процесс
+        private readonly object _finishLocker = new object();
+        private bool _isFinishing;
+
+        //Запуск процесса
+        public void StartProcess()
+        {
+            new Task(Run).Start();
+        }
+
+        //Завершение процесса 
+        public void FinishProcess()
+        {
+            lock (_finishLocker)
+                _isFinishing = true;
+        }
+
+        //Прерывание процесса
+        public void BreakProcess()
+        {
+            
+        }
+
+        //Команда, выполняемая в потоке
+        private void Run()
+        {
+            while (true)
+            {
+                lock (_finishLocker)
+                    if (_isFinishing)
+                    {
+                        _isFinishing = false;
+                        break;
+                    }
+                RunWaiting();
+                RunCycle();
+            }
+        }
+
+        //Выполение одного цикла 
+        protected abstract void RunCycle();
+        //Ожидание следующего цикла
+        protected abstract void RunWaiting();
     }
 }

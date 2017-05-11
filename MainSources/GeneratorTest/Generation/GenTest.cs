@@ -1,6 +1,6 @@
 ﻿using BaseLibrary;
 using BaseLibraryTest;
-using CommonTypes;
+using Calculation;
 using Generator;
 using InfoTaskLauncherTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -65,10 +65,10 @@ namespace GeneratorTest
         {
             TestLib.CopyDir("Generator", "Module");
             var launcher = new TestItLauncher();
-            launcher.Initialize("Test");
-            launcher.LoadProjectByCode("Gen");
+            launcher.TestInitialize("Test");
+            var pr = launcher.LoadProjectByCode("Gen");
             string dir = TestLib.TestRunDir + @"Generator\Module\";
-            launcher.GenerateParams(dir);
+            pr.GenerateParams(dir);
             TestLib.CompareGeneratedParams(dir + "Compiled.accdb", dir + "CorrectCompiled.accdb");
         }
     }

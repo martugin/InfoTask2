@@ -1,6 +1,5 @@
 ﻿using BaseLibrary;
 using Calculation;
-using CommonTypes;
 
 namespace ProcessingLibrary
 {

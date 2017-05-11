@@ -1,6 +1,4 @@
-﻿using System;
-using BaseLibrary;
-using CommonTypes;
+﻿using BaseLibrary;
 using ProcessingLibrary;
 using ProvidersLibrary;
 
@@ -13,16 +11,14 @@ namespace AppLibrary
             : base(code, new AppIndicator()) { }
 
         //Создание клона источника, выполняется синхронно
-        public void MakeClone(string cloneDir) //Каталог клона
+        public void MakeCloneSync(string cloneDir) //Каталог клона
         {
             var ti = GetCloneInterval(cloneDir);
             RunSyncCommand(ti.Begin, ti.End, () => RunMakeClone(cloneDir));
         }
 
         //Создание клона источника, выполняется асинхронно
-        public void MakeCloneAsync(DateTime periodBegin, //Начало периода клона
-                                                   DateTime periodEnd, //Конец периода клона
-                                                   string cloneDir) //Каталог клона
+        public void MakeCloneAsync(string cloneDir) //Каталог клона
         {
             var ti = GetCloneInterval(cloneDir);
             RunAsyncCommand(ti.Begin, ti.End, () => RunMakeClone(cloneDir));

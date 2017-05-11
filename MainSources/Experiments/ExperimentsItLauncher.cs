@@ -1,23 +1,12 @@
 ﻿using System;
 using System.Threading;
-using AppLibrary;
-using BaseLibrary;
-using BaseLibraryTest;
-using ComLaunchers;
+using InfoTaskLauncherTest;
 
 namespace Experiments
 {
     //Класс для тестового отображения формы индикатора
-    public class ExperimentsItLauncher : ItLauncher
+    public class ExperimentsItLauncher : TestItLauncher
     {
-        public ExperimentsItLauncher()
-        {
-            _project = new AppProject(this)
-            {
-                Logger = new Logger(new TestHistory(), new AppIndicator())
-            };
-        }
-
         public void TestMethod()
         {
             var t = new Thread(StartProcess);
@@ -26,7 +15,7 @@ namespace Experiments
 
         private void StartProcess()
         {
-            Logger.StartCollect(false, false).Run(() =>
+            App.StartCollect(false, false).Run(() =>
             {
                 StartProgress("P", "Процесс");
                 StartLogProcent(0, 30, "11111111");

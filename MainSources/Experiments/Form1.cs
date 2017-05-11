@@ -12,7 +12,6 @@ using BaseLibrary;
 using ComLaunchers;
 using CommonTypes;
 using InfoTaskLauncherTest;
-using InfoTaskLouncherTest;
 using ProvidersLibrary;
 
 namespace Experiments
@@ -44,10 +43,7 @@ namespace Experiments
             var it = new TestItLauncher();
             it.Initialize("Experiments");
             it.Finished += OnFinished;
-            it.LoadProjectByCode("TestProject");
-            var con = it.CreateSourConnect("Source", "Fictive");
-            con.JoinProvider("FictiveSimpleSource", "Label=FictiveTest");
-            con.MakeCloneAsync(new DateTime(2017, 1, 1), new DateTime(2017, 1, 1, 0, 10, 0), ItStatic.InfoTaskDir() + @"LocalData\RunItLauncher\Clone");
+            it.MakeCloneSync(ItStatic.InfoTaskDir() + @"LocalData\RunItLauncher\Clone");
         }
 
         private void OnFinished()

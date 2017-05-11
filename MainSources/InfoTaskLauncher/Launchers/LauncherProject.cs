@@ -22,9 +22,9 @@ namespace ComLaunchers
         void GenerateParams(string moduleDir);
 
         //Создание соединения
-        LauncherSourceConnect CreateSourConnect(string name, //Имя соединения
+        LauncherSourceConnect CreateSourceConnect(string name, //Имя соединения
                                                          string complect); //Комплект
-        LauncherReceiverConnect CreateReceivConnect(string name, //Имя соединения
+        LauncherReceiverConnect CreateReceiverConnect(string name, //Имя соединения
                                                               string complect); //Комплект
     }
 
@@ -57,7 +57,7 @@ namespace ComLaunchers
         }
 
         //Создание соединения-источника
-        public LauncherSourceConnect CreateSourConnect(string name, string complect)
+        public LauncherSourceConnect CreateSourceConnect(string name, string complect)
         {
             SourceConnect s = null;
             _project.RunSyncCommand(() =>
@@ -68,7 +68,7 @@ namespace ComLaunchers
         }
 
         //Создание соединения-приемника
-        public LauncherReceiverConnect CreateReceivConnect(string name, string complect)
+        public LauncherReceiverConnect CreateReceiverConnect(string name, string complect)
         {
             ReceiverConnect r = null;
             _project.RunSyncCommand(() =>
