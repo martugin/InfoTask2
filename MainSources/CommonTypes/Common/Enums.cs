@@ -7,6 +7,8 @@
         Receiver,
         HandInput,
         Archive,
+        Module,
+        Proxy,
         Error
     }
 

@@ -1,11 +1,11 @@
-﻿using CommonTypes;
+﻿using ProcessingLibrary;
 
 namespace ServiceLibrary
 {
     //Базовый класс для служб
-    public class ServiceApp : BaseApp
+    public class ServiceApp : ProcessApp
     {
-        public ServiceApp(string code) 
+        public ServiceApp(string code)
             : base(code, null) { }
     }
 }

@@ -6,9 +6,9 @@ using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для RSourConnect
+    //Интерфейс для RLauncherSourceConnect
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface SourConnect
+    public interface LauncherSourceConnect
     {
         //Код соединения
         string Name { get; }
@@ -28,15 +28,15 @@ namespace ComLaunchers
         void ClearSignals();
         
         //Добавить исходный сигнал
-        RSourSignal AddSignal(string fullCode, //Полный код сигнала
+        RLauncherSourceSignal AddSignal(string fullCode, //Полный код сигнала
                                             string dataType, //Тип данных
-                                            string valueType, //Тип значений сисгнала
+                                            string valueType, //Тип значений сигнала
                                             string infObject, //Свойства объекта
                                             string infOut, //Свойства выхода относительно объекта
                                             string infProp); //Свойства сигнала относительно выхода
         
         //Добавить расчетный сигнал
-        RSourSignal AddCalcSignal(string fullCode, //Полный код сигнала
+        RLauncherSourceSignal AddCalcSignal(string fullCode, //Полный код сигнала
                                                string objectCode, //Код объекта
                                                string initialSignalCode, //Код исходного сигнала без кода объекта
                                                string formula); //Формул
@@ -46,21 +46,14 @@ namespace ComLaunchers
         //Чтение значений из источника. Выполняется асинхронно, программа после вызова метода сразу освобождается 
         //Система узнает о завершении чтения через событие Finished
         void GetValuesAsync(DateTime periodBegin, DateTime periodEnd);
-        
-        //Создание клона
-        void MakeClone(DateTime periodBegin, //Начало периода клона
-                                DateTime periodEnd, //Конец периода клона
-                                string cloneDir); //Каталог клона
-        //Асинхронное создание клона
-        void MakeCloneAsync(DateTime periodBegin, DateTime periodEnd, string cloneDir);
     }
 
     //-----------------------------------------------------------------------------------------------------
     //Соединение с источником для взаимодействия через COM
     [ClassInterface(ClassInterfaceType.None)]
-    public class RSourConnect : SourConnect
+    public class RLauncherSourceConnect : LauncherSourceConnect
     {
-        internal RSourConnect(SourceConnect connect, ProvidersFactory factory)
+        internal RLauncherSourceConnect(SourceConnect connect, ProvidersFactory factory)
         {
             Connect = connect;
             _factory = factory;
@@ -84,8 +77,8 @@ namespace ComLaunchers
         {
             Logger.RunSyncCommand(() =>
                 {
-                    var main = _factory.CreateProvider(mainCode, mainInf);
-                    var reserve = reserveCode == null ? null : _factory.CreateProvider(reserveCode, reserveInf);
+                    var main = _factory.CreateProvider(Logger, mainCode, mainInf);
+                    var reserve = reserveCode == null ? null : _factory.CreateProvider(Logger, reserveCode, reserveInf);
                     Connect.JoinProvider(main, reserve);
                 });
         }
@@ -111,23 +104,23 @@ namespace ComLaunchers
         }
 
         //Добавить исходный сигнал
-        public RSourSignal AddSignal(string fullCode, //Полный код сигнала
+        public RLauncherSourceSignal AddSignal(string fullCode, //Полный код сигнала
                                                      string dataType, //Тип данных
                                                      string valueType, //Тип значений сигнала
                                                      string infObject, //Свойства объекта
                                                      string infOut, //Свойства выхода относительно объекта
                                                      string infProp) //Свойства сигнала относительно выхода
         {
-            return new RSourSignal((ListSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), valueType.ToSignalType(), infObject, infOut, infProp));
+            return new RLauncherSourceSignal((ListSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), valueType.ToSignalType(), infObject, infOut, infProp));
         }
 
         //Добавить расчетный сигнал
-        public RSourSignal AddCalcSignal(string fullCode, //Полный код сигнала
+        public RLauncherSourceSignal AddCalcSignal(string fullCode, //Полный код сигнала
                                                          string objectCode, //Код объекта
                                                          string initialSignalCode, //Код исходного сигнала без кода объекта
                                                          string formula) //Формул
         {
-            return new RSourSignal(Connect.AddCalcSignal(fullCode, objectCode, initialSignalCode, formula));
+            return new RLauncherSourceSignal(Connect.AddCalcSignal(fullCode, objectCode, initialSignalCode, formula));
         }
         
         //Чтение значений из источника. Программа, вызвавшая метод, занята пока чтение не завершится
@@ -141,29 +134,6 @@ namespace ComLaunchers
         public void GetValuesAsync(DateTime periodBegin, DateTime periodEnd)
         {
             Logger.RunAsyncCommand(periodBegin, periodEnd, () => Connect.GetValues());
-        }
-
-        //Создание клона источника, всегда выполняется синхронно
-        public void MakeClone(DateTime periodBegin, //Начало периода клона
-                                          DateTime periodEnd, //Конец периода клона
-                                          string cloneDir) //Каталог клона
-        {
-            Logger.RunSyncCommand(periodBegin, periodEnd, () => RunMakeClone(cloneDir));
-        }
-
-        //Создание клона источника, выполняется асинхронно
-        public void MakeCloneAsync(DateTime periodBegin, //Начало периода клона
-                                                   DateTime periodEnd, //Конец периода клона
-                                                   string cloneDir) //Каталог клона
-        {
-            Logger.RunAsyncCommand(periodBegin, periodEnd, () => RunMakeClone(cloneDir));
-        }
-
-        private void RunMakeClone(string cloneDir)
-        {
-            using (Logger.StartProgress("Создание клона"))
-                using (Logger.StartLog(0, 100, "Создание клона источника", "", Connect.Code))
-                    Connect.MakeClone(cloneDir);
         }
     }
 }

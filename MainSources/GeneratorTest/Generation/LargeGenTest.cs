@@ -12,17 +12,17 @@ namespace GeneratorTest
         public void GenModuleLarge()
         {
             var launcher = new TestItLauncher();
-            launcher.Initialize("Test");
-            launcher.LoadProjectByCode("GenerationLarge");
-            Generate(launcher, "ModuleLarge");
-            Generate(launcher, "ApdControl");
+            launcher.TestInitialize("Test");
+            var pr = launcher.LoadProjectByCode("GenerationLarge");
+            Generate(pr, "ModuleLarge");
+            Generate(pr, "ApdControl");
         }
 
-        private void Generate(ItLauncher launcher, string dirName)
+        private void Generate(LauncherProject pr, string dirName)
         {
             TestLib.CopyDir("Generator", dirName);
             var dir = TestLib.TestRunDir + @"Generator\" + dirName + @"\";
-            launcher.GenerateParams(dir);
+            pr.GenerateParams(dir);
             TestLib.CompareGeneratedParams(dir + "Compiled.accdb", dir + "CorrectCompiled.accdb");
         }
     }

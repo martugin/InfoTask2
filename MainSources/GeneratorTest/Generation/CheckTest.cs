@@ -1,6 +1,7 @@
 ﻿using System;
 using BaseLibrary;
 using BaseLibraryTest;
+using Calculation;
 using CommonTypes;
 using Generator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -6,8 +6,8 @@ namespace ClientLibrary
     //Представление соединения в клиенте
     public class ClientConnect : BaseConnect
     {
-        public ClientConnect(BaseProject project, string code, string complect) 
-            : base(project, code, complect) { }
+        public ClientConnect(ClientProject project, string code, string complect) 
+            : base(project.App, code, complect, project.Code) { }
 
         public override ProviderType Type
         {

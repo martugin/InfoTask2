@@ -1,10 +1,11 @@
 ﻿using System;
 using BaseLibrary;
 using BaseLibraryTest;
+using Calculation;
 using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonTypesTest
+namespace CalculationTest
 {
     [TestClass]
     public class TablsTest

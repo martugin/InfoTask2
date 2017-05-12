@@ -48,9 +48,6 @@ namespace ProvidersLibrary
             return ErrPool.MakeError(number, addr);
         }
 
-        //Конец предыдущего периода чтения значений
-        internal DateTime PrevPeriodEnd { get; set; }
-
         //Очистка значений сигналов
         protected virtual void ClearSignalsValues() {}
 
@@ -103,16 +100,16 @@ namespace ProvidersLibrary
 
         //Добавляет объект в ErrorsObjects
         protected void AddErrorOut(string codeObject,  //Код сигнала
-                                                string errText,        //Сообщение об ошибке
-                                                Exception ex = null)  //Исключение
+                                                   string errText,        //Сообщение об ошибке
+                                                   Exception ex = null)  //Исключение
         {
             if (!_errorOuts.ContainsKey(codeObject))
             {
                 var err = errText + (ex == null ? "" : ". " + ex.Message + ". " + ex.StackTrace);
                 _errorOuts.Add(codeObject, err);
-                if (SourceConnect.CloneErrorsRec != null)
+                if (ProviderConnect is ClonerConnect)
                 {
-                    var rec = SourceConnect.CloneErrorsRec;
+                    var rec = ((ClonerConnect)ProviderConnect).CloneErrorsRec;
                     rec.AddNew();
                     rec.Put("OutContext", codeObject);
                     rec.Put("ErrorDescription", err);

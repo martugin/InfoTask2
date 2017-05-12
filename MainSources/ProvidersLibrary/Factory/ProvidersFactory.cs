@@ -40,32 +40,34 @@ namespace ProvidersLibrary
         public DicS<ComplectConfig> ComplectConfigs { get { return _complectConfigs; } }
 
         //Создание соединения
-        public ProviderConnect CreateConnect(BaseProject project, //Проект
+        public ProviderConnect CreateConnect(Logger logger, //Логгер
                                                                  ProviderType type, //Тип провайдера
                                                                  string name, //Имя соединения
-                                                                 string complect) //Комплект
+                                                                 string complect, //Комплект
+                                                                 string projectCode = "") //Код проекта
         {
             switch (type)
             {
                 case ProviderType.Source:
-                    return new SourceConnect(project, name, complect);
+                    return new SourceConnect(logger, name, complect, projectCode);
                 case ProviderType.Receiver:
-                    return new ReceiverConnect(project, name, complect);
+                    return new ReceiverConnect(logger, name, complect, projectCode);
             }
             return null;
         }
 
         //Создание провайдера
-        public Provider CreateProvider(string code, //Код провайдера
-                                                       string inf, //Настройки
-                                                       BaseProject project) //Проект
+        public Provider CreateProvider(Logger logger,
+                                                      string code, //Код провайдера
+                                                      string inf, //Настройки
+                                                      string projectCode = "") //Код проекта
         {
             var prc = ProviderConfigs[code];
             var pr = prc.Complect.Complect == "Clones" || prc.Complect.Complect == "Archives"
                          ? NewStandardProvider(prc)
                          : NewProvider(prc);
-            pr.Logger = project.App;
-            pr.ProgressContext = project.Code;
+            pr.Logger = logger;
+            pr.ProgressContext = projectCode;
             pr.Inf = inf;
             return pr;
         }

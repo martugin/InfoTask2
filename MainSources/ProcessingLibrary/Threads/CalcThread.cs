@@ -1,25 +1,19 @@
-﻿using BaseLibrary;
-using Calculation;
-
-namespace ProcessingLibrary
+﻿namespace ProcessingLibrary
 {
     //Поток расчетов
     public class CalcThread : BaseThread
     {
-        //Если поток у проекта один
-        public CalcThread(ProcessProject processProject) 
-            : base(processProject) { }
+        public CalcThread(ProcessProject project, int id, string name) 
+            : base(project, id, name) { }
 
-        //Если потоков у проекта много
-        public CalcThread(ProcessProject processProject, int id, string name, string description) : base(processProject)
+        protected override void RunCycle()
         {
-            Id = id;
-            Name = name;
-            Description = description;
-            ThreadLogger = new Logger(DataProject.App.CreateHistory(DataProject.Code + Id), new ServiceIndicator(), LoggerStability.Periodic); 
+            throw new System.NotImplementedException();
         }
 
-        //Логгер для запуска выполнения в отдельном потоке
-        public Logger ThreadLogger { get; private set; }
+        protected override void RunWaiting()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

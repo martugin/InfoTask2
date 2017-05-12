@@ -1,58 +1,96 @@
-﻿using BaseLibrary;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using BaseLibrary;
 using Calculation;
 using ProvidersLibrary;
 
 namespace ProcessingLibrary
 {
     //Базовый класс для всех потоков
-    public class BaseThread : ExternalLogger
+    public abstract class BaseThread : ExternalLogger
     {
-        public BaseThread(ProcessProject processProject, int id, string name, string description)
-            : base(processProject.Logger, processProject.Context, processProject.ProgressContext)
+        protected BaseThread(ProcessProject project, int id, string name)
+            : base(project.Logger, project.Context, project.ProgressContext)
         {
-            Project = processProject.Project;
+            Project = project;
             Id = id;
             Name = name;
-            Description = description;
+            ThreadLogger = new Logger(Project.App.CreateHistory(Project.Code + Id), new ServiceIndicator(), LoggerStability.Periodic); 
         }
 
+        //Логгер для запуска выполнения в отдельном потоке
+        public Logger ThreadLogger { get; private set; }
+
         //Проект
-        public DataProject Project { get; private set; }
+        public ProcessProject Project { get; private set; }
 
         //Номер потока
         public int Id { get; private set; }
-        //Имя и описание потока
+        //Имя потока
         public string Name { get; private set; }
-        public string Description { get; private set; }
 
         //Словарь модулей
         private readonly DicS<CalcModule> _modules = new DicS<CalcModule>();
-        public IDicSForRead<CalcModule> Modules { get { return _modules; } }
+        public DicS<CalcModule> Modules { get { return _modules; } }
 
         //Словарь соединений источников
         private readonly DicS<SourceConnect> _sources = new DicS<SourceConnect>();
-        public IDicSForRead<SourceConnect> Sources { get { return _sources; } }
+        public DicS<SourceConnect> Sources { get { return _sources; } }
         //Словарь соединений приемников
         private readonly DicS<ReceiverConnect> _receivers = new DicS<ReceiverConnect>();
-        public IDicSForRead<ReceiverConnect> Receivers { get { return _receivers; } }
-
-        //Добавить модуль
-        public CalcModule AddModule(string code)
-        {
-            return _modules.Add(code, new CalcModule(Project, code));
-        }
-        //Добавить соединение
-        public ProviderConnect AddConnect()
-        {
-            
-        }
-
-        //Очистить список молулей
+        public DicS<ReceiverConnect> Receivers { get { return _receivers; } }
+        
+        //Очистить списки модулей и соединений
         public virtual void ClearConnects()
         {
             _modules.Clear();
             _sources.Clear();
             _receivers.Clear();
         }
+
+        //Пришла команда остановить процесс
+        private readonly object _finishLocker = new object();
+        private bool _isFinishing;
+
+        //Запуск процесса
+        public void StartProcess()
+        {
+            new Task(Run).Start();
+        }
+
+        //Завершение процесса 
+        public void FinishProcess()
+        {
+            lock (_finishLocker)
+                _isFinishing = true;
+        }
+
+        //Прерывание процесса
+        public void BreakProcess()
+        {
+            
+        }
+
+        //Команда, выполняемая в потоке
+        private void Run()
+        {
+            while (true)
+            {
+                lock (_finishLocker)
+                    if (_isFinishing)
+                    {
+                        _isFinishing = false;
+                        break;
+                    }
+                RunWaiting();
+                RunCycle();
+            }
+        }
+
+        //Выполение одного цикла 
+        protected abstract void RunCycle();
+        //Ожидание следующего цикла
+        protected abstract void RunWaiting();
     }
 }

@@ -6,9 +6,9 @@ using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для RReceivConnect
+    //Интерфейс для RLauncherReceiverConnect
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface ReceivConnect
+    public interface LauncherReceiverConnect
     {
         //Код соединения
         string Name { get; }
@@ -21,7 +21,7 @@ namespace ComLaunchers
         void ClearSignals();
 
         //Добавить сигнал
-        RReceivSignal AddSignal(string fullCode, //Полный код сигнала
+        RLauncherReceiverSignal AddSignal(string fullCode, //Полный код сигнала
                                             string dataType, //Тип данных
                                             string valueType, //Тип значений сигнала
                                             string infObject, //Свойства объекта
@@ -37,9 +37,9 @@ namespace ComLaunchers
     //-----------------------------------------------------------------------------------------------------
     //Соединение с приемником для взаимодействия через COM
     [ClassInterface(ClassInterfaceType.None)]
-    public class RReceivConnect : ReceivConnect
+    public class RLauncherReceiverConnect : LauncherReceiverConnect
     {
-        internal RReceivConnect(ReceiverConnect connect, ProvidersFactory factory)
+        internal RLauncherReceiverConnect(ReceiverConnect connect, ProvidersFactory factory)
         {
             Connect = connect;
             _factory = factory;
@@ -63,8 +63,8 @@ namespace ComLaunchers
         {
             Logger.RunSyncCommand(() =>
                 {
-                    var main = _factory.CreateProvider(mainCode, mainInf);
-                    var reserve = reserveCode == null ? null : _factory.CreateProvider(reserveCode, reserveInf);
+                    var main = _factory.CreateProvider(Logger, mainCode, mainInf);
+                    var reserve = reserveCode == null ? null : _factory.CreateProvider(Logger, reserveCode, reserveInf);
                     Connect.JoinProvider(main, reserve);
                 });
         }
@@ -79,14 +79,14 @@ namespace ComLaunchers
         }
 
         //Добавить сигнал
-        public RReceivSignal AddSignal(string fullCode, //Полный код сигнала
+        public RLauncherReceiverSignal AddSignal(string fullCode, //Полный код сигнала
                                                         string dataType, //Тип данных
                                                         string valueType, //Тип значений сигнала
                                                         string infObject, //Свойства объекта
                                                         string infOut, //Свойства выхода относительно объекта
                                                         string infProp) //Свойства сигнала относительно выхода
         {
-            return new RReceivSignal((ReceiverSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), valueType.ToSignalType(), infObject, infOut, infProp));
+            return new RLauncherReceiverSignal((ReceiverSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), valueType.ToSignalType(), infObject, infOut, infProp));
         }
 
         //Запись значений в приемник

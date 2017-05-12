@@ -1,4 +1,5 @@
-﻿using BaseLibrary;
+﻿using System;
+using BaseLibrary;
 using CommonTypes;
 
 namespace ProvidersLibrary
@@ -23,5 +24,10 @@ namespace ProvidersLibrary
 
         //Значение
         public IReadMean InValue { get; set; }
+        //Записать значение
+        public void PutValue(IReadMean value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

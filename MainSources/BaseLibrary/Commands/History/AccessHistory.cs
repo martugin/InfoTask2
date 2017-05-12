@@ -163,10 +163,13 @@ namespace BaseLibrary
         {
             RunHistoryOperation(_superHistory, () =>
             {
-                _superHistory.MoveLast();
-                _superHistory.Put("Status", ProgressCommand.Status);
-                _superHistory.Put("Results", results);
-                _superHistory.Put("ProcessLength", ProgressCommand.FromStart);
+                if (_superHistory.HasRows)
+                {
+                    _superHistory.MoveLast();
+                    _superHistory.Put("Status", ProgressCommand.Status);
+                    _superHistory.Put("Results", results);
+                    _superHistory.Put("ProcessLength", ProgressCommand.FromStart);    
+                }
                 _superHistoryId = 0;
             });
         }
@@ -193,10 +196,13 @@ namespace BaseLibrary
             LogEventTime = DateTime.Now;
             RunHistoryOperation(_history, () =>
             {
-                _history.MoveLast();
-                _history.Put("Status", LogCommand.Status);
-                _history.Put("Results", results);
-                _history.Put("ProcessLength", LogCommand.FromStart);
+                if (_history.HasRows)
+                {
+                    _history.MoveLast();
+                    _history.Put("Status", LogCommand.Status);
+                    _history.Put("Results", results);
+                    _history.Put("ProcessLength", LogCommand.FromStart);    
+                }
                 _historyId = 0;
             });
         }

@@ -5,10 +5,10 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Соединение - приемник
-    public class ReceiverConnect : ProviderConnect, IWriteConnect
+    public class ReceiverConnect : ProviderConnect, IWritingConnect
     {
-        public ReceiverConnect(BaseProject project, string code, string complect) 
-            : base(project, code, complect) { }
+        public ReceiverConnect(Logger logger, string code, string complect, string projectCode = "") 
+            : base(logger, code, complect, projectCode) { }
 
         //Тип провайдера
         public override ProviderType Type

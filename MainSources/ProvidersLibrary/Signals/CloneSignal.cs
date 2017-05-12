@@ -8,8 +8,14 @@ namespace ProvidersLibrary
     //Используется для событий, сигнализации, действий оператора и т.д.
     public class CloneSignal : ListSignal
     {
-        public CloneSignal(SourceConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
+        public CloneSignal(ClonerConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
             : base(connect, code, dataType, contextOut, inf) { }
+
+        //Соединение с источником
+        public ClonerConnect ClonerConnect
+        {
+            get { return (ClonerConnect)Connect; }
+        }
 
         //Id в таблице сигналов клона
         internal int IdInClone { get; set; }
@@ -28,7 +34,7 @@ namespace ProvidersLibrary
                                                      bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {
             bool isReal = DataType.LessOrEquals(DataType.Real);
-            var rec = isReal ? SourceConnect.CloneRec : SourceConnect.CloneStrRec;
+            var rec = isReal ? ClonerConnect.CloneRec : ClonerConnect.CloneStrRec;
             PutCloneRec(mom, rec, false, mom.Time);
             return 1;
         }

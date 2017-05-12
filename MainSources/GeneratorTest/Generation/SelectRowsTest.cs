@@ -2,7 +2,7 @@
 using System.Linq;
 using BaseLibrary;
 using BaseLibraryTest;
-using CommonTypes;
+using Calculation;
 using Generator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

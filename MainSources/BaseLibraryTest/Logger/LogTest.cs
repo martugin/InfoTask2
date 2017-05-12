@@ -30,7 +30,7 @@ namespace BaseLibraryTest
         public void CommLog()
         {
             RunHistory();
-            StartLog("Op0", "Source", "Par0");
+            StartLog("Op0", "Par0", "Source");
             Assert.IsNotNull(LogCommand);
             Assert.AreEqual(LogCommand, Command);
             Assert.IsNull(ProgressCommand);
@@ -88,7 +88,7 @@ namespace BaseLibraryTest
             Assert.AreEqual(3, Logs[0].Events.Count);
             Assert.AreEqual("", _indicator.TabloText1);
 
-            StartLog("Op1", "Source", "Par1").Run(() =>
+            StartLog("Op1", "Par1", "Source").Run(() =>
                 {
                     Assert.IsNotNull(LogCommand);
                     Assert.AreSame(LogCommand, Command);
@@ -129,12 +129,12 @@ namespace BaseLibraryTest
             Assert.IsNull(Logs[1].Results);
             Assert.AreEqual(2, Logs[1].Events.Count);
 
-            StartLog("Op2", "Source", "Par2");
+            StartLog("Op2", "Par2", "Source");
             Assert.IsNotNull(LogCommand);
             Assert.AreEqual("Op2", LogCommand.Name);
             Assert.AreEqual("Op2 (Source)", _indicator.TabloText1);
 
-            c = StartLog("Op3", "Source", "Par3").Run(() =>
+            c = StartLog("Op3", "Par3", "Source").Run(() =>
                 {
                     Assert.IsNotNull(LogCommand);
                     Assert.AreEqual("Op3", LogCommand.Name);
@@ -306,7 +306,7 @@ namespace BaseLibraryTest
             Assert.AreEqual(en, PeriodEnd);
             Assert.AreEqual("Mode", PeriodMode);
 
-            StartLog("Log0", "Source", "Log0Pars");
+            StartLog("Log0", "Log0Pars", "Source");
             Assert.AreEqual(1, Supers[0].Logs.Count);
             Assert.AreSame(ProgressCommand, LogCommand.Parent);
             Assert.AreEqual("Log0 (Source)", _indicator.TabloText1);
@@ -337,7 +337,7 @@ namespace BaseLibraryTest
             Assert.AreEqual("Предупреждение", Errors[1].Status);
             Assert.AreEqual(CommandQuality.Warning, CollectCommand.Quality);
 
-            StartLog("Log1", "Source2", "Log1Pars");
+            StartLog("Log1", "Log1Pars", "Source2");
             Assert.AreEqual(2, Logs.Count);
             Assert.AreSame(ProgressCommand, LogCommand.Parent);
             Assert.AreEqual("Log1 (Source2)", _indicator.TabloText1);

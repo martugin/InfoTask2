@@ -16,8 +16,8 @@ namespace ProvidersTest
             TestLib.CopyFile(@"Providers\Logika", "prolog.mdb", prefix + "Prolog.mdb");
             var factory = new ProvidersFactory();
             var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Logika", logger);
-            var prov = factory.CreateProvider("LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\" + prefix + "Prolog.mdb");
+            var con = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source, "SourceCon", "Logika");
+            var prov = factory.CreateProvider(logger, "LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\" + prefix + "Prolog.mdb");
             con.JoinProvider(prov);
             return con;
         }
@@ -32,11 +32,11 @@ namespace ProvidersTest
             Assert.AreEqual("Logika", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
-            Assert.AreEqual(con.Context, "Источник: SourceCon");
+            Assert.AreEqual("SourceCon", con.Context);
             Assert.IsNotNull(con.Provider);
             Assert.IsTrue(con.Provider is LogikaSource);
             Assert.AreEqual("LogikaSource", prov.Code);
-            Assert.AreEqual("Источник: SourceCon, LogikaSource", prov.Context);
+            Assert.AreEqual("SourceCon", prov.Context);
             Assert.AreEqual("DbFile=" + TestLib.TestRunDir + @"Providers\Logika\SignalsProlog.mdb", prov.Inf);
             Assert.AreSame(con, prov.ProviderConnect);
             Assert.IsNotNull(prov.Logger);
@@ -92,7 +92,7 @@ namespace ProvidersTest
             Assert.AreEqual(0, prov.Outs.Count);
             Assert.AreEqual(0, prov.OutsId.Count);
 
-            prov = (LogikaSource)new ProvidersFactory().CreateProvider("LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\НеТотProlog.mdb");
+            prov = (LogikaSource)new ProvidersFactory().CreateProvider(new Logger(), "LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\НеТотProlog.mdb");
             con.JoinProvider(prov);
             Assert.IsFalse(prov.IsConnected);
             prov.Connect();
@@ -235,8 +235,11 @@ namespace ProvidersTest
         public void Clone()
         {
             TestLib.CopyDir(@"Providers\Logika", "Clone");
-            var con = MakeProviders("Clone");
+            var factory = new ProvidersFactory();
+            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var con = new ClonerConnect(logger, factory);
             var cloneDir = TestLib.TestRunDir + @"Providers\Logika\Clone\";
+            SysTabl.PutValueS(cloneDir + "Clone.accdb", "SourceInf", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\CloneProlog.mdb");
             using (con.StartPeriod(D(0), D(24), "Single"))
                 con.MakeClone(cloneDir);
             TestLib.CompareClones(cloneDir + "Clone.accdb", cloneDir + "CorrectClone.accdb");

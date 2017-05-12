@@ -6,9 +6,9 @@ using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для RSourSignal
+    //Интерфейс для RLauncherSourceSignal
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface SourSignal
+    public interface LauncherSourceSignal
     {
         string Code { get; }
         string DataType { get; }
@@ -32,9 +32,9 @@ namespace ComLaunchers
     //Сигнал источника для внешнего использования через COM
     //Обертка над ListSourceSignal
     [ClassInterface(ClassInterfaceType.None)]
-    public class RSourSignal : SourSignal
+    public class RLauncherSourceSignal : LauncherSourceSignal
     {
-        internal RSourSignal(ListSignal signal)
+        internal RLauncherSourceSignal(ListSignal signal)
         {
             _signal = signal;
         }

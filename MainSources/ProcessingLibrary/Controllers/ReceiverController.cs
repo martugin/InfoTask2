@@ -7,8 +7,8 @@ namespace ProcessingLibrary
     //Постоянная передача данных в приемник в реальном времени
     public class ReceiverController : ProviderController
     {
-        public ReceiverController(ReceiverConnect connect)
-            : base(connect) { }
+        public ReceiverController(BaseProject project, ReceiverConnect connect)
+            : base(project, connect) { }
 
         //Соединение 
         public ReceiverConnect ReceiverConnect { get { return (ReceiverConnect)Connect; } }
