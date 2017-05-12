@@ -12,9 +12,9 @@ namespace AppLibrary
             : base(app, projectDir)
         {
             SourceConnect = sourceConnect;
-            Sources.Add(new SchemeConnect(ProviderType.Source, sourceConnect.Code, sourceConnect.Complect));
+            Sources.Add(sourceConnect.Code, new SchemeConnect(ProviderType.Source, sourceConnect.Code, sourceConnect.Complect));
             ArchiveConnect = archiveConnect;
-            Sources.Add(new SchemeConnect(ProviderType.Receiver, archiveConnect.Code, archiveConnect.Complect));
+            Receivers.Add(archiveConnect.Code, new SchemeConnect(ProviderType.Receiver, archiveConnect.Code, archiveConnect.Complect));
             Threads.Add(1, ReadThread = new RealTimeThread(this, 1, "Source"));
             Threads.Add(2, ArchiveThread = new RealTimeThread(this, 2, "Archive"));
             Threads.Add(3, ReturnThread = new RealTimeThread(this, 1, "Return"));

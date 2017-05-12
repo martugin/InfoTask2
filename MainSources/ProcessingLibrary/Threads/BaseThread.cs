@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BaseLibrary;
 using Calculation;
+using CommonTypes;
 using ProvidersLibrary;
 
 namespace ProcessingLibrary
@@ -33,7 +35,13 @@ namespace ProcessingLibrary
         //Словарь модулей
         private readonly DicS<CalcModule> _modules = new DicS<CalcModule>();
         public DicS<CalcModule> Modules { get { return _modules; } }
-
+        //Список модулей в порядке обсчета
+        private readonly List<CalcModule> _modulesOrder = new List<CalcModule>();
+        public List<CalcModule> ModulesOrder { get { return _modulesOrder; } }
+        
+        //Словарь всех соединений
+        private readonly DicS<ProviderConnect> _connects = new DicS<ProviderConnect>();
+        public DicS<ProviderConnect> Connects { get { return _connects; } }
         //Словарь соединений источников
         private readonly DicS<SourceConnect> _sources = new DicS<SourceConnect>();
         public DicS<SourceConnect> Sources { get { return _sources; } }
@@ -42,11 +50,40 @@ namespace ProcessingLibrary
         public DicS<ReceiverConnect> Receivers { get { return _receivers; } }
         
         //Очистить списки модулей и соединений
-        public virtual void ClearConnects()
+        public void ClearModules()
         {
             _modules.Clear();
+            _connects.Clear();
             _sources.Clear();
             _receivers.Clear();
+        }
+
+        //Добавить модуль в поток
+        public CalcModule AddModule(string code)
+        {
+            var m = new CalcModule(Project, code);
+            Modules.Add(code, m);
+            var sm = Project.Modules[code];
+            foreach (var ccode in sm.LinkedConnectsCodes.Values)
+            {
+                var con = Connects[ccode];
+                if (!Connects.ContainsKey(ccode))
+                {
+                    var scon = Project.Connects[ccode];
+                    con = Project.ProvidersFactory.CreateConnect(Project.App, scon.Type, scon.Code, scon.Complect, Project.Code);
+                    con = Connects.Add(code, con);
+                    con.JoinProvider(Project.ProvidersFactory.CreateProvider(Project.App, scon.ProviderCode, scon.ProviderInf, Project.Code));
+                }
+                if (con.Type == ProviderType.Source)
+                    m.LinkedSources.Add(Sources.Add(code, (SourceConnect)con));
+                if (con.Type == ProviderType.Receiver)
+                    m.LinkedReceivers.Add(Receivers.Add(code, (ReceiverConnect)con));
+            }
+
+            foreach (var mcode in sm.LinkedModulesCodes.Values)
+                if (!Modules.ContainsKey(mcode))
+                    m.LinkedModules.Add(AddModule(mcode));
+            return m;
         }
 
         //Пришла команда остановить процесс

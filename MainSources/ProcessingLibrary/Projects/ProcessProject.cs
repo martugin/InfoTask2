@@ -1,5 +1,6 @@
 ﻿using BaseLibrary;
 using Calculation;
+using ProvidersLibrary;
 
 namespace ProcessingLibrary
 {
@@ -8,6 +9,12 @@ namespace ProcessingLibrary
     {
         protected ProcessProject(ProcessApp app, string projectDir) 
             : base(app, projectDir) { }
+
+        //Фабрика провайдеров
+        public ProvidersFactory ProvidersFactory
+        {
+            get { return ((ProcessApp)App).ProvidersFactory; }
+        }
 
         //Потоки расчета
         private readonly DicI<BaseThread> _threads = new DicI<BaseThread>();

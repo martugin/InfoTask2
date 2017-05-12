@@ -6,7 +6,7 @@ namespace Calculation
 {
     public class SchemeModule : DataModule, ISchemeConnect
     {
-        protected SchemeModule(SchemeProject project, string code) 
+        public SchemeModule(SchemeProject project, string code) 
             : base(project, code)
         {
             var elem = XDocument.Load(Dir + "ModuleProperties.xml").Element("ModuleProperties");

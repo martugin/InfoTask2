@@ -5,15 +5,16 @@ namespace Calculation
 {
     public class SchemeConnect : ISchemeConnect
     {
-        public SchemeConnect(ProviderType type, string code, string complect)
+        public SchemeConnect(ProviderType type, string code, string complect, string description = "")
         {
             Type = type;
             Code = code;
             Complect = complect;
+            Description = description;
         }
 
         //Загрузить настройки провайдеров
-        public void LoadProviders(string providerCode, string providerInf, string reserveCode = null, string reserveInf = null)
+        public void JoinProviders(string providerCode, string providerInf, string reserveCode = null, string reserveInf = null)
         {
             ProviderCode = providerCode;
             ProviderInf = providerInf;
@@ -27,6 +28,9 @@ namespace Calculation
         public ProviderType Type { get; private set; }
         //Комплект провайдеров
         public string Complect { get; protected set; }
+        //Описание
+        public string Description { get; private set; }
+
         //Код и настройки основного провайдера
         public string ProviderCode { get; private set; }
         public string ProviderInf { get; private set; }
