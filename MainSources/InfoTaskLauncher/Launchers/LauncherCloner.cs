@@ -6,17 +6,10 @@ using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для RLauncherCloner
+    //Интерфейс для LauncherCloner
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
     public interface ILauncherCloner
     {
-        //Код соединения
-        string Name { get; }
-        //Комплект провайдеров
-        string Complect { get; }
-        //Присвоение основного и резервного провайдера 
-        void JoinProvider(string mainCode, string mainInf, string reserveCode = null, string reserveInf = null);
-
         //Получение диапазона времени источника
         void GetTime();
 
@@ -44,23 +37,6 @@ namespace ComLaunchers
         internal ClonerConnect Connect { get; private set; }
         //Ссылка на приложение
         private App App { get { return (App)Connect.Logger; } }
-        
-        //Код соединения
-        public string Name { get { return Connect.Code; } }
-        //Комплект провайдеров
-        public string Complect { get { return Connect.Complect; } }
-
-        //Присвоение основного и резервного провайдера 
-        public void JoinProvider(string mainCode, string mainInf, //Код и настройки основного провайдера
-                                             string reserveCode = null, string reserveInf = null) //Код и настройки резервного провайдера
-        {
-            App.RunSyncCommand(() =>
-            {
-                var main = App.ProvidersFactory.CreateProvider(App, mainCode, mainInf);
-                var reserve = reserveCode == null ? null : App.ProvidersFactory.CreateProvider(App, reserveCode, reserveInf);
-                Connect.JoinProvider(main, reserve);
-            });
-        }
 
         //Получение диапазона времени источника
         public void GetTime()
