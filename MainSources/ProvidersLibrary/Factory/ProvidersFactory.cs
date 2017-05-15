@@ -32,6 +32,9 @@ namespace ProvidersLibrary
             }
         }
 
+        //Приложение
+        private BaseApp _app;
+
         //Список всех провайдеров из Config
         private readonly DicS<ProviderConfig> _providerConfigs = new DicS<ProviderConfig>();
         public DicS<ProviderConfig> ProviderConfigs { get { return _providerConfigs; } }

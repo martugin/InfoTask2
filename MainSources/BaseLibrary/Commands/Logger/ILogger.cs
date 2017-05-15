@@ -37,6 +37,10 @@ namespace BaseLibrary
         void RunSyncCommand(Action action);
         //То же самое. только с запуском вложенной PeriodCommand
         void RunSyncCommand(DateTime beg, DateTime en, Action action);
+        //Запускает команду Collect асинхронно
+        void RunAsyncCommand(Action action);
+        //То же самое. только с запуском вложенной PeriodCommand
+        void RunAsyncCommand(DateTime beg, DateTime en, Action action);
 
         //Запись результатов в команду Collect
         void AddCollectResult(string result);

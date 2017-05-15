@@ -63,6 +63,15 @@ namespace BaseLibrary
         {
             Logger.RunSyncCommand(beg, en, action);
         }
+        //Запуск асинхронной команды Collect
+        public void RunAsyncCommand(Action action)
+        {
+            Logger.RunAsyncCommand(action);
+        }
+        public void RunAsyncCommand(DateTime beg, DateTime en, Action action)
+        {
+            Logger.RunAsyncCommand(beg, en, action);
+        }
 
         //Запись результатов в команду Collect
         public void AddCollectResult(string result)

@@ -6,9 +6,9 @@ using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для RLauncherReceiverConnect
+    //Интерфейс для LauncherReceiverConnect
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface LauncherReceiverConnect
+    public interface ILauncherReceiverConnect
     {
         //Код соединения
         string Name { get; }
@@ -37,9 +37,9 @@ namespace ComLaunchers
     //-----------------------------------------------------------------------------------------------------
     //Соединение с приемником для взаимодействия через COM
     [ClassInterface(ClassInterfaceType.None)]
-    public class RLauncherReceiverConnect : LauncherReceiverConnect
+    public class LauncherReceiverConnect : ILauncherReceiverConnect
     {
-        internal RLauncherReceiverConnect(ReceiverConnect connect, ProvidersFactory factory)
+        internal LauncherReceiverConnect(ReceiverConnect connect, ProvidersFactory factory)
         {
             Connect = connect;
             _factory = factory;

@@ -1,7 +1,9 @@
 ﻿using System;
+using AppLibrary;
 using BaseLibrary;
 using BaseLibraryTest;
 using CommonTypes;
+using InfoTaskLauncherTest;
 using Logika;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProvidersLibrary;
@@ -235,9 +237,9 @@ namespace ProvidersTest
         public void Clone()
         {
             TestLib.CopyDir(@"Providers\Logika", "Clone");
-            var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = new ClonerConnect(logger, factory);
+            var app = new TestApp("Test");
+            var con = new ClonerConnect(app);
+            con.JoinProvider(app.ProvidersFactory.CreateProvider(app, "LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\CloneProlog.mdb"));
             var cloneDir = TestLib.TestRunDir + @"Providers\Logika\Clone\";
             SysTabl.PutValueS(cloneDir + "Clone.accdb", "SourceInf", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\CloneProlog.mdb");
             using (con.StartPeriod(D(0), D(24), "Single"))

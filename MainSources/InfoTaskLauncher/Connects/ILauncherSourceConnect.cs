@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using AppLibrary;
 using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для RLauncherSourceConnect
+    //Интерфейс для LauncherSourceConnect
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface LauncherSourceConnect
+    public interface ILauncherSourceConnect
     {
         //Код соединения
         string Name { get; }
@@ -51,16 +52,16 @@ namespace ComLaunchers
     //-----------------------------------------------------------------------------------------------------
     //Соединение с источником для взаимодействия через COM
     [ClassInterface(ClassInterfaceType.None)]
-    public class RLauncherSourceConnect : LauncherSourceConnect
+    public class LauncherSourceConnect : ILauncherSourceConnect
     {
-        internal RLauncherSourceConnect(SourceConnect connect, ProvidersFactory factory)
+        internal LauncherSourceConnect(ClonerConnect connect, ProvidersFactory factory)
         {
             Connect = connect;
             _factory = factory;
         }
            
         //Ссылка на соединение
-        internal SourceConnect Connect { get; private set; }
+        internal ClonerConnect Connect { get; private set; }
         //Фабрика провайдеров
         private readonly ProvidersFactory _factory;
         //Ссылка на логгер

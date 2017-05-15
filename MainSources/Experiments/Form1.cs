@@ -43,7 +43,7 @@ namespace Experiments
             var it = new TestItLauncher();
             it.Initialize("Experiments");
             it.Finished += OnFinished;
-            it.MakeCloneSync(ItStatic.InfoTaskDir() + @"LocalData\RunItLauncher\Clone");
+            //it.MakeCloneSync(ItStatic.InfoTaskDir() + @"LocalData\RunItLauncher\Clone");
         }
 
         private void OnFinished()

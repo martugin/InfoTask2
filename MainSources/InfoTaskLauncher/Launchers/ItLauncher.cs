@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using AppLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace ComLaunchers
 {
@@ -34,10 +35,8 @@ namespace ComLaunchers
         //Загрузка проекта
         ILauncherProject LoadProject(string projectDir);
 
-        //Создание клона синхронно
-        void MakeCloneSync(string cloneDir); //Каталог клона
-        //Создание клона асинхронно
-        void MakeCloneAsync(string cloneDir); //Каталог клона
+         //Создание соединения-клонера
+        ILauncherCloner LoadCloner(string providerCode, string providerInf); //Код и настройки провайдера
 
         //Переопределение команд логгера
         #region Logger
@@ -165,23 +164,36 @@ namespace ComLaunchers
             get { return App.IsActivated; }
         }
 
+        //Команды для коммуникатора
+        #region Comm
+
+        //Создание соединения-клонера
+        public ILauncherCloner LoadCloner(string providerCode, string providerInf) //Код и настройки провайдера
+        {
+            var con = new ClonerConnect(App);
+            con.JoinProvider(App.ProvidersFactory.CreateProvider(App, providerCode, providerInf));
+            return new LauncherCloner(con);
+        }
+
+        #endregion
+
+        //Команды для калибратора
+        #region Calibrator
+
+        
+
+        #endregion
+
+        //Команды для конструктора, анализатора
+        #region App
+
         //Загрузка проекта
         public ILauncherProject LoadProject(string projectDir) //Каталог проекта
         {
             return new LauncherProject(new AppProject(App, projectDir));
         }
-
-        //Создание клона синхронно
-        public void MakeCloneSync(string cloneDir) //Каталог клона
-        {
-            App.MakeCloneSync(cloneDir);
-        }
-
-        //Создание клона асинхронно
-        public void MakeCloneAsync(string cloneDir) //Каталог клона
-        {
-            App.MakeCloneAsync(cloneDir);
-        }
+        
+        #endregion
 
         //Работа с логгером
         #region Logger
