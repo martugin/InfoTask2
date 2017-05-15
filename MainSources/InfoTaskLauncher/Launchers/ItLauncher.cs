@@ -170,8 +170,22 @@ namespace ComLaunchers
         //Создание соединения-клонера
         public ILauncherCloner LoadCloner(string providerCode, string providerInf) //Код и настройки провайдера
         {
-            var con = new ClonerConnect(App);
-            con.JoinProvider(App.ProvidersFactory.CreateProvider(App, providerCode, providerInf));
+            ClonerConnect con = null;
+            App.RunSyncCommand(() =>
+            {
+                using (App.StartLog("Открытие соединения с источником"))
+                {
+                    try
+                    {
+                        con = new ClonerConnect(App);
+                        con.JoinProvider(App.ProvidersFactory.CreateProvider(App, providerCode, providerInf));
+                    }
+                    catch (Exception ex)
+                    {
+                        App.AddError("Ошибка присоединения провайдера", ex);
+                    }
+                }
+            });
             return new LauncherCloner(con);
         }
 

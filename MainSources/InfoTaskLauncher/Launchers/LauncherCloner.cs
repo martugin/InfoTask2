@@ -41,7 +41,11 @@ namespace ComLaunchers
         //Получение диапазона времени источника
         public void GetTime()
         {
-            App.RunSyncCommand(() => { _interval = Connect.GetTime(); });
+            App.RunSyncCommand(() =>
+            {
+                using (Connect.StartLog("Определение диапазона источника"))
+                    _interval = Connect.GetTime();
+            });
         }
         private TimeInterval _interval = new TimeInterval();
 

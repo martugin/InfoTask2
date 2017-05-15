@@ -9,5 +9,13 @@ namespace AppLibrary
     {
         public App(string code) 
             : base(code, new AppIndicator()) { }
+
+        //Создание соединения-клонера и присоединение провайдера
+        public ClonerConnect LoadCloner(string providerCode, string providerInf)
+        {
+            var con = new ClonerConnect(this);
+            con.JoinProvider(ProvidersFactory.CreateProvider(this, providerCode, providerInf));
+            return con;
+        }
     }
 }
