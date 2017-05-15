@@ -34,8 +34,10 @@ namespace ComLaunchers
         //Загрузка проекта
         ILauncherProject LoadProject(string projectDir);
 
-        //Создание клона
+        //Создание клона синхронно
         void MakeCloneSync(string cloneDir); //Каталог клона
+        //Создание клона асинхронно
+        void MakeCloneAsync(string cloneDir); //Каталог клона
 
         //Переопределение команд логгера
         #region Logger
