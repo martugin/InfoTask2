@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Xml.Linq;
 using BaseLibrary;
 using CommonTypes;
@@ -14,14 +12,22 @@ namespace Calculation
             : base(app)
         {
             if (projectDir.IsEmpty()) return;
-            Dir = projectDir.EndDir();
-            ReadProjectData();
-            ReadLocalData();
+            try
+            {
+                Dir = projectDir.EndDir();
+                ReadProjectData();
+                ReadLocalData();
+            }
+            catch (BreakException ex)
+            {
+                AddError("Ошибка при загрузке схемы проекта", ex);
+            }
         }
 
         //Загрузка данных из проекта
         private void ReadProjectData()
         {
+            AddEvent("Загрузка схемы проекта");
             var elemRoot = XDocument.Load(Dir + "ProjectProperties.xml").Element("ProjectProperties");
             Initialize(elemRoot.GetAttr("ProjectCode"), elemRoot.GetAttr("ProjectName"));
             foreach (var elem in elemRoot.Element("Connects").Elements())
@@ -41,6 +47,7 @@ namespace Calculation
         //Загрузка настроек из LocalData
         private void ReadLocalData()
         {
+            AddEvent("Загрузка настроек проекта");
             var elemRoot = XDocument.Load(LocalDir + "ConnectProperties.xml").Element("ConnectProperties");
             foreach (var elem in elemRoot.Elements())
             {
@@ -51,10 +58,13 @@ namespace Calculation
                     var el = con.Type == ProviderType.Source ? elem.Element("SourceProvider")
                              : (con.Type == ProviderType.Receiver ? elem.Element("ReceiverProvider") 
                              : null);
-                    var prInf = "";
-                    foreach (var prop in el.Elements())
-                        prInf += prop.GetName() + "=" + prop.GetAttr("ProvValue") + ";";
-                    con.JoinProviders(el.GetAttr("Provider"), prInf);
+                    if (el != null)
+                    {
+                        var prInf = "";
+                        foreach (var prop in el.Elements())
+                            prInf += prop.GetName() + "=" + prop.GetAttr("ProvValue") + ";";
+                        con.JoinProviders(el.GetAttr("Provider"), prInf);    
+                    }
                 }
             }
         }

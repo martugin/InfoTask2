@@ -27,5 +27,12 @@ namespace ProcessingLibrary
         {
             return _signals.Add(signal.Code, new ProxySignal(signal));
         }
+
+        //Получить значения в прокси
+        public void GetValues()
+        {
+            foreach (var signal in _signals.Values)
+                signal.GetValue();
+        }
     }
 }

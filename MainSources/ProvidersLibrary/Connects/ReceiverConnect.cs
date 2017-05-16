@@ -43,7 +43,7 @@ namespace ProvidersLibrary
         }
 
         //Запись значений в приемник
-        public void WriteValues() 
+        public void WriteValues()
         {
             if (PeriodIsUndefined()) return;
             if (Start(0, 80).Run(PutValues).IsSuccess) return;

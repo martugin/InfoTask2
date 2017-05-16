@@ -32,7 +32,7 @@ namespace Tablik
         {
             return _modules.Add(code, new TablikModule(this, code));
         }
-        //Очистить список молулей
+        //Очистить список модулей
         public void ClearModules()
         {
             _modules.Clear();

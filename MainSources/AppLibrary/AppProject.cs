@@ -1,5 +1,4 @@
-﻿using Calculation;
-using ProcessingLibrary;
+﻿using ProcessingLibrary;
 using Tablik;
 
 namespace AppLibrary
@@ -8,7 +7,11 @@ namespace AppLibrary
     public class AppProject : ProcessProject
     {
         public AppProject(App app, string projectDir)
-            : base(app, projectDir) { }
+            : base(app, projectDir)
+        {
+            Thread = new BaseThread(this, 1, "Поток");
+            Threads.Add(1, Thread);
+        }
 
         //Проект Таблика
         private TablikProject _tablik;
@@ -16,5 +19,8 @@ namespace AppLibrary
         {
             get { return _tablik = _tablik ?? new TablikProject(this); }
         }
+
+        //Поток расчетов
+        public BaseThread Thread { get; private set; }
     }
 }

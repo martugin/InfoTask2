@@ -157,8 +157,9 @@ namespace ProvidersLibrary
         //Добавить объект содержащий заданный сигнал
         protected abstract ProviderOut AddOut(ProviderSignal sig);
 
+        
         //Конец предыдущего периода обработки
-        internal DateTime PrevPeriodEnd { get; set; }
+        internal DateTime PrevProcessEnd { get; set; }
 
         //Очистка ресурсов
         public virtual void Dispose()

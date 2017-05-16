@@ -53,8 +53,9 @@
     <Compile Include="Proxy\ProxyConnect.cs" />
     <Compile Include="Proxy\ProxySignal.cs" />
     <Compile Include="Threads\BaseThread.cs" />
-    <Compile Include="Threads\CalcThread.cs" />
+    <Compile Include="Threads\PeriodicThread.cs" />
     <Compile Include="Threads\RealTimeThread.cs" />
+    <Compile Include="Threads\SingleThread.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">

@@ -1,4 +1,5 @@
-﻿using System.Management.Instrumentation;
+﻿using System;
+using System.Management.Instrumentation;
 using BaseLibrary;
 using CommonTypes;
 
@@ -93,7 +94,7 @@ namespace ProvidersLibrary
         }
 
         //Очистка значений сигналов
-        internal void ClearSignalsValues(bool clearBegin)
+        public void ClearSignalsValues(bool clearBegin)
         {
             AddEvent("Очистка значений сигналов");
             foreach (var sig in _readingSignals.Values)

@@ -100,8 +100,8 @@ namespace BaseLibrary
         }
 
         //Начало, конец и режим периода обработки
-        public DateTime PeriodBegin { get { return Logger.PeriodBegin; } }
-        public DateTime PeriodEnd { get { return Logger.PeriodEnd; } }
+        public virtual DateTime PeriodBegin { get { return Logger.PeriodBegin; } }
+        public virtual DateTime PeriodEnd { get { return Logger.PeriodEnd; } }
         public string PeriodMode { get { return Logger.PeriodMode; } }
 
         //Запуск команды логирования в SuperHistory и отображения индикатора
