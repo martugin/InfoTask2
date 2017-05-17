@@ -9,7 +9,7 @@ namespace ProcessingLibrary
         protected ProcessProject(ProcessApp app, string projectDir) 
             : base(app, projectDir) { }
 
-        //Потоки расчета
+        //Потоки
         private readonly DicI<BaseThread> _threads = new DicI<BaseThread>();
         public DicI<BaseThread> Threads { get { return _threads; } }
     }

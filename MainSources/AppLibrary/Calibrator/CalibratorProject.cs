@@ -8,16 +8,13 @@ namespace AppLibrary
     //Проект наладчика
     public class CalibratorProject : AppProject
     {
-        public CalibratorProject(App app, string projectDir, SourceConnect sourceConnect, ReceiverConnect archiveConnect)
+        public CalibratorProject(App app, string projectDir)
             : base(app, projectDir)
         {
             SourceConnect = sourceConnect;
             Sources.Add(sourceConnect.Code, new SchemeConnect(ProviderType.Source, sourceConnect.Code, sourceConnect.Complect));
             ArchiveConnect = archiveConnect;
             Receivers.Add(archiveConnect.Code, new SchemeConnect(ProviderType.Receiver, archiveConnect.Code, archiveConnect.Complect));
-            Threads.Add(1, ReadThread = new RealTimeThread(this, 1, "Source"));
-            Threads.Add(2, ArchiveThread = new RealTimeThread(this, 2, "Archive"));
-            Threads.Add(3, ReturnThread = new RealTimeThread(this, 1, "Return"));
         }
 
         //Поток чтения данных
@@ -30,5 +27,16 @@ namespace AppLibrary
         //Соединения с источником и архивом
         public SourceConnect SourceConnect { get; private set; }
         public ReceiverConnect ArchiveConnect { get; private set; }
+        //Прокси для возвращения значений
+        public ProxyConnect ReturnConnect { get; private set; }
+
+        //Открытие потоков
+        public void OpenThreads(double periodSeconds, double lateSeconds)
+        {
+            var t1 = OpenRealTimeThread(1, "Source", periodSeconds, lateSeconds);
+            t1.Sources.Add("Source", new SourceConnect(t1.Logger, "Source", So));
+            OpenRealTimeThread(2, "Archive", periodSeconds);
+            OpenRealTimeThread(3, "Return", periodSeconds);
+        }
     }
 }

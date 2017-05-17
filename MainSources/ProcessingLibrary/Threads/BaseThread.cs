@@ -12,7 +12,7 @@ namespace ProcessingLibrary
     //Сотояния потока
     public enum ThreadState
     {
-        Sopped, //Остановлен
+        Stopped, //Остановлен
         Run, //Выполняется обработка
         Finishing, //Завершение выполнения (кнопка Стоп)
         Breaking //Прерывание выполнения
@@ -25,7 +25,7 @@ namespace ProcessingLibrary
         protected BaseThread(ProcessProject project, int id, string name, IIndicator indicator, LoggerStability stability)
             : base(new Logger(project.App.CreateHistory(project.Code + id), indicator, stability), project.Context, project.ProgressContext)
         {
-            State = ThreadState.Sopped;
+            State = ThreadState.Stopped;
             Project = project;
             Id = id;
             Name = name;
@@ -34,7 +34,7 @@ namespace ProcessingLibrary
         //Проект
         public ProcessProject Project { get; private set; }
         //Ссылка на фабрику провайдеров
-        public ProvidersFactory ProvidersFactory { get { return ((ProcessApp) Project.App).ProvidersFactory; }}
+        public ProvidersFactory ProvidersFactory { get { return ((ProcessApp)Project.App).ProvidersFactory; }}
         
         //Номер потока
         public int Id { get; private set; }
@@ -104,80 +104,133 @@ namespace ProcessingLibrary
         //Состояние потока
         protected ThreadState State { get; set; }
         protected readonly object StateLocker = new object();
+        
+        //Период, который обрабатывается или готовится обрабатываться
+        public DateTime ThreadPeriodBegin { get; set; }
+        public DateTime ThreadPeriodEnd { get; set; }
+        //Время запуска следующего цикла
+        protected DateTime NextPeriodStart { get; set; }
+        //Время остановки цикла расчета
+        public DateTime ThreadFinishTime { get; private set; }
 
         //Запуск процесса
-        public void StartProcess()
+        public void StartProcess(DateTime startTime, //Начало первого периода обработки
+                                             DateTime? finishTime = null) //Окончание последнего периода, если не задано, то бесконечно
         {
-            lock (StateLocker) 
-                State = ThreadState.Run;
-            new Task(Run).Start();
+            ThreadPeriodBegin = startTime;
+            ThreadFinishTime = finishTime ?? Static.MaxDate;
+            bool b = false;
+            lock (StateLocker)
+            {
+                if (State == ThreadState.Finishing)
+                    State = ThreadState.Run;
+                if (State == ThreadState.Stopped)
+                {
+                    State = ThreadState.Run;
+                    b = true;
+                }
+            }
+            if (b) new Task(RunProcess).Start();
         }
 
         //Завершение процесса 
         public void FinishProcess()
         {
             lock (StateLocker)
-                State = ThreadState.Finishing;
+                if (State == ThreadState.Run)
+                    State = ThreadState.Finishing;
         }
 
         //Прерывание процесса
         public void BreakProcess()
         {
             lock (StateLocker)
-                State = ThreadState.Breaking;
-            Logger.Break();
+                if (State != ThreadState.Stopped)
+                {
+                    State = ThreadState.Breaking;
+                    Logger.Break();    
+                }
         }
 
-        //Команда, выполняемая в потоке
-        protected abstract void Run();
+        //Проверка на наличие команды Finishing
+        protected bool CheckFinishing()
+        {
+            lock (StateLocker)
+                if (State == ThreadState.Finishing)
+                {
+                    State = ThreadState.Stopped;
+                    return true;
+                }
+            return false;
+        }
 
-        //Обрамление для запуска основных команд потока
-        private void RunThreadCommand(Action action)
+        //Вызвать событие по завершению процесса
+        protected void MakeStopped()
+        {
+            lock (StateLocker)
+                State = ThreadState.Stopped;
+            //Todo StopEvent для клиента
+        }
+
+        //Весь процесс обработки
+        protected virtual void RunProcess()
         {
             try
             {
-                action();
+                Prepare();
+                while (!CheckFinishing())
+                {
+                    Waiting();
+                    Cycle();
+                    if (!NextPeriod()) break;
+                }
+                ClearMemory();
+                MakeStopped();
             }
             catch (OutOfMemoryException)
             {
-                lock (StateLocker)
-                    State = ThreadState.Sopped;
+                MakeStopped();
+                //Todo Restart
                 throw;
             }
             catch (BreakException)
             {
-                lock (StateLocker)
-                    State = ThreadState.Sopped;
+                MakeStopped();
                 throw;
             }
+            catch (Exception ex)
+            {
+                AddError("Ошибка при работе потока", ex);
+            }
         }
-        //Запуск основных команд потока
-        protected void RunPrepare()
+        
+        //Подготовка потока
+        #region Prepare
+        protected abstract void Prepare();
+
+        //Очистка памяти после завершения всех циклов обработки
+        protected virtual void ClearMemory()
         {
-            using ( StartProgress("Подготовка потока"))
-                RunThreadCommand(Prepare);
-        }
-        protected void RunCycle()
-        {
-            RunThreadCommand(Cycle);
-        }
-        protected void RunWaiting()
-        {
-            RunThreadCommand(Waiting);
+            
         }
 
-        //Выполение одного цикла 
-        protected void Cycle()
+        //Загрузка модулей
+        protected virtual void LoadModules()
         {
-            using (Start(0, 40)) 
-                ReadSources();
-            using (Start(40, 70))
-                ClaculateModules();
-            using (Start(70, 90))
-                WriteReceivers();
-            using (Start(90, 100))
-                ClearValues();
+            foreach (var module in ModulesOrder)
+                using (StartLog(Procent, Procent + 100.0 / ModulesOrder.Count, "Загрузка модуля", "", module.Code))
+                    module.Load();
         }
+        #endregion
+
+        //Ожидание
+        protected abstract void Waiting();
+        //Определение следующего периода обработки, возвращает false, если следующй обработки не будет
+        protected virtual bool NextPeriod() { return false; }
+
+        //Цикл обработки
+        #region Cycle
+        protected abstract void Cycle();
 
         //Чтение из источников
         protected virtual void ReadSources()
@@ -199,8 +252,13 @@ namespace ProcessingLibrary
         protected virtual void WriteReceivers()
         {
             foreach (var receiver in Receivers.Values)
-                using (StartLog(Procent, Procent + 70.0 / Receivers.Count, "Запись в приемник", "", receiver.Code))
+                using (StartLog(Procent, Procent + 100.0 / Receivers.Count, "Запись в приемник", "", receiver.Code))
                     receiver.WriteValues();
+        }
+
+        //Запись в прокси
+        protected virtual void WriteProxies()
+        {
             foreach (var proxy in Proxies.Values)
                 using (StartLog(Procent, Procent + 30.0 / Proxies.Count, "Запись в прокси", "", proxy.Code))
                     proxy.GetValues();
@@ -213,17 +271,6 @@ namespace ProcessingLibrary
                 foreach (var source in Sources.Values)
                     source.ClearSignalsValues(false);
         }
-
-        //Ожидание следующего цикла
-        protected virtual void Waiting()
-        {
-
-        }
-
-        //Подготовка потока
-        protected virtual void Prepare()
-        {
-
-        }
+        #endregion
     }
 }
