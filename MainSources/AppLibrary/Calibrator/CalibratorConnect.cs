@@ -1,4 +1,5 @@
-﻿using ProcessingLibrary;
+﻿using CommonTypes;
+using ProcessingLibrary;
 using ProvidersLibrary;
 
 namespace AppLibrary
@@ -17,10 +18,18 @@ namespace AppLibrary
         public SourceConnect SourceConnect { get; private set; }
         public ProxyConnect ProxyConnect { get; private set; }
 
-        //Добавить сигнал
-        public ProxySignal AddSignal()
+        //Очистить список сигналов
+        public void ClearSignals()
         {
-            
+            ProxyConnect.ClearSignals();
+            SourceConnect.ClearSignals();
+        }
+
+        //Добавить сигнал
+        public ProxySignal AddSignal(string fullCode, DataType dataType, SignalType signalType, string infObject, string infOut, string infProp)
+        {
+            var sig = SourceConnect.AddSignal(fullCode, dataType, signalType, infObject, infOut, infProp);
+            return ProxyConnect.AddSignal(new ProxySignal(sig));
         }
     }
 }

@@ -11,10 +11,8 @@ namespace AppLibrary
         public CalibratorProject(App app, string projectDir)
             : base(app, projectDir)
         {
-            SourceConnect = sourceConnect;
-            Sources.Add(sourceConnect.Code, new SchemeConnect(ProviderType.Source, sourceConnect.Code, sourceConnect.Complect));
-            ArchiveConnect = archiveConnect;
-            Receivers.Add(archiveConnect.Code, new SchemeConnect(ProviderType.Receiver, archiveConnect.Code, archiveConnect.Complect));
+            foreach (var s in SchemeSources.Values)
+                
         }
 
         //Поток чтения данных
@@ -34,7 +32,7 @@ namespace AppLibrary
         public void OpenThreads(double periodSeconds, double lateSeconds)
         {
             var t1 = OpenRealTimeThread(1, "Source", periodSeconds, lateSeconds);
-            t1.Sources.Add("Source", new SourceConnect(t1.Logger, "Source", So));
+            
             OpenRealTimeThread(2, "Archive", periodSeconds);
             OpenRealTimeThread(3, "Return", periodSeconds);
         }

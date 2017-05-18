@@ -6,33 +6,57 @@ namespace ProcessingLibrary
     //Прокси-соединение
     public class ProxyConnect : IWritingConnect, IReadingConnect
     {
-        public ProxyConnect(IConnect connect) //Оборачиваемое соединение
+        public ProxyConnect(string code)
         {
-            _connect = connect;
+            Code = code;
         }
 
-        //Соединение
-        private readonly IConnect _connect;
         //Код
-        public string Code { get { return _connect.Code; } }
+        public string Code { get; private set; }
 
+        //Словари связанных входящих и исходящих соединений
+        private readonly DicS<IReadingConnect> _inConnects = new DicS<IReadingConnect>();
+        public DicS<IReadingConnect> InConnects { get { return _inConnects; } }
+        private readonly DicS<IReadingConnect> _outConnects = new DicS<IReadingConnect>();
+        public DicS<IReadingConnect> OutConnects { get { return _outConnects; } }
+        
         //Словарь сигналов
-        private readonly DicS<ProxySignal> _signals = new DicS<ProxySignal>();
+        protected readonly DicS<ProxySignal> Signals = new DicS<ProxySignal>();
         //Сигналы для внешного пользования
-        public IDicSForRead<IReadSignal> ReadingSignals { get { return _signals; } }
-        public IDicSForRead<IWriteSignal> WritingSignals { get { return _signals; } }
+        public IDicSForRead<IReadSignal> ReadingSignals { get { return Signals; } }
+        public IDicSForRead<IWriteSignal> WritingSignals { get { return Signals; } }
+
+        //Объект для блокировки значений
+        protected readonly object ValuesLocker = new object();
+
+        //Очистить список сигналов
+        public void ClearSignals()
+        {
+            lock (ValuesLocker)
+                Signals.Clear();
+        }
 
         //Добавить сигнал
-        public ProxySignal AddSignal(ISignal signal) //Оборачиваемый сигнал
+        public virtual ProxySignal AddSignal(IReadingConnect connect, IReadSignal signal) //Оборачиваемый сигнал
         {
-            return _signals.Add(signal.Code, new ProxySignal(signal));
+            lock (ValuesLocker)
+                return Signals.Add(signal.Code, new ProxySignal(signal));
+        }
+        
+        //Получить значения в прокси
+        public virtual void WriteValues()
+        {
+            lock (ValuesLocker)
+                foreach (var signal in Signals.Values)
+                    signal.WriteValue();
         }
 
-        //Получить значения в прокси
-        public void GetValues()
+        //Получить значения из прокси
+        public virtual void ReadValues()
         {
-            foreach (var signal in _signals.Values)
-                signal.GetValue();
+            lock (ValuesLocker)
+                foreach (var signal in Signals.Values)
+                    signal.ReadValue();
         }
     }
 }

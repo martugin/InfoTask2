@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using BaseLibrary;
 using Calculation;
@@ -75,13 +74,13 @@ namespace ProcessingLibrary
         {
             var m = new CalcModule(Project, code);
             Modules.Add(code, m);
-            var sm = Project.Modules[code];
-            foreach (var ccode in sm.LinkedConnectsCodes.Values)
+            var sm = Project.SchemeModules[code];
+            foreach (var ccode in sm.LinkedConnects.Values)
             {
                 var con = Connects[ccode];
                 if (!Connects.ContainsKey(ccode))
                 {
-                    var scon = Project.Connects[ccode];
+                    var scon = Project.SchemeConnects[ccode];
                     con = ProvidersFactory.CreateConnect(Logger, scon.Type, scon.Code, scon.Complect, Project.Code);
                     con = Connects.Add(code, con);
                     con.JoinProvider(ProvidersFactory.CreateProvider(Logger, scon.ProviderCode, scon.ProviderInf, Project.Code));
@@ -92,7 +91,7 @@ namespace ProcessingLibrary
                     m.LinkedReceivers.Add(Receivers.Add(code, (ReceiverConnect)con));
             }
 
-            foreach (var mcode in sm.LinkedModulesCodes.Values)
+            foreach (var mcode in sm.LinkedModules.Values)
             {
                 if (!Modules.ContainsKey(mcode))
                     AddModule(mcode);
@@ -260,8 +259,8 @@ namespace ProcessingLibrary
         protected virtual void WriteProxies()
         {
             foreach (var proxy in Proxies.Values)
-                using (StartLog(Procent, Procent + 30.0 / Proxies.Count, "Запись в прокси", "", proxy.Code))
-                    proxy.GetValues();
+                using (StartLog(Procent, Procent + 100.0 / Proxies.Count, "Запись в прокси", "", proxy.Code))
+                    proxy.WriteValues();
         }
 
         //Очистка значений

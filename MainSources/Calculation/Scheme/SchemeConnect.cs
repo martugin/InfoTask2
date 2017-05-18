@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using CommonTypes;
+﻿using CommonTypes;
 
 namespace Calculation
 {
-    public class SchemeConnect : ISchemeConnect
+    //Соединение с провайдером для схемы проекта
+    public class SchemeConnect
     {
         public SchemeConnect(ProviderType type, string code, string complect, string description = "")
         {
@@ -37,12 +37,5 @@ namespace Calculation
         //Код и настройки резервного провайдера
         public string ReserveProviderCode { get; private set; }
         public string ReserveProviderInf { get; private set; }
-
-        //Связанные входящие и исходящие соединения
-        //Связанные входящие и исходящие соединения
-        private readonly List<ISchemeConnect> _inConnects = new List<ISchemeConnect>();
-        public List<ISchemeConnect> InConnects { get { return _inConnects; } }
-        private readonly List<ISchemeConnect> _outConnect = new List<ISchemeConnect>();
-        public List<ISchemeConnect> OutConnect { get { return _outConnect; } }
     }
 }

@@ -43,17 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\ControllerSignals.cs" />
-    <Compile Include="Controllers\ProviderController.cs" />
-    <Compile Include="Controllers\ReceiverController.cs" />
-    <Compile Include="Controllers\SourceController.cs" />
     <Compile Include="Projects\ProcessApp.cs" />
     <Compile Include="Projects\ProcessProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proxy\ProxyConnect.cs" />
     <Compile Include="Proxy\ProxySignal.cs" />
+    <Compile Include="Proxy\QueuedProxyConnect.cs" />
+    <Compile Include="Proxy\QueuedProxySignal.cs" />
     <Compile Include="Threads\BaseThread.cs" />
     <Compile Include="Threads\PeriodicThread.cs" />
+    <Compile Include="Threads\ProxyThread.cs" />
     <Compile Include="Threads\RealTimeThread.cs" />
     <Compile Include="Threads\SingleThread.cs" />
   </ItemGroup>

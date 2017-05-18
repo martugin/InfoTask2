@@ -34,7 +34,8 @@ namespace ProcessingLibrary
         #region Waiting
         protected override void Waiting()
         {
-            Thread.Sleep((int)NextPeriodStart.Subtract(DateTime.Now).TotalMilliseconds);
+            var timeout = (int)NextPeriodStart.Subtract(DateTime.Now).TotalMilliseconds;
+            if (timeout > 0) Thread.Sleep(timeout);
         }
 
         //Определение следующего периода обработки, возвращает false, если следующй обработки не будет
