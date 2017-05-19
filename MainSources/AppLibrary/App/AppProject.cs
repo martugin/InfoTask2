@@ -40,5 +40,13 @@ namespace AppLibrary
             Threads.Add(id, t, true);
             return t;
         }
+
+        //Открыть поток реального времени, управляемы очередью прокси
+        public ProxyThread OpenProxyThread(int id, string name, QueuedProxyConnect proxy)
+        {
+            var t = new ProxyThread(this, id, name, null, proxy);
+            Threads.Add(id, t, true);
+            return t;
+        }
     }
 }

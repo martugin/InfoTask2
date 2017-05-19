@@ -8,10 +8,10 @@ namespace ProcessingLibrary
             : base(code) { }
 
         //Добавить сигнал
-        public override ProxySignal AddSignal(IReadSignal signal) //Оборачиваемый сигнал
+        public override ProxySignal AddSignal(IReadingConnect connect, IReadSignal signal) //Оборачиваемый сигнал
         {
             lock (ValuesLocker)
-                return Signals.Add(signal.Code, new QueuedProxySignal(signal));
+                return Signals.Add(connect.Code + "." + signal.Code, new QueuedProxySignal(connect.Code, signal));
         }
 
         //Количество значений в очереди 

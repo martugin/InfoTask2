@@ -22,7 +22,7 @@ namespace Wonderware
         {
             DateTime time = rec.GetTime("DateTime");
             var err = MakeError(rec.GetInt("QualityDetail"));
-            if (ValueSignal.DataType.LessOrEquals(DataType.Real))
+            if (ValueSignal.DataType.IsReal())
                 return AddMomReal(ValueSignal, time, rec, "Value", err);
             return AddMomString(ValueSignal, time, rec, "vValue", err);
         }

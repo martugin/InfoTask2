@@ -8,11 +8,14 @@ namespace ProcessingLibrary
         public ProxySignal(string connectCode, IReadSignal signal)
         {
             InSignal = signal;
+            ConnectCode = connectCode;
         }
 
         //Код и тип данных
         public string Code { get { return InSignal.Code; } }
         public DataType DataType { get { return InSignal.DataType; } }
+        //Код соединения
+        public string ConnectCode { get; private set; }
 
         //Cигнал с исходным значением
         public IReadSignal InSignal { get; private set; }

@@ -49,6 +49,7 @@
                 case LoggerStability.RealTimeSlow:
                     return "RealTime";
             }
+            return null;
         }
     }
 }

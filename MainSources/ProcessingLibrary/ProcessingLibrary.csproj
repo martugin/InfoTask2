@@ -53,6 +53,7 @@
     <Compile Include="Threads\BaseThread.cs" />
     <Compile Include="Threads\PeriodicThread.cs" />
     <Compile Include="Threads\ProxyThread.cs" />
+    <Compile Include="Threads\RealTimeBaseThread.cs" />
     <Compile Include="Threads\RealTimeThread.cs" />
     <Compile Include="Threads\SingleThread.cs" />
   </ItemGroup>

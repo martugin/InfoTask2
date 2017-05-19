@@ -67,7 +67,7 @@ namespace ProvidersTest
             Assert.IsTrue(con.ReadingSignals["Ob1.StateSignal"] is UniformSignal);
             Assert.AreEqual("Ob1.StateSignal", con.ReadingSignals["Ob1.StateSignal"].Code);
             Assert.AreEqual(DataType.Integer, con.ReadingSignals["Ob1.StateSignal"].DataType);
-            Assert.AreEqual(0, con.ReadingSignals["Ob1.StateSignal"].GetValue().Count);
+            Assert.AreEqual(0, con.ReadingSignals["Ob1.StateSignal"].OutValue.Count);
 
             con.AddSignal("Ob2.StateSignal", DataType.Integer, SignalType.Uniform, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=State");
             con.AddSignal("Ob2.ValueSignal", DataType.Real, SignalType.Uniform, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=Value");

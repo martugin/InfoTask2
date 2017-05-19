@@ -6,8 +6,8 @@ namespace ProcessingLibrary
     //Сигнал для прокси, накапливающий очередь значений
     public class QueuedProxySignal : ProxySignal
     {
-        public QueuedProxySignal(IReadSignal signal)
-            : base(signal) { }
+        public QueuedProxySignal(string connectCode, IReadSignal signal)
+            : base(connectCode, signal) { }
         
         //Очередь значений
         private readonly Queue<IReadMean> _values = new Queue<IReadMean>();

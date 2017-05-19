@@ -1,25 +1,20 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using BaseLibrary;
 
 namespace ProcessingLibrary
 {
     //Поток, получающий значения из QueuedProxy
-    public class ProxyThread : BaseThread
+    public class ProxyThread : RealTimeBaseThread
     {
-        public ProxyThread(ProcessProject project, int id, string name, IIndicator indicator) 
-            : base(project, id, name, indicator, LoggerStability.RealTimeFast) { }
+        public ProxyThread(ProcessProject project, int id, string name, IIndicator indicator, QueuedProxyConnect proxy)
+            : base(project, id, name, indicator)
+        {
+            _proxy = proxy;
+        }
 
         //Прокси с очередью
-        private QueuedProxyConnect _proxy;
-
-        //Подготовка потока
-        protected override void Prepare()
-        {
-            using (StartProgress("Подготовка потока"))
-            {
-                Start(0, 60).Run(LoadModules);
-            }
-        }
+        private readonly QueuedProxyConnect _proxy;
 
         //Ожидание, между проверками очереди
         protected override void Waiting()
@@ -30,7 +25,12 @@ namespace ProcessingLibrary
         //Цикл
         protected override void Cycle()
         {
-            throw new System.NotImplementedException();
+            while (true)
+            {
+                if (_proxy.ValuesCount == 0) return;
+                _proxy.ReadValues();
+                RunCycle();
+            }
         }
     }
 }

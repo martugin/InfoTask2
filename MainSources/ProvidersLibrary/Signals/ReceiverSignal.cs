@@ -1,5 +1,4 @@
-﻿using System;
-using BaseLibrary;
+﻿using BaseLibrary;
 using CommonTypes;
 
 namespace ProvidersLibrary
@@ -22,12 +21,16 @@ namespace ProvidersLibrary
             get { return (ReceiverConnect)Connect; }
         }
 
+        //Сигнла или параметр, содержащий исходное значение
+        public IReadSignal InSignal { get; set; }
+
         //Значение
         public IReadMean InValue { get; set; }
+
         //Записать значение
         public void PutValue(IReadMean value)
         {
-            throw new NotImplementedException();
+            InValue = InSignal.OutValue;
         }
     }
 }

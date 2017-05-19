@@ -5,10 +5,10 @@ using BaseLibrary;
 namespace ProcessingLibrary
 {
     //Поток для работы в реальном времени
-    public class RealTimeThread : BaseThread
+    public class RealTimeThread : RealTimeBaseThread
     {
         public RealTimeThread(ProcessProject project, int id, string name, IIndicator indicator, double periodSeconds, double lateSeconds)
-            : base(project, id, name, indicator, LoggerStability.RealTimeFast)
+            : base(project, id, name, indicator)
         {
             PeriodSeconds = periodSeconds;
             LateSeconds = lateSeconds;
@@ -53,12 +53,7 @@ namespace ProcessingLibrary
         protected override void Cycle()
         {
             using (StartPeriod(ThreadPeriodBegin, ThreadPeriodEnd, "RealTime"))
-            {
-                Start(0, 50).Run(ReadSources);
-                Start(50, 60).Run(ClaculateModules);
-                Start(60, 80).Run(WriteReceivers);
-                Start(60, 80).Run(WriteProxies);
-            }
+                RunCycle();
         }
         #endregion
     }

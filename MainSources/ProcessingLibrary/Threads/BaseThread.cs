@@ -56,9 +56,6 @@ namespace ProcessingLibrary
         //Словарь соединений приемников
         private readonly DicS<ReceiverConnect> _receivers = new DicS<ReceiverConnect>();
         public DicS<ReceiverConnect> Receivers { get { return _receivers; } }
-        //Словарь всех соединений прокси
-        private readonly DicS<ProxyConnect> _proxies = new DicS<ProxyConnect>();
-        public DicS<ProxyConnect> Proxies { get { return _proxies; } }
 
         //Очистить списки модулей и соединений
         public void ClearModules()
@@ -69,6 +66,20 @@ namespace ProcessingLibrary
             _receivers.Clear();
         }
 
+        //Добавить соединение в поток
+        public ProviderConnect AddConnect(string code)
+        {
+            var con = Connects[code];
+            if (!Connects.ContainsKey(code))
+            {
+                var scon = Project.SchemeConnects[code];
+                con = ProvidersFactory.CreateConnect(Logger, scon.Type, scon.Code, scon.Complect, Project.Code);
+                con = Connects.Add(code, con);
+                con.JoinProvider(ProvidersFactory.CreateProvider(Logger, scon.ProviderCode, scon.ProviderInf, Project.Code));
+            }
+            return con;
+        }
+
         //Добавить модуль в поток
         public CalcModule AddModule(string code)
         {
@@ -77,14 +88,7 @@ namespace ProcessingLibrary
             var sm = Project.SchemeModules[code];
             foreach (var ccode in sm.LinkedConnects.Values)
             {
-                var con = Connects[ccode];
-                if (!Connects.ContainsKey(ccode))
-                {
-                    var scon = Project.SchemeConnects[ccode];
-                    con = ProvidersFactory.CreateConnect(Logger, scon.Type, scon.Code, scon.Complect, Project.Code);
-                    con = Connects.Add(code, con);
-                    con.JoinProvider(ProvidersFactory.CreateProvider(Logger, scon.ProviderCode, scon.ProviderInf, Project.Code));
-                }
+                var con = AddConnect(ccode);
                 if (con.Type == ProviderType.Source)
                     m.LinkedSources.Add(Sources.Add(code, (SourceConnect)con));
                 if (con.Type == ProviderType.Receiver)
@@ -253,14 +257,6 @@ namespace ProcessingLibrary
             foreach (var receiver in Receivers.Values)
                 using (StartLog(Procent, Procent + 100.0 / Receivers.Count, "Запись в приемник", "", receiver.Code))
                     receiver.WriteValues();
-        }
-
-        //Запись в прокси
-        protected virtual void WriteProxies()
-        {
-            foreach (var proxy in Proxies.Values)
-                using (StartLog(Procent, Procent + 100.0 / Proxies.Count, "Запись в прокси", "", proxy.Code))
-                    proxy.WriteValues();
         }
 
         //Очистка значений

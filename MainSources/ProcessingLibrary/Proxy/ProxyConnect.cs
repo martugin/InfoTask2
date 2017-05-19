@@ -40,7 +40,7 @@ namespace ProcessingLibrary
         public virtual ProxySignal AddSignal(IReadingConnect connect, IReadSignal signal) //Оборачиваемый сигнал
         {
             lock (ValuesLocker)
-                return Signals.Add(signal.Code, new ProxySignal(signal));
+                return Signals.Add(connect.Code + "." + signal.Code, new ProxySignal(connect.Code, signal));
         }
         
         //Получить значения в прокси
