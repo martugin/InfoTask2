@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using BaseLibrary;
 using CommonTypes;
-using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для RLauncherReceiverSignal
+    //Интерфейс для LauncherReceiverSignal
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface LauncherReceiverSignal
+    public interface ILauncherReceiverSignal
     {
         string Code { get; }
         string DataType { get; }
-        string Inf { get; }
 
         bool Boolean { get; set; }
         int Integer { get; set; }
@@ -26,22 +23,20 @@ namespace ComLaunchers
     //Сигнал приемника для внешнего использования через COM
     //Обертка над ReceiverSignal
     [ClassInterface(ClassInterfaceType.None)]
-    public class RLauncherReceiverSignal : LauncherReceiverSignal
+    public class LauncherReceiverSignal : ILauncherReceiverSignal
     {
-        internal RLauncherReceiverSignal(ReceiverSignal signal)
+        internal LauncherReceiverSignal(IWriteSignal signal)
         {
             _signal = signal;
         }
 
         //Ссылка на сигнал
-        private readonly ReceiverSignal _signal;
+        private readonly IWriteSignal _signal;
 
         //Полный код сигнала
         public string Code { get { return _signal.Code; } }
         //Тип данных в виде строки
         public string DataType { get { return _signal.DataType.ToRussian(); } }
-        //Строка свойств
-        public string Inf { get { return _signal.Inf.ToPropertyString(); } }
 
         //Значения разного типа для записи
         public bool Boolean { get; set; }

@@ -21,7 +21,7 @@ namespace ComLaunchers
         void ClearSignals();
 
         //Добавить сигнал
-        RLauncherReceiverSignal AddSignal(string fullCode, //Полный код сигнала
+        LauncherReceiverSignal AddSignal(string fullCode, //Полный код сигнала
                                             string dataType, //Тип данных
                                             string valueType, //Тип значений сигнала
                                             string infObject, //Свойства объекта
@@ -79,14 +79,14 @@ namespace ComLaunchers
         }
 
         //Добавить сигнал
-        public RLauncherReceiverSignal AddSignal(string fullCode, //Полный код сигнала
+        public LauncherReceiverSignal AddSignal(string fullCode, //Полный код сигнала
                                                         string dataType, //Тип данных
                                                         string valueType, //Тип значений сигнала
                                                         string infObject, //Свойства объекта
                                                         string infOut, //Свойства выхода относительно объекта
                                                         string infProp) //Свойства сигнала относительно выхода
         {
-            return new RLauncherReceiverSignal((ReceiverSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), valueType.ToSignalType(), infObject, infOut, infProp));
+            return new LauncherReceiverSignal((ReceiverSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), valueType.ToSignalType(), infObject, infOut, infProp));
         }
 
         //Запись значений в приемник

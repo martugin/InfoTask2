@@ -6,9 +6,6 @@ namespace ClientLibrary
     public class ClientApp : BaseApp
     {
         public ClientApp(string code)
-            : base(code, null)
-        {
-            History = CreateHistory(code);
-        }
+            : base(code, null) { }
     }
 }

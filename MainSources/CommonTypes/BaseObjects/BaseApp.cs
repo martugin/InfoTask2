@@ -9,6 +9,7 @@ namespace CommonTypes
         {
             Code = code;
             Indicator = indicator;
+            History = CreateHistory(code);
         }
 
         //Код приложения

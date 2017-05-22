@@ -13,9 +13,17 @@ namespace AppLibrary
         //Создание соединения-клонера и присоединение провайдера
         public ClonerConnect LoadCloner(string providerCode, string providerInf)
         {
-            var con = new ClonerConnect(this);
-            con.JoinProvider(ProvidersFactory.CreateProvider(this, providerCode, providerInf));
-            return con;
+            _cloner = new ClonerConnect(this);
+            _cloner.JoinProvider(ProvidersFactory.CreateProvider(this, providerCode, providerInf));
+            return _cloner;
         }
+        private ClonerConnect _cloner;
+
+        //Очистка ресурсов
+        protected override void DisposeLogger()
+        {
+                   
+        }
+
     }
 }

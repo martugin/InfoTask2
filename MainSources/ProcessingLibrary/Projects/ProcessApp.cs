@@ -10,7 +10,6 @@ namespace ProcessingLibrary
         public ProcessApp(string code, IIndicator indicator)
             : base(code, indicator)
         {
-            History = CreateHistory(code);
             ProvidersFactory = new ProvidersFactory();
         }
 

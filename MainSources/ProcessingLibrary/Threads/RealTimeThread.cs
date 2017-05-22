@@ -20,7 +20,6 @@ namespace ProcessingLibrary
         public double LateSeconds { get; set; }
         
         //Подготовка потока
-        #region Prepare
         protected override void Prepare()
         {
             using (StartProgress("Подготовка потока"))
@@ -28,10 +27,14 @@ namespace ProcessingLibrary
                 Start(0, 60).Run(LoadModules);
             }
         }
-        #endregion
+
+        //Запуск процесса
+        public void StartProcess()
+        {
+            StartProcess(DateTime.Now.AddSeconds(-LateSeconds-PeriodSeconds));
+        }
 
         //Ожидание следующей обработки
-        #region Waiting
         protected override void Waiting()
         {
             var timeout = (int)NextPeriodStart.Subtract(DateTime.Now).TotalMilliseconds;
@@ -46,15 +49,12 @@ namespace ProcessingLibrary
             NextPeriodStart = ThreadPeriodEnd.AddMinutes(LateSeconds);
             return NextPeriodStart.Subtract(ThreadFinishTime).TotalSeconds > 0.1;
         }
-        #endregion
-
+        
         //Цикл обработки
-        #region Cycle
         protected override void Cycle()
         {
             using (StartPeriod(ThreadPeriodBegin, ThreadPeriodEnd, "RealTime"))
                 RunCycle();
         }
-        #endregion
     }
 }

@@ -66,6 +66,18 @@ namespace ProvidersLibrary
             return _readingSignals.Add(fullCode, sig);
         }
 
+        //Удалить сигнал
+        public void RemoveSignal(string fullCode)
+        {
+            Provider.IsPrepared = false;
+            if (_readingSignals.ContainsKey(fullCode))
+                _readingSignals.Remove(fullCode);
+            if (InitialSignals.ContainsKey(fullCode))
+                InitialSignals.Remove(fullCode);
+            if (CalcSignals.ContainsKey(fullCode))
+                CalcSignals.Remove(fullCode);
+        }
+
         //Добавить расчетный сигнал
         public CalcSignal AddCalcSignal(string fullCode, //Полный код сигнала
                                                         string objectCode, //Код объекта

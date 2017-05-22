@@ -104,6 +104,28 @@ namespace ProcessingLibrary
             return m;
         }
 
+        //Получение диапазона времени источников
+        public void GetSourcesTime()
+        {
+            var beg = Static.MinDate;
+            var en = Static.MaxDate;
+            foreach (var source in Sources.Values)
+            {
+                AddEvent("Определение диапазона источника", source.Code);
+                var ti = source.GetTime();
+                AddEvent("Диапазон источника определен", ti.Begin + " - " + ti.End);
+                if (ti.End < en) en = ti.End;
+                if (beg == Static.MinDate && ti.Begin != Static.MinDate || beg != Static.MinDate && ti.Begin < beg)
+                    beg = ti.Begin;
+            }
+            SourcesBegin = beg;
+            SourcesEnd = en;
+        }
+
+        //Диапазон источников
+        public DateTime SourcesBegin { get; private set; }
+        public DateTime SourcesEnd { get; private set; }
+
         //Состояние потока
         protected ThreadState State { get; set; }
         protected readonly object StateLocker = new object();
@@ -137,7 +159,7 @@ namespace ProcessingLibrary
         }
 
         //Завершение процесса 
-        public void FinishProcess()
+        public void StopProcess()
         {
             lock (StateLocker)
                 if (State == ThreadState.Run)

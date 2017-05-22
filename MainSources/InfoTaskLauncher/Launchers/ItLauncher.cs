@@ -194,7 +194,11 @@ namespace ComLaunchers
         //Команды для калибратора
         #region Calibrator
 
-        
+        //Загрузка проекта
+        public ILauncherCalibratorProject LoadCalibratorProject(string projectDir) //Каталог проекта
+        {
+            return new LauncherCalibratorProject(new CalibratorProject(App, projectDir));
+        }
 
         #endregion
 

@@ -42,6 +42,13 @@ namespace ProcessingLibrary
             lock (ValuesLocker)
                 return Signals.Add(connect.Code + "." + signal.Code, new ProxySignal(connect.Code, signal));
         }
+
+        //Удалить сигнал
+        public void RemoveSignal(string connectCode, string signalCode)
+        {
+            lock (ValuesLocker)
+                Signals.Remove(connectCode + "." + signalCode);
+        }
         
         //Получить значения в прокси
         public virtual void WriteValues()

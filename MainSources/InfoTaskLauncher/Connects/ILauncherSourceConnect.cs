@@ -29,7 +29,7 @@ namespace ComLaunchers
         void ClearSignals();
         
         //Добавить исходный сигнал
-        RLauncherSourceSignal AddSignal(string fullCode, //Полный код сигнала
+        LauncherSourceSignal AddSignal(string fullCode, //Полный код сигнала
                                             string dataType, //Тип данных
                                             string valueType, //Тип значений сигнала
                                             string infObject, //Свойства объекта
@@ -37,7 +37,7 @@ namespace ComLaunchers
                                             string infProp); //Свойства сигнала относительно выхода
         
         //Добавить расчетный сигнал
-        RLauncherSourceSignal AddCalcSignal(string fullCode, //Полный код сигнала
+        LauncherSourceSignal AddCalcSignal(string fullCode, //Полный код сигнала
                                                string objectCode, //Код объекта
                                                string initialSignalCode, //Код исходного сигнала без кода объекта
                                                string formula); //Формул
@@ -105,23 +105,23 @@ namespace ComLaunchers
         }
 
         //Добавить исходный сигнал
-        public RLauncherSourceSignal AddSignal(string fullCode, //Полный код сигнала
+        public LauncherSourceSignal AddSignal(string fullCode, //Полный код сигнала
                                                      string dataType, //Тип данных
                                                      string valueType, //Тип значений сигнала
                                                      string infObject, //Свойства объекта
                                                      string infOut, //Свойства выхода относительно объекта
                                                      string infProp) //Свойства сигнала относительно выхода
         {
-            return new RLauncherSourceSignal((ListSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), valueType.ToSignalType(), infObject, infOut, infProp));
+            return new LauncherSourceSignal((ListSignal)Connect.AddSignal(fullCode, dataType.ToDataType(), valueType.ToSignalType(), infObject, infOut, infProp));
         }
 
         //Добавить расчетный сигнал
-        public RLauncherSourceSignal AddCalcSignal(string fullCode, //Полный код сигнала
+        public LauncherSourceSignal AddCalcSignal(string fullCode, //Полный код сигнала
                                                          string objectCode, //Код объекта
                                                          string initialSignalCode, //Код исходного сигнала без кода объекта
                                                          string formula) //Формул
         {
-            return new RLauncherSourceSignal(Connect.AddCalcSignal(fullCode, objectCode, initialSignalCode, formula));
+            return new LauncherSourceSignal(Connect.AddCalcSignal(fullCode, objectCode, initialSignalCode, formula));
         }
         
         //Чтение значений из источника. Программа, вызвавшая метод, занята пока чтение не завершится

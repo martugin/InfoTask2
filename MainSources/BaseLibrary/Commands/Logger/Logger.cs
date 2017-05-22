@@ -372,8 +372,10 @@ namespace BaseLibrary
             }
         }
 
+        //Очистка ресурсов
         public void Dispose()
         {
+            try { DisposeLogger(); } catch {} 
             try
             {
                 FinishCollect();
@@ -382,8 +384,15 @@ namespace BaseLibrary
                 FinishLog();    
             }
             catch { }
-            try { History.Close();}
+            try
+            {
+                if (History != null)
+                    History.Close();
+            }
             catch { }
         }
+
+        //Метод для реализации очистки ресурсов от наследника
+        protected virtual void DisposeLogger() {}
     }
 }

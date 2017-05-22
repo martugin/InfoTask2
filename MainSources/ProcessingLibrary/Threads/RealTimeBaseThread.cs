@@ -27,7 +27,7 @@ namespace ProcessingLibrary
             Start(0, 50).Run(ReadSources);
             Start(50, 60).Run(ClaculateModules);
             Start(60, 80).Run(WriteReceivers);
-            Start(60, 80).Run(WriteProxies);
+            Start(80, 100).Run(WriteProxies);
         }
 
         //Запись в прокси

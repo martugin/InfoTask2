@@ -16,6 +16,12 @@ namespace ProcessingLibrary
         //Прокси с очередью
         private readonly QueuedProxyConnect _proxy;
 
+        //Запуск процесса
+        public void StartProcess()
+        {
+            StartProcess(DateTime.Now);
+        }
+
         //Ожидание, между проверками очереди
         protected override void Waiting()
         {

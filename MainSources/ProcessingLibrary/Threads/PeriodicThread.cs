@@ -23,35 +23,26 @@ namespace ProcessingLibrary
         private string _threadPeriodMode = "";
 
         //Подготовка потока
-        #region Prepare
         protected override void Prepare()
         {
             using (StartProgress("Подготовка потока"))
             {
                 Start(0, 60).Run(LoadModules);
-                StartLog(60, 80, "Очистка файла результатов").Run(ClearResults);
-                StartLog(80, 100, "Удаление старых ведомостей").Run(ClearVed);
+                Start(60, 80).Run(PrepareArchives);
                 NextPeriodStart = ThreadPeriodEnd.AddMinutes(LateMinutes);
             }
         }
 
-        //Очистка результатов
-        private void ClearResults()
+        //Подготовка архивов результатов
+        protected void PrepareArchives()
         {
             throw new NotImplementedException();
         }
-
-        //Удаление старых ведомостей
-        private void ClearVed()
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
 
         //Ожидание следующей обработки
-        #region Waiting
         protected override void Waiting()
         {
+            StartLog("Опредение диапазона источников").Run(GetSourcesTime);
             if (NextPeriodStart <= DateTime.Now)
             {
                 _threadPeriodMode = "Выравнивание";
@@ -78,10 +69,8 @@ namespace ProcessingLibrary
             NextPeriodStart = ThreadPeriodEnd.AddMinutes(LateMinutes);
             return ThreadPeriodEnd.Subtract(ThreadFinishTime).TotalSeconds > 0.1;
         }
-        #endregion
-
+        
         //Цикл обработки
-        #region Cycle
         protected override void Cycle()
         {
             using (StartPeriod(ThreadPeriodBegin, ThreadPeriodEnd, _threadPeriodMode))
@@ -89,24 +78,16 @@ namespace ProcessingLibrary
                 {
                     Start(0, 40).Run(ReadSources);
                     Start(40, 60).Run(ClaculateModules);
-                    Start(60, 70).Run(SaveResults);
-                    Start(70, 80).Run(MakeVed);
+                    Start(60, 80).Run(WriteArchives);
                     Start(80, 90).Run(WriteReceivers);
                     Start(90, 100).Run(ClearValues);    
                 }
         }
 
-        //Запись отладочных результатов
-        private void SaveResults()
+        //Запись в архивы результатов
+        protected void WriteArchives()
         {
             throw new NotImplementedException();
         }
-
-        //Формирование ведомостей
-        private void MakeVed()
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
     }
 }

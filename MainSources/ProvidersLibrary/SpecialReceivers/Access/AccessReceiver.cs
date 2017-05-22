@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using BaseLibrary;
 
 namespace ProvidersLibrary
@@ -34,8 +33,11 @@ namespace ProvidersLibrary
         //Закрытие соединения
         protected override void DisconnectProvider()
         {
-            Db.Dispose();
-            Db = null;
+            if (Db != null)
+            {
+                Db.Dispose();
+                Db = null;    
+            }
         }
     }
 }
