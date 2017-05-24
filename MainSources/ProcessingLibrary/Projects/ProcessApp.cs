@@ -13,6 +13,12 @@ namespace ProcessingLibrary
             ProvidersFactory = new ProvidersFactory();
         }
 
+        //Коструктор для тестов
+        protected internal ProcessApp()
+        {
+            ProvidersFactory = new ProvidersFactory();
+        }
+
         //Фабрика провайдеров
         public ProvidersFactory ProvidersFactory { get; private set; }
     }

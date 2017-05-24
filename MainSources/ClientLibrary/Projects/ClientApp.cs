@@ -7,5 +7,8 @@ namespace ClientLibrary
     {
         public ClientApp(string code)
             : base(code, null) { }
+
+        //Коструктор для тестов
+        protected internal ClientApp() { }
     }
 }

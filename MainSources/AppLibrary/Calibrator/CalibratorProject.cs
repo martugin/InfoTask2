@@ -6,8 +6,8 @@ namespace AppLibrary
     //Проект наладчика
     public class CalibratorProject : ProcessProject
     {
-        public CalibratorProject(App app, string projectDir)
-            : base(app, projectDir) { }
+        public CalibratorProject(App app, string projectDir, bool isTest = false)
+            : base(app, projectDir, isTest) { }
 
         //Поток чтения данных
         public RealTimeThread ReadThread { get; private set; }

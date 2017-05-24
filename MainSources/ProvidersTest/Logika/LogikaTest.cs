@@ -6,6 +6,7 @@ using CommonTypes;
 using InfoTaskLauncherTest;
 using Logika;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ProcessingLibrary;
 using ProvidersLibrary;
 
 namespace ProvidersTest
@@ -94,7 +95,7 @@ namespace ProvidersTest
             Assert.AreEqual(0, prov.Outs.Count);
             Assert.AreEqual(0, prov.OutsId.Count);
 
-            prov = (LogikaSource)new ProvidersFactory().CreateProvider(new Logger(), "LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\НеТотProlog.mdb");
+            prov = (LogikaSource)new ProvidersFactory().CreateProvider(TestLib.CreateTestLogger(), "LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\НеТотProlog.mdb");
             con.JoinProvider(prov);
             Assert.IsFalse(prov.IsConnected);
             prov.Connect();
@@ -237,7 +238,7 @@ namespace ProvidersTest
         public void Clone()
         {
             TestLib.CopyDir(@"Providers\Logika", "Clone");
-            var app = new TestApp("Test");
+            var app = new ProcessApp("Test", new TestIndicator());
             var con = new ClonerConnect(app);
             con.JoinProvider(app.ProvidersFactory.CreateProvider(app, "LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\CloneProlog.mdb"));
             var cloneDir = TestLib.TestRunDir + @"Providers\Logika\Clone\";

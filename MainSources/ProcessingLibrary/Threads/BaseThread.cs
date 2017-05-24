@@ -22,7 +22,7 @@ namespace ProcessingLibrary
     public abstract class BaseThread : ExternalLogger
     {
         protected BaseThread(ProcessProject project, int id, string name, IIndicator indicator, LoggerStability stability)
-            : base(new Logger(project.App.CreateHistory(project.Code + id), indicator, stability), project.Context, project.ProgressContext)
+            : base(new Logger(ItStatic.CreateHistory(project.AppCode + '\\' + project.Code + id), indicator, stability), project.Context, project.ProgressContext)
         {
             State = ThreadState.Stopped;
             Project = project;
@@ -75,7 +75,8 @@ namespace ProcessingLibrary
                 var scon = Project.SchemeConnects[code];
                 con = ProvidersFactory.CreateConnect(Logger, scon.Type, scon.Code, scon.Complect, Project.Code);
                 con = Connects.Add(code, con);
-                con.JoinProvider(ProvidersFactory.CreateProvider(Logger, scon.ProviderCode, scon.ProviderInf, Project.Code));
+                con.JoinProvider(ProvidersFactory.CreateProvider(Logger, scon.ProviderCode, scon.ProviderInf,
+                    Project.Code));
             }
             return con;
         }
@@ -117,6 +118,7 @@ namespace ProcessingLibrary
                 if (ti.End < en) en = ti.End;
                 if (beg == Static.MinDate && ti.Begin != Static.MinDate || beg != Static.MinDate && ti.Begin < beg)
                     beg = ti.Begin;
+                Procent += 100.0 / Sources.Count;
             }
             SourcesBegin = beg;
             SourcesEnd = en;

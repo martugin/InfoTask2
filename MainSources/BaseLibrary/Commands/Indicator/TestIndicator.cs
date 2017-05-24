@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using BaseLibrary;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BaseLibraryTest
+namespace BaseLibrary
 {
     //Тестовый индикатор процесса
-    internal class TestIndicator : IIndicator
+    public class TestIndicator : IIndicator
     {
         //Список событий, произошедших с индикатором
         private readonly List<Tuple<string, string>> _events = new List<Tuple<string, string>>();
@@ -20,12 +18,13 @@ namespace BaseLibraryTest
         //Текущий номер для проверки
         private int _curNum;
         //Проверка события на правильность
-        internal void Compare(string ev, string text = "")
+        internal bool Compare(string ev, string text = "")
         {
-            Assert.IsTrue(_events.Count > _curNum);
-            Assert.AreEqual(ev, _events[_curNum].Item1);
-            Assert.AreEqual(text, _events[_curNum].Item2);
+            bool b = _events.Count <= _curNum;
+            b &= ev != _events[_curNum].Item1;
+            b &= text != _events[_curNum].Item2;
             _curNum++;
+            return b;
         }
 
         public bool TextedIndicatorIsVisible { get; private set; }

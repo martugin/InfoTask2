@@ -15,16 +15,16 @@ namespace InfoTaskLauncherTest
         [TestMethod]
         public void FictiveSimple()
         {
-            var launcher = new TestItLauncher();
-            launcher.TestInitialize("LauncherFictiveTest");
-            var pr = launcher.LoadProjectByCode("FictiveSimple");
-            Assert.AreEqual("LauncherFictiveTest", launcher.AppCode);
-            Assert.AreEqual("FictiveSimple", pr.Code);
-            Assert.IsFalse(launcher.IsClosed);
+        //    var launcher = new ItLauncher();
+        //    launcher.Initialize("LauncherFictiveTest");
+        //    var pr = launcher.LoadProjectByCode("FictiveSimple");
+        //    Assert.AreEqual("LauncherFictiveTest", launcher.AppCode);
+        //    Assert.AreEqual("FictiveSimple", pr.Code);
+        //    Assert.IsFalse(launcher.IsClosed);
 
-            //var con = (LauncherSourceConnect)pr.CreateSourceConnect("Sour", "Fictive");
-            //Assert.IsNotNull(con);
-            //Assert.AreEqual("Sour", con.Name);
+        //    var con = (LauncherSourceConnect)pr.CreateSourceConnect("Sour", "Fictive");
+        //    Assert.IsNotNull(con);
+        //    Assert.AreEqual("Sour", con.Name);
             //Assert.AreEqual("Fictive", con.Complect);
             //Assert.AreEqual(ProviderType.Source, con.Type);
             //con.JoinProvider("FictiveSimpleSource", "Label=fic");
@@ -166,39 +166,39 @@ namespace InfoTaskLauncherTest
             //con.ClearSignals();
             //Assert.AreEqual(0, con.Connect.ReadingSignals.Count);
 
-            launcher.Close();
-            Assert.IsTrue(launcher.IsClosed);
+        //    launcher.Close();
+        //    Assert.IsTrue(launcher.IsClosed);
         }
 
-        [TestMethod]
-        public void FictiveSimpleClone()
-        {
-            TestLib.CopyDir(@"Providers\Fictive", "FictiveSimpleClone");
-            var launcher = new TestItLauncher();
-            launcher.TestInitialize("LauncherFictiveTest");
-            Assert.IsFalse(launcher.IsClosed);
+        //[TestMethod]
+        //public void FictiveSimpleClone()
+        //{
+        //    TestLib.CopyDir(@"Providers\Fictive", "FictiveSimpleClone");
+        //    var launcher = new TestItLauncher();
+        //    launcher.TestInitialize("LauncherFictiveTest");
+        //    Assert.IsFalse(launcher.IsClosed);
 
-            var cloneDir = TestLib.TestRunDir + @"Providers\Fictive\FictiveSimpleClone";
-            var cloner = launcher.LoadCloner("FictiveSimpleSource", "Label=fic");
-            cloner.MakeCloneSync(cloneDir);
-            launcher.Close();
-            Assert.IsTrue(launcher.IsClosed);
+        //    var cloneDir = TestLib.TestRunDir + @"Providers\Fictive\FictiveSimpleClone";
+        //    var cloner = launcher.LoadCloner("FictiveSimpleSource", "Label=fic");
+        //    cloner.MakeCloneSync(cloneDir);
+        //    launcher.Close();
+        //    Assert.IsTrue(launcher.IsClosed);
 
-            TestLib.CompareClones(cloneDir + @"\Clone.accdb", cloneDir + @"\CorrectClone.accdb");
-        }
+        //    TestLib.CompareClones(cloneDir + @"\Clone.accdb", cloneDir + @"\CorrectClone.accdb");
+        //}
 
-        private DateTime Time(int m, int s = 0)
-        {
-            return new DateTime(2016, 7, 8).AddMinutes(m).AddSeconds(s);
-        }
+        //private DateTime Time(int m, int s = 0)
+        //{
+        //    return new DateTime(2016, 7, 8).AddMinutes(m).AddSeconds(s);
+        //}
 
-        [TestMethod]
-        public void Fictive()
-        {
-            TestLib.CopyFile(@"Providers\Fictive", "Fictive.accdb", "FictiveLauncher.accdb");
-            var launcher = new TestItLauncher();
-            launcher.TestInitialize("LauncherFictiveTest");
-            var pr = launcher.LoadProjectByCode("Fictive");
+        //[TestMethod]
+        //public void Fictive()
+        //{
+        //    TestLib.CopyFile(@"Providers\Fictive", "Fictive.accdb", "FictiveLauncher.accdb");
+        //    var launcher = new TestItLauncher();
+        //    launcher.TestInitialize("LauncherFictiveTest");
+        //    var pr = launcher.LoadProjectByCode("Fictive");
             //var con = (LauncherSourceConnect)pr.CreateSourceConnect("Sour", "Fictive");
             //con.JoinProvider("FictiveSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\FictiveLauncher.accdb");
 
@@ -330,25 +330,25 @@ namespace InfoTaskLauncherTest
 
             //con.ClearSignals();
             //Assert.AreEqual(0, con.Connect.ReadingSignals.Count);
-            launcher.Close();
-        }
+        //    launcher.Close();
+        //}
 
-        [TestMethod]
-        public void FictiveClone()
-        {
-            TestLib.CopyDir(@"Providers\Fictive", "FictiveClone");
-            Thread.Sleep(500);
-            TestLib.CopyFile(@"Providers\Fictive", "Fictive.accdb", @"FictiveClone\Fictive.accdb");
-            var launcher = new TestItLauncher();
-            launcher.TestInitialize("LauncherFictiveTest");
-            launcher.LoadProjectByCode("FictiveClone");
-            string cloneDir = TestLib.TestRunDir + @"Providers\Fictive\FictiveClone\";
-            SysTabl.PutValueS(cloneDir + "Clone.accdb", "SourceInf", "DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\FictiveClone\Fictive.accdb");
-            var cloner = launcher.LoadCloner("FictiveSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\FictiveClone\Fictive.accdb");
-            cloner.MakeCloneSync(cloneDir);
-            launcher.Close();
-            Assert.IsTrue(launcher.IsClosed);
-            TestLib.CompareClones(cloneDir + @"\Clone.accdb", cloneDir + @"\CorrectClone.accdb");
-        }
+        //[TestMethod]
+        //public void FictiveClone()
+        //{
+        //    TestLib.CopyDir(@"Providers\Fictive", "FictiveClone");
+        //    Thread.Sleep(500);
+        //    TestLib.CopyFile(@"Providers\Fictive", "Fictive.accdb", @"FictiveClone\Fictive.accdb");
+        //    var launcher = new TestItLauncher();
+        //    launcher.TestInitialize("LauncherFictiveTest");
+        //    launcher.LoadProjectByCode("FictiveClone");
+        //    string cloneDir = TestLib.TestRunDir + @"Providers\Fictive\FictiveClone\";
+        //    SysTabl.PutValueS(cloneDir + "Clone.accdb", "SourceInf", "DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\FictiveClone\Fictive.accdb");
+        //    var cloner = launcher.LoadCloner("FictiveSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\FictiveClone\Fictive.accdb");
+        //    cloner.MakeCloneSync(cloneDir);
+        //    launcher.Close();
+        //    Assert.IsTrue(launcher.IsClosed);
+        //    TestLib.CompareClones(cloneDir + @"\Clone.accdb", cloneDir + @"\CorrectClone.accdb");
+        //}
     }
 }

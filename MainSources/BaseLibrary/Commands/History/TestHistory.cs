@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using BaseLibrary;
 
-namespace BaseLibraryTest
+namespace BaseLibrary
 {
     //Одно событие тестовой истории
     internal class TestEvent

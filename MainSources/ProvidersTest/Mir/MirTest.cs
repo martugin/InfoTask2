@@ -5,6 +5,7 @@ using CommonTypes;
 using InfoTaskLauncherTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mir;
+using ProcessingLibrary;
 using ProvidersLibrary;
 
 namespace ProvidersTest
@@ -319,7 +320,7 @@ namespace ProvidersTest
         {
             TestLib.CopyDir(@"Providers\Mir", "Clone");
 
-            var app = new TestApp("Test");
+            var app = new ProcessApp("Test", new TestIndicator());
             var con = new ClonerConnect(app);
             con.JoinProvider(app.ProvidersFactory.CreateProvider(app, "MirSource", TestLib.TestSqlInf("EnergyRes")));
             var cloneDir = TestLib.TestRunDir + @"Providers\Mir\Clone\";

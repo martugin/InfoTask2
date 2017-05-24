@@ -205,7 +205,7 @@ namespace ProvidersTest
             Assert.IsNull(prov.SoeOut);
             Assert.IsNull(prov.TextOut);
 
-            prov = (OvationSource)new ProvidersFactory().CreateProvider(new Logger(), "OvationSource", "DataSource=DropNo");
+            prov = (OvationSource)new ProvidersFactory().CreateProvider(TestLib.CreateTestLogger(), "OvationSource", "DataSource=DropNo");
             con.JoinProvider(prov);
             Assert.IsFalse(prov.IsConnected);
             Assert.IsFalse(prov.IsPrepared);

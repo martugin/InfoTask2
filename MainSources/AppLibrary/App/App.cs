@@ -10,6 +10,9 @@ namespace AppLibrary
         public App(string code) 
             : base(code, new AppIndicator()) { }
 
+        //Коструктор для тестов
+        public App() { }
+
         //Создание соединения-клонера и присоединение провайдера
         public ClonerConnect LoadCloner(string providerCode, string providerInf)
         {
@@ -24,6 +27,5 @@ namespace AppLibrary
         {
                    
         }
-
     }
 }

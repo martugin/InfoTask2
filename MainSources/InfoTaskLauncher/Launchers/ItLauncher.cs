@@ -115,6 +115,12 @@ namespace ComLaunchers
             App.ExecutionFinished += OnExecutionFinished;
         }
 
+        //Инициализация для тестов
+        public void InitializeTest()
+        {
+            App = new App();
+        }
+
         //Ссылка на приложение
         protected App App { get; set; }
 
@@ -165,8 +171,6 @@ namespace ComLaunchers
         }
 
         //Команды для коммуникатора
-        #region Comm
-
         //Создание соединения-клонера
         public ILauncherCloner LoadCloner(string providerCode, string providerInf) //Код и настройки провайдера
         {
@@ -189,10 +193,7 @@ namespace ComLaunchers
             return new LauncherCloner(con);
         }
 
-        #endregion
-
         //Команды для калибратора
-        #region Calibrator
 
         //Загрузка проекта
         public ILauncherCalibratorProject LoadCalibratorProject(string projectDir) //Каталог проекта
@@ -200,18 +201,13 @@ namespace ComLaunchers
             return new LauncherCalibratorProject(new CalibratorProject(App, projectDir));
         }
 
-        #endregion
-
         //Команды для конструктора, анализатора
-        #region App
 
         //Загрузка проекта
         public ILauncherProject LoadProject(string projectDir) //Каталог проекта
         {
             return new LauncherProject(new AppProject(App, projectDir));
         }
-        
-        #endregion
 
         //Работа с логгером
         #region Logger

@@ -6,32 +6,18 @@ namespace BaseLibrary
     //Логгер
     public class Logger : ILogger, IDisposable
     {
-        public Logger(LoggerStability stability = LoggerStability.Single)
-        {
-            Stability = stability;
-        }
-
         public Logger(IHistory history, IIndicator indicator, LoggerStability stability = LoggerStability.Single)
         {
             History = history;
+            History.Logger = this;
             Indicator = indicator;
             Stability = stability;
         }
 
         //Ссылка на историю
-        private IHistory _history;
-
-        public IHistory History
-        {
-            get { return _history; } 
-            set 
-            { 
-                _history = value;
-                _history.Logger = this;
-            }
-        }
+        public IHistory History { get; protected set; }
         //Ссылка на индикатор
-        public IIndicator Indicator { get; protected internal set; }
+        public IIndicator Indicator { get; protected set; }
 
         //Текущие команды разных типов
         internal CollectCommand CollectCommand { get; set; }

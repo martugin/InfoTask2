@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
-using InfoTaskLauncherTest;
+using ComLaunchers;
 
 namespace Experiments
 {
     //Класс для тестового отображения формы индикатора
-    public class ExperimentsItLauncher : TestItLauncher
+    public class ExperimentsItLauncher : ItLauncher
     {
         public void TestMethod()
         {

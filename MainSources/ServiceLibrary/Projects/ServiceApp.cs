@@ -7,5 +7,8 @@ namespace ServiceLibrary
     {
         public ServiceApp(string code)
             : base(code, null) { }
+
+        //Коструктор для тестов
+        protected internal ServiceApp() { }
     }
 }

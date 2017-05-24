@@ -9,9 +9,10 @@ namespace Calculation
     //Проект, содержащий схему взаимодействия соединений и модулей
     public class SchemeProject : BaseProject
     {
-        protected SchemeProject(BaseApp app, string projectDir)
+        protected SchemeProject(BaseApp app, string projectDir, bool isTest)
             : base(app)
         {
+            IsTest = isTest;
             if (projectDir.IsEmpty()) return;
             try
             {
@@ -25,12 +26,16 @@ namespace Calculation
             }
         }
 
+        //Вызывается в тестах
+        protected bool IsTest { get; private set; }
+
         //Загрузка данных из проекта
         private void ReadProjectData()
         {
             AddEvent("Загрузка схемы проекта");
             var elemRoot = XDocument.Load(Dir + "ProjectProperties.xml").Element("ProjectProperties");
             Initialize(elemRoot.GetAttr("ProjectCode"), elemRoot.GetAttr("ProjectName"));
+            if (IsTest) LocalDir = Dir + @"\LocalData\" + AppCode + @"\" + Code + @"\"; 
             foreach (var elem in elemRoot.Element("Connects").Elements())
             {
                 var con = new SchemeConnect(elem.GetName().ToProviderType(), elem.GetAttr("Code"), elem.GetAttr("Complect"), elem.GetAttr("Description"));
