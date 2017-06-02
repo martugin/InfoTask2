@@ -1,6 +1,6 @@
-﻿using BaseLibraryTest;
-using ComLaunchers;
-using InfoTaskLauncherTest;
+﻿using BaseLibrary;
+using BaseLibraryTest;
+using Generator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneratorTest
@@ -11,18 +11,16 @@ namespace GeneratorTest
         [TestMethod]
         public void GenModuleLarge()
         {
-            var launcher = new TestItLauncher();
-            launcher.TestInitialize("Test");
-            var pr = launcher.LoadProjectByCode("GenerationLarge");
-            Generate(pr, "ModuleLarge");
-            Generate(pr, "ApdControl");
+            var gen = new TablGenerator(new Logger(new TestHistory(), new TestIndicator()));
+            Generate(gen, "ModuleLarge");
+            Generate(gen, "ApdControl");
         }
 
-        private void Generate(LauncherProject pr, string dirName)
+        private void Generate(TablGenerator gen, string dirName)
         {
             TestLib.CopyDir("Generator", dirName);
             var dir = TestLib.TestRunDir + @"Generator\" + dirName + @"\";
-            pr.GenerateParams(dir);
+            gen.GenerateParams(dir);
             TestLib.CompareGeneratedParams(dir + "Compiled.accdb", dir + "CorrectCompiled.accdb");
         }
     }

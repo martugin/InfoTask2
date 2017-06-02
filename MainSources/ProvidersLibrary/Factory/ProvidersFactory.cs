@@ -32,6 +32,9 @@ namespace ProvidersLibrary
             }
         }
 
+        //Приложение
+        private BaseApp _app;
+
         //Список всех провайдеров из Config
         private readonly DicS<ProviderConfig> _providerConfigs = new DicS<ProviderConfig>();
         public DicS<ProviderConfig> ProviderConfigs { get { return _providerConfigs; } }
@@ -42,16 +45,16 @@ namespace ProvidersLibrary
         //Создание соединения
         public ProviderConnect CreateConnect(Logger logger, //Логгер
                                                                  ProviderType type, //Тип провайдера
-                                                                 string name, //Имя соединения
+                                                                 string code, //Код соединения
                                                                  string complect, //Комплект
                                                                  string projectCode = "") //Код проекта
         {
             switch (type)
             {
                 case ProviderType.Source:
-                    return new SourceConnect(logger, name, complect, projectCode);
+                    return new SourceConnect(logger, code, complect, projectCode);
                 case ProviderType.Receiver:
-                    return new ReceiverConnect(logger, name, complect, projectCode);
+                    return new ReceiverConnect(logger, code, complect, projectCode);
             }
             return null;
         }

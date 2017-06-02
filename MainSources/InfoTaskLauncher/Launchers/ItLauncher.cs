@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using AppLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace ComLaunchers
 {
@@ -34,8 +35,8 @@ namespace ComLaunchers
         //Загрузка проекта
         ILauncherProject LoadProject(string projectDir);
 
-        //Создание клона
-        void MakeCloneSync(string cloneDir); //Каталог клона
+         //Создание соединения-клонера
+        ILauncherCloner LoadCloner(string providerCode, string providerInf); //Код и настройки провайдера
 
         //Переопределение команд логгера
         #region Logger
@@ -114,6 +115,12 @@ namespace ComLaunchers
             App.ExecutionFinished += OnExecutionFinished;
         }
 
+        //Инициализация для тестов
+        public void InitializeTest()
+        {
+            App = new App();
+        }
+
         //Ссылка на приложение
         protected App App { get; set; }
 
@@ -163,22 +170,43 @@ namespace ComLaunchers
             get { return App.IsActivated; }
         }
 
+        //Команды для коммуникатора
+        //Создание соединения-клонера
+        public ILauncherCloner LoadCloner(string providerCode, string providerInf) //Код и настройки провайдера
+        {
+            ClonerConnect con = null;
+            App.RunSyncCommand(() =>
+            {
+                using (App.StartLog("Открытие соединения с источником"))
+                {
+                    try
+                    {
+                        con = new ClonerConnect(App);
+                        con.JoinProvider(App.ProvidersFactory.CreateProvider(App, providerCode, providerInf));
+                    }
+                    catch (Exception ex)
+                    {
+                        App.AddError("Ошибка присоединения провайдера", ex);
+                    }
+                }
+            });
+            return new LauncherCloner(con);
+        }
+
+        //Команды для калибратора
+
+        //Загрузка проекта
+        public ILauncherCalibratorProject LoadCalibratorProject(string projectDir) //Каталог проекта
+        {
+            return new LauncherCalibratorProject(new CalibratorProject(App, projectDir));
+        }
+
+        //Команды для конструктора, анализатора
+
         //Загрузка проекта
         public ILauncherProject LoadProject(string projectDir) //Каталог проекта
         {
             return new LauncherProject(new AppProject(App, projectDir));
-        }
-
-        //Создание клона синхронно
-        public void MakeCloneSync(string cloneDir) //Каталог клона
-        {
-            App.MakeCloneSync(cloneDir);
-        }
-
-        //Создание клона асинхронно
-        public void MakeCloneAsync(string cloneDir) //Каталог клона
-        {
-            App.MakeCloneAsync(cloneDir);
         }
 
         //Работа с логгером

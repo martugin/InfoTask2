@@ -5,10 +5,16 @@ namespace CommonTypes
     //Одно приложение InfoTask
     public class BaseApp : Logger
     {
-        public BaseApp(string code, IIndicator indicator) 
+        public BaseApp(string code, IIndicator indicator)
+            : base(ItStatic.CreateHistory(code + '\\' + code), indicator)
         {
             Code = code;
-            Indicator = indicator;
+        }
+
+        //Коструктор для тестов
+        protected internal BaseApp() : base(new TestHistory(), new TestIndicator())
+        { 
+            Code = "Test";
         }
 
         //Код приложения
@@ -24,14 +30,6 @@ namespace CommonTypes
         public bool IsActivated
         {
             get { return true; }
-        }
-
-        //Инициализация истории
-        public AccessHistory CreateHistory(string historyFilePrefix) //Путь к файлу истории относительно каталога истории прриложения
-        {
-            return new AccessHistory(
-                    ItStatic.InfoTaskDir() + @"LocalData\History\" + Code + "\\" + historyFilePrefix + "History.accdb",
-                    ItStatic.TemplatesDir + @"LocalData\History.accdb");
         }
     }
 }

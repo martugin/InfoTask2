@@ -20,7 +20,7 @@ namespace CommonTypesTest
             Assert.IsFalse(DataType.Time.LessOrEquals(DataType.Integer));
             Assert.IsFalse(DataType.Real.LessOrEquals(DataType.Segments));
             Assert.IsFalse(DataType.Segments.LessOrEquals(DataType.String));
-            Assert.IsTrue(DataType.Weighted.LessOrEquals(DataType.Real));
+            Assert.IsTrue(DataType.Weighted.IsReal());
             Assert.IsTrue(DataType.Weighted.LessOrEquals(DataType.String));
             Assert.IsFalse(DataType.Weighted.LessOrEquals(DataType.Integer));
             Assert.IsFalse(DataType.Real.LessOrEquals(DataType.Weighted));

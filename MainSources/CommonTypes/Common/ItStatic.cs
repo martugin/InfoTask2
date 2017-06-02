@@ -34,6 +34,14 @@ namespace CommonTypes
             get { return InfoTaskDir() + @"Templates\"; }
         }
 
+        //Инициализация истории
+        public static AccessHistory CreateHistory(string historyFilePrefix) //Путь к файлу истории относительно каталога истории
+        {
+            return new AccessHistory(
+                    InfoTaskDir() + @"LocalData\History\" + historyFilePrefix + "History.accdb",
+                    TemplatesDir + @"LocalData\History.accdb");
+        }
+
         //Выбирает одну ошибку из двух
         public static MomErr Add(this MomErr err1, MomErr err2)
         {

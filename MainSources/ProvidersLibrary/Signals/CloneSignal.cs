@@ -33,8 +33,7 @@ namespace ProvidersLibrary
         protected virtual int PutClone(IReadMean mom, //Рекордсет срезов клона
                                                      bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {
-            bool isReal = DataType.LessOrEquals(DataType.Real);
-            var rec = isReal ? ClonerConnect.CloneRec : ClonerConnect.CloneStrRec;
+            var rec = DataType.IsReal() ? ClonerConnect.CloneRec : ClonerConnect.CloneStrRec;
             PutCloneRec(mom, rec, false, mom.Time);
             return 1;
         }
@@ -50,7 +49,7 @@ namespace ProvidersLibrary
             rec.Put("Time", mom.Time);
             if (mom.Error != null)
                 rec.Put("ErrNum", mom.Error.Number);
-            if (DataType.LessOrEquals(DataType.Real))
+            if (DataType.IsReal())
                 rec.Put("RealValue", mom.Real);
             else if (DataType == DataType.String)
                 rec.Put("StrValue", mom.String);

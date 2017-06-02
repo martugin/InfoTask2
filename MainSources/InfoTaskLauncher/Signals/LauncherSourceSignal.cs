@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using BaseLibrary;
 using CommonTypes;
-using ProvidersLibrary;
 
 namespace ComLaunchers
 {
-    //Интерфейс для RLauncherSourceSignal
+    //Интерфейс для LauncherSourceSignal
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface LauncherSourceSignal
+    public interface ILauncherSourceSignal
     {
         string Code { get; }
         string DataType { get; }
-        string Inf { get; }
-
+        
         int MomsCount { get; }
         DateTime Time(int i);
         int ErrQuality(int i);
@@ -30,24 +27,22 @@ namespace ComLaunchers
     //--------------------------------------------------------------------------------------------------------
 
     //Сигнал источника для внешнего использования через COM
-    //Обертка над ListSourceSignal
+    //Обертка над IReadSignal
     [ClassInterface(ClassInterfaceType.None)]
-    public class RLauncherSourceSignal : LauncherSourceSignal
+    public class LauncherSourceSignal : ILauncherSourceSignal
     {
-        internal RLauncherSourceSignal(ListSignal signal)
+        internal LauncherSourceSignal(IReadSignal signal)
         {
             _signal = signal;
         }
 
         //Ссылка на сигнал
-        private readonly ListSignal _signal;
+        private readonly IReadSignal _signal;
 
         //Полный код сигнала
         public string Code { get { return _signal.Code; } }
         //Тип данных в виде строки
         public string DataType { get { return _signal.DataType.ToRussian(); } }
-        //Строка свойств
-        public string Inf { get { return _signal.Inf.ToPropertyString(); } }
 
         //Количество значений
         public int MomsCount { get { return _signal.OutValue.Count; } }

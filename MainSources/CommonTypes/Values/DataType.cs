@@ -191,6 +191,12 @@ namespace CommonTypes
             return true;
         }
 
+        //Тип данных является числовым
+        public static bool IsReal(this DataType type)
+        {
+            return type.LessOrEquals(DataType.Real);
+        }
+
         //Получение типа данных из типа данных таблицы Access
         public static DataType ToDataType(this short d)
         {

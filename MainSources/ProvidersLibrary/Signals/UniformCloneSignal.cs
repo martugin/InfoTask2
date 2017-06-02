@@ -62,7 +62,7 @@ namespace ProvidersLibrary
         protected override int PutClone(IReadMean mom, //Рекордсет срезов клона
                                                        bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {
-            bool isReal = DataType.LessOrEquals(DataType.Real);
+            bool isReal = DataType.IsReal();
             var rec = isReal ? ClonerConnect.CloneRec : ClonerConnect.CloneStrRec;
             var recCut = isReal ? ClonerConnect.CloneCutRec : ClonerConnect.CloneStrCutRec;
             int nwrite = 0;

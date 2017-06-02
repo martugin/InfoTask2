@@ -43,12 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connects\LauncherReceiverConnect.cs" />
-    <Compile Include="Connects\LauncherSourceConnect.cs" />
+    <Compile Include="Connects\ILauncherReceiverConnect.cs" />
+    <Compile Include="Connects\ILauncherSourceConnect.cs" />
     <Compile Include="Launchers\ItLauncher.cs" />
+    <Compile Include="Launchers\LauncherCalibratorProject.cs" />
+    <Compile Include="Launchers\LauncherCloner.cs" />
     <Compile Include="Launchers\LauncherProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Signals\RealTimeSignal.cs" />
+    <Compile Include="Signals\LauncherRealTimeSignal.cs" />
     <Compile Include="Signals\LauncherReceiverSignal.cs" />
     <Compile Include="Signals\LauncherSourceSignal.cs" />
   </ItemGroup>

@@ -145,7 +145,7 @@ namespace ProvidersTest
             Assert.IsTrue(prov.IsPrepared);
             Assert.IsTrue(prov.IsConnected);
 
-            var mlist = con.ReadingSignals["Ob.SigB"].GetValue();
+            var mlist = con.ReadingSignals["Ob.SigB"].OutValue;
             Assert.AreEqual(13, mlist.Count);
             Assert.AreEqual(D(0), mlist.TimeI(0));
             Assert.AreEqual(false, mlist.BooleanI(0));
@@ -160,7 +160,7 @@ namespace ProvidersTest
             Assert.AreEqual(ErrQuality.Error, mlist.ErrorI(7).Quality);
             Assert.AreEqual("Ошибка клона", mlist.ErrorI(7).Text);
 
-            mlist = con.ReadingSignals["Ob.SigI"].GetValue();
+            mlist = con.ReadingSignals["Ob.SigI"].OutValue;
             Assert.AreEqual(16, mlist.Count);
             Assert.AreEqual(D(0), mlist.TimeI(0));
             Assert.AreEqual(2, mlist.IntegerI(0));
@@ -173,7 +173,7 @@ namespace ProvidersTest
             Assert.AreEqual(4, mlist.IntegerI(15));
             Assert.IsNull(mlist.ErrorI(15));
 
-            mlist = con.ReadingSignals["Ob.SigR"].GetValue();
+            mlist = con.ReadingSignals["Ob.SigR"].OutValue;
             Assert.AreEqual(18, mlist.Count);
             Assert.AreEqual(D(0), mlist.TimeI(0));
             Assert.AreEqual(2, mlist.RealI(0));
@@ -191,7 +191,7 @@ namespace ProvidersTest
             Assert.AreEqual(ErrQuality.Warning, mlist.ErrorI(4).Quality);
             Assert.AreEqual("Предупреждение клона", mlist.ErrorI(4).Text);
 
-            mlist = con.ReadingSignals["Ob.SigS"].GetValue();
+            mlist = con.ReadingSignals["Ob.SigS"].OutValue;
             Assert.AreEqual(5, mlist.Count);
             Assert.AreEqual(D(0), mlist.TimeI(0));
             Assert.AreEqual("a", mlist.StringI(0));
@@ -205,7 +205,7 @@ namespace ProvidersTest
             Assert.AreEqual("d", mlist.StringI(3));
             Assert.IsNull(mlist.ErrorI(3));
 
-            mlist = con.ReadingSignals["Ob.SigT"].GetValue();
+            mlist = con.ReadingSignals["Ob.SigT"].OutValue;
             Assert.AreEqual(4, mlist.Count);
             Assert.AreEqual(D(0), mlist.TimeI(0));
             Assert.AreEqual(D(0), mlist.DateI(0));
@@ -221,7 +221,7 @@ namespace ProvidersTest
             Assert.AreEqual(ErrQuality.Error, mlist.ErrorI(3).Quality);
             Assert.AreEqual("Ошибка клона", mlist.ErrorI(3).Text);
 
-            mlist = con.ReadingSignals["ObConst.SigB"].GetValue();
+            mlist = con.ReadingSignals["ObConst.SigB"].OutValue;
             Assert.AreEqual(1, mlist.Count);
             Assert.AreEqual(D(0), mlist.TimeI(0));
             Assert.AreEqual(true, mlist.BooleanI(0));
@@ -229,13 +229,13 @@ namespace ProvidersTest
             Assert.AreEqual(ErrQuality.Error, mlist.ErrorI(0).Quality);
             Assert.AreEqual("Ошибка клона", mlist.ErrorI(0).Text);
 
-            mlist = con.ReadingSignals["ObConst.SigR"].GetValue();
+            mlist = con.ReadingSignals["ObConst.SigR"].OutValue;
             Assert.AreEqual(1, mlist.Count);
             Assert.AreEqual(D(0), mlist.TimeI(0));
             Assert.AreEqual(1.5, mlist.RealI(0));
             Assert.IsNull(mlist.ErrorI(0));
 
-            mlist = con.ReadingSignals["ObConst.SigS"].GetValue();
+            mlist = con.ReadingSignals["ObConst.SigS"].OutValue;
             Assert.AreEqual(1, mlist.Count);
             Assert.AreEqual(D(0), mlist.TimeI(0));
             Assert.AreEqual("sss", mlist.StringI(0));
@@ -257,7 +257,7 @@ namespace ProvidersTest
             con.AddSignal("ObConst.SigS", DataType.String, SignalType.Uniform, "ObConst.SigS");
 
             GetValues(con, D(12), D(20));
-            var mlist = con.ReadingSignals["Ob.SigB"].GetValue();
+            var mlist = con.ReadingSignals["Ob.SigB"].OutValue;
             Assert.AreEqual(5, mlist.Count);
             Assert.AreEqual(D(11), mlist.TimeI(0));
             Assert.AreEqual(true, mlist.BooleanI(0));
@@ -271,7 +271,7 @@ namespace ProvidersTest
             Assert.AreEqual(false, mlist.BooleanI(4));
             Assert.IsNull(mlist.ErrorI(4));
 
-            mlist = con.ReadingSignals["Ob.SigI"].GetValue();
+            mlist = con.ReadingSignals["Ob.SigI"].OutValue;
             Assert.AreEqual(5, mlist.Count);
             Assert.AreEqual(D(11), mlist.TimeI(0));
             Assert.AreEqual(1, mlist.IntegerI(0));
@@ -283,7 +283,7 @@ namespace ProvidersTest
             Assert.AreEqual(2, mlist.IntegerI(4));
             Assert.IsNull(mlist.ErrorI(4));
 
-            mlist = con.ReadingSignals["Ob.SigS"].GetValue();
+            mlist = con.ReadingSignals["Ob.SigS"].OutValue;
             Assert.AreEqual(2, mlist.Count);
             Assert.AreEqual(D(7), mlist.TimeI(0));
             Assert.AreEqual("b", mlist.StringI(0));
@@ -294,7 +294,7 @@ namespace ProvidersTest
             Assert.AreEqual(ErrQuality.Error, mlist.ErrorI(1).Quality);
             Assert.AreEqual("Ошибка клона", mlist.ErrorI(1).Text);
 
-            mlist = con.ReadingSignals["Ob.SigT"].GetValue();
+            mlist = con.ReadingSignals["Ob.SigT"].OutValue;
             Assert.AreEqual(2, mlist.Count);
             Assert.AreEqual(D(4, 28), mlist.TimeI(0));
             Assert.AreEqual(D(10), mlist.DateI(0));
@@ -305,7 +305,7 @@ namespace ProvidersTest
             Assert.AreEqual(ErrQuality.Warning, mlist.ErrorI(1).Quality);
             Assert.AreEqual("Предупреждение клона", mlist.ErrorI(1).Text);
 
-            mlist = con.ReadingSignals["ObConst.SigI"].GetValue();
+            mlist = con.ReadingSignals["ObConst.SigI"].OutValue;
             Assert.AreEqual(1, mlist.Count);
             Assert.AreEqual(D(0), mlist.TimeI(0));
             Assert.AreEqual(10, mlist.IntegerI(0));
@@ -313,7 +313,7 @@ namespace ProvidersTest
             Assert.AreEqual(ErrQuality.Warning, mlist.ErrorI(0).Quality);
             Assert.AreEqual("Предупреждение клона", mlist.ErrorI(0).Text);
 
-            mlist = con.ReadingSignals["ObConst.SigS"].GetValue();
+            mlist = con.ReadingSignals["ObConst.SigS"].OutValue;
             Assert.AreEqual(1, mlist.Count);
             Assert.AreEqual(D(0), mlist.TimeI(0));
             Assert.AreEqual("sss", mlist.StringI(0));

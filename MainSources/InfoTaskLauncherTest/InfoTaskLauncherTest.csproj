@@ -47,9 +47,6 @@
   <ItemGroup>
     <Compile Include="Launcher\LauncherFictiveTest.cs" />
     <Compile Include="Launcher\LoggerLauncherTest.cs" />
-    <Compile Include="Lib\TestApp.cs" />
-    <Compile Include="Lib\TestItLauncher.cs" />
-    <Compile Include="Lib\TestProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

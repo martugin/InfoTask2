@@ -48,9 +48,6 @@ namespace ProvidersLibrary
             return ErrPool.MakeError(number, addr);
         }
 
-        //Очистка значений сигналов
-        protected virtual void ClearSignalsValues() {}
-
         //Чтение значений из провайдера
         protected abstract ValuesCount ReadProviderValues();
 
@@ -60,7 +57,7 @@ namespace ProvidersLibrary
             var vcount = new ValuesCount();
             try
             {
-                ClearSignalsValues();
+                SourceConnect.ClearSignalsValues(false);
                 using (Start(5, 10))
                     if (!Connect() || !Prepare())
                         return new ValuesCount(VcStatus.Fail);
@@ -90,7 +87,7 @@ namespace ProvidersLibrary
             finally
             {
                 AddErrorOutsWarning();
-                PrevPeriodEnd = PeriodEnd;
+                PrevProcessEnd = PeriodEnd;
             }
             return vcount;
         }

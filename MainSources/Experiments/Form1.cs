@@ -40,10 +40,11 @@ namespace Experiments
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var it = new TestItLauncher();
+            var it = new ItLauncher();
             it.Initialize("Experiments");
             it.Finished += OnFinished;
-            it.MakeCloneSync(ItStatic.InfoTaskDir() + @"LocalData\RunItLauncher\Clone");
+            var cloner = it.LoadCloner("FictiveSimpleSource", "Label=fic");
+            cloner.MakeCloneSync(ItStatic.InfoTaskDir() + @"LocalData\RunItLauncher\FictiveSimpleClone");
         }
 
         private void OnFinished()

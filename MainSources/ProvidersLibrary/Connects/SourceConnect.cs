@@ -66,6 +66,18 @@ namespace ProvidersLibrary
             return _readingSignals.Add(fullCode, sig);
         }
 
+        //Удалить сигнал
+        public void RemoveSignal(string fullCode)
+        {
+            Provider.IsPrepared = false;
+            if (_readingSignals.ContainsKey(fullCode))
+                _readingSignals.Remove(fullCode);
+            if (InitialSignals.ContainsKey(fullCode))
+                InitialSignals.Remove(fullCode);
+            if (CalcSignals.ContainsKey(fullCode))
+                CalcSignals.Remove(fullCode);
+        }
+
         //Добавить расчетный сигнал
         public CalcSignal AddCalcSignal(string fullCode, //Полный код сигнала
                                                         string objectCode, //Код объекта
@@ -93,7 +105,7 @@ namespace ProvidersLibrary
         }
 
         //Очистка значений сигналов
-        internal void ClearSignalsValues(bool clearBegin)
+        public void ClearSignalsValues(bool clearBegin)
         {
             AddEvent("Очистка значений сигналов");
             foreach (var sig in _readingSignals.Values)

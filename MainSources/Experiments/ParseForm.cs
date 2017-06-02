@@ -15,22 +15,19 @@ namespace Experiments
 
         private void ButCondition_Click(object sender, EventArgs e)
         {
-            var logger = new Logger(new TestHistory(), new TestIndicator());
-            var generator = new ModuleGenerator(logger, null, null, null);
+            var generator = new ModuleGenerator(TestLib.CreateTestLogger(), null, null, null);
             Result.Text = new RuleParsing(new GenKeeper(generator), "поле", Formula.Text).ToTestString();
         }
 
         private void ButSubCondition_Click(object sender, EventArgs e)
         {
-            var logger = new Logger(new TestHistory(), new TestIndicator());
-            var generator = new ModuleGenerator(logger, null, null, null);
+            var generator = new ModuleGenerator(TestLib.CreateTestLogger(), null, null, null);
             Result.Text = new SubRuleParsing(new GenKeeper(generator), "поле", Formula.Text).ToTestString();
         }
 
         private void ButGenField_Click(object sender, EventArgs e)
         {
-            var logger = new Logger(new TestHistory(), new TestIndicator());
-            var generator = new ModuleGenerator(logger, null, null, null);
+            var generator = new ModuleGenerator(TestLib.CreateTestLogger(), null, null, null);
             Result.Text = new FieldsParsing(new GenKeeper(generator), "поле", Formula.Text).ToTestString();
         }
     }

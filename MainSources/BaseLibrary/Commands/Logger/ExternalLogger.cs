@@ -63,6 +63,15 @@ namespace BaseLibrary
         {
             Logger.RunSyncCommand(beg, en, action);
         }
+        //Запуск асинхронной команды Collect
+        public void RunAsyncCommand(Action action)
+        {
+            Logger.RunAsyncCommand(action);
+        }
+        public void RunAsyncCommand(DateTime beg, DateTime en, Action action)
+        {
+            Logger.RunAsyncCommand(beg, en, action);
+        }
 
         //Запись результатов в команду Collect
         public void AddCollectResult(string result)
@@ -91,8 +100,8 @@ namespace BaseLibrary
         }
 
         //Начало, конец и режим периода обработки
-        public DateTime PeriodBegin { get { return Logger.PeriodBegin; } }
-        public DateTime PeriodEnd { get { return Logger.PeriodEnd; } }
+        public virtual DateTime PeriodBegin { get { return Logger.PeriodBegin; } }
+        public virtual DateTime PeriodEnd { get { return Logger.PeriodEnd; } }
         public string PeriodMode { get { return Logger.PeriodMode; } }
 
         //Запуск команды логирования в SuperHistory и отображения индикатора

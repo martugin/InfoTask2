@@ -30,7 +30,7 @@ namespace ProvidersLibrary
         {
             MomList.Clear();
             _endMom.Time = Static.MinDate;
-            if (Connect.PeriodBegin != Connect.Provider.PrevPeriodEnd)
+            if (Connect.PeriodBegin != Connect.Provider.PrevProcessEnd)
                 _beginMom.Time = Static.MinDate;
         }
 

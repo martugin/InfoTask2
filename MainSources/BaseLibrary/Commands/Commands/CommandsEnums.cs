@@ -35,6 +35,21 @@
                     return "Повтор";
             }
             return "Успешно";
-        }    
+        }
+
+        public static string ToEnglish(this LoggerStability stability)
+        {
+            switch (stability)
+            {
+                case LoggerStability.Periodic:
+                    return "Reriodic";
+                case LoggerStability.Single:
+                    return "Single";
+                case LoggerStability.RealTimeFast:
+                case LoggerStability.RealTimeSlow:
+                    return "RealTime";
+            }
+            return null;
+        }
     }
 }

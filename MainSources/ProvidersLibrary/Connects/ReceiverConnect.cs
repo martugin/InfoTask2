@@ -26,6 +26,13 @@ namespace ProvidersLibrary
         internal DicS<ReceiverSignal> ReceiverSignals {get { return _receiverSignals; }}
         public IDicSForRead<IWriteSignal> WritingSignals { get { return ReceiverSignals; } }
 
+        //Очистка списка сигналов
+        public override void ClearSignals()
+        {
+            base.ClearSignals();
+            _receiverSignals.Clear();
+        }
+
         //Добавить сигнал
         public ReceiverSignal AddSignal(string fullCode, //Полный код сигнала
                                                          DataType dataType, //Тип данных
@@ -42,8 +49,16 @@ namespace ProvidersLibrary
             return ReceiverSignals.Add(fullCode, new ReceiverSignal(this, fullCode, dataType, contextOut, inf));
         }
 
+        //Удалить сигнал
+        public void RemoveSignal(string fullCode)
+        {
+            Provider.IsPrepared = false;
+            if (_receiverSignals.ContainsKey(fullCode))
+                _receiverSignals.Remove(fullCode);
+        }
+
         //Запись значений в приемник
-        public void WriteValues() 
+        public void WriteValues()
         {
             if (PeriodIsUndefined()) return;
             if (Start(0, 80).Run(PutValues).IsSuccess) return;

@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Threading;
-using BaseLibraryTest;
+using BaseLibrary;
+using ComLaunchers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InfoTaskLauncherTest
 {
     [TestClass]
-    public class LoggerLauncherTest : TestItLauncher
+    public class LoggerLauncherTest : ItLauncher
     {
         public LoggerLauncherTest()
         {
-            TestInitialize("Test");
+            InitializeTest();
         }
 
         public void MakeIndicatorEvents()

@@ -2,8 +2,10 @@
 using BaseLibrary;
 using BaseLibraryTest;
 using CommonTypes;
+using InfoTaskLauncherTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mir;
+using ProcessingLibrary;
 using ProvidersLibrary;
 
 namespace ProvidersTest
@@ -317,10 +319,10 @@ namespace ProvidersTest
         public void Clone()
         {
             TestLib.CopyDir(@"Providers\Mir", "Clone");
-            
-            var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = new ClonerConnect(logger, factory);
+
+            var app = new ProcessApp("Test", new TestIndicator());
+            var con = new ClonerConnect(app);
+            con.JoinProvider(app.ProvidersFactory.CreateProvider(app, "MirSource", TestLib.TestSqlInf("EnergyRes")));
             var cloneDir = TestLib.TestRunDir + @"Providers\Mir\Clone\";
             SysTabl.PutValueS(cloneDir + "Clone.accdb", "SourceInf", TestLib.TestSqlInf("EnergyRes"));
             using (con.StartPeriod(D(48), D(96), "Single"))
