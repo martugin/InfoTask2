@@ -45,7 +45,7 @@ namespace Ovation
         private MomErr ReadError(double? fValue, int? rawValue, int? sts)
         {
             //Недостоверность 8 и 9 бит, 00 - good, 01 - fair(имитация), 10 - poor(зашкал), 11 - bad
-            if (sts == null || (rawValue == null && fValue == null))
+            if (sts == null || rawValue == null && fValue == null)
                 return MakeError(4);//нет данных
             bool b8 = ((int)sts).GetBit(8), b9 = ((int)sts).GetBit(9);
             if (!b8 && !b9) return null;
