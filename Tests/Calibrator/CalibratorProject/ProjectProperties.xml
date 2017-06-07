@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл свойств проекта (ProjectProperties.xml)-->
+<ProjectProperties ProjectCode="CalibratorTestProject" ProjectName="Тестовый проект для калибратора" Description="" ProjectType="Calibrator">
+  <Connects>
+    <Source Code="Source1" Description="Источник 1" Complect="Fictive" />
+    <Source Code="Source2" Description="Источник 2" Complect="Fictive" />
+    <Receiver Code="MomentArchive" Description="Архив мгновенных значений" Complect="Fictive" />
+  </Connects>
+</ProjectProperties>

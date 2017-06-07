@@ -4,9 +4,9 @@ using CommonTypes;
 namespace Calculation
 {
     //Модуль, имеющий ссылку на каталог
-    public class DataModule : BaseModule
+    public abstract class DataModule : BaseModule
     {
-        public DataModule(SchemeProject project, string code) 
+        protected DataModule(SchemeProject project, string code) 
             : base(project, code)
         {
             Project = project;
