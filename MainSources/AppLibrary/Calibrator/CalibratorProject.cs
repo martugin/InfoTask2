@@ -6,8 +6,8 @@ namespace AppLibrary
     //Проект наладчика
     public class CalibratorProject : ProcessProject
     {
-        public CalibratorProject(App app, string projectDir, bool isTest = false)
-            : base(app, projectDir, isTest) { }
+        public CalibratorProject(App app, string projectDir)
+            : base(app, projectDir) { }
 
         //Поток чтения данных
         public RealTimeThread ReadThread { get; private set; }
@@ -35,6 +35,7 @@ namespace AppLibrary
             }
             ArchiveThread = OpenProxyThread(2, "Archive", aproxy);
             ArchiveThread.AddConnect("Archive");
+            ArchiveThread.Proxies.Add("ArchiveProxy", aproxy);
             UserThread = OpenRealTimeThread(3, "Return", periodSeconds);
             UserThread.Proxies.Add(ReturnConnect.Code, ReturnConnect);
         }

@@ -22,7 +22,7 @@ namespace ProcessingLibrary
     public abstract class BaseThread : ExternalLogger
     {
         protected BaseThread(ProcessProject project, int id, string name, IIndicator indicator, LoggerStability stability)
-            : base(new Logger(ItStatic.CreateHistory(project.AppCode + '\\' + project.Code + id), indicator, stability), project.Context, project.ProgressContext)
+            : base(new Logger(ItStatic.CreateHistory(project.App.Code + '\\' + project.Code + id), indicator, stability), project.Context, project.ProgressContext)
         {
             State = ThreadState.Stopped;
             Project = project;
@@ -75,8 +75,12 @@ namespace ProcessingLibrary
                 var scon = Project.SchemeConnects[code];
                 con = ProvidersFactory.CreateConnect(Logger, scon.Type, scon.Code, scon.Complect, Project.Code);
                 con = Connects.Add(code, con);
-                con.JoinProvider(ProvidersFactory.CreateProvider(Logger, scon.ProviderCode, scon.ProviderInf,
-                    Project.Code));
+                if (con.Type == ProviderType.Source)
+                    _sources.Add(con.Code, (SourceConnect)con);
+                if (con.Type == ProviderType.Receiver)
+                    _receivers.Add(con.Code, (ReceiverConnect)con);
+                if (!scon.ProviderCode.IsEmpty() && !scon.ProviderInf.IsEmpty())
+                    con.JoinProvider(ProvidersFactory.CreateProvider(Logger, scon.ProviderCode, scon.ProviderInf, Project.Code));
             }
             return con;
         }

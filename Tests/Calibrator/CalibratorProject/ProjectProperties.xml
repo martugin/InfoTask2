@@ -4,6 +4,6 @@
   <Connects>
     <Source Code="Source1" Description="Источник 1" Complect="Fictive" />
     <Source Code="Source2" Description="Источник 2" Complect="Fictive" />
-    <Receiver Code="MomentArchive" Description="Архив мгновенных значений" Complect="Fictive" />
+    <Receiver Code="Archive" Description="Архив мгновенных значений" Complect="Fictive" />
   </Connects>
 </ProjectProperties>

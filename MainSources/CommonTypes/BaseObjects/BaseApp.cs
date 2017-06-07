@@ -1,4 +1,5 @@
-﻿using BaseLibrary;
+﻿using System.IO;
+using BaseLibrary;
 
 namespace CommonTypes
 {
@@ -9,16 +10,31 @@ namespace CommonTypes
             : base(ItStatic.CreateHistory(code + '\\' + code), indicator)
         {
             Code = code;
+            InitLocalData();
         }
 
         //Коструктор для тестов
-        protected internal BaseApp() : base(new TestHistory(), new TestIndicator())
-        { 
-            Code = "Test";
+        protected internal BaseApp(string code = "Test") 
+            : base(new TestHistory(), new TestIndicator())
+        {
+            IsTest = true;
+            Code = code;
+            InitLocalData();
         }
 
+        //Является тестовым
+        internal bool IsTest { get; private set; }
         //Код приложения
         public string Code { get; private set; }
+        //Каталог проекта в LocalData
+        public string LocalDir { get; protected set; }
+        //Инициализация каталога в LocalData
+        private void InitLocalData()
+        {
+            LocalDir = ItStatic.InfoTaskDir() + (IsTest ? @"TestsRun" : "") + @"\LocalData\" + Code + @"\";
+            var dir = new DirectoryInfo(LocalDir);
+            if (!dir.Exists) dir.Create();
+        }
 
         //Todo реализовать через VerSyn
         //Номер програмного продукта
