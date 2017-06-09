@@ -9,6 +9,7 @@ namespace ProcessingLibrary
         {
             InSignal = signal;
             ConnectCode = connectCode;
+            OutValue = MFactory.NewList(DataType);
         }
 
         //Код и тип данных

@@ -9,6 +9,7 @@ namespace CommonTypes
         public BaseApp(string code, IIndicator indicator)
             : base(ItStatic.CreateHistory(code + '\\' + code), indicator)
         {
+
             Code = code;
             InitLocalData();
         }

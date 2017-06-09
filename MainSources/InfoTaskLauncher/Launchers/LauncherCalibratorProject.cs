@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using AppLibrary;
 using CommonTypes;
 using ProcessingLibrary;
@@ -50,11 +51,14 @@ namespace ComLaunchers
     [ClassInterface(ClassInterfaceType.None)]
     public class LauncherCalibratorProject : ILauncherCalibratorProject
     {
-        public LauncherCalibratorProject(CalibratorProject project)
+        internal LauncherCalibratorProject(ItLauncher launcher, CalibratorProject project)
         {
+            _launcher = launcher;
             _project = project;
         }
 
+        //Лаунчер
+        private readonly ItLauncher _launcher;
         //Ссылка на проект
         private readonly CalibratorProject _project;
 
@@ -75,7 +79,7 @@ namespace ComLaunchers
         }
 
         //Ссылки на прокси
-        private ProxyConnect UserProxy { get { return _project.ArchiveThread.Proxies["UserProxy"]; } }
+        private ProxyConnect UserProxy { get { return _project.UserThread.Proxies["UserProxy"]; } }
         private ProxyConnect ArchiveProxy { get { return _project.ArchiveThread.Proxies["ArchiveProxy"]; } }
 
         //Добавить сигнал
@@ -87,34 +91,56 @@ namespace ComLaunchers
                                                                       string infOut = "", //Свойства выхода относительно объекта
                                                                       string infProp = "") //Свойства сигнала относительно выхода
         {
-            var con = _project.ReadThread.Sources[connectCode];
-            var sig = con.AddSignal(fullCode, dataType.ToDataType(), signalType.ToSignalType(), infObject, infOut, infProp);
-            ArchiveProxy.AddSignal(con, sig);
-            return new LauncherRealTimeSignal(UserProxy.AddSignal(con, sig));
+            try
+            {
+                var con = _project.ReadThread.Sources[connectCode];
+                var sig = con.AddSignal(fullCode, dataType.ToDataType(), signalType.ToSignalType(), infObject, infOut, infProp);
+                ArchiveProxy.AddSignal(con, sig);
+                return new LauncherRealTimeSignal(UserProxy.AddSignal(con, sig));
+            }
+            catch (Exception ex)
+            {
+                _project.AddError("Ошибка добавления сигнала", ex);
+            }
+            return null;
         }
 
         //Удалить сигнал
         public void RemoveSignal(string connectCode, string fullCode)
         {
-            var con = _project.ReadThread.Sources[connectCode];
-            con.RemoveSignal(fullCode);
-            UserProxy.RemoveSignal(connectCode, fullCode);
-            ArchiveProxy.RemoveSignal(connectCode, fullCode);
+            try
+            {
+                var con = _project.ReadThread.Sources[connectCode];
+                con.RemoveSignal(fullCode);
+                UserProxy.RemoveSignal(connectCode, fullCode);
+                ArchiveProxy.RemoveSignal(connectCode, fullCode);
+            }
+            catch (Exception ex)
+            {
+                _project.AddError("Ошибка удаления сигнала", ex);
+            }
         }
 
         //Очистить список сигналов
         public void ClearSignals()
         {
-            foreach (var p in _project.ArchiveThread.Proxies.Values)
-                p.ClearSignals();
-            foreach (var p in _project.ArchiveThread.Receivers.Values)
-                p.ClearSignals();
-            foreach (var p in _project.UserThread.Proxies.Values)
-                p.ClearSignals();
-            foreach (var p in _project.ReadThread.Proxies.Values)
-                p.ClearSignals();
-            foreach (var p in _project.ReadThread.Sources.Values)
-                p.ClearSignals();
+            try
+            {
+                foreach (var p in _project.ArchiveThread.Proxies.Values)
+                    p.ClearSignals();
+                foreach (var p in _project.ArchiveThread.Receivers.Values)
+                    p.ClearSignals();
+                foreach (var p in _project.UserThread.Proxies.Values)
+                    p.ClearSignals();
+                foreach (var p in _project.ReadThread.Proxies.Values)
+                    p.ClearSignals();
+                foreach (var p in _project.ReadThread.Sources.Values)
+                    p.ClearSignals();
+            }
+            catch (Exception ex)
+            {
+                _project.AddError("Ошибка очистки списка сигналов", ex);
+            }
         }
 
         //Запуск процесса
@@ -132,7 +158,8 @@ namespace ComLaunchers
         //Присвоить в сигналы текущие значения
         public void ReadValues()
         {
-            UserProxy.ReadValues();
+            try { UserProxy.ReadValues(); }
+            catch (Exception ex) { _project.AddError("Ошиба при фиксации значений", ex); }
         }
     }
 }

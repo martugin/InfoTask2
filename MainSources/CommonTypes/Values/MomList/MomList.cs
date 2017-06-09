@@ -73,10 +73,16 @@ namespace CommonTypes
         public string StringI(int i) { return MeanI(i).String; }
         public object ObjectI(int i) { return MeanI(i).Object; }
 
+        //Недопустимый текущий номер
+        private bool WrongNum { get { return CurNum < 0 || CurNum >= _times.Count; }}
+
         //Значение по CurNum
         public bool Boolean
         {
-            get { return MeanI(CurNum).Boolean; }
+            get
+            {
+                return !WrongNum && MeanI(CurNum).Boolean;
+            }
             set
             {
                 BufMom.Boolean = value;
@@ -86,7 +92,10 @@ namespace CommonTypes
 
         public int Integer
         {
-            get { return MeanI(CurNum).Integer; }
+            get
+            {
+                return WrongNum ? 0 : MeanI(CurNum).Integer;
+            }
             set
             {
                 BufMom.Integer = value;
@@ -96,7 +105,10 @@ namespace CommonTypes
 
         public double Real
         {
-            get { return MeanI(CurNum).Real; }
+            get
+            {
+                return WrongNum ? 0.0 : MeanI(CurNum).Real;
+            }
             set
             {
                 BufMom.Real = value;
@@ -106,7 +118,10 @@ namespace CommonTypes
 
         public DateTime Date
         {
-            get { return MeanI(CurNum).Date; }
+            get
+            {
+                return WrongNum ? Static.MinDate : MeanI(CurNum).Date;
+            }
             set
             {
                 BufMom.Date = value;
@@ -116,7 +131,10 @@ namespace CommonTypes
 
         public string String
         {
-            get { return MeanI(CurNum).String; }
+            get
+            {
+                return WrongNum ? "" : MeanI(CurNum).String;
+            }
             set
             {
                 BufMom.String = value;
@@ -126,7 +144,10 @@ namespace CommonTypes
 
         public object Object
         {
-            get { return MeanI(CurNum).Object; }
+            get
+            {
+                return WrongNum ? 0 : MeanI(CurNum).Object;
+            }
             set
             {
                 BufMom.Object = value;
@@ -137,15 +158,15 @@ namespace CommonTypes
         //Сравнение значений и ошибок
         public bool ValueEquals(IBaseMean mean)
         {
-            return MeanI(CurNum).ValueEquals(mean);
+            return !WrongNum && MeanI(CurNum).ValueEquals(mean);
         }
         public bool ValueLess(IBaseMean mean)
         {
-            return MeanI(CurNum).ValueLess(mean);
+            return !WrongNum && MeanI(CurNum).ValueLess(mean);
         }
         public bool ValueAndErrorEquals(IBaseMean mean)
         {
-            return MeanI(CurNum).ValueAndErrorEquals(mean);
+            return !WrongNum && MeanI(CurNum).ValueAndErrorEquals(mean);
         }
 
         //Запись значения в рекордсет rec, поле field
@@ -155,7 +176,8 @@ namespace CommonTypes
         }
         public void ValueToRec(IRecordAdd rec, string field)
         {
-            MeanI(CurNum).ValueToRec(rec, field);
+            if (!WrongNum)
+                MeanI(CurNum).ValueToRec(rec, field);
         }
         public void ValueFromRec(IRecordRead rec, string field)
         {
