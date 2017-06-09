@@ -118,6 +118,11 @@ namespace ProvidersLibrary
         public ValuesCount GetValues()
         {
             var vc = new ValuesCount();
+            if (Provider == null)
+            {
+                AddWarning("Источник не настроен");
+                return vc;
+            }
             if (PeriodIsUndefined()) return vc;
             using (Start(0, 80))
             {

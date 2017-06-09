@@ -19,6 +19,123 @@
     <Comm Description="Коммуникатор" InstallDate="" />
   </Packages>
   <Providers>
+    <Archives Description="Провайдеры для с архивов результатов расчета">
+      <AccessArchive ProviderType="Архив" Description="Архив в формате Access">
+        <ProviderProps>
+          <DatabaseFile PropNum="1" Description="Файл архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </DatabaseFile>
+        </ProviderProps>
+      </AccessArchive>
+      <SQLServerArchive ProviderType="Архив" Description="Архив в формате SQL-сервер">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="3" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="4" Description="Пароль входа" />
+          <Database PropNum="5" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+        </ProviderProps>
+      </SQLServerArchive>
+      <AccessArchiveSource ProviderType="Источник" Description="Архив в формате Access как источник, один модуль" SignalType="Список">
+        <ProviderProps>
+          <DatabaseFile PropNum="1" Description="Файл архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </DatabaseFile>
+          <ModuleCode PropNum="2" Description="Код модуля в архиве">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ModuleCode>
+        </ProviderProps>
+      </AccessArchiveSource>
+      <SQLServerArchiveSource ProviderType="Источник" Description="Архив в формате SQL-сервера как источник, один модуль" SignalType="Список">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="3" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="4" Description="Пароль входа" />
+          <Database PropNum="5" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+          <ModuleCode PropNum="6" Description="Код модуля в архиве">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ModuleCode>
+        </ProviderProps>
+      </SQLServerArchiveSource>
+      <ArchiveAccessComm ProviderType="Коммуникатор" Description="Архив в формате Access как коммуникатор, один модуль">
+        <ProviderProps>
+          <DatabaseFile PropNum="1" Description="Файл архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </DatabaseFile>
+          <ModuleCode PropNum="2" Description="Код модуля в архиве">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ModuleCode>
+        </ProviderProps>
+      </ArchiveAccessComm>
+      <ArchiveSQLServerComm ProviderType="Коммуникатор" Description="Архив в формате SQL-сервера как коммуникатор, один модуль">
+        <ProviderProps>
+          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </SQLServer>
+          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
+            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
+          </IdentType>
+          <Login PropNum="3" Description="Логин пользователя">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </Login>
+          <Password PropNum="4" Description="Пароль входа" />
+          <Database PropNum="5" Description="База данных" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
+          </Database>
+          <ModuleCode PropNum="6" Description="Код модуля в архиве">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ModuleCode>
+        </ProviderProps>
+      </ArchiveSQLServerComm>
+      <ArchiveModuleComm ProviderType="Коммуникатор" Description="Архивные параметры модуля InfoTask">
+        <ProviderProps>
+          <ModuleCode PropNum="1" Description="Код модуля">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
+          </ModuleCode>
+        </ProviderProps>
+      </ArchiveModuleComm>
+    </Archives>
+    <Clones Description="Провайдеры архивов мгновенных значений InfoTask">
+      <CloneSource ProviderType="Источник" Description="Клон архива" SignalType="Список">
+        <ProviderProps>
+          <CloneFile PropNum="1" Description="Файл клона архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </CloneFile>
+        </ProviderProps>
+      </CloneSource>
+      <CloneComm ProviderType="Коммуникатор" Description="Клон архива">
+        <ProviderProps>
+          <CloneFile PropNum="1" Description="Файл клона архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </CloneFile>
+        </ProviderProps>
+      </CloneComm>
+      <CloneReceiverComm ProviderType="КоммуникаторПриемник" Description="Коммуникатор приемника, сигналы берутся из клона ">
+        <ProviderProps>
+          <CloneFile PropNum="1" Description="Файл клона архива" ButText...="">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
+          </CloneFile>
+        </ProviderProps>
+      </CloneReceiverComm>
+      <RealTimeArchive ProviderType="Приемник" Description="Архив мгновенных значений" SignalType="Приемник" />
+    </Clones>
     <Kosmotronika Description="Провайдеры для ПТК Космотроника-Венец" DllFile="Providers\Kosmotronika\Kosmotronika.dll">
       <KosmotronikaRetroSource ProviderType="Источник" Description="Ретро-сервер" SignalType="Список">
         <ProviderProps>
@@ -232,132 +349,16 @@
         </ProviderProps>
       </SimaticComm>
     </Simatic>
-    <Clones Description="Провайдеры архивов мгновенных значений InfoTask">
-      <CloneSource ProviderType="Источник" Description="Клон архива" SignalType="Список">
-        <ProviderProps>
-          <CloneFile PropNum="1" Description="Файл клона архива" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
-          </CloneFile>
-        </ProviderProps>
-      </CloneSource>
-      <CloneComm ProviderType="Коммуникатор" Description="Клон архива">
-        <ProviderProps>
-          <CloneFile PropNum="1" Description="Файл клона архива" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
-          </CloneFile>
-        </ProviderProps>
-      </CloneComm>
-      <CloneReceiverComm ProviderType="КоммуникаторПриемник" Description="Коммуникатор приемника, сигналы берутся из клона ">
-        <ProviderProps>
-          <CloneFile PropNum="1" Description="Файл клона архива" ButText...="">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
-          </CloneFile>
-        </ProviderProps>
-      </CloneReceiverComm>
-    </Clones>
-    <Archives Description="Провайдеры для с архивов результатов расчета">
-      <AccessArchive ProviderType="Архив" Description="Архив в формате Access">
-        <ProviderProps>
-          <DatabaseFile PropNum="1" Description="Файл архива" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
-          </DatabaseFile>
-        </ProviderProps>
-      </AccessArchive>
-      <SQLServerArchive ProviderType="Архив" Description="Архив в формате SQL-сервер">
-        <ProviderProps>
-          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
-          </SQLServer>
-          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
-            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
-          </IdentType>
-          <Login PropNum="3" Description="Логин пользователя">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
-          </Login>
-          <Password PropNum="4" Description="Пароль входа" />
-          <Database PropNum="5" Description="База данных" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
-          </Database>
-        </ProviderProps>
-      </SQLServerArchive>
-      <AccessArchiveSource ProviderType="Источник" Description="Архив в формате Access как источник, один модуль" SignalType="Список">
-        <ProviderProps>
-          <DatabaseFile PropNum="1" Description="Файл архива" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
-          </DatabaseFile>
-          <ModuleCode PropNum="2" Description="Код модуля в архиве">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
-          </ModuleCode>
-        </ProviderProps>
-      </AccessArchiveSource>
-      <SQLServerArchiveSource ProviderType="Источник" Description="Архив в формате SQL-сервера как источник, один модуль" SignalType="Список">
-        <ProviderProps>
-          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
-          </SQLServer>
-          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
-            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
-          </IdentType>
-          <Login PropNum="3" Description="Логин пользователя">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
-          </Login>
-          <Password PropNum="4" Description="Пароль входа" />
-          <Database PropNum="5" Description="База данных" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
-          </Database>
-          <ModuleCode PropNum="6" Description="Код модуля в архиве">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
-          </ModuleCode>
-        </ProviderProps>
-      </SQLServerArchiveSource>
-      <ArchiveAccessComm ProviderType="Коммуникатор" Description="Архив в формате Access как коммуникатор, один модуль">
-        <ProviderProps>
-          <DatabaseFile PropNum="1" Description="Файл архива" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл архива Access&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
-          </DatabaseFile>
-          <ModuleCode PropNum="2" Description="Код модуля в архиве">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
-          </ModuleCode>
-        </ProviderProps>
-      </ArchiveAccessComm>
-      <ArchiveSQLServerComm ProviderType="Коммуникатор" Description="Архив в формате SQL-сервера как коммуникатор, один модуль">
-        <ProviderProps>
-          <SQLServer PropNum="1" Description="Имя SQL-сервера" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
-          </SQLServer>
-          <IdentType PropNum="2" Description="Тип идентификации" DefaultValue="Windows">
-            <PropOptions RowSourceType="Value List" RowSource="Windows;SqlServer" />
-          </IdentType>
-          <Login PropNum="3" Description="Логин пользователя">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
-          </Login>
-          <Password PropNum="4" Description="Пароль входа" />
-          <Database PropNum="5" Description="База данных" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="ConnectSqlServer" />
-          </Database>
-          <ModuleCode PropNum="6" Description="Код модуля в архиве">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
-          </ModuleCode>
-        </ProviderProps>
-      </ArchiveSQLServerComm>
-      <ArchiveModuleComm ProviderType="Коммуникатор" Description="Архивные параметры модуля InfoTask">
-        <ProviderProps>
-          <ModuleCode PropNum="1" Description="Код модуля">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" />
-          </ModuleCode>
-        </ProviderProps>
-      </ArchiveModuleComm>
-    </Archives>
     <Fictive Description="Отладочные провайдеры" DllFile="Providers\Fictive\Fictive.dll">
       <FictiveSimpleSource ProviderType="Источник" Description="Простой отладочный источник" SignalType="Список">
-        <ProviderProps></ProviderProps>
+        <ProviderProps>
+          <ValueForming PropNum="1" Description="Способ формирования значений" DefaultValue="Uniform">
+            <PropOptions RowSourceType="Value List" RowSource="Uniform;Time" />
+          </ValueForming>
+        </ProviderProps>
       </FictiveSimpleSource>
       <FictiveSource ProviderType="Источник" Description="Сложный отладочный источник" SignalType="Список">
-        <ProviderProps>
-          <DbFile PropNum="1" Description="Файл со списком значений" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл отладочных значений&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
-          </DbFile>
-        </ProviderProps>
+        <ProviderProps></ProviderProps>
       </FictiveSource>
       <FictiveComm ProviderType="Коммуникатор" Description="Фиктивный коммуникатор">
         <ProviderProps>

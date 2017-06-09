@@ -127,7 +127,7 @@ namespace ComLaunchers
         //Закрытие клиента
         public void Close()
         {
-            App.ExecutionFinished -= OnExecutionFinished;
+            try { App.ExecutionFinished -= OnExecutionFinished; } catch {}
             App.Dispose();
             App = null;
             Thread.Sleep(100);

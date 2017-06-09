@@ -1,5 +1,4 @@
-﻿using System;
-using BaseLibrary;
+﻿using BaseLibrary;
 using CommonTypes;
 
 namespace ProvidersLibrary
@@ -40,6 +39,7 @@ namespace ProvidersLibrary
         //Переключение текущего провайдера, возвращает true, если переключение произошло
         protected bool ChangeProvider()
         {
+            if (Provider == null) return false;
             if (Provider == _mainProvider && _reserveProvider != null)
             {
                 Provider = _reserveProvider;
@@ -60,6 +60,7 @@ namespace ProvidersLibrary
         //Возвращает TimeInterval(Static.MinDate, DateTime.Now) если провайдер не позволяет определять диапазон
         public TimeInterval GetTime()
         {
+            if (Provider == null) return TimeInterval.CreateDefault();
             var ti = Provider.GetTime();
             if (ti.IsDefault && ChangeProvider())
                 return Provider.GetTime();
@@ -77,6 +78,7 @@ namespace ProvidersLibrary
         //Очистка списка сигналов
         public virtual void ClearSignals()
         {
+            if (Provider == null) return;
             AddEvent("Очистка списка сигналов");
             Provider.IsPrepared = false;
             Provider.ClearOuts();

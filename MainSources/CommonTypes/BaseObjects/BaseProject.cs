@@ -16,13 +16,12 @@ namespace CommonTypes
             Code = projectCode;
             Name = projectName;
             ProgressContext = Context = projectCode;
-            LocalDir = ItStatic.InfoTaskDir() + @"LocalData\" + AppCode + @"\" + Code + @"\";
+            LocalDir = App.LocalDir + @"\" + Code + @"\";
+            Static.CopyDir(ItStatic.TemplatesDir + @"LocalData\" + App.Code, LocalDir, false);
         }
 
         //Приложение
         public BaseApp App { get; private set; }
-        //Код приложения
-        public string AppCode { get { return App.Code; } }
 
         //Код и имя проекта
         public string Code { get; private set; }

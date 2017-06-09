@@ -6,8 +6,8 @@ namespace ProcessingLibrary
     //Проект с возможностью управления обработкой мгновенных данных (расчеты и т.п.)
     public class ProcessProject : SchemeProject
     {
-        protected ProcessProject(ProcessApp app, string projectDir, bool isTest) 
-            : base(app, projectDir, isTest) { }
+        protected ProcessProject(ProcessApp app, string projectDir) 
+            : base(app, projectDir) { }
 
         //Потоки
         private readonly DicI<BaseThread> _threads = new DicI<BaseThread>();

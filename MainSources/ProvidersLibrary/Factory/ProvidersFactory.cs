@@ -65,6 +65,11 @@ namespace ProvidersLibrary
                                                       string inf, //Настройки
                                                       string projectCode = "") //Код проекта
         {
+            if (!ProviderConfigs.ContainsKey(code))
+            {
+                logger.AddWarning("Провайдер не указан или установлен", null, projectCode);
+                return null;
+            }
             var prc = ProviderConfigs[code];
             var pr = prc.Complect.Complect == "Clones" || prc.Complect.Complect == "Archives"
                          ? NewStandardProvider(prc)

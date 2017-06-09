@@ -7,8 +7,8 @@ namespace AppLibrary
     //Проект, вызываемый из приложения
     public class AppProject : ProcessProject
     {
-        public AppProject(App app, string projectDir, bool isTest = false)
-            : base(app, projectDir, isTest) { }
+        public AppProject(App app, string projectDir)
+            : base(app, projectDir) { }
 
         //Проект Таблика
         private TablikProject _tablik;

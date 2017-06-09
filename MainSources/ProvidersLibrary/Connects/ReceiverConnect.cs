@@ -73,6 +73,11 @@ namespace ProvidersLibrary
         {
             try
             {
+                if (Receiver == null)
+                {
+                    AddWarning("Приемник не настроен");
+                    return;
+                }
                 using (Start(0, 10))
                     if (!Receiver.Connect() || !Receiver.Prepare()) return;
 

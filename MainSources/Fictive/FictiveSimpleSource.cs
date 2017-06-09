@@ -6,7 +6,15 @@ using ProvidersLibrary;
 
 namespace Fictive
 {
-    //Фиктивный тестовый источник, реализация без чтения по блокам и OleDb
+    //Способ формирования значений фиктивного простого источника
+    internal enum ValueForming
+    {
+        Uniform, //По порядку от начала периода
+        Time //Исходя из времени
+    }
+
+    //-----------------------------------------------------------------------------------------------------
+    //Фиктивный простой тестовый источник, реализация без чтения по блокам и OleDb
     [Export(typeof(Provider))]
     [ExportMetadata("Code", "FictiveSimpleSource")]
     public class FictiveSimpleSource : ListSource
@@ -17,9 +25,11 @@ namespace Fictive
         protected override void ReadInf(DicS<string> dic)
         {
             Label = dic["Label"];
+            ValueForming = dic["ValueForming"] == "Time" ? ValueForming.Time : ValueForming.Uniform;
         }
-        //Метка правйдера, чтобы различать экземпляры
         internal string Label { get; private set; }
+        //Способ формирования значений
+        internal ValueForming ValueForming { get; private set; }
         
         //Диапазон источника
         protected override TimeInterval GetTimeProvider()
@@ -67,7 +77,11 @@ namespace Fictive
         {
             var vc = new ValuesCount();
             foreach (var ob in _outs.Values)
-                vc.WriteCount += ob.MakeUniformValues(PeriodBegin, PeriodBegin, true);
+            {
+                if (ValueForming == ValueForming.Uniform)
+                    vc.WriteCount += ob.MakeUniformValues(PeriodBegin, PeriodBegin, true);
+                else vc.WriteCount += ob.MakeTimeValues(PeriodBegin, PeriodBegin, true);
+            }
             return vc;
         }
         protected override ValuesCount ReadChanges()
@@ -80,7 +94,11 @@ namespace Fictive
 
             var vc = new ValuesCount();
             foreach (var ob in _outs.Values)
-                vc.WriteCount += ob.MakeUniformValues(PeriodBegin, PeriodEnd, false);
+            {
+                if (ValueForming == ValueForming.Uniform)
+                    vc.WriteCount += ob.MakeUniformValues(PeriodBegin, PeriodEnd, true);
+                else vc.WriteCount += ob.MakeTimeValues(PeriodBegin, PeriodEnd, true);
+            }
             return vc;
         }
 

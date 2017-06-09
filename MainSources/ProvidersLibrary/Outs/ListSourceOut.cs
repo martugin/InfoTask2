@@ -33,7 +33,6 @@ namespace ProvidersLibrary
             }
         }
       
-        
         //Добавление мгновенных значений во все сигналы объекта, используется только если источник - наследник AdoSource
         //Возвращает количество добавленных значений
         protected internal virtual int ReadMoments(IRecordRead rec) //Рекордсет, из которого читаются значения

@@ -80,12 +80,12 @@ namespace ComLaunchers
 
         //Добавить сигнал
         public LauncherRealTimeSignal AddSignal(string connectCode, //Код соединения источника
-                                         string fullCode, //Полный код сигнала
-                                         string dataType, //Тип данных
-                                         string signalType, //Тип сигнала
-                                         string infObject, //Свойства объекта
-                                         string infOut = "", //Свойства выхода относительно объекта
-                                         string infProp = "") //Свойства сигнала относительно выхода
+                                                                      string fullCode, //Полный код сигнала
+                                                                      string dataType, //Тип данных
+                                                                      string signalType, //Тип сигнала
+                                                                      string infObject, //Свойства объекта
+                                                                      string infOut = "", //Свойства выхода относительно объекта
+                                                                      string infProp = "") //Свойства сигнала относительно выхода
         {
             var con = _project.ReadThread.Sources[connectCode];
             var sig = con.AddSignal(fullCode, dataType.ToDataType(), signalType.ToSignalType(), infObject, infOut, infProp);
