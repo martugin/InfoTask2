@@ -57,7 +57,12 @@ namespace ProcessingLibrary
         }
         #endregion
 
-        protected override void Waiting() { }
+        //Задание периода расчета
+        protected override bool FirstPeriod()
+        {
+            ThreadPeriodEnd = ThreadFinishTime == Static.MaxDate ? ThreadPeriodBegin : ThreadFinishTime;
+            return true;
+        }
 
         //Цикл обработки
         #region Cycle

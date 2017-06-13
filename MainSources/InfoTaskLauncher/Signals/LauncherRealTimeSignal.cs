@@ -23,13 +23,12 @@ namespace ComLaunchers
         string String { get; }
     }
 
-
     //--------------------------------------------------------------------------------------------------------
 
     //Сигнал источника реального времени для внешнего использования через COM
     //Обертка над IReadSignal
     [ClassInterface(ClassInterfaceType.None)]
-    public class LauncherRealTimeSignal 
+    public class LauncherRealTimeSignal : ILauncherRealTimeSignal
     {
         internal LauncherRealTimeSignal(IReadSignal signal)
         {

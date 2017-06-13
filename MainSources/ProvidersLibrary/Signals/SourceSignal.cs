@@ -8,10 +8,10 @@ namespace ProvidersLibrary
     public abstract class SourceSignal : ProviderSignal, IReadSignal
     {
         //Значение или список значений
-        protected SourceSignal(SourceConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf) 
+        protected SourceSignal(SourceConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
             : base(connect, code, dataType, contextOut, inf) { }
 
-        protected SourceSignal(SourceConnect connect, string code) 
+        protected SourceSignal(SourceConnect connect, string code)
             : base(connect, code) { }
 
         //Значение

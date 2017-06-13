@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 using AppLibrary;
 using CommonTypes;
 using ProvidersLibrary;
@@ -37,6 +38,9 @@ namespace ComLaunchers
 
          //Создание соединения-клонера
         ILauncherCloner LoadCloner(string providerCode, string providerInf); //Код и настройки провайдера
+
+        //Загрузка проекта калибратора
+        ILauncherCalibratorProject LoadCalibratorProject(string projectDir); //Каталог проекта
 
         //Переопределение команд логгера
         #region Logger
@@ -198,7 +202,7 @@ namespace ComLaunchers
         //Загрузка проекта
         public ILauncherCalibratorProject LoadCalibratorProject(string projectDir) //Каталог проекта
         {
-            return new LauncherCalibratorProject(new CalibratorProject(App, projectDir));
+            return new LauncherCalibratorProject(this, new CalibratorProject(App, projectDir));
         }
 
         //Команды для конструктора, анализатора

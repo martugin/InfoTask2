@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using BaseLibrary;
+using CommonTypes;
 
 namespace ProcessingLibrary
 {
@@ -18,15 +19,6 @@ namespace ProcessingLibrary
         public double PeriodSeconds { get; set; }
         //Возможная задержка архивных источников в сукундах
         public double LateSeconds { get; set; }
-        
-        //Подготовка потока
-        protected override void Prepare()
-        {
-            using (StartProgress("Подготовка потока"))
-            {
-                Start(0, 60).Run(LoadModules);
-            }
-        }
 
         //Запуск процесса
         public void StartProcess()
@@ -41,13 +33,19 @@ namespace ProcessingLibrary
             if (timeout > 0) Thread.Sleep(timeout);
         }
 
+        //Определение первого периода 
+        protected override bool FirstPeriod()
+        {
+            ThreadPeriodEnd = ThreadPeriodBegin.AddSeconds(PeriodSeconds);
+            NextPeriodStart = ThreadPeriodEnd.AddSeconds(LateSeconds);
+            return NextPeriodStart.Subtract(ThreadFinishTime).TotalSeconds < 0.0001;
+        }
+
         //Определение следующего периода обработки, возвращает false, если следующй обработки не будет
         protected override bool NextPeriod()
         {
             ThreadPeriodBegin = ThreadPeriodBegin.AddSeconds(PeriodSeconds);
-            ThreadPeriodEnd = ThreadPeriodBegin.AddSeconds(PeriodSeconds);
-            NextPeriodStart = ThreadPeriodEnd.AddMinutes(LateSeconds);
-            return NextPeriodStart.Subtract(ThreadFinishTime).TotalSeconds > 0.1;
+            return FirstPeriod();
         }
         
         //Цикл обработки

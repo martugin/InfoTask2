@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.ButStart = new System.Windows.Forms.Button();
             this.PeriodLength = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -45,6 +46,7 @@
             this.ButClose = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.LateLength = new System.Windows.Forms.TextBox();
+            this.ValuesTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // ButStart
@@ -174,7 +176,7 @@
             this.Value1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Value1.Location = new System.Drawing.Point(382, 65);
             this.Value1.Name = "Value1";
-            this.Value1.Size = new System.Drawing.Size(100, 22);
+            this.Value1.Size = new System.Drawing.Size(145, 22);
             this.Value1.TabIndex = 11;
             // 
             // Value2
@@ -182,7 +184,7 @@
             this.Value2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Value2.Location = new System.Drawing.Point(382, 92);
             this.Value2.Name = "Value2";
-            this.Value2.Size = new System.Drawing.Size(100, 22);
+            this.Value2.Size = new System.Drawing.Size(145, 22);
             this.Value2.TabIndex = 12;
             // 
             // Value3
@@ -190,7 +192,7 @@
             this.Value3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Value3.Location = new System.Drawing.Point(382, 120);
             this.Value3.Name = "Value3";
-            this.Value3.Size = new System.Drawing.Size(100, 22);
+            this.Value3.Size = new System.Drawing.Size(145, 22);
             this.Value3.TabIndex = 13;
             // 
             // ButInit
@@ -234,11 +236,15 @@
             this.LateLength.TabIndex = 16;
             this.LateLength.Text = "0";
             // 
+            // ValuesTimer
+            // 
+            this.ValuesTimer.Tick += new System.EventHandler(this.ValuesTimer_Tick);
+            // 
             // CalibratorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(613, 231);
+            this.ClientSize = new System.Drawing.Size(533, 231);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.LateLength);
             this.Controls.Add(this.ButClose);
@@ -282,5 +288,6 @@
         private System.Windows.Forms.Button ButClose;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox LateLength;
+        private System.Windows.Forms.Timer ValuesTimer;
     }
 }

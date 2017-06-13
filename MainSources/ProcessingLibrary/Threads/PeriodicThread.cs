@@ -61,13 +61,19 @@ namespace ProcessingLibrary
                     }
         }
 
+        //Определение первого периода обработки,
+        protected override bool FirstPeriod()
+        {
+            ThreadPeriodEnd = ThreadPeriodBegin.AddMinutes(PeriodMinutes);
+            NextPeriodStart = ThreadPeriodEnd.AddMinutes(LateMinutes);
+            return ThreadPeriodEnd.Subtract(ThreadFinishTime).TotalSeconds < 0.0001;
+        }
+
         //Определение следующего периода обработки, возвращает false, если следующй обработки не будет
         protected override bool NextPeriod()
         {
             ThreadPeriodBegin = ThreadPeriodBegin.AddMinutes(PeriodMinutes);
-            ThreadPeriodEnd = ThreadPeriodBegin.AddMinutes(PeriodMinutes);
-            NextPeriodStart = ThreadPeriodEnd.AddMinutes(LateMinutes);
-            return ThreadPeriodEnd.Subtract(ThreadFinishTime).TotalSeconds > 0.1;
+            return FirstPeriod();
         }
         
         //Цикл обработки

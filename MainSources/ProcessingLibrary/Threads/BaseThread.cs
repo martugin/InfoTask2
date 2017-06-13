@@ -209,12 +209,13 @@ namespace ProcessingLibrary
             try
             {
                 Prepare();
-                while (!CheckFinishing())
-                {
-                    Waiting();
-                    Cycle();
-                    if (!NextPeriod()) break;
-                }
+                if (FirstPeriod())
+                    while (!CheckFinishing())
+                    {
+                        Waiting();
+                        Cycle();
+                        if (!NextPeriod()) break;
+                    }
                 ClearMemory();
                 MakeStopped();
             }
@@ -255,8 +256,9 @@ namespace ProcessingLibrary
         #endregion
 
         //Ожидание
-        protected abstract void Waiting();
-        //Определение следующего периода обработки, возвращает false, если следующй обработки не будет
+        protected virtual void Waiting() {}
+        //Определение первого и следующего периода обработки, возвращает false, если следующй обработки не будет
+        protected virtual bool FirstPeriod() { return true; }
         protected virtual bool NextPeriod() { return false; }
 
         //Цикл обработки
