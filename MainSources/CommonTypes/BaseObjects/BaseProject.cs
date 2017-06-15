@@ -16,7 +16,7 @@ namespace CommonTypes
             Code = projectCode;
             Name = projectName;
             ProgressContext = Context = projectCode;
-            LocalDir = App.LocalDir + @"\" + Code + @"\";
+            LocalDir = App.LocalDir + Code + @"\";
             Static.CopyDir(ItStatic.TemplatesDir + @"LocalData\" + App.Code, LocalDir, false);
         }
 

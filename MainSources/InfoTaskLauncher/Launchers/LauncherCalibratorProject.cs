@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using AppLibrary;
+using BaseLibrary;
 using CommonTypes;
 using ProcessingLibrary;
 using ProvidersLibrary;

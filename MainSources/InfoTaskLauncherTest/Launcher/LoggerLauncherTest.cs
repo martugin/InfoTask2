@@ -11,7 +11,7 @@ namespace InfoTaskLauncherTest
     {
         public LoggerLauncherTest()
         {
-            InitializeTest();
+            InitializeTest("LoggerLauncherTest");
         }
 
         public void MakeIndicatorEvents()

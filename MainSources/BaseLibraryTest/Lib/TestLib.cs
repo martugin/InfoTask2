@@ -29,7 +29,9 @@ namespace BaseLibraryTest
         //Создание тестового логгера
         public static Logger CreateTestLogger(LoggerStability stability = LoggerStability.Single)
         {
-            return new Logger(new TestHistory(), new TestIndicator(), stability);
+            var logger = new Logger( new TestIndicator(), stability);
+            logger.History = new TestHistory(logger);
+            return logger;
         }
 
         //Строка настроек провайдера для соединения с тестовым SQL Server

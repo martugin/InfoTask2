@@ -18,7 +18,8 @@ namespace ProvidersTest
         {
             TestLib.CopyFile(@"Providers\Logika", "prolog.mdb", prefix + "Prolog.mdb");
             var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
             var con = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source, "SourceCon", "Logika");
             var prov = factory.CreateProvider(logger, "LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\" + prefix + "Prolog.mdb");
             con.JoinProvider(prov);
@@ -238,7 +239,8 @@ namespace ProvidersTest
         public void Clone()
         {
             TestLib.CopyDir(@"Providers\Logika", "Clone");
-            var app = new ProcessApp("Test", new TestIndicator());
+            var app = new App( "Test", new TestIndicator());
+            app.InitTest();
             var con = new ClonerConnect(app);
             con.JoinProvider(app.ProvidersFactory.CreateProvider(app, "LogikaSource", "DbFile=" + TestLib.TestRunDir + @"Providers\Logika\CloneProlog.mdb"));
             var cloneDir = TestLib.TestRunDir + @"Providers\Logika\Clone\";

@@ -14,7 +14,8 @@ namespace ProvidersTest
         private SourceConnect MakeFictiveConnect(string prefix, bool makeReserve = false)
         {
             var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
             var connect = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source, "TestSource", "Fictive");
             TestLib.CopyFile(@"Providers\Fictive", "Fictive.accdb", "Fictive" + prefix + ".accdb");
             var source = (FictiveSource)factory.CreateProvider(logger, "FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\Fictive" + prefix + ".accdb");

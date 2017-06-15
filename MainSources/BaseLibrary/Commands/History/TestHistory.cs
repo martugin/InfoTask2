@@ -64,8 +64,13 @@ namespace BaseLibrary
     //Тестовая история
     public class TestHistory : IHistory
     {
+        public TestHistory(Logger logger)
+        {
+            Logger = logger;
+        }
+
         //Ссылка на логгер
-        public Logger Logger { get; set; }
+        public Logger Logger { get; private set; }
 
         //Списки команд Super и Log
         internal List<TestCommandSuper> Supers = new List<TestCommandSuper>();

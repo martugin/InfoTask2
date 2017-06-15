@@ -18,8 +18,8 @@ namespace BaseLibraryTest
                 DaoDb.FromTemplate(template, file, ReplaceByTemplate.Always);
                 TestLib.CopyFile("Libraries", "CorrectHistory.accdb", @"History\CorrectHistory.accdb");
             }
-            var history = new AccessHistory(file, template);
-            Logger = new Logger(history, new TestIndicator());
+            Logger = new Logger( new TestIndicator());
+            Logger.History = new AccessHistory(Logger, file, template);
         }
 
         private IHistory History { get { return Logger.History; } }

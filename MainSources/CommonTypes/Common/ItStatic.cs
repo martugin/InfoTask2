@@ -35,9 +35,10 @@ namespace CommonTypes
         }
 
         //Инициализация истории
-        public static AccessHistory CreateHistory(string historyFilePrefix) //Путь к файлу истории относительно каталога истории
+        public static AccessHistory CreateHistory(Logger logger, //Логгер
+                                                                        string historyFilePrefix) //Путь к файлу истории относительно каталога истории
         {
-            return new AccessHistory(
+            return new AccessHistory(logger,
                     InfoTaskDir() + @"LocalData\History\" + historyFilePrefix + "History.accdb",
                     TemplatesDir + @"LocalData\History.accdb");
         }

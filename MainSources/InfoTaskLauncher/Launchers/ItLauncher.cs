@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using AppLibrary;
+using BaseLibrary;
 using CommonTypes;
 using ProvidersLibrary;
 
@@ -115,14 +116,16 @@ namespace ComLaunchers
         //Инициализация для нового приложения
         public void Initialize(string appCode) //Код приложения
         {
-            App = new App(appCode);
+            App = new App(appCode, new AppIndicator());
+            App.Init();
             App.ExecutionFinished += OnExecutionFinished;
         }
 
         //Инициализация для тестов
-        public void InitializeTest()
+        public void InitializeTest(string appCode)
         {
-            App = new App();
+            App = new App(appCode, new TestIndicator());
+            App.InitTest();
         }
 
         //Ссылка на приложение

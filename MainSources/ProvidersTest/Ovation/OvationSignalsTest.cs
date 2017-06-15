@@ -13,7 +13,8 @@ namespace ProvidersTest
         private SourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
             var con = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source, "SourceCon", "Ovation");
             var prov = factory.CreateProvider(logger, "OvationSource", "DataSource=DROP200");
             con.JoinProvider(prov);

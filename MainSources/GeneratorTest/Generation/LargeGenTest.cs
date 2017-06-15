@@ -11,7 +11,9 @@ namespace GeneratorTest
         [TestMethod]
         public void GenModuleLarge()
         {
-            var gen = new TablGenerator(new Logger(new TestHistory(), new TestIndicator()));
+            var logger = new Logger(new TestIndicator());
+            logger.History = new TestHistory(logger);
+            var gen = new TablGenerator(logger);
             Generate(gen, "ModuleLarge");
             Generate(gen, "ApdControl");
         }

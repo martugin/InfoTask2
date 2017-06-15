@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace BaseLibrary
 {
@@ -8,11 +7,13 @@ namespace BaseLibrary
     public class AccessHistory : IHistory
     {
         //Задание файла истории
-        public AccessHistory(string historyFile, //файл истории
+        public AccessHistory(Logger logger, //логгер
+                                        string historyFile, //файл истории
                                         string historyTemplate) //шаблон для файла истории
         {
             try
             {
+                Logger = logger;
                 _historyFile = historyFile;
                 _historyTemplate = historyTemplate;
                 if (_historyFile != null)
@@ -48,7 +49,7 @@ namespace BaseLibrary
         private DaoRec _errorsRec;
 
         //Логгер
-        public Logger Logger { get; set; }
+        public Logger Logger { get; private set; }
         //Текущие команды записи в History и SubHistory
         internal LogCommand LogCommand { get { return Logger.LogCommand; } }
         internal ProgressCommand ProgressCommand { get { return Logger.ProgressCommand; } }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using BaseLibrary;
 using Calculation;
 using CommonTypes;
@@ -22,8 +23,10 @@ namespace ProcessingLibrary
     public abstract class BaseThread : ExternalLogger
     {
         protected BaseThread(ProcessProject project, int id, string name, IIndicator indicator, LoggerStability stability)
-            : base(new Logger(ItStatic.CreateHistory(project.App.Code + '\\' + project.Code + id), indicator, stability), project.Context, project.ProgressContext)
+            : base(null, project.Context, project.ProgressContext)
         {
+            Logger = new Logger(indicator, stability);
+            Logger.History = ItStatic.CreateHistory(Logger, project.App.Code + '\\' + project.Code + id);
             State = ThreadState.Stopped;
             Project = project;
             Id = id;

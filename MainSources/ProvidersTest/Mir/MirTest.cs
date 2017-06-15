@@ -1,4 +1,5 @@
 ﻿using System;
+using AppLibrary;
 using BaseLibrary;
 using BaseLibraryTest;
 using CommonTypes;
@@ -16,7 +17,8 @@ namespace ProvidersTest
         private SourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
             var con = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source,  "SourceCon", "Mir");
             var prov = factory.CreateProvider(logger, "MirSource", TestLib.TestSqlInf("EnergyRes"));
             con.JoinProvider(prov);
@@ -320,7 +322,8 @@ namespace ProvidersTest
         {
             TestLib.CopyDir(@"Providers\Mir", "Clone");
 
-            var app = new ProcessApp("Test", new TestIndicator());
+            var app = new App("Test", new TestIndicator());
+            app.InitTest();
             var con = new ClonerConnect(app);
             con.JoinProvider(app.ProvidersFactory.CreateProvider(app, "MirSource", TestLib.TestSqlInf("EnergyRes")));
             var cloneDir = TestLib.TestRunDir + @"Providers\Mir\Clone\";

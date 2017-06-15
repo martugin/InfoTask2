@@ -7,11 +7,8 @@ namespace AppLibrary
     //Внешнее приложение, вызывающее библиотеки
     public class App : ProcessApp
     {
-        public App(string code) 
-            : base(code, new AppIndicator()) { }
-
-        //Коструктор для тестов
-        public App() { }
+        public App(string code, IIndicator indicator) 
+            : base(code, indicator) { }
 
         //Создание соединения-клонера и присоединение провайдера
         public ClonerConnect LoadCloner(string providerCode, string providerInf)

@@ -9,14 +9,14 @@ namespace BaseLibraryTest
     [TestClass]
     public class LogTest : Logger
     {
-        public LogTest() 
-            : base(new TestHistory(), new TestIndicator())
-        { }
+        public LogTest() : base(new TestIndicator())
+        {
+            History = new TestHistory(this);
+        }
 
         private void RunHistory()
         {
-            History = _history = new TestHistory();
-            History.Logger = this;
+            History = _history = new TestHistory(this);
             Indicator = _indicator = new TestIndicator();
         }
         private TestHistory _history;

@@ -41,7 +41,7 @@ namespace ProvidersLibrary
         {
             if (_readingSignals.ContainsKey(fullCode))
                 return _readingSignals[fullCode];
-            Provider.IsPrepared = false;
+            if (Provider != null) Provider.IsPrepared = false;
             var contextOut = infObject + (infOut.IsEmpty() ? "" : ";" + infOut);
             var inf = infObject.ToPropertyDicS().AddDic(infOut.ToPropertyDicS()).AddDic(infProp.ToPropertyDicS());
             SourceSignal sig = null;

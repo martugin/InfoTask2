@@ -20,7 +20,8 @@ namespace BaseLibraryTest
                  new FileInfo(file).Delete();
                  new FileInfo(efile).Delete();
              }
-             Logger = new Logger(new TextHistory(file, true), new TestIndicator());
+             Logger = new Logger(new TestIndicator());
+             Logger.History = new TextHistory(Logger, file, true);
          }
 
          private IHistory History { get { return Logger.History; }}

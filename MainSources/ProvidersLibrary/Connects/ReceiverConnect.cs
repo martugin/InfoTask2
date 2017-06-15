@@ -43,7 +43,7 @@ namespace ProvidersLibrary
         {
             if (ReceiverSignals.ContainsKey(fullCode))
                 return ReceiverSignals[fullCode];
-            Provider.IsPrepared = false;
+            if (Provider != null) Provider.IsPrepared = false;
             var contextOut = infObject + (infOut.IsEmpty() ? "" : ";" + infOut);
             var inf = infObject.ToPropertyDicS().AddDic(infOut.ToPropertyDicS()).AddDic(infProp.ToPropertyDicS());
             return ReceiverSignals.Add(fullCode, new ReceiverSignal(this, fullCode, dataType, contextOut, inf));
@@ -52,7 +52,7 @@ namespace ProvidersLibrary
         //Удалить сигнал
         public void RemoveSignal(string fullCode)
         {
-            Provider.IsPrepared = false;
+            if (Provider != null) Provider.IsPrepared = false;
             if (_receiverSignals.ContainsKey(fullCode))
                 _receiverSignals.Remove(fullCode);
         }
