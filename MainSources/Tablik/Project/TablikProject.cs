@@ -12,6 +12,7 @@ namespace Tablik
             : base(project.App, project.Code, project.Code)
         {
             Project = project;
+            LoadAllConnects();
         }
 
         //Проект
@@ -39,11 +40,14 @@ namespace Tablik
         }
 
         //Загрузить все провайдеры
-        public void LoadConnects()
+        public void LoadAllConnects()
         {
             throw new NotImplementedException();
         }
 
+
+
+        #region Generator
         //Ссылка на генератор параметров
         internal TablGenerator Generator { get; private set; }
 
@@ -54,5 +58,6 @@ namespace Tablik
                 Generator = new TablGenerator(Project.App);
             RunSyncCommand(() => Generator.GenerateParams(moduleDir));
         }
+        #endregion
     }
 }
