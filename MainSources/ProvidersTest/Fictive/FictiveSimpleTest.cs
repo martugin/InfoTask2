@@ -14,12 +14,13 @@ namespace ProvidersTest
         private SourceConnect MakeFictiveConnect(bool makeReserve = false)
         {
             var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
-            var connect = (SourceConnect)factory.CreateConnect(ProviderType.Source, "TestSource", "Fictive", logger);
-            var source = (FictiveSimpleSource)factory.CreateProvider("FictiveSimpleSource", "Label=p1");
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
+            var connect = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source, "TestSource", "Fictive");
+            var source = (FictiveSimpleSource)factory.CreateProvider(logger, "FictiveSimpleSource", "Label=p1");
             FictiveSimpleSource source2 = null;
             if (makeReserve)
-                source2 = (FictiveSimpleSource)factory.CreateProvider("FictiveSimpleSource", "Label=p2");
+                source2 = (FictiveSimpleSource)factory.CreateProvider(logger, "FictiveSimpleSource", "Label=p2");
             connect.JoinProvider(source, source2);
             return connect;
         }

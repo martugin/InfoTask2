@@ -66,6 +66,10 @@
       <Project>{29FA15BE-E2C2-4A46-B9BA-BA33338C9CC7}</Project>
       <Name>BaseLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Calculation\Calculation.csproj">
+      <Project>{A4B84B9B-4130-4066-971D-3D597C141097}</Project>
+      <Name>Calculation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CommonTypesTest\CommonTypesTest.csproj">
       <Project>{68174E6C-46D0-400B-A07E-C96D602817D3}</Project>
       <Name>CommonTypesTest</Name>
@@ -73,6 +77,10 @@
     <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CompileLibrary\CompileLibrary.csproj">
+      <Project>{A4C38FD4-7489-4B6D-95D5-CED9527C791B}</Project>
+      <Name>CompileLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Generator\Generator.csproj">
       <Project>{267562A7-4B4A-4B81-B417-33C57CD869FE}</Project>

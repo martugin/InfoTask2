@@ -11,26 +11,23 @@ namespace CommonTypes
         }
 
         //Присвоить код и имя проекта
-        protected void Initialize(string projectCode, string projectName = "")
+        protected internal void Initialize(string projectCode, string projectName)
         {
             Code = projectCode;
             Name = projectName;
             ProgressContext = Context = projectCode;
+            LocalDir = App.LocalDir + Code + @"\";
+            Static.CopyDir(ItStatic.TemplatesDir + @"LocalData\" + App.Code, LocalDir, false);
         }
 
         //Приложение
         public BaseApp App { get; private set; }
-        //Код приложения
-        public string AppCode { get { return App.Code; } }
 
         //Код и имя проекта
         public string Code { get; private set; }
         public string Name { get; private set; }
 
         //Каталог проекта в LocalData
-        public string LocalDir
-        {
-            get { return ItStatic.InfoTaskDir() + @"LocalData\" + AppCode + @"\" + Code + @"\"; }
-        }
+        public string LocalDir { get; protected set; }
     }
 }

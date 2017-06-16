@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 using AppLibrary;
+using BaseLibrary;
 using CommonTypes;
+using ProvidersLibrary;
 
 namespace ComLaunchers
 {
@@ -33,6 +36,12 @@ namespace ComLaunchers
 
         //Загрузка проекта
         ILauncherProject LoadProject(string projectDir);
+
+         //Создание соединения-клонера
+        ILauncherCloner LoadCloner(string providerCode, string providerInf); //Код и настройки провайдера
+
+        //Загрузка проекта калибратора
+        ILauncherCalibratorProject LoadCalibratorProject(string projectDir); //Каталог проекта
 
         //Переопределение команд логгера
         #region Logger
@@ -107,19 +116,27 @@ namespace ComLaunchers
         //Инициализация для нового приложения
         public void Initialize(string appCode) //Код приложения
         {
-            _app = new App(appCode);
-            _app.ExecutionFinished += OnExecutionFinished;
+            App = new App(appCode, new AppIndicator());
+            App.Init();
+            App.ExecutionFinished += OnExecutionFinished;
+        }
+
+        //Инициализация для тестов
+        public void InitializeTest(string appCode)
+        {
+            App = new App(appCode, new TestIndicator());
+            App.InitTest();
         }
 
         //Ссылка на приложение
-        private App _app;
+        protected App App { get; set; }
 
         //Закрытие клиента
         public void Close()
         {
-            _app.ExecutionFinished -= OnExecutionFinished;
-            _app.Dispose();
-            _app = null;
+            try { App.ExecutionFinished -= OnExecutionFinished; } catch {}
+            App.Dispose();
+            App = null;
             Thread.Sleep(100);
             GC.Collect();
             IsClosed = true;
@@ -147,36 +164,68 @@ namespace ComLaunchers
         }
         
         //Код приложения
-        public string AppCode { get { return _app.Code; } }
+        public string AppCode { get { return App.Code; } }
         
         //Номер програмного продукта
         public int ProductNumber 
         { 
-            get { return _app.ProductNumber; }
+            get { return App.ProductNumber; }
         }
         //Проверка активации приложения
         public bool AppActivated
         {
-            //Todo реализовать
-            get { return _app.IsActivated; }
+            get { return App.IsActivated; }
         }
+
+        //Команды для коммуникатора
+        //Создание соединения-клонера
+        public ILauncherCloner LoadCloner(string providerCode, string providerInf) //Код и настройки провайдера
+        {
+            ClonerConnect con = null;
+            App.RunSyncCommand(() =>
+            {
+                using (App.StartLog("Открытие соединения с источником"))
+                {
+                    try
+                    {
+                        con = new ClonerConnect(App);
+                        con.JoinProvider(App.ProvidersFactory.CreateProvider(App, providerCode, providerInf));
+                    }
+                    catch (Exception ex)
+                    {
+                        App.AddError("Ошибка присоединения провайдера", ex);
+                    }
+                }
+            });
+            return new LauncherCloner(con);
+        }
+
+        //Команды для калибратора
+
+        //Загрузка проекта
+        public ILauncherCalibratorProject LoadCalibratorProject(string projectDir) //Каталог проекта
+        {
+            return new LauncherCalibratorProject(this, new CalibratorProject(App, projectDir));
+        }
+
+        //Команды для конструктора, анализатора
 
         //Загрузка проекта
         public ILauncherProject LoadProject(string projectDir) //Каталог проекта
         {
-            return new LauncherProject(new AppProject(_app, projectDir));
+            return new LauncherProject(new AppProject(App, projectDir));
         }
 
         //Работа с логгером
         #region Logger
         //Ошибка и результат последней операции
-        public string ErrMess { get { return _app.CollectedError; } }
-        public string ResultMess { get { return _app.CollectedResults; } }
+        public string ErrMess { get { return App.CollectedError; } }
+        public string ResultMess { get { return App.CollectedResults; } }
 
         //Прервать выполнение
         public void Break()
         {
-            _app.Break();
+            App.Break();
         }
 
         //Событие, сообщающее внешнему приложению, что выполнение было прервано
@@ -193,39 +242,39 @@ namespace ComLaunchers
         public void AddEvent(string text, //Описание
                                         string pars = "") //Дополнительная информация
         {
-            _app.AddEvent(text, pars);
+            App.AddEvent(text, pars);
         }
 
         //Добавить предупреждение в историю
         public void AddWarning(string text, //Описание
                                             string pars = "") //Дополнительная информация
         {
-            _app.AddWarning(text, null, pars);
+            App.AddWarning(text, null, pars);
         }
 
         //Добавить предупреждение в историю
         public void AddError(string text, //Описание
                                         string pars = "") //Дополнительная информация
         {
-            _app.AddError(text, null, pars);
+            App.AddError(text, null, pars);
         }
 
         //Установить процент текущей комманды
         public void SetProcent(double procent)
         {
-            _app.Procent = procent;
+            App.Procent = procent;
         }
 
         //Запуск простой команды
         public void StartProcent(double startProcent, double finishProcent)
         {
-            _app.Start(startProcent, finishProcent);
+            App.Start(startProcent, finishProcent);
         }
 
         //Завершение комманды
         public void Finish(string results = null)
         {
-            _app.Finish(results);
+            App.Finish(results);
         }
 
         //Запуск команды для записи в History
@@ -233,55 +282,55 @@ namespace ComLaunchers
                                        string pars = "",  //Дополнительная информация
                                        string context = "") //Контекст выполнения команды
         {
-            _app.StartLog(name, pars, context);
+            App.StartLog(name, pars, context);
         }
         public void StartLogProcent(double startProcent, double finishProcent, string name, string pars = "", string context = "")
         {
-            _app.StartLog(startProcent, finishProcent, name, pars, context);
+            App.StartLog(startProcent, finishProcent, name, pars, context);
         }
         //Завершение текущей команды логирования
         public void FinishLog(string results = null)
         {
-            _app.FinishLog(results);
+            App.FinishLog(results);
         }
 
         //Запуск команды, задающей период обработки
         public void StartPeriod(DateTime beg, DateTime en, string mode = "")
         {
-            _app.StartPeriod(beg, en, mode);
+            App.StartPeriod(beg, en, mode);
         }
         //Завершение команды, задающей период обработки
         public void FinishPeriod()
         {
-            _app.FinishPeriod();
+            App.FinishPeriod();
         }
 
         //Запуск команды для записи в SuperHistory
         public void StartProgress(string name,  //Имя команды
                                                string pars = "")  //Дополнительная информация
         {
-            _app.StartProgress(name, pars);
+            App.StartProgress(name, pars);
         }
 
         //Звершение текущей команды отображения индикатора
         public void FinishProgress()
         {
-            _app.FinishProgress();
+            App.FinishProgress();
         }
 
         //Запуск команды, отображающей на форме индикатора текст 2-ого уровня
         public void StartIndicatorText(string text)
         {
-            _app.StartIndicatorText(text);
+            App.StartIndicatorText(text);
         }
         public void StartIndicatorTextProcent(double startProcent, double finishProcent, string text)
         {
-            _app.StartIndicatorText(startProcent, finishProcent, text);
+            App.StartIndicatorText(startProcent, finishProcent, text);
         }
         //Завершение текущей команды отображения текста индикатора 2-ого уровня
         public void FinishIndicatorText()
         {
-            _app.FinishIndicatorText();
+            App.FinishIndicatorText();
         }
         #endregion
     }

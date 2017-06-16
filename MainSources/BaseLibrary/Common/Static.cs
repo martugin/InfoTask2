@@ -258,8 +258,10 @@ namespace BaseLibrary
             }
         }
 
-        //Копирование каталога, файлы заменяются на новые
-        public static void CopyDir(string fromDir, string toDir)
+        //Копирование каталога
+        public static void CopyDir(string fromDir, 
+                                                string toDir,
+                                                bool replace = true) //Заменять содержимое
         {
             var d = new DirectoryInfo(fromDir);
             if (Directory.Exists(toDir) != true)
@@ -267,7 +269,11 @@ namespace BaseLibrary
             foreach (DirectoryInfo dir in d.GetDirectories())
                 CopyDir(dir.FullName, toDir + "\\" + dir.Name);
             foreach (string file in Directory.GetFiles(fromDir))
-                File.Copy(file, toDir + "\\" + file.Substring(file.LastIndexOf('\\') + 1), true);
+            {
+                var path = toDir + "\\" + file.Substring(file.LastIndexOf('\\') + 1);
+                if (!new FileInfo(path).Exists || replace)
+                    File.Copy(file, path, true);
+            }
         }
 
         //Заполняет значение контрола pick, по значению поля text

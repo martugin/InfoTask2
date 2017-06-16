@@ -1,19 +1,39 @@
-﻿using BaseLibrary;
+﻿using System.IO;
+using BaseLibrary;
 
 namespace CommonTypes
 {
     //Одно приложение InfoTask
-    public class BaseApp : Logger
+    public abstract class BaseApp : Logger
     {
-        public BaseApp(string code, IIndicator indicator) 
+        protected BaseApp(string code, IIndicator indicator)
+            : base(indicator)
         {
             Code = code;
-            History = CreateHistory(code);
-            Indicator = indicator;
+        }
+
+        //Инициализация
+        public void Init()
+        {
+            History = ItStatic.CreateHistory(this, Code + '\\' + Code);
+            LocalDir = ItStatic.InfoTaskDir() + @"LocalData\" + Code + @"\";
+            var dir = new DirectoryInfo(LocalDir);
+            if (!dir.Exists) dir.Create();
+        }
+
+        //Тестовая инициализация
+        public void InitTest()
+        {
+            History = new TestHistory(this);
+            LocalDir = ItStatic.InfoTaskDir() + @"TestsRun\LocalData\" + Code + @"\";
+            var dir = new DirectoryInfo(LocalDir);
+            if (!dir.Exists) dir.Create();
         }
 
         //Код приложения
         public string Code { get; private set; }
+        //Каталог проекта в LocalData
+        public string LocalDir { get; protected set; }
 
         //Todo реализовать через VerSyn
         //Номер програмного продукта
@@ -25,14 +45,6 @@ namespace CommonTypes
         public bool IsActivated
         {
             get { return true; }
-        }
-
-        //Инициализация истории
-        public AccessHistory CreateHistory(string historyFilePrefix) //Путь к файлу истории относительно каталога истории прриложения
-        {
-            return new AccessHistory(
-                    ItStatic.InfoTaskDir() + @"LacalData\History\" + Code + "\\" + historyFilePrefix + "History.accdb",
-                    ItStatic.TemplatesDir + @"LocalData\History.accdb");
         }
     }
 }

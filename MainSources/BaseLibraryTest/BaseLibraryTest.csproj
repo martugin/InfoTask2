@@ -61,8 +61,6 @@
     <Compile Include="Logger\HistoryTest.cs" />
     <Compile Include="Logger\HistoryTextTest.cs" />
     <Compile Include="Logger\LogTest.cs" />
-    <Compile Include="Lib\TestHistory.cs" />
-    <Compile Include="Lib\TestIndicator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Collections\DicITest.cs" />
     <Compile Include="Lib\TestLib.cs" />

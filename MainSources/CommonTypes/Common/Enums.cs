@@ -3,10 +3,13 @@
     //Тип провайдера
     public enum ProviderType
     {
-        Source,
-        Receiver,
-        HandInput,
-        Archive,
+        Source, //Источник
+        HandInput, //Ручной ввод
+        Receiver, //Приемник
+        Archive, //Архив
+        Module, //Модуль
+        Proxy, //Прокси, хранящий одно значение
+        QueuedProxy, //Прокси, хранящий очередь значений
         Error
     }
 

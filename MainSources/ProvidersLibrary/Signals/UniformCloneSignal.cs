@@ -7,7 +7,7 @@ namespace ProvidersLibrary
     //Сигнал архивного источника, с работой со срезами
     public class UniformCloneSignal : CloneSignal
     {
-        public UniformCloneSignal(SourceConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
+        public UniformCloneSignal(ClonerConnect connect, string code, DataType dataType, string contextOut, DicS<string> inf)
             : base(connect, code, dataType, contextOut, inf)
         {
             _prevMom = new EditMom(dataType);
@@ -62,7 +62,7 @@ namespace ProvidersLibrary
         protected override int PutClone(IReadMean mom, //Рекордсет срезов клона
                                                        bool onlyCut) //Добавляет только 10-минутные срезы, но не само значение
         {
-            bool isReal = DataType.LessOrEquals(DataType.Real);
+            bool isReal = DataType.IsReal();
             var rec = isReal ? ClonerConnect.CloneRec : ClonerConnect.CloneStrRec;
             var recCut = isReal ? ClonerConnect.CloneCutRec : ClonerConnect.CloneStrCutRec;
             int nwrite = 0;

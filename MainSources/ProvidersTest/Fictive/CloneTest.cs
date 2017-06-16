@@ -1,6 +1,7 @@
 ﻿using System;
 using BaseLibrary;
 using BaseLibraryTest;
+using CommonTypes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProvidersLibrary;
 
@@ -13,9 +14,10 @@ namespace ProvidersTest
         {
             TestLib.CopyDir(@"Providers\Fictive", "TestClone", "Clone" + prefix);
             var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
-            var connect = factory.CreateConnect(ProviderType.Source, "TestSource", "Clones", logger);
-            connect.JoinProvider(factory.CreateProvider("CloneSource", "CloneDir=" + TestLib.TestRunDir + @"Providers\Fictive\Clone" + prefix));
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
+            var connect = factory.CreateConnect(logger, ProviderType.Source, "TestSource", "Clones");
+            connect.JoinProvider(factory.CreateProvider(logger, "CloneSource", "CloneDir=" + TestLib.TestRunDir + @"Providers\Fictive\Clone" + prefix));
             return (SourceConnect)connect;
         }
 
@@ -41,13 +43,13 @@ namespace ProvidersTest
             Assert.AreEqual("TestSource", connect.Code);
             Assert.AreEqual("CloneSource", connect.Provider.Code);
             Assert.AreEqual("Clones", connect.Complect);
-            Assert.AreEqual("Источник: TestSource", connect.Context);
+            Assert.AreEqual("TestSource", connect.Context);
             Assert.IsNotNull(connect.Logger);
             Assert.AreEqual(0, connect.CalcSignals.Count);
             Assert.AreEqual(0, connect.ReadingSignals.Count);
 
             Assert.AreEqual(TestLib.TestRunDir + @"Providers\Fictive\CloneProps\Clone.accdb", source.CloneFile);
-            Assert.AreEqual("Источник: TestSource", connect.Context);
+            Assert.AreEqual("TestSource", connect.Context);
             Assert.AreEqual(source, connect.Provider);
             Assert.IsTrue(source.Connect());
 

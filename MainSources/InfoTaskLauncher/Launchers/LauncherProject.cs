@@ -1,7 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using AppLibrary;
-using CommonTypes;
-using ProvidersLibrary;
 
 namespace ComLaunchers
 {
@@ -20,12 +18,6 @@ namespace ComLaunchers
 
         //Генерация параметров
         void GenerateParams(string moduleDir);
-
-        //Создание соединения
-        SourConnect CreateSourConnect(string name, //Имя соединения
-                                                         string complect); //Комплект
-        ReceivConnect CreateReceivConnect(string name, //Имя соединения
-                                                              string complect); //Комплект
     }
 
     //---------------------------------------------------------------------------------------------------------
@@ -54,35 +46,6 @@ namespace ComLaunchers
         public void GenerateParams(string moduleDir)
         {
             _project.Tablik.GenerateParams(moduleDir);
-        }
-
-        //Создание соединения-источника
-        public SourConnect CreateSourConnect(string name, string complect)
-        {
-            SourceConnect s = null;
-            _project.RunSyncCommand(() =>
-            {
-                s = (SourceConnect)Factory.CreateConnect(_project, ProviderType.Source, name, complect);
-            });
-            return new RSourConnect(s, Factory);
-        }
-
-        //Создание соединения-приемника
-        public ReceivConnect CreateReceivConnect(string name, string complect)
-        {
-            ReceiverConnect r = null;
-            _project.RunSyncCommand(() =>
-            {
-                r = (ReceiverConnect)Factory.CreateConnect(_project, ProviderType.Receiver, name, complect);
-            });
-            return new RReceivConnect(r, Factory);
-        }
-
-        //Фабрика провайдеров
-        private ProvidersFactory _factory;
-        protected ProvidersFactory Factory
-        {
-            get { return _factory ?? (_factory = new ProvidersFactory()); }
         }
     }
 }

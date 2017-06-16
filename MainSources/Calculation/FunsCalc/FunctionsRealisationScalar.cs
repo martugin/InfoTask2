@@ -596,7 +596,7 @@ namespace Calculation
 
         public void Real_u(IReadMean[] par)
         {
-            ScalarRes.Real = par[0].DataType.LessOrEquals(DataType.Real) 
+            ScalarRes.Real = par[0].DataType.IsReal()
                                             ? par[0].Real 
                                             : (par[0].String ?? "0").ToDouble(double.NaN);
         }

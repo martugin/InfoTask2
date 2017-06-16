@@ -21,7 +21,16 @@ namespace ProvidersLibrary
             get { return (ReceiverConnect)Connect; }
         }
 
+        //Сигнла или параметр, содержащий исходное значение
+        public IReadSignal InSignal { get; set; }
+
         //Значение
         public IReadMean InValue { get; set; }
+
+        //Записать значение
+        public void PutValue(IReadMean value)
+        {
+            InValue = InSignal.OutValue;
+        }
     }
 }

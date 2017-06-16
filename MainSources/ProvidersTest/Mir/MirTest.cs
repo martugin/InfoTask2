@@ -1,9 +1,12 @@
 ﻿using System;
+using AppLibrary;
 using BaseLibrary;
 using BaseLibraryTest;
 using CommonTypes;
+using InfoTaskLauncherTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mir;
+using ProcessingLibrary;
 using ProvidersLibrary;
 
 namespace ProvidersTest
@@ -14,9 +17,10 @@ namespace ProvidersTest
         private SourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source,  "SourceCon", "Mir", logger);
-            var prov = factory.CreateProvider("MirSource", TestLib.TestSqlInf("EnergyRes"));
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
+            var con = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source,  "SourceCon", "Mir");
+            var prov = factory.CreateProvider(logger, "MirSource", TestLib.TestSqlInf("EnergyRes"));
             con.JoinProvider(prov);
             return con;
         }
@@ -30,11 +34,11 @@ namespace ProvidersTest
             Assert.AreEqual("Mir", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
-            Assert.AreEqual(con.Context, "Источник: SourceCon");
+            Assert.AreEqual("SourceCon", con.Context);
             Assert.IsNotNull(con.Provider);
             Assert.IsTrue(con.Provider is MirSource);
             Assert.AreEqual("MirSource", prov.Code);
-            Assert.AreEqual("Источник: SourceCon, MirSource", prov.Context);
+            Assert.AreEqual("SourceCon", prov.Context);
             Assert.AreEqual(TestLib.TestSqlInf("EnergyRes"), prov.Inf);
             Assert.AreSame(con, prov.ProviderConnect);
             Assert.IsNotNull(prov.Logger);
@@ -317,8 +321,13 @@ namespace ProvidersTest
         public void Clone()
         {
             TestLib.CopyDir(@"Providers\Mir", "Clone");
-            var con = MakeProviders();
+
+            var app = new App("Test", new TestIndicator());
+            app.InitTest();
+            var con = new ClonerConnect(app);
+            con.JoinProvider(app.ProvidersFactory.CreateProvider(app, "MirSource", TestLib.TestSqlInf("EnergyRes")));
             var cloneDir = TestLib.TestRunDir + @"Providers\Mir\Clone\";
+            SysTabl.PutValueS(cloneDir + "Clone.accdb", "SourceInf", TestLib.TestSqlInf("EnergyRes"));
             using (con.StartPeriod(D(48), D(96), "Single"))
                 con.MakeClone(cloneDir);
             TestLib.CompareClones(cloneDir + "Clone.accdb", cloneDir + "CorrectClone.accdb");

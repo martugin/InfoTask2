@@ -44,10 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App.cs" />
-    <Compile Include="AppCalcProject.cs" />
-    <Compile Include="AppProject.cs" />
-    <Compile Include="AppRealTimeProject.cs" />
+    <Compile Include="App\App.cs" />
+    <Compile Include="App\AppProject.cs" />
+    <Compile Include="Calibrator\CalibratorConnect.cs" />
+    <Compile Include="Calibrator\CalibratorProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

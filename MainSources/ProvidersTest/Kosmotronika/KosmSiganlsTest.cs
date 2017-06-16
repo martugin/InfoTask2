@@ -13,10 +13,11 @@ namespace ProvidersTest
         private SourceConnect MakeProviders(bool isRetroBase)
         {
             var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source,  "SourceCon", "Kosmotronika", logger);
-            var prov = factory.CreateProvider("KosmotronikaRetroSource", "RetroServerName=RetroServerTest");
-            var prov2 = factory.CreateProvider("KosmotronikaArchDbSource", "ArchiveDir=" + TestLib.InfoTaskDevelopDir + @"TestsBig\Kosmotronika\ArchiveKurganOld;Location=0");
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
+            var con = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source,  "SourceCon", "Kosmotronika");
+            var prov = factory.CreateProvider(logger, "KosmotronikaRetroSource", "RetroServerName=RetroServerTest");
+            var prov2 = factory.CreateProvider(logger, "KosmotronikaArchDbSource", "ArchiveDir=" + TestLib.InfoTaskDevelopDir + @"TestsBig\Kosmotronika\ArchiveKurganOld;Location=0");
             if (isRetroBase) con.JoinProvider(prov, prov2);
             else con.JoinProvider(prov2, prov);
             return con;
@@ -30,12 +31,12 @@ namespace ProvidersTest
             Assert.AreEqual("Kosmotronika", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
-            Assert.AreEqual(con.Context, "Источник: SourceCon");
+            Assert.AreEqual(con.Context, "SourceCon");
             Assert.IsNotNull(con.Provider);
             Assert.IsTrue(con.Provider is KosmotronikaRetroSource);
             var prov = (KosmotronikaRetroSource)con.Provider;
             Assert.AreEqual("KosmotronikaRetroSource", prov.Code);
-            Assert.AreEqual("Источник: SourceCon, KosmotronikaRetroSource", prov.Context);
+            Assert.AreEqual("SourceCon", prov.Context);
             Assert.AreEqual("RetroServerName=RetroServerTest", prov.Inf);
             Assert.AreSame(con, prov.ProviderConnect);
             Assert.IsNotNull(prov.Logger);
@@ -47,19 +48,19 @@ namespace ProvidersTest
             Assert.AreEqual("Kosmotronika", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
-            Assert.AreEqual(con.Context, "Источник: SourceCon");
+            Assert.AreEqual("SourceCon", con.Context);
             Assert.IsNotNull(con.Provider);
             Assert.IsTrue(con.Provider is KosmotronikaArchDbSource);
             var prov2 = (KosmotronikaArchDbSource)con.Provider;
             Assert.AreEqual("KosmotronikaArchDbSource", prov2.Code);
-            Assert.AreEqual("Источник: SourceCon, KosmotronikaArchDbSource", prov2.Context);
+            Assert.AreEqual("SourceCon", prov2.Context);
             Assert.AreEqual("ArchiveDir=" + TestLib.InfoTaskDevelopDir + @"TestsBig\Kosmotronika\ArchiveKurganOld;Location=0", prov2.Inf);
             Assert.AreSame(con, prov2.ProviderConnect);
             Assert.IsNotNull(prov2.Logger);
             Assert.IsFalse(prov2.IsConnected);
             Assert.IsFalse(prov2.IsPrepared);
 
-            prov = (KosmotronikaRetroSource)new ProvidersFactory().CreateProvider("KosmotronikaRetroSource", "RetroServerName=RetroServerNo");
+            prov = (KosmotronikaRetroSource)new ProvidersFactory().CreateProvider(TestLib.CreateTestLogger(), "KosmotronikaRetroSource", "RetroServerName=RetroServerNo");
             con.JoinProvider(prov);
             Assert.IsFalse(prov.IsConnected);
             Assert.IsFalse(prov.IsPrepared);

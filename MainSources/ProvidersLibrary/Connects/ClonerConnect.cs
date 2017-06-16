@@ -7,8 +7,8 @@ namespace ProvidersLibrary
     //Соединение с источником для получения клона
     public class ClonerConnect : SourceConnect
     {
-        public ClonerConnect(Logger logger, string complect) 
-            : base(logger, "Clone", complect) { }
+        public ClonerConnect(BaseApp app)
+            : base(app, "Clone", "") { }
 
         //Рекордсеты таблиц значений клона
         internal DaoRec CloneRec { get; private set; }
@@ -45,32 +45,59 @@ namespace ProvidersLibrary
                     ed.ToRecordset(rec);
         }
 
+        //Создание клона источника, выполняется синхронно
+        public void MakeCloneSync(string cloneDir) //Каталог клона
+        {
+            var ti = GetCloneInterval(cloneDir);
+            RunSyncCommand(ti.Begin, ti.End, () => MakeClone(cloneDir));
+        }
+
+        //Создание клона источника, выполняется асинхронно
+        public void MakeCloneAsync(string cloneDir) //Каталог клона
+        {
+            var ti = GetCloneInterval(cloneDir);
+            RunAsyncCommand(ti.Begin, ti.End, () => MakeClone(cloneDir));
+        }
+
+        private TimeInterval GetCloneInterval(string cloneDir)
+        {
+            using (var sys = new SysTabl(cloneDir.EndDir() + "Clone.accdb"))
+                return new TimeInterval(sys.Value("BeginInterval").ToDateTime(), sys.Value("EndInterval").ToDateTime());
+        }
+
         //Создание клона источника
         public void MakeClone(string cloneDir) //Каталог клона
         {
-            try
-            {
-                if (PeriodIsUndefined()) return;
-                using (var db = new DaoDb(cloneDir.EndDir() + "Clone.accdb"))
-                {
-                    ReadCloneSignals(db);
-                    using (CloneRec = new DaoRec(db, "MomentValues"))
-                    using (CloneCutRec = new DaoRec(db, "MomentValuesCut"))
-                    using (CloneStrRec = new DaoRec(db, "MomentStrValues"))
-                    using (CloneStrCutRec = new DaoRec(db, "MomentStrValuesCut"))
-                    using (CloneErrorsRec = new DaoRec(db, "ErrorsObjects"))
-                        GetValues();
-                    WriteMomentErrors(db);
-                }
-            }
-            catch (Exception ex)
-            {
-                AddError("Ошибка при создании клона", ex);
-            }
+            using (StartProgress("Создание клона"))
+                using (StartLog(0, 100, "Создание клона источника"))
+                    try
+                    {
+                        using (var db = new DaoDb(cloneDir.EndDir() + "Clone.accdb"))
+                        {
+                            //using (var sys = new SysTabl(db))
+                            //{
+                            //    Complect = sys.Value("CloneComplect");
+                            //    var pr = _providersFactory.CreateProvider(Logger, sys.Value("SourceCode"), sys.Value("SourceInf"));
+                            //    JoinProvider(pr);
+                            //}
+                            ReadCloneSignals(db);
+                            using (CloneRec = new DaoRec(db, "MomentValues"))
+                            using (CloneCutRec = new DaoRec(db, "MomentValuesCut"))
+                            using (CloneStrRec = new DaoRec(db, "MomentStrValues"))
+                            using (CloneStrCutRec = new DaoRec(db, "MomentStrValuesCut"))
+                            using (CloneErrorsRec = new DaoRec(db, "ErrorsObjects"))
+                                GetValues();
+                            WriteMomentErrors(db);        
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AddError("Ошибка при создании клона", ex);
+                    }
         }
 
         //Определяет время среза в клоне для указанного момента времени 
-        internal DateTime RemoveMinultes(DateTime time)
+        internal static DateTime RemoveMinultes(DateTime time)
         {
             int m = time.Minute;
             int k = m / 10;

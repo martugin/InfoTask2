@@ -14,14 +14,6 @@
         //Чтение изменений, возврашает количество прочитанных и сформированных значений
         protected internal abstract ValuesCount ReadChanges();
 
-        //Очистка значений сигналов
-        protected override void ClearSignalsValues()
-        {
-            AddEvent("Очистка значений сигналов");
-            foreach (ListSignal sig in SourceConnect.ReadingSignals.Values)
-                sig.ClearMoments();
-        }
-
         //Чтение значений из провайдера
         protected override ValuesCount ReadProviderValues()
         {

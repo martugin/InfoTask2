@@ -13,9 +13,10 @@ namespace ProvidersTest
         private SourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Simatic", logger);
-            var prov = factory.CreateProvider("SimaticSource", "SQLServer" + SysTabl.SubValueS(TestLib.TestRunDir + "TestsSettings.accdb", "SQLServerSettings", "SqlServer"));
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
+            var con = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source, "SourceCon", "Simatic");
+            var prov = factory.CreateProvider(logger, "SimaticSource", "SQLServer" + SysTabl.SubValueS(TestLib.TestRunDir + "TestsSettings.accdb", "SQLServerSettings", "SqlServer"));
             con.JoinProvider(prov);
             return con;
         }
@@ -29,11 +30,11 @@ namespace ProvidersTest
             Assert.AreEqual("Simatic", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
-            Assert.AreEqual(con.Context, "Источник: SourceCon");
+            Assert.AreEqual("SourceCon", con.Context);
             Assert.IsNotNull(con.Provider);
             Assert.IsTrue(con.Provider is SimaticSource);
             Assert.AreEqual("SimaticSource", prov.Code);
-            Assert.AreEqual("Источник: SourceCon, SimaticSource", prov.Context);
+            Assert.AreEqual("SourceCon", prov.Context);
             Assert.AreEqual("SQLServer" + SysTabl.SubValueS(TestLib.TestRunDir + "TestsSettings.accdb", "SQLServerSettings", "SqlServer"), prov.Inf);
             Assert.AreSame(con, prov.ProviderConnect);
             Assert.IsNotNull(prov.Logger);

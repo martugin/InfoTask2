@@ -14,23 +14,33 @@ namespace ProvidersLibrary
     {
         public ProvidersFactory()
         {
-            var doc = XDocument.Load(ItStatic.InfoTaskDir() + @"General\Config.xml");
-            foreach (var ncomp in doc.Element("Config").Element("Providers").Elements())
+            try
             {
-                var ccode = ncomp.GetName();
-                var complect = new ComplectConfig(ccode, ncomp.GetAttr("DllFile"));
-                ComplectConfigs.Add(ccode, complect);
-                foreach (var nprov in ncomp.Elements())
+                var doc = XDocument.Load(ItStatic.InfoTaskDir() + @"General\Config.xml");
+                foreach (var ncomp in doc.Element("Config").Element("Providers").Elements())
                 {
-                    var pcode = nprov.GetName();
-                    var provider = new ProviderConfig(complect, 
-                                                                       nprov.GetAttr("ProviderType").ToProviderType(), 
-                                                                       nprov.GetAttr("SignalType").ToSignalType(), 
-                                                                       pcode);
-                    ProviderConfigs.Add(pcode, provider);
+                    var ccode = ncomp.GetName();
+                    var complect = new ComplectConfig(ccode, ncomp.GetAttr("DllFile"));
+                    ComplectConfigs.Add(ccode, complect);
+                    foreach (var nprov in ncomp.Elements())
+                    {
+                        var pcode = nprov.GetName();
+                        var provider = new ProviderConfig(complect,
+                            nprov.GetAttr("ProviderType").ToProviderType(),
+                            nprov.GetAttr("SignalType").ToSignalType(),
+                            pcode);
+                        ProviderConfigs.Add(pcode, provider);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                _app.AddError("Ошибка загрузки провайдеров из Config", ex);
+            }
         }
+
+        //Приложение
+        private BaseApp _app;
 
         //Список всех провайдеров из Config
         private readonly DicS<ProviderConfig> _providerConfigs = new DicS<ProviderConfig>();
@@ -42,16 +52,23 @@ namespace ProvidersLibrary
         //Создание соединения
         public ProviderConnect CreateConnect(Logger logger, //Логгер
                                                                  ProviderType type, //Тип провайдера
-                                                                 string name, //Имя соединения
+                                                                 string code, //Код соединения
                                                                  string complect, //Комплект
                                                                  string projectCode = "") //Код проекта
         {
-            switch (type)
+            try
             {
-                case ProviderType.Source:
-                    return new SourceConnect(logger, name, complect, projectCode);
-                case ProviderType.Receiver:
-                    return new ReceiverConnect(logger, name, complect, projectCode);
+                switch (type)
+                {
+                    case ProviderType.Source:
+                        return new SourceConnect(logger, code, complect, projectCode);
+                    case ProviderType.Receiver:
+                        return new ReceiverConnect(logger, code, complect, projectCode);
+                }
+            }
+            catch (Exception ex)
+            {
+                _app.AddError("Ошибка при создании сокдинения", ex, type.ToEnglish() + "; " + code + "; " + complect);
             }
             return null;
         }
@@ -62,14 +79,27 @@ namespace ProvidersLibrary
                                                       string inf, //Настройки
                                                       string projectCode = "") //Код проекта
         {
-            var prc = ProviderConfigs[code];
-            var pr = prc.Complect.Complect == "Clones" || prc.Complect.Complect == "Archives"
-                         ? NewStandardProvider(prc)
-                         : NewProvider(prc);
-            pr.Logger = logger;
-            pr.ProgressContext = projectCode;
-            pr.Inf = inf;
-            return pr;
+            try
+            {
+                if (!ProviderConfigs.ContainsKey(code))
+                {
+                    logger.AddWarning("Провайдер не указан или установлен", null, projectCode);
+                    return null;
+                }
+                var prc = ProviderConfigs[code];
+                var pr = prc.Complect.Complect == "Clones" || prc.Complect.Complect == "Archives"
+                    ? NewStandardProvider(prc)
+                    : NewProvider(prc);
+                pr.Logger = logger;
+                pr.ProgressContext = projectCode;
+                pr.Inf = inf;
+                return pr;
+            }
+            catch (Exception ex)
+            {
+                _app.AddError("Ошибка при создании провайдера", ex, code + "; " + inf);
+            }
+            return null;
         }
 
         //Запуск экземпляра провайдера через MEF, позднее связывание с dll

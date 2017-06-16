@@ -13,9 +13,10 @@ namespace ProvidersTest
         private SourceConnect MakeProviders()
         {
             var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
-            var con = (SourceConnect)factory.CreateConnect(ProviderType.Source, "SourceCon", "Wonderware", logger);
-            var prov = factory.CreateProvider("WonderwareSource", TestLib.TestSqlInf("RunTime"));
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
+            var con = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source, "SourceCon", "Wonderware");
+            var prov = factory.CreateProvider(logger, "WonderwareSource", TestLib.TestSqlInf("RunTime"));
             con.JoinProvider(prov);
             return con;
         }
@@ -29,11 +30,11 @@ namespace ProvidersTest
             Assert.AreEqual("Wonderware", con.Complect);
             Assert.AreEqual(ProviderType.Source, con.Type);
             Assert.IsNotNull(con.Logger);
-            Assert.AreEqual(con.Context, "Источник: SourceCon");
+            Assert.AreEqual("SourceCon", con.Context);
             Assert.IsNotNull(con.Provider);
             Assert.IsTrue(con.Provider is WonderwareSource);
             Assert.AreEqual("WonderwareSource", prov.Code);
-            Assert.AreEqual("Источник: SourceCon, WonderwareSource", prov.Context);
+            Assert.AreEqual("SourceCon", prov.Context);
             Assert.AreEqual(TestLib.TestSqlInf("RunTime"), prov.Inf);
             Assert.AreSame(con, prov.ProviderConnect);
             Assert.IsNotNull(prov.Logger);

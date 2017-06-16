@@ -2,7 +2,7 @@
 using System.Linq;
 using BaseLibrary;
 using BaseLibraryTest;
-using CommonTypes;
+using Calculation;
 using Generator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -27,7 +27,8 @@ namespace GeneratorTest
         //Создать накопитель ошибок
         private static GenKeeper MakeKeeper()
         {
-            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
             return new GenKeeper(new ModuleGenerator(logger, null, null, null));
         }
 

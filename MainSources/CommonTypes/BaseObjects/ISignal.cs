@@ -13,15 +13,15 @@
     //Интерфейс для сигналов и параметров для чтения
     public interface IReadSignal : ISignal
     {
-        //Забрать значение
-        IReadMean GetValue();
+        //Возвращаемое значение
+        IReadMean OutValue { get; }
     }
 
     //-----------------------------------------------------------------------------
     //Интерфейс для сигналов и параметров для записи
     public interface IWriteSignal : ISignal
     {
-        //Передать значение
-        void PutValue(IReadMean value);
+        //Исходный сигнал
+        IReadSignal InSignal { get; }
     }
 }

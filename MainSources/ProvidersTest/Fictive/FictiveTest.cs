@@ -14,13 +14,14 @@ namespace ProvidersTest
         private SourceConnect MakeFictiveConnect(string prefix, bool makeReserve = false)
         {
             var factory = new ProvidersFactory();
-            var logger = new Logger(new TestHistory(), new AppIndicator());
-            var connect = (SourceConnect)factory.CreateConnect(ProviderType.Source, "TestSource", "Fictive", logger);
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
+            var connect = (SourceConnect)factory.CreateConnect(logger, ProviderType.Source, "TestSource", "Fictive");
             TestLib.CopyFile(@"Providers\Fictive", "Fictive.accdb", "Fictive" + prefix + ".accdb");
-            var source = (FictiveSource)factory.CreateProvider("FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\Fictive" + prefix + ".accdb");
+            var source = (FictiveSource)factory.CreateProvider(logger, "FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\Fictive" + prefix + ".accdb");
             FictiveSource source2 = null;
             if (makeReserve)
-                source2 = (FictiveSource)factory.CreateProvider("FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\Fictive" + prefix + ".accdb");
+                source2 = (FictiveSource)factory.CreateProvider(logger, "FictiveSource", @"DbFile=" + TestLib.TestRunDir + @"Providers\Fictive\Fictive" + prefix + ".accdb");
             connect.JoinProvider(source, source2);
             return connect;
         }
@@ -48,10 +49,10 @@ namespace ProvidersTest
             var prov = (FictiveSource)con.Provider;
             Assert.AreEqual("TestSource", con.Code);
             Assert.AreEqual("Fictive", con.Complect);
-            Assert.AreEqual("Источник: TestSource", con.Context);
+            Assert.AreEqual("TestSource", con.Context);
             Assert.IsNotNull(prov);
             Assert.AreEqual("FictiveSource", prov.Code);
-            Assert.AreEqual("Источник: TestSource, FictiveSource", prov.Context);
+            Assert.AreEqual("TestSource", prov.Context);
 
             con.AddSignal("Ob1.StateSignal", DataType.Integer, SignalType.Uniform, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=State");
             con.AddSignal("Ob1.StateSignal", DataType.Integer, SignalType.Uniform, "Table=MomValues;ObjectCode=Ob1;NumObject=1", "", "Signal=State");
@@ -67,9 +68,6 @@ namespace ProvidersTest
             Assert.IsTrue(con.ReadingSignals["Ob1.StateSignal"] is UniformSignal);
             Assert.AreEqual("Ob1.StateSignal", con.ReadingSignals["Ob1.StateSignal"].Code);
             Assert.AreEqual(DataType.Integer, con.ReadingSignals["Ob1.StateSignal"].DataType);
-            Assert.AreEqual("MomValues", con.ReadingSignals["Ob1.StateSignal"].Inf["Table"]);
-            Assert.AreEqual("1", con.ReadingSignals["Ob1.StateSignal"].Inf["NumObject"]);
-            Assert.AreEqual("State", con.ReadingSignals["Ob1.StateSignal"].Inf["Signal"]);
             Assert.AreEqual(0, con.ReadingSignals["Ob1.StateSignal"].OutValue.Count);
 
             con.AddSignal("Ob2.StateSignal", DataType.Integer, SignalType.Uniform, "Table=MomValues;ObjectCode=Ob2;NumObject=2", "", "Signal=State");

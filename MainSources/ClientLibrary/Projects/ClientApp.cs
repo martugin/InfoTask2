@@ -5,7 +5,7 @@ namespace ClientLibrary
     //Приложение - клиент
     public class ClientApp : BaseApp
     {
-        public ClientApp(string code) 
+        public ClientApp(string code)
             : base(code, null) { }
     }
 }

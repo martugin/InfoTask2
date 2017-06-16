@@ -5,7 +5,7 @@ using CommonTypes;
 namespace ProvidersLibrary
 {
     //Соединение - приемник
-    public class ReceiverConnect : ProviderConnect, IWriteConnect
+    public class ReceiverConnect : ProviderConnect, IWritingConnect
     {
         public ReceiverConnect(Logger logger, string code, string complect, string projectCode = "") 
             : base(logger, code, complect, projectCode) { }
@@ -26,6 +26,13 @@ namespace ProvidersLibrary
         internal DicS<ReceiverSignal> ReceiverSignals {get { return _receiverSignals; }}
         public IDicSForRead<IWriteSignal> WritingSignals { get { return ReceiverSignals; } }
 
+        //Очистка списка сигналов
+        public override void ClearSignals()
+        {
+            base.ClearSignals();
+            _receiverSignals.Clear();
+        }
+
         //Добавить сигнал
         public ReceiverSignal AddSignal(string fullCode, //Полный код сигнала
                                                          DataType dataType, //Тип данных
@@ -36,14 +43,22 @@ namespace ProvidersLibrary
         {
             if (ReceiverSignals.ContainsKey(fullCode))
                 return ReceiverSignals[fullCode];
-            Provider.IsPrepared = false;
+            if (Provider != null) Provider.IsPrepared = false;
             var contextOut = infObject + (infOut.IsEmpty() ? "" : ";" + infOut);
             var inf = infObject.ToPropertyDicS().AddDic(infOut.ToPropertyDicS()).AddDic(infProp.ToPropertyDicS());
             return ReceiverSignals.Add(fullCode, new ReceiverSignal(this, fullCode, dataType, contextOut, inf));
         }
 
+        //Удалить сигнал
+        public void RemoveSignal(string fullCode)
+        {
+            if (Provider != null) Provider.IsPrepared = false;
+            if (_receiverSignals.ContainsKey(fullCode))
+                _receiverSignals.Remove(fullCode);
+        }
+
         //Запись значений в приемник
-        public void WriteValues() 
+        public void WriteValues()
         {
             if (PeriodIsUndefined()) return;
             if (Start(0, 80).Run(PutValues).IsSuccess) return;
@@ -58,6 +73,11 @@ namespace ProvidersLibrary
         {
             try
             {
+                if (Receiver == null)
+                {
+                    AddWarning("Приемник не настроен");
+                    return;
+                }
                 using (Start(0, 10))
                     if (!Receiver.Connect() || !Receiver.Prepare()) return;
 

@@ -1,11 +1,11 @@
-﻿using CommonTypes;
+﻿using ProcessingLibrary;
 
 namespace ServiceLibrary
 {
     //Проект для службы
-    public class ServiceProject : ServerProject
+    public class ServiceProject : ProcessProject
     {
-        public ServiceProject(BaseApp app, string projectDir) 
+        public ServiceProject(ProcessApp app, string projectDir) 
             : base(app, projectDir) { }
     }
 }

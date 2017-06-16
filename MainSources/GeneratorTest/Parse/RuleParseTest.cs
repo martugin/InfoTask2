@@ -11,7 +11,8 @@ namespace GeneratorTest
     {
         private GenKeeper MakeKeeper()
         {
-            var logger = new Logger(new TestHistory(), new AppIndicator());
+            var logger = new Logger(new AppIndicator());
+            logger.History = new TestHistory(logger);
             return new GenKeeper(new ModuleGenerator(logger, null, null, null));
         }
 

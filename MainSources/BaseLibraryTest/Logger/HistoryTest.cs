@@ -18,8 +18,8 @@ namespace BaseLibraryTest
                 DaoDb.FromTemplate(template, file, ReplaceByTemplate.Always);
                 TestLib.CopyFile("Libraries", "CorrectHistory.accdb", @"History\CorrectHistory.accdb");
             }
-            var history = new AccessHistory(file, template);
-            Logger = new Logger(history, new TestIndicator());
+            Logger = new Logger( new TestIndicator());
+            Logger.History = new AccessHistory(Logger, file, template);
         }
 
         private IHistory History { get { return Logger.History; } }
@@ -32,28 +32,28 @@ namespace BaseLibraryTest
             StartCollect(true, false);
             StartPeriod(new DateTime(2017, 1, 1), new DateTime(2017, 1, 2), "Синхронный");
             StartProgress("SuperCommand1");
-            StartLog("Command11", "Context1", "Pars11").Run(() =>
+            StartLog("Command11", "Pars11", "Context1").Run(() =>
                 {
                     AddEvent("Event111", "Pars111");
                     AddEvent("Event112", "Pars112");
                 });
-            StartLog("Command12", "Context2", "Pars12");
+            StartLog("Command12", "Pars12", "Context2");
             Start(0, 100).Run(() =>
                 {
                     AddEvent("Event121", "Pars121");
                     AddError("Error122", null, "Pars122");
                     AddEvent("Event123", "Pars123");
                 });
-            StartLog("Command13", "Context3", "Pars13");
+            StartLog("Command13", "Pars13", "Context3");
             StartPeriod(new DateTime(2017, 1, 2), new DateTime(2017, 1, 3), "Синхронный");
             StartProgress("SuperCommand2");
-            StartLog("Command21", "Context1", "Pars21");
+            StartLog("Command21", "Pars21", "Context1");
             AddEvent("Event211");
             Start(0, 100);
             AddWarning("Error212");
             AddWarning("Error213", null, "Pars21", "ContextE");
             FinishLog("Results21");
-            StartLog("Command22", "Context2", "Pars22");
+            StartLog("Command22", "Pars22", "Context2");
             AddEvent("Event221");
             AddError("Error222", new Exception("Text"));
             FinishLog("Results22");
@@ -67,8 +67,8 @@ namespace BaseLibraryTest
             {
                 StartProgress("SuperCommand4").Run(() =>
                 {
-                    StartLog("Command41", "Context4", "Pars41");
-                    StartLog("Command42", "Context4", "Pars42");
+                    StartLog("Command41", "Pars41", "Context4");
+                    StartLog("Command42", "Pars42", "Context4");
                     AddEvent("Event421", "Pars421");
                     AddEvent("Event422");
                 });
@@ -76,8 +76,8 @@ namespace BaseLibraryTest
             
             StartCollect(true, false).Run(() =>
                 {
-                    StartLog("Command01", "Context0", "Pars01");
-                    StartLog("Command02", "Context0", "Pars02").Run(() =>
+                    StartLog("Command01", "Pars01", "Context0");
+                    StartLog("Command02", "Pars02", "Context0").Run(() =>
                         {
                             AddEvent("Event021");
                             AddEvent("Event022");

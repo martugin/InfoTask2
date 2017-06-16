@@ -79,6 +79,28 @@ namespace Fictive
             return nwrite;
         }
 
+        //Заполняет значения сигналов, значениями исходя из текущего времени
+        internal int MakeTimeValues(DateTime beg, DateTime en, bool isCut)
+        {
+            int n = isCut ? 0 : 1;
+            int nwrite = 0;
+            DateTime t = beg;
+            if (!isCut) t = t.AddMilliseconds(ValuesInterval);
+            while (t <= en)
+            {
+                nwrite += AddMom(StateSignal, t, 10);
+                nwrite += AddMom(BoolSignal, t, t.Second % 2 == 1);
+                nwrite += AddMom(IntSignal, t, t.Second);
+                nwrite += AddMom(ValueSignal, t, t.Second*2, MakeError(t.Second % 3));
+                nwrite += AddMom(RealSignal, t, t.Second / 2.0);
+                nwrite += AddMom(StringSignal, t, "ss" + t.Second);
+                nwrite += AddMom(TimeSignal, t, t.AddSeconds(1));
+                t = t.AddMilliseconds(ValuesInterval);
+                n++;
+            }
+            return nwrite;
+        }
+
         //Чтение одной строчки значений
         protected override int ReadMoments(IRecordRead rec)
         {
