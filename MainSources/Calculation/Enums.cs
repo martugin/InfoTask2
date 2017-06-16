@@ -50,6 +50,16 @@ namespace Calculation
     }
 
     //----------------------------------------------------------------------
+    //Способ формирования параметра для ведомости или архива результатов
+    public enum ArchiveParamType
+    {
+        Param, //Параметр
+        SubParam, //Подпараметр
+        NotSave, //Не сохранять
+        Error //Ошибка
+    }
+
+    //----------------------------------------------------------------------
     //Типы накопления
     public enum SuperProcess
     {
@@ -156,6 +166,42 @@ namespace Calculation
                     return "Диаграмма";
             }
             return "Ошибка";
+        }
+
+        //Перевод из строки в ArchiveParamType
+        public static ArchiveParamType ToArchiveParamType(this string t)
+        {
+            if (t == null) return ArchiveParamType.NotSave;
+            switch (t.ToLower())
+            {
+                case "param":
+                case "параметр":
+                    return ArchiveParamType.Param;
+                case "subparam":
+                case "подпараметр":
+                    return ArchiveParamType.SubParam;
+                case "notsave":
+                case "не сохранять":
+                    return ArchiveParamType.NotSave;
+            }
+            return ArchiveParamType.Error;
+        }
+
+        //Перевод из ArchiveParamType в строку
+        public static string ToRussian(this ArchiveParamType t)
+        {
+            switch (t)
+            {
+                case ArchiveParamType.Param:
+                    return "Параметр";
+                case ArchiveParamType.SubParam:
+                    return "Подпараметр";
+                case ArchiveParamType.NotSave:
+                    return "Не сохранять";
+                case ArchiveParamType.Error:
+                    return "Ошибка";
+            }
+            return "";
         }
 
         //Перевод из строки в SuperProcessType

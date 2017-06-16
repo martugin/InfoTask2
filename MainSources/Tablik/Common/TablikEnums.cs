@@ -1,7 +1,7 @@
 ﻿namespace Tablik
 {
     //Стадия компиляции параметра
-    public enum CompileStage
+    internal enum CompileStage
     {
         NotStarted, //Компиляция еще не начиналась
         Started, //Компиляция идет, типы данных не менялись

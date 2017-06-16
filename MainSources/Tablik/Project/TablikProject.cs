@@ -12,7 +12,7 @@ namespace Tablik
             : base(project.App, project.Code, project.Code)
         {
             Project = project;
-            LoadAllConnects();
+            LoadAllSignals();
         }
 
         //Проект
@@ -28,24 +28,42 @@ namespace Tablik
         private readonly DicS<TablikReceiver> _receivers = new DicS<TablikReceiver>();
         public DicS<TablikReceiver> Receivers { get { return _receivers; } }
 
-        //Добавить модуль
-        public TablikModule AddModule(string code)
+        //Загрузить сигналы всех провайдеров
+        public void LoadAllSignals()
         {
-            return _modules.Add(code, new TablikModule(this, code));
+            foreach (var source in Sources.Values)
+                source.LoadSignals();
+            foreach (var receiver in Receivers.Values)
+                receiver.LoadSignals();
         }
+
+        //Загрузить сигналы указанного провайдера
+        public void LoadSignals(string providerCode)
+        {
+            if (Sources.ContainsKey(providerCode))
+                Sources[providerCode].LoadSignals();
+            if (Receivers.ContainsKey(providerCode))
+                Receivers[providerCode].LoadSignals();
+        }
+
         //Очистить список модулей
         public void ClearModules()
         {
             _modules.Clear();
         }
 
-        //Загрузить все провайдеры
-        public void LoadAllConnects()
+        //Добавить модуль
+        public void AddModule(string code)
         {
-            throw new NotImplementedException();
+            if (!_modules.ContainsKey(code))
+            {
+                var mod = new TablikModule(this, code);
+                _modules.Add(code, mod);
+                var smod = Project.SchemeModules[code];
+                foreach (var m in smod.LinkedModules.Values)
+                    AddModule(m);    
+            }
         }
-
-
 
         #region Generator
         //Ссылка на генератор параметров

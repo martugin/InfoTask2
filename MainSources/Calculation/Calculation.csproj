@@ -45,10 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Scheme\DataModule.cs" />
-    <Compile Include="Scheme\SchemeConnect.cs" />
-    <Compile Include="Scheme\SchemeModule.cs" />
-    <Compile Include="Scheme\SchemeProject.cs" />
+    <Compile Include="BaseObjects\Params\BaseParam.cs" />
+    <Compile Include="BaseObjects\Scheme\DataModule.cs" />
+    <Compile Include="BaseObjects\Scheme\SchemeConnect.cs" />
+    <Compile Include="BaseObjects\Scheme\SchemeModule.cs" />
+    <Compile Include="BaseObjects\Scheme\SchemeProject.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="FunsCalc\BaseFunctions.cs" />
     <Compile Include="FunsCalc\CalcBaseFun.cs" />
@@ -63,7 +64,7 @@
     <Compile Include="Funs\ScalarFun.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modules\CalcModule.cs" />
-    <Compile Include="Scheme\SchemeProxy.cs" />
+    <Compile Include="BaseObjects\Scheme\SchemeProxy.cs" />
     <Compile Include="Tabls\SubRows.cs" />
     <Compile Include="Tabls\Tabl.cs" />
     <Compile Include="Tabls\TablGroup.cs" />

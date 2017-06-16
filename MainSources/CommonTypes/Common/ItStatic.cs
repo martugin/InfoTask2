@@ -52,6 +52,23 @@ namespace CommonTypes
             return err1;
         }
 
+        //Проверка кода параметра и т.п. на правильность
+        public static bool IsCorrectCode(this string code)
+        {
+            if (code.IsWhiteSpace()) return false;
+            string lcode = code.ToLower();
+            bool e = false;
+            const string leters = "abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя_";
+            const string digits = "0123456789";
+            foreach (char l in lcode)
+            {
+                int inl = leters.IndexOf(l), ind = digits.IndexOf(l);
+                e |= inl != -1;
+                if (inl == -1 && ind == -1) return false;
+            }
+            return e;
+        }
+
         //Перевод из строки в ProviderType
         public static ProviderType ToProviderType(this string t)
         {
