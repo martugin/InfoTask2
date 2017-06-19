@@ -2,69 +2,69 @@ grammar Rule;
 
 //GenRule подпараметров
 subTablGen : tablGen				 			#SubTablGenTabl
-				  | subTabl query EOF		#SubTablGenSub
-				  ;
+                  | subTabl query EOF		#SubTablGenSub
+                  ;
 
 //GenRule параметров
 tablGen : tabl query EOF;
 
 query : '.' subTabl query		 #QuerySubTabl
          | '.' rowGroup			   	 #QueryGroup         
-		 |									 #QueryEmpty
-		 ;
+         |									 #QueryEmpty
+         ;
 
 tabl : IDENT                           #TablIdent
        | IDENT '(' expr ')'          #TablCond
-	   //Ошибки
-	   | IDENT '(' expr?             #TablCond
-	   | IDENT '(' expr? ')' ')'    #TablCond
-	   ;
+       //Ошибки
+       | IDENT '(' expr?             #TablCond
+       | IDENT '(' expr? ')' ')'    #TablCond
+       ;
 
 subTabl : SUBTABL                      #SubTablIdent
-			 | SUBTABL '(' ')'            #SubTablIdent
-			 | SUBTABL '(' expr ')'    #SubTablCond
-			 //Ошибки
-			 | SUBTABL '(' expr?             #SubTablCond
-			 | SUBTABL '(' expr? ')' ')'    #SubTablCond
-		     ;
+             | SUBTABL '(' ')'            #SubTablIdent
+             | SUBTABL '(' expr ')'    #SubTablCond
+             //Ошибки
+             | SUBTABL '(' expr?             #SubTablCond
+             | SUBTABL '(' expr? ')' ')'    #SubTablCond
+             ;
 
 rowGroup : ROWGROUP									#GroupSimple
-				| ROWGROUP '(' ')'							#GroupSimple
-				| ROWGROUP '(' IDENT (';' IDENT)* ')'         #GroupIdent
-				| ROWGROUP '(' IDENT (';' IDENT)*	  	   		 #GroupIdent
-				| ROWGROUP '(' IDENT (';' IDENT)* ')' ')'	  #GroupIdent
-				 ;
+                | ROWGROUP '(' ')'							#GroupSimple
+                | ROWGROUP '(' IDENT (';' IDENT)* ')'         #GroupIdent
+                | ROWGROUP '(' IDENT (';' IDENT)*	  	   		 #GroupIdent
+                | ROWGROUP '(' IDENT (';' IDENT)* ')' ')'	  #GroupIdent
+                 ;
 
 //Выражения
 expr : cons                                #ExprCons		
-		| '(' expr ')'                     #ExprParen		
-		| IDENT                          #ExprIdent		
-		| FUNCONST ('(' ')')?     #ExprFunConst
-		| IDENT '(' pars ')'         #ExprFun		
-		| MINUS expr                 #ExprUnary 
-		| expr OPER5 expr           #ExprOper		
-		| expr OPER4 expr           #ExprOper		
-		| expr (OPER3 | MINUS) expr  #ExprOper		
-		| expr OPER2 expr           #ExprOper	
-		| NOT expr                      #ExprUnary	
-		| expr OPER1 expr            #ExprOper		
-		//Ошибки		
-		| '(' expr                          #ExprParen	
-		| '(' expr ')' ')'                 #ExprParen		
-		| IDENT '(' pars		        #ExprFun
-		| IDENT '(' pars ')' ')'		#ExprFun		
-		;
+        | '(' expr ')'                     #ExprParen		
+        | IDENT                          #ExprIdent		
+        | FUNCONST ('(' ')')?     #ExprFunConst
+        | IDENT '(' pars ')'         #ExprFun		
+        | MINUS expr                 #ExprUnary 
+        | expr OPER5 expr           #ExprOper		
+        | expr OPER4 expr           #ExprOper		
+        | expr (OPER3 | MINUS) expr  #ExprOper		
+        | expr OPER2 expr           #ExprOper	
+        | NOT expr                      #ExprUnary	
+        | expr OPER1 expr            #ExprOper		
+        //Ошибки		
+        | '(' expr                          #ExprParen	
+        | '(' expr ')' ')'                 #ExprParen		
+        | IDENT '(' pars		        #ExprFun
+        | IDENT '(' pars ')' ')'		#ExprFun		
+        ;
 
 pars : expr (';' expr)*    #ParamsList
        |                             #ParamsEmpty              
-	    ;
+        ;
 
 //Константы
 cons : INT                      #ConsInt
        | REAL                    #ConsReal 
-	   | STRING                #ConsString
-	   | TIME					  #ConsTime
-	   ;
+       | STRING                #ConsString
+       | TIME					  #ConsTime
+       ;
 
 //------------------------------------------------------------------------------------------------------------
 // Lexer 
@@ -98,9 +98,9 @@ OPER1 : (AND | OR | XOR);
 //Функции - константы
 FUNCONST : ([Tt][Rr][Uu][Ee] | [Пп][Рр][Аа][Вв][Дд][Аа])
                     | ([Ff][Aa][Ll][Ss][Ee] | [Лл][Оо][Жж][Ьь])
-					| [Pp][Ii]
-					| [Nn][Ee][Ww][Ll][Ii][Nn][Ee]
-					;
+                    | [Pp][Ii]
+                    | [Nn][Ee][Ww][Ll][Ii][Nn][Ee]
+                    ;
 
 //Константы  и  идентификаторы
 fragment DIGIT : [0-9];
@@ -110,7 +110,7 @@ fragment IDSYMB : (DIGIT | LETTER);
 INT : DIGIT+;
 REAL : INT ('.' | ',') INT
          | INT (('.' | ',') INT) ? 'e' '-' ? INT
-	     ;
+         ;
 TIME : '#' INT '.' INT '.' INT ' '+ INT ':' INT ':' INT '#';
 
 IDENT : IDSYMB* LETTER IDSYMB*;

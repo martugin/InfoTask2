@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Antlr4.CodeGenerator.4.6.1\build\Antlr4.CodeGenerator.props" Condition="Exists('..\packages\Antlr4.CodeGenerator.4.6.1\build\Antlr4.CodeGenerator.props')" />
+  <Import Project="..\packages\Antlr4.4.5.3\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.5.3\build\Antlr4.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -32,8 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
-      <HintPath>..\packages\Antlr4.Runtime.4.6.1\lib\net40-client\Antlr4.Runtime.dll</HintPath>
+    <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.4.5.3\lib\net40-client\Antlr4.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Office.interop.access.dao, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
@@ -53,6 +53,22 @@
     <Compile Include="Common\Funs.cs" />
     <Compile Include="Common\TablikEnums.cs" />
     <Compile Include="Common\TablikApp.cs" />
+    <Compile Include="Grammars\Expr\ExprParsing.cs" />
+    <Compile Include="Grammars\Expr\ExprVisitor.cs" />
+    <Compile Include="Grammars\Inputs\InputsParsing.cs" />
+    <Compile Include="Grammars\Inputs\InputsVisitor.cs" />
+    <Compile Include="obj\Debug\ExprBaseListener.cs" />
+    <Compile Include="obj\Debug\ExprBaseVisitor.cs" />
+    <Compile Include="obj\Debug\ExprLexer.cs" />
+    <Compile Include="obj\Debug\ExprListener.cs" />
+    <Compile Include="obj\Debug\ExprParser.cs" />
+    <Compile Include="obj\Debug\ExprVisitor.cs" />
+    <Compile Include="obj\Debug\InputsBaseListener.cs" />
+    <Compile Include="obj\Debug\InputsBaseVisitor.cs" />
+    <Compile Include="obj\Debug\InputsLexer.cs" />
+    <Compile Include="obj\Debug\InputsListener.cs" />
+    <Compile Include="obj\Debug\InputsParser.cs" />
+    <Compile Include="obj\Debug\InputsVisitor.cs" />
     <Compile Include="Params\ICalcParamNode.cs" />
     <Compile Include="Params\TablikDerivedParam.cs" />
     <Compile Include="Params\TablikModule.cs" />
@@ -83,10 +99,16 @@
       <Name>Generator</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Grammars\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Antlr4 Include="Grammars\Inputs\Inputs.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Tablik</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="Grammars\Expr\Expr.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Tablik</CustomToolNamespace>
+    </Antlr4>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -94,10 +116,10 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Antlr4.CodeGenerator.4.6.1\build\Antlr4.CodeGenerator.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.CodeGenerator.4.6.1\build\Antlr4.CodeGenerator.props'))" />
-    <Error Condition="!Exists('..\packages\Antlr4.CodeGenerator.4.6.1\build\Antlr4.CodeGenerator.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.CodeGenerator.4.6.1\build\Antlr4.CodeGenerator.targets'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.4.5.3\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.5.3\build\Antlr4.props'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.4.5.3\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.5.3\build\Antlr4.targets'))" />
   </Target>
-  <Import Project="..\packages\Antlr4.CodeGenerator.4.6.1\build\Antlr4.CodeGenerator.targets" Condition="Exists('..\packages\Antlr4.CodeGenerator.4.6.1\build\Antlr4.CodeGenerator.targets')" />
+  <Import Project="..\packages\Antlr4.4.5.3\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.5.3\build\Antlr4.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

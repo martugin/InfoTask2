@@ -56,7 +56,7 @@ SEP : ':';
 
 //‘ункции - константы
 FUNCONST : ([Tt][Rr][Uu][Ee] | [ѕп][–р][ја][¬в][ƒд][ја])
-                    | ([Ff][Aa][Ll][Ss][Ee] | [Ћл][ќо][∆ж][№ь])
+					| ([Ff][Aa][Ll][Ss][Ee] | [Ћл][ќо][∆ж][№ь])
 					| [Pp][Ii]					
 					| [Nn][Ee][Ww][Ll][Ii][Nn][Ee]
 					;
@@ -68,8 +68,8 @@ fragment IDSYMB : (DIGIT | LETTER);
 
 INT : DIGIT+;
 REAL : INT ('.' | ',') INT
-         | INT (('.' | ',') INT) ? 'e' '-' ? INT
-	     ;
+		 | INT (('.' | ',') INT) ? 'e' '-' ? INT
+		 ;
 TIME : '#' INT '.' INT '.' INT ' '+ INT ':' INT ':' INT '#';
 
 IDENT : IDSYMB* LETTER IDSYMB*;
