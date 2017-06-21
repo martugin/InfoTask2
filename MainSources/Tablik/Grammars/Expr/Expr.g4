@@ -3,8 +3,13 @@ grammar Expr;
 
 /* Parser Rules */
 
-prog	:	EOF
+prog	: voidProg
+		| valueProg
 		;
+
+voidProg : voidExpr (SEP voidExpr)*;   
+
+valueProg : (voidExpr SEP)* expr;	
 
 //Выражения без значения
 voidExpr : IDENT SET expr															 #VoidExprVar
@@ -38,8 +43,7 @@ expr : cons                                              #ExprCons
 		| expr (OPER3 | MINUS) expr   #ExprOper		
 		| expr OPER2 expr           #ExprOper		
 		| NOT expr		               #ExprUnary
-		| expr OPER1 expr           #ExprOper		
-		| ELSQUARE textGen IRSQUARE     #ExprTextGen			 
+		| expr OPER1 expr           #ExprOper				
 		//Ошибки		
 		| LPAREN expr										      #ExprParen		
 		| LPAREN expr RPAREN RPAREN               #ExprParen		

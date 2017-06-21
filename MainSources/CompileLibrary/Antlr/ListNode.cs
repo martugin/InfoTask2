@@ -10,7 +10,7 @@ namespace CompileLibrary
         {
             Children = children.ToList();
         }
-
+        
         protected override string NodeType { get { return "NodeList"; } }
 
         //Запись в строку

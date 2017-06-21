@@ -55,6 +55,7 @@
     <Compile Include="Common\TablikApp.cs" />
     <Compile Include="Grammars\Expr\ExprParsing.cs" />
     <Compile Include="Grammars\Expr\ExprVisitor.cs" />
+    <Compile Include="Grammars\Inputs\InputsNodes.cs" />
     <Compile Include="Grammars\Inputs\InputsParsing.cs" />
     <Compile Include="Grammars\Inputs\InputsVisitor.cs" />
     <Compile Include="obj\Debug\ExprBaseListener.cs" />
@@ -74,6 +75,9 @@
     <Compile Include="Params\TablikModule.cs" />
     <Compile Include="Params\TablikParam.cs" />
     <Compile Include="Project\TablikProject.cs" />
+    <Compile Include="Signals\TablikObject.cs" />
+    <Compile Include="Signals\ObjectType.cs" />
+    <Compile Include="Signals\TablikSignal.cs" />
     <Compile Include="Signals\TablikConnect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

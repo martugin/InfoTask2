@@ -16,7 +16,8 @@ namespace CommonTypes
         Time = 6, //Значение тип Время
         String = 7, //Строковое значение
         Variant = 8, //Значение неопределенного типа
-        Segments = 9 //Набор сегментов
+        Segments = 9, //Набор сегментов
+        Void = 10 //Нет значения
     }
 
     //---------------------------------------------------------------------
@@ -56,9 +57,9 @@ namespace CommonTypes
                 case "value":
                 case "величина":
                     return DataType.Value;
-                case "error":
-                case "ошибка":
-                    return DataType.Error;
+                case "void":
+                case "пустой":
+                    return DataType.Void;
             }
             return DataType.Error;
         }
@@ -88,6 +89,8 @@ namespace CommonTypes
                     return 'g';
                 case DataType.Value:
                     return 'v';
+                case DataType.Void:
+                    return 'o';
             }
             return 'e';
         }
@@ -115,6 +118,8 @@ namespace CommonTypes
                     return "Вариант";
                 case DataType.Value:
                     return "Величина";
+                case DataType.Void:
+                    return "Пустой";
             }
             return "Ошибка";
         }
@@ -142,6 +147,8 @@ namespace CommonTypes
                     return "Variant";
                 case DataType.Value:
                     return "Value";
+                case DataType.Void:
+                    return "Void";
             }
             return "Error";
         }
@@ -165,7 +172,11 @@ namespace CommonTypes
             if (t1.LessOrEquals(t2)) return t2;
             if (t1 == DataType.Segments && t2 == DataType.Segments)
                 return DataType.Segments;
+            if (t1 == DataType.Void && t2 == DataType.Void)
+                return DataType.Void;
             if (t1 == DataType.Segments || t2 == DataType.Segments)
+                return DataType.Error;
+            if (t1 == DataType.Void || t2 == DataType.Void)
                 return DataType.Error;
             return DataType.String;
         }
@@ -187,8 +198,11 @@ namespace CommonTypes
                     return DateTime.TryParse(s, out rest);
                 case DataType.String:
                     return s.Length <= 255;
+                case DataType.Value:
+                case DataType.Variant:
+                    return true;
             }
-            return true;
+            return false;
         }
 
         //Тип данных является числовым

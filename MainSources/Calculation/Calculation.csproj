@@ -45,11 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseObjects\Params\BaseCalcParam.cs" />
+    <Compile Include="BaseObjects\Params\BaseDerivedParam.cs" />
     <Compile Include="BaseObjects\Params\BaseParam.cs" />
+    <Compile Include="BaseObjects\Signals\BaseObject.cs" />
+    <Compile Include="BaseObjects\Signals\BaseSignal.cs" />
     <Compile Include="BaseObjects\Scheme\DataModule.cs" />
     <Compile Include="BaseObjects\Scheme\SchemeConnect.cs" />
     <Compile Include="BaseObjects\Scheme\SchemeModule.cs" />
     <Compile Include="BaseObjects\Scheme\SchemeProject.cs" />
+    <Compile Include="BaseObjects\Signals\ObjectProp.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="FunsCalc\BaseFunctions.cs" />
     <Compile Include="FunsCalc\CalcBaseFun.cs" />
