@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Antlr\ConstNode.cs" />
     <Compile Include="Antlr\ErrorListeners.cs" />
+    <Compile Include="Antlr\IdentNode.cs" />
     <Compile Include="Antlr\INode.cs" />
     <Compile Include="Antlr\KeeperNode.cs" />
     <Compile Include="Antlr\ListNode.cs" />

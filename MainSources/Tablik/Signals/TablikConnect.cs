@@ -65,7 +65,7 @@ namespace Tablik
                         var list = rec.GetString("CalcTypes").ToPropertyList();
                         foreach (var bt in list)
                             if (BaseTypes.ContainsKey(bt))
-                                t.BaseTypes.Add(bt, BaseTypes[bt]);
+                                t.BaseTypes.Add(BaseTypes[bt]);
                     }
 
                 using (var rec = new DaoRec(db, "Objects"))
@@ -100,7 +100,7 @@ namespace Tablik
                         var s = new TablikSignal(rec);
                         var t = ObjectsTypesId[rec.GetInt("TypeId")];
                         t.Signals.Add(s.Code, s);
-                        foreach (var bt in t.BaseTypes.Values)
+                        foreach (var bt in t.BaseTypes)
                         {
                             var bcode = rec.GetString("CodeSignal" + (bt.SignalCodeColumn == 1 ? "" : bt.SignalCodeColumn.ToString()));
                             if (!bcode.IsEmpty() && t.Signals.ContainsKey(bcode))

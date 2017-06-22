@@ -53,6 +53,8 @@
     <Compile Include="Common\Funs.cs" />
     <Compile Include="Common\TablikEnums.cs" />
     <Compile Include="Common\TablikApp.cs" />
+    <Compile Include="Common\ITablikType.cs" />
+    <Compile Include="Common\TablikStatic.cs" />
     <Compile Include="Grammars\Expr\ExprParsing.cs" />
     <Compile Include="Grammars\Expr\ExprVisitor.cs" />
     <Compile Include="Grammars\Inputs\InputsNodes.cs" />
@@ -74,12 +76,14 @@
     <Compile Include="Params\TablikDerivedParam.cs" />
     <Compile Include="Params\TablikModule.cs" />
     <Compile Include="Params\TablikParam.cs" />
+    <Compile Include="Params\TablikVar.cs" />
     <Compile Include="Project\TablikProject.cs" />
     <Compile Include="Signals\TablikObject.cs" />
     <Compile Include="Signals\ObjectType.cs" />
     <Compile Include="Signals\TablikSignal.cs" />
     <Compile Include="Signals\TablikConnect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Signals\UsedSignal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">

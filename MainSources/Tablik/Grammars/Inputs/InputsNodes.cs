@@ -6,45 +6,49 @@ namespace Tablik
     //Простой вход
     internal class InputsArgNode : Node
     {
-        public InputsArgNode(ITerminalNode code, ITerminalNode dataType = null) 
-            : base(code)
+        public InputsArgNode(ITerminalNode codeToken, ITerminalNode dataTypeNode = null) 
+            : base(null)
         {
-            DataType = dataType;
+            CodeToken = codeToken;
+            if (dataTypeNode != null)
+                DataTypeNode = new IdentNode(dataTypeNode);
         }
 
         protected override string NodeType { get { return "Arg"; } }
 
         //Тип данных
-        public ITerminalNode DataType { get; private set; }
+        public IdentNode DataTypeNode { get; private set; }
+        //Имя входа
+        public ITerminalNode CodeToken { get; private set; }
     }
 
     //-----------------------------------------------------------------------------------
     //Тип входа 
     internal enum InputType
     {
-        DataType, //Обычный тип данных
+        Simple, //Обычный тип данных
         Object, //Тип объекта
         Param //Расчетная функция
     }
 
     //-----------------------------------------------------------------------------------
     //Полное описание одного входа
-    internal class InputNode : KeeperNode
+    internal class InputNode : Node
     {
-        public InputNode(ParsingKeeper keeper, ITerminalNode code, InputType inputType, ListNode type, ConstNode defaultValue = null)
-            : base(keeper, code)
+        public InputNode(ITerminalNode codeToken, InputType inputType, ListNode typeNode, ConstNode valueNode = null)
+            : base(codeToken)
         {
             InputType = inputType;
-            Type = type;
-            DefaultValue = defaultValue;
+            TypeNode = typeNode;
+            ValueNode = valueNode;
         }
 
         //Тип входа
         public InputType InputType { get; private set; }
         //Тип данных как цепочка идентификаторов
-        public ListNode Type { get; private set; }
+        public ListNode TypeNode { get; private set; }
         //Значение по умолчанию
-        public ConstNode DefaultValue { get; private set; }
+        public ConstNode ValueNode { get; private set; }
 
         protected override string NodeType { get { return "Input"; } }
     }

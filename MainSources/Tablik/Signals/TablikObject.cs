@@ -1,10 +1,11 @@
 ﻿using BaseLibrary;
 using Calculation;
+using CommonTypes;
 
 namespace Tablik
 {
     //Один объект для Tablik
-    public class TablikObject : BaseObject
+    public class TablikObject : BaseObject, ITablikSignalType
     {
         public TablikObject(ObjectType type, IRecordRead rec) : base(rec)
         {
@@ -15,8 +16,8 @@ namespace Tablik
         public ObjectType ObjectType { get; private set; }
 
         //Используемые сигналы
-        private readonly DicS<TablikSignal> _usedSignals = new DicS<TablikSignal>();
-        public DicS<TablikSignal> UsedSignals { get { return _usedSignals; } }
+        private readonly DicS<UsedSignal> _usedSignals = new DicS<UsedSignal>();
+        public DicS<UsedSignal> UsedSignals { get { return _usedSignals; } }
         //Используемые свойства
         private readonly DicS<ObjectProp> _usedProps = new DicS<ObjectProp>();
         public DicS<ObjectProp> UsedProps { get { return _usedProps; } }
@@ -33,7 +34,14 @@ namespace Tablik
             foreach (var prop in UsedProps.Values)
                 prop.ToRecordset(recProps, id);
             foreach (var sig in UsedSignals.Values)
-                sig.Signal.ToRecordset(recSignals, id, Code);
+                sig.ToRecordset(recSignals, id);
         }
+
+        //Тип данных как сигнал
+        public ITablikSignalType TablikSignalType { get { return this; } }
+        //Сигнал по умолчанию
+        public TablikSignal Signal { get { return ObjectType.DefaultSignal; } }
+        //Тип данных
+        public DataType DataType { get { return Signal.DataType; } }
     }
 }

@@ -5,46 +5,32 @@ using CommonTypes;
 namespace Tablik
 {
     //Интерфес для сигналов для Tablik
-    public interface ITablikSignal
+    public interface ITablikSignalType : ITablikType
     {
         //Код сигнала
         string Code { get; }
         //Имя сигнала
         string Name { get; }
-        //Ссылка на сигнал из Signals
+        //Сигнал, задающий тип значения
         TablikSignal Signal { get; }
     }
 
     //---------------------------------------------------------------------------------------
     //Сигнал из Signals
-    public class TablikSignal : BaseSignal, ITablikSignal
+    public class TablikSignal : BaseSignal, ITablikSignalType
     {
         public TablikSignal(IRecordRead rec) 
             : base(rec) { }
 
+        //Сигнал
         public TablikSignal Signal { get { return this; } }
-
-        //Запись в рекордсет
-        public void ToRecordset(DaoRec rec, int objectId, string objectCode)
-        {
-            rec.AddNew();
-            rec.Put("ObjectId", objectId);
-            rec.Put("FullCode", objectCode + "." + Code);
-            rec.Put("CodeSignal", Code);
-            rec.Put("NameSignal", Code);
-            rec.Put("DataType", DataType.ToRussian());
-            rec.Put("SignalType", SignalType);
-            rec.Put("InfOut", InfOut);
-            rec.Put("InfProp", InfProp);
-            rec.Put("InitialSignals", InitialSignals);
-            rec.Put("Formula", Formula);
-            rec.Update();
-        }
+        //Тип данных - сигнал
+        public ITablikSignalType TablikSignalType { get { return this; } }
     }
 
     //---------------------------------------------------------------------------------------
     //Сигнал из SignalsCalc
-    public class TypeSignal : ITablikSignal
+    public class TypeSignal 
     {
         public TypeSignal(string code, string name)
         {

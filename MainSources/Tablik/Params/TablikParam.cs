@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BaseLibrary;
 using Calculation;
 using CommonTypes;
@@ -6,7 +7,7 @@ using CommonTypes;
 namespace Tablik
 {
     //Один расчетный параметр для компиляции
-    public class TablikParam : BaseCalcParam, ICalcParamNode
+    public class TablikParam : BaseCalcParam, ICalcParamNode, ITablikType
     {
         public TablikParam(TablikModule module, IRecordRead rec, bool isSubParam) 
             : base(rec, isSubParam)
@@ -47,13 +48,13 @@ namespace Tablik
         public string UserExpr1 { get; private set; }
         public string UserExpr2 { get; private set; }
 
-        //Словарь расчетных параметров, ключи - коды, содержит только отмеченные и без грубых ошибок
+        //Словарь расчетных подпараметров, ключи - коды, содержит только отмеченные и без грубых ошибок
         private readonly DicS<TablikParam> _params = new DicS<TablikParam>();
         public DicS<TablikParam> Params { get { return _params; } }
-        //Словарь всех расчетных параметров, ключи - коды
+        //Словарь всех расчетных подпараметров, ключи - коды
         private readonly DicS<TablikParam> _paramsAll = new DicS<TablikParam>();
         public DicS<TablikParam> ParamsAll { get { return _paramsAll; } }
-        //Словарь расчетных параметров, ключи - Id, содержит все параметры
+        //Словарь расчетных подпараметров, ключи - Id, содержит все подпараметров
         private readonly DicI<TablikParam> _paramsId = new DicI<TablikParam>();
         public DicI<TablikParam> ParamsId { get { return _paramsId; } }
 
@@ -159,11 +160,25 @@ namespace Tablik
 
         #endregion
 
-        
         #region Compile
-        
-        //Состояние компиляции параметра
-        internal CompileStage Stage { get; private set; }
+
+        //Тип данных параметра
+        internal ITablikType Type { get; private set; }
+        //Тип данных как сигнал
+        public ITablikSignalType TablikSignalType { get { return Type.TablikSignalType; } }
+        //Тип данных
+        public DataType DataType { get { return Type.DataType; } }
+
+        //Параметры, базовые для данного
+        private readonly HashSet<TablikParam> _baseParams = new HashSet<TablikParam>();
+        public HashSet<TablikParam> BaseParams { get { return _baseParams; } }
+
+        //Выходы параметра
+        private readonly DicS<TablikVar> _inputs = new DicS<TablikVar>();
+        public DicS<TablikVar> Inputs { get { return _inputs; } }
+        //Все переменные, включая выходы
+        private readonly DicS<TablikVar> _vars = new DicS<TablikVar>();
+        public DicS<TablikVar> Vars { get { return _vars; } }
 
         //Определение типов данных и формирование порожденных параметров
         public void Compile()
@@ -172,9 +187,6 @@ namespace Tablik
         }
 
         #endregion
-        
-
-
         
         //Запись результатов компиляции
         public void SaveCompileResults(IRecordAdd rec)

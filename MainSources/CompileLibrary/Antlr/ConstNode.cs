@@ -4,6 +4,7 @@ using CommonTypes;
 
 namespace CompileLibrary
 {
+    //Узел - константа
     public class ConstNode : Node
     {
         public ConstNode(Mean mean) : base(null)

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime.Tree;
 using CompileLibrary;
 using P = Tablik.InputsParser;
@@ -28,9 +29,20 @@ namespace Tablik
 
         //Обход разных типов узлов
 
+        public override Node VisitParamConst(P.ParamConstContext context)
+        {
+            var arg = (InputsArgNode)Go(context.arg());
+            var list = new List<Node>();
+            if (arg.DataTypeNode != null) list.Add(arg.DataTypeNode);
+            return new InputNode(arg.CodeToken, InputType.Simple, new ListNode(list), _keeper.C);
+        }
+
         public override Node VisitParamArg(P.ParamArgContext context)
         {
-            
+            var arg = (InputsArgNode) Go(context.arg());
+            var list = new List<Node>();
+            if (arg.DataTypeNode != null) list.Add(arg.DataTypeNode);
+            return new InputNode(arg.CodeToken, InputType.Simple, new ListNode(list));
         }
 
         public override Node VisitArgDataType(P.ArgDataTypeContext context)
