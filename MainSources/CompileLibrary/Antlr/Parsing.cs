@@ -27,7 +27,7 @@ namespace CompileLibrary
             ResultTree = RunVisitor(parser, keeper);
         }
 
-        //Возвращаемое дерево и строка с ошибками разбора
+        //Возвращаемое дерево 
         public Node ResultTree { get; private set; }
         
         //Накопление ошибки

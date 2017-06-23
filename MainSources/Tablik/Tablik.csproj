@@ -60,6 +60,7 @@
     <Compile Include="Grammars\Inputs\InputsNodes.cs" />
     <Compile Include="Grammars\Inputs\InputsParsing.cs" />
     <Compile Include="Grammars\Inputs\InputsVisitor.cs" />
+    <Compile Include="Grammars\TablikKeeper.cs" />
     <Compile Include="obj\Debug\ExprBaseListener.cs" />
     <Compile Include="obj\Debug\ExprBaseVisitor.cs" />
     <Compile Include="obj\Debug\ExprLexer.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="obj\Debug\InputsListener.cs" />
     <Compile Include="obj\Debug\InputsParser.cs" />
     <Compile Include="obj\Debug\InputsVisitor.cs" />
+    <Compile Include="Params\DfsStatus.cs" />
     <Compile Include="Params\ICalcParamNode.cs" />
     <Compile Include="Params\TablikDerivedParam.cs" />
     <Compile Include="Params\TablikModule.cs" />

@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using BaseLibrary;
 using Calculation;
 using CommonTypes;
+using CompileLibrary;
 
 namespace Tablik
 {
     //Один расчетный параметр для компиляции
     public class TablikParam : BaseCalcParam, ICalcParamNode, ITablikType
     {
-        public TablikParam(TablikModule module, IRecordRead rec, bool isSubParam) 
+        public TablikParam(TablikModule module, IRecordRead rec, bool isSubParam, bool isGenerated) 
             : base(rec, isSubParam)
         {
             _module = module;
+            _keeper = new TablikKeeper(this);
+            IsGenerated = isGenerated;
             if (!Code.IsCorrectCode())
             {
                 ErrMess += "Указан недопустимый код расчетного параметра; ";
-                _isFatalError = true;
+                IsFatalError = true;
             }
 
             CalcOn = rec.GetBool("CalcOn");
@@ -24,16 +27,16 @@ namespace Tablik
             if (UserExpr1 == "")
             {
                 ErrMess += "Не заполнено расчетное выражение; ";
-                _isFatalError = true;
+                IsFatalError = true;
             }
             UserExpr2 = rec.GetString("UserExpr2", "");
             if (UserExpr2 == "")
             {
                 ErrMess += "Не заполнено управляющее выражение; ";
-                _isFatalError = true;
+                IsFatalError = true;
             }
             InputsStr = rec.GetString("Inputs");
-
+            
             JoinToParamTree();
         }
 
@@ -47,6 +50,11 @@ namespace Tablik
         //Выражения
         public string UserExpr1 { get; private set; }
         public string UserExpr2 { get; private set; }
+
+        //Является функцией
+        public bool IsFun { get { return !InputsStr.IsEmpty(); } }
+        //Является сгенерированным
+        public bool IsGenerated { get; private set; }
 
         //Словарь расчетных подпараметров, ключи - коды, содержит только отмеченные и без грубых ошибок
         private readonly DicS<TablikParam> _params = new DicS<TablikParam>();
@@ -89,7 +97,7 @@ namespace Tablik
         }
 
         //Случилась ошибка, после которой невозможно продлжать компиляцию параметра
-        private bool _isFatalError;
+        public bool IsFatalError { get; private set; }
         //Сообщения об ошибках 
         private string _errMess = "";
         public string ErrMess
@@ -102,65 +110,66 @@ namespace Tablik
         //Синтаксический анализ
         public void Parse()
         {
-            if (_isFatalError) return;
-            _curExpr = "выходы.";
-            ParseInputs();
-            _curExpr = "расч.";
-            ParseFormula(UserExpr1);
-            FinishCalcParsing();
-            _curExpr = "упр.";
-            ParseFormula(UserExpr2);
-            FinishResultParsing();
+            _keeper.Errors.Clear();
+            if (IsFatalError) return;
+            if (IsFun) SemanticInputs(new InputsParsing(_keeper, "входы", InputsStr).ResultTree);
+            SemanticFormula(new ExprParsing(_keeper, "расч", UserExpr1).ResultTree, true);
+            SemanticFormula(new ExprParsing(_keeper, "упр", UserExpr2).ResultTree, false);
         }
 
-        //Какое выражение обрабатывается расчетное (расч.), управляющее (упр.). список выходов (выходы.)
-        private string _curExpr;
+        //Накопитель ошибок 
+        private readonly ParsingKeeper _keeper;
 
-        //Формирует строку, содержащую описание лексемы
-        //private string LexInf(Lexeme lex)
-        //{
-        //    if (lex.Token == null) return " ";
-        //    return " " + lex.Token.RealText + ", " + _curExpr + "стр." + lex.Token.Line + ", поз." + lex.Token.Column + "; ";
-        //}
-        //private string LexInf(Token tok)
-        //{
-        //    if (tok == null) return " ";
-        //    return " " + tok.RealText + ", " + _curExpr + "стр." + tok.Line + ", поз." + tok.Column + "; ";
-        //}
+        //Семантический разбор поля Inputs
+        private void SemanticInputs(Node inputs)
+        {
+            Inputs.Clear();
+            Vars.Clear();
+            var pars = ((ListNode) inputs).Children;
+            foreach (InputNode node in pars)
+            {
+                TablikVar v = null;
+                var varCode = node.Token.Text;
+                var typesList = node.TypeNode.Children;
+                if (node.InputType == InputType.Simple)
+                {
+                    DataType dt = typesList.Count == 0 ? DataType.Real : typesList[0].Token.Text.ToDataType();
+                    v = new TablikVar(varCode, new SimpleType(dt), node.ValueNode == null ? null : node.ValueNode.Mean);
+                }
 
-        //Разбор поля Inputs
-        private void ParseInputs()
+                else if (node.InputType == InputType.Param)
+                {
+                    if (_module.Params.ContainsKey(typesList[0].Token.Text))
+                        v = new TablikVar(varCode, _module.Params[]);
+                    else _keeper.AddError("Не найден расчетный параметр", typesList[0].Token);
+                    
+                }
+
+                else if (node.InputType == InputType.Signal)
+                {
+                    
+                }
+
+                if (!Inputs.ContainsKey(v.Code))
+                    Vars.Add(v.Code, Inputs.Add(v.Code, v));
+                else _keeper.AddError("Два входа с одним кодом", typesList[0].Token);
+
+
+            }
+        }
+
+        //Семантический разбор формулы
+        private void SemanticFormula(Node formula, bool isCalc)//расчетное или управляющее выражение
         {
             throw new NotImplementedException();
         }
 
-        //Разбор формулы
-        private void ParseFormula(string formula)
-        {
-            throw new NotImplementedException();
-        }
-
-        //Завершение разбора расчетного выражения
-        private void FinishCalcParsing()
-        {
-            throw new NotImplementedException();
-        }
-
-        //Завершение разбора управляющего выражения
-        private void FinishResultParsing()
-        {
-            throw new NotImplementedException();
-        }
-
-        //Семантический анализ
-        private void Semantic()
-        {
-            throw new NotImplementedException();        
-        }
+        //Флаг для построения графа зависимости параметров
+        public DfsStatus DfsStatus { get; set; }
 
         #endregion
 
-        #region Compile
+        #region DefineDataTypes
 
         //Тип данных параметра
         internal ITablikType Type { get; private set; }
@@ -179,9 +188,9 @@ namespace Tablik
         //Все переменные, включая выходы
         private readonly DicS<TablikVar> _vars = new DicS<TablikVar>();
         public DicS<TablikVar> Vars { get { return _vars; } }
-
+        
         //Определение типов данных и формирование порожденных параметров
-        public void Compile()
+        public void DefineDataTypes()
         {
             throw new NotImplementedException();
         }

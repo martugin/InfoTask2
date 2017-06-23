@@ -28,31 +28,47 @@ namespace Tablik
         }
 
         //Обход разных типов узлов
-
-        public override Node VisitParamConst(P.ParamConstContext context)
+        public override Node VisitProg(P.ProgContext context)
         {
-            var arg = (InputsArgNode)Go(context.arg());
-            var list = new List<Node>();
-            if (arg.DataTypeNode != null) list.Add(arg.DataTypeNode);
-            return new InputNode(arg.CodeToken, InputType.Simple, new ListNode(list), _keeper.C);
+            return new ListNode(context.param().Select(Go));
         }
 
         public override Node VisitParamArg(P.ParamArgContext context)
         {
-            var arg = (InputsArgNode) Go(context.arg());
+            var arg = (InputArgNode)Go(context.arg());
             var list = new List<Node>();
             if (arg.DataTypeNode != null) list.Add(arg.DataTypeNode);
             return new InputNode(arg.CodeToken, InputType.Simple, new ListNode(list));
         }
+        
+        public override Node VisitParamConst(P.ParamConstContext context)
+        {
+            var arg = (InputArgNode)Go(context.arg());
+            var list = new List<Node>();
+            if (arg.DataTypeNode != null) list.Add(arg.DataTypeNode);
+            return new InputNode(arg.CodeToken, InputType.Simple, new ListNode(list), (ConstNode)Go(context.constVal()));
+        }
+
+        public override Node VisitParamSignal(P.ParamSignalContext context)
+        {
+            var list = new ListNode(new [] {Go(context.SIGNAL())});
+            return new InputNode(context.IDENT(), InputType.Signal, list);
+        }
+
+        public override Node VisitParamClass(P.ParamClassContext context)
+        {
+            var list = (ListNode)Go(context.identChain());
+            return new InputNode(context.IDENT(), InputType.Param, list);
+        }
 
         public override Node VisitArgDataType(P.ArgDataTypeContext context)
         {
-            return new InputsArgNode(context.IDENT(), context.DATATYPE());
+            return new InputArgNode(context.IDENT(), context.DATATYPE());
         }
 
         public override Node VisitArgIdent(P.ArgIdentContext context)
         {
-            return new InputsArgNode(context.IDENT());
+            return new InputArgNode(context.IDENT());
         }
 
         public override Node VisitIdentChain(P.IdentChainContext context)

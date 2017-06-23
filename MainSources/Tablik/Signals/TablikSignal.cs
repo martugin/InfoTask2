@@ -30,7 +30,7 @@ namespace Tablik
 
     //---------------------------------------------------------------------------------------
     //Сигнал из SignalsCalc
-    public class TypeSignal 
+    public class TypeSignal : ITablikSignalType
     {
         public TypeSignal(string code, string name)
         {
@@ -44,5 +44,8 @@ namespace Tablik
         public string Name { get; private set; }
         //Ссылка на сигнал из Signals
         public TablikSignal Signal { get; set; }
+
+        public DataType DataType { get { return Signal.DataType; } }
+        public ITablikSignalType TablikSignalType { get { return Signal; } }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using BaseLibrary;
 using Calculation;
 using Generator;
@@ -21,6 +21,10 @@ namespace Tablik
         //Словарь модулей
         private readonly DicS<TablikModule> _modules = new DicS<TablikModule>();
         public IDicSForRead<TablikModule> Modules { get { return _modules; } }
+        //Список модулей в порядке обсчета
+        private readonly List<TablikModule> _modulesOrder = new List<TablikModule>();
+        public List<TablikModule> ModulesOrder { get { return _modulesOrder; } }
+
         //Словарь источников
         private readonly DicS<TablikSource> _sources = new DicS<TablikSource>();
         public DicS<TablikSource> Sources { get { return _sources; } }
@@ -63,6 +67,36 @@ namespace Tablik
                 foreach (var m in smod.LinkedModules.Values)
                     AddModule(m);    
             }
+        }
+
+        //Компиляция выбранных модулей
+        public void Compile()
+        {
+            if (Modules.Count == 0) return;
+            ModulesOrder.Clear();
+            foreach (var m in Modules.Values)
+                m.DfsStatus = DfsStatus.Before;
+            foreach (var m in Modules.Values)
+                if (m.DfsStatus == DfsStatus.Before)
+                    MakeModuleGraph(m);
+
+            foreach (var m in ModulesOrder)
+                m.Compile();
+        }
+
+        //Определение порядка вычисления модулей
+        public void MakeModuleGraph(TablikModule m)
+        {
+            m.DfsStatus = DfsStatus.Process;
+            foreach (var lm in m.LinkedModules)
+            {
+                if (lm.DfsStatus == DfsStatus.Before )
+                    MakeModuleGraph(lm);
+                else if (lm.DfsStatus == DfsStatus.Process)
+                    AddWarning("Циклическая зависимость модулей", null, lm.Code);
+            }
+            ModulesOrder.Add(m);
+            m.DfsStatus = DfsStatus.After;
         }
 
         #region Generator

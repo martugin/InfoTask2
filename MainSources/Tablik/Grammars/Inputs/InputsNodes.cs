@@ -4,9 +4,9 @@ using CompileLibrary;
 namespace Tablik
 {
     //Простой вход
-    internal class InputsArgNode : Node
+    internal class InputArgNode : Node
     {
-        public InputsArgNode(ITerminalNode codeToken, ITerminalNode dataTypeNode = null) 
+        public InputArgNode(ITerminalNode codeToken, ITerminalNode dataTypeNode = null) 
             : base(null)
         {
             CodeToken = codeToken;
@@ -27,7 +27,7 @@ namespace Tablik
     internal enum InputType
     {
         Simple, //Обычный тип данных
-        Object, //Тип объекта
+        Signal, //Тип объекта
         Param //Расчетная функция
     }
 
