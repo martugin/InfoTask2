@@ -36,29 +36,24 @@ namespace Tablik
         public override Node VisitParamArg(P.ParamArgContext context)
         {
             var arg = (InputArgNode)Go(context.arg());
-            var list = new List<Node>();
-            if (arg.DataTypeNode != null) list.Add(arg.DataTypeNode);
-            return new InputNode(arg.CodeToken, InputType.Simple, new ListNode(list));
+            return new InputNode(arg.CodeToken, InputType.Simple, arg.TypeNode);
         }
         
         public override Node VisitParamConst(P.ParamConstContext context)
         {
             var arg = (InputArgNode)Go(context.arg());
-            var list = new List<Node>();
-            if (arg.DataTypeNode != null) list.Add(arg.DataTypeNode);
-            return new InputNode(arg.CodeToken, InputType.Simple, new ListNode(list), (ConstNode)Go(context.constVal()));
+            return new InputNode(arg.CodeToken, InputType.Simple, arg.TypeNode, null, (ConstNode)Go(context.constVal()));
         }
 
         public override Node VisitParamSignal(P.ParamSignalContext context)
         {
-            var list = new ListNode(new [] {Go(context.SIGNAL())});
-            return new InputNode(context.IDENT(), InputType.Signal, list);
+            return new InputNode(context.IDENT(), InputType.Signal, new IdentNode(context.SIGNAL()));
         }
 
         public override Node VisitParamClass(P.ParamClassContext context)
         {
             var list = (ListNode)Go(context.identChain());
-            return new InputNode(context.IDENT(), InputType.Param, list);
+            return new InputNode(context.IDENT(), InputType.Param, (IdentNode)list.Children[0], list.Children.Count == 2 ? (IdentNode)list.Children[1] : null);
         }
 
         public override Node VisitArgDataType(P.ArgDataTypeContext context)

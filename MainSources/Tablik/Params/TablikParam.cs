@@ -125,36 +125,75 @@ namespace Tablik
         {
             Inputs.Clear();
             Vars.Clear();
-            var pars = ((ListNode) inputs).Children;
-            foreach (InputNode node in pars)
+            TablikVar v = null;
+            foreach (InputNode node in ((ListNode) inputs).Children)
             {
-                TablikVar v = null;
                 var varCode = node.Token.Text;
-                var typesList = node.TypeNode.Children;
-                if (node.InputType == InputType.Simple)
+                switch (node.InputType)
                 {
-                    DataType dt = typesList.Count == 0 ? DataType.Real : typesList[0].Token.Text.ToDataType();
-                    v = new TablikVar(varCode, new SimpleType(dt), node.ValueNode == null ? null : node.ValueNode.Mean);
-                }
+                    case InputType.Simple:
+                        var dt = node.TypeNode == null ? DataType.Real : node.TypeNode.Text.ToDataType();
+                        v = new TablikVar(varCode, new SimpleType(dt), node.ValueNode == null ? null : node.ValueNode.Mean);
+                        break;
 
-                else if (node.InputType == InputType.Param)
-                {
-                    if (_module.Params.ContainsKey(typesList[0].Token.Text))
-                        v = new TablikVar(varCode, _module.Params[]);
-                    else _keeper.AddError("Не найден расчетный параметр", typesList[0].Token);
-                    
-                }
+                    case InputType.Param:
+                        if (!_module.Params.ContainsKey(node.TypeNode.Text))
+                            _keeper.AddError("Не найден расчетный параметр", node.TypeNode);
+                        else 
+                        {
+                            var par = _module.Params[node.TypeNode.Text];
+                            if (node.SubTypeNode == null)
+                            {
+                                if (!par.IsFun) 
+                                    _keeper.AddError("Параметр без входов не может быть типом данных входа", node.TypeNode);
+                                else v = new TablikVar(varCode, par);
+                            }
+                            else if (!par.Params.ContainsKey(node.SubTypeNode.Text))
+                                _keeper.AddError("Не найден расчетный подпараметр", node.SubTypeNode);
+                            else
+                            {
+                                var spar = par.Params[node.SubTypeNode.Text];
+                                if (!spar.IsFun) 
+                                    _keeper.AddError("Подпараметр без входов не может быть типом данных входа", node.SubTypeNode);
+                                else v = new TablikVar(varCode, spar);
+                            }
+                        }
+                        break;
 
-                else if (node.InputType == InputType.Signal)
-                {
-                    
+                    case InputType.Signal:
+                        string scode = node.TypeNode.Text;
+                        ObjectType t = null;
+                        foreach (var con in _module.LinkedSources)
+                        {
+                            if (con.ObjectsTypes.ContainsKey(scode))
+                            {
+                                if (t == null) t = con.ObjectsTypes[scode];
+                                else _keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
+                            }
+                            if (con.BaseTypes.ContainsKey(scode))
+                            {
+                                if (t == null) t = con.BaseTypes[scode];
+                                else _keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
+                            }
+                        }
+                        if (t != null) v = new TablikVar(varCode, t);
+                        else
+                        {
+                            TablikSignal sig = null;
+                            foreach (var con in _module.LinkedSources)
+                                if (con.Signals.ContainsKey(scode))
+                                {
+                                    if (sig == null) sig = con.Signals[scode];
+                                    else _keeper.AddError("Одинаковый код типа сигнала в двух разных источниках", node);
+                                }
+                            if (sig != null) v = new TablikVar(varCode, sig);
+                            else _keeper.AddError("Не найден тип объекта или сигнала", node);
+                        }
+                        break;
                 }
-
-                if (!Inputs.ContainsKey(v.Code))
+                if (v != null && !Inputs.ContainsKey(v.Code))
                     Vars.Add(v.Code, Inputs.Add(v.Code, v));
-                else _keeper.AddError("Два входа с одним кодом", typesList[0].Token);
-
-
+                else _keeper.AddError("Два входа с одинаковыми именами", node);
             }
         }
 

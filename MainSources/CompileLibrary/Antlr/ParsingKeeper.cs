@@ -38,6 +38,10 @@ namespace CompileLibrary
                 AddError(errMess, (IToken)null);
             else AddError(errMess, terminal.Symbol);
         }
+        public void AddError(string errMess, INode node)
+        {
+            AddError(errMess, node.Token);
+        }
 
         //Накапливаемое сообщение об ошибке
         public string ErrMess

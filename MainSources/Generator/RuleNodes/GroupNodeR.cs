@@ -36,7 +36,7 @@ namespace Generator
             {
                 var s = ((ConstNode)field).Mean.String;
                 if (!tablParent.Fields.ContainsKey(s))
-                    Keeper.AddError("Поле для группировки не найдено в таблице", field.Token);
+                    Keeper.AddError("Поле для группировки не найдено в таблице", field);
                 else gstruct.Fields.Add(s, tablParent.Fields[s]);
             }
             return gstruct;

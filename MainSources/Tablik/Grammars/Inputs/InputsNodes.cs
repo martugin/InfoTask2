@@ -11,13 +11,13 @@ namespace Tablik
         {
             CodeToken = codeToken;
             if (dataTypeNode != null)
-                DataTypeNode = new IdentNode(dataTypeNode);
+                TypeNode = new IdentNode(dataTypeNode);
         }
 
         protected override string NodeType { get { return "Arg"; } }
 
         //Тип данных
-        public IdentNode DataTypeNode { get; private set; }
+        public IdentNode TypeNode { get; private set; }
         //Имя входа
         public ITerminalNode CodeToken { get; private set; }
     }
@@ -35,18 +35,21 @@ namespace Tablik
     //Полное описание одного входа
     internal class InputNode : Node
     {
-        public InputNode(ITerminalNode codeToken, InputType inputType, ListNode typeNode, ConstNode valueNode = null)
+        public InputNode(ITerminalNode codeToken, InputType inputType, IdentNode typeNode, IdentNode subNode = null, ConstNode valueNode = null)
             : base(codeToken)
         {
             InputType = inputType;
             TypeNode = typeNode;
+            SubTypeNode = subNode;
             ValueNode = valueNode;
         }
 
         //Тип входа
         public InputType InputType { get; private set; }
-        //Тип данных как цепочка идентификаторов
-        public ListNode TypeNode { get; private set; }
+        //Тип данных, имя сигнала или параметра
+        public IdentNode TypeNode { get; private set; }
+        //Имя подпараметра
+        public IdentNode SubTypeNode { get; private set; }
         //Значение по умолчанию
         public ConstNode ValueNode { get; private set; }
 
