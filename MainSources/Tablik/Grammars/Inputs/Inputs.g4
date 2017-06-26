@@ -51,7 +51,7 @@ REAL : INT ('.' | ',') INT
          ;	
 TIME : '#' INT '.' INT '.' INT ' '+ INT ':' INT ':' INT '#';
 STRING : '\'' ('\'\'' | ~[\'])*? '\'';
-SIGNAL : '{' ~[{}]*? '}';
+SIGNAL : '{' .*? '}';
 
 IDENT : IDSYMB* LETTER IDSYMB*;
 ASSIGN : '=';
