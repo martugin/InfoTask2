@@ -7,12 +7,16 @@ namespace CompileLibrary
     //Узел выражения, разбираемого ANTLR
     public abstract class Node : INode
     {
+        protected Node(IToken token = null)
+        {
+            Token = token;
+        }
         protected Node(ITerminalNode terminal)
         {
             if (terminal != null)
                 Token = terminal.Symbol;
         }
-        
+
         //Ссылка на токен
         public IToken Token { get; private set; }
         //Тип узла, для записи в строку

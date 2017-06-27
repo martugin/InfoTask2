@@ -1,30 +1,46 @@
 ﻿using Antlr4.Runtime.Tree;
 using CompileLibrary;
+using P = Tablik.ExprParser;
 
 namespace Tablik
 {
-    public class ExprVisitor : ExprBaseVisitor<Node>
+    internal class ExprVisitor : ExprBaseVisitor<Node>
     {
-        public ExprVisitor(ParsingKeeper keeper)
+        internal ExprVisitor(TablikKeeper keeper)
         {
             _keeper = keeper;
         }
 
         //Формирование строки ошибки
-        private readonly ParsingKeeper _keeper;
+        private readonly TablikKeeper _keeper;
 
         //Обход дерева разбора
-        public Node Go(IParseTree tree)
+        internal ISyntacticNode Go(IParseTree tree)
         {
             if (tree == null) return null;
-            return Visit(tree);
-        }
-
-        public ListNode GoList(IParseTree tree)
-        {
-            return (ListNode)Go(tree);
+            return (ISyntacticNode)Visit(tree);
         }
 
         //Обход разных типов узлов
+
+        public override Node VisitConsInt(P.ConsIntContext context)
+        {
+            return _keeper.GetIntConst(context.INT());
+        }
+
+        public override Node VisitConsReal(P.ConsRealContext context)
+        {
+            return _keeper.GetRealConst(context.REAL());
+        }
+
+        public override Node VisitConsString(P.ConsStringContext context)
+        {
+            return _keeper.GetStringConst(context.STRING(), true);
+        }
+
+        public override Node VisitConsTime(P.ConsTimeContext context)
+        {
+            return _keeper.GetTimeConst(context.TIME());
+        }
     }
 }

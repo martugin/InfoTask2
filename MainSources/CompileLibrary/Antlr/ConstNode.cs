@@ -1,4 +1,5 @@
 ﻿using System;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using CommonTypes;
 
@@ -7,7 +8,7 @@ namespace CompileLibrary
     //Узел - константа
     public class ConstNode : Node
     {
-        public ConstNode(Mean mean) : base(null)
+        public ConstNode(Mean mean) 
         {
             Mean = mean;
         }

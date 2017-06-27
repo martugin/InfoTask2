@@ -23,7 +23,7 @@ namespace Tablik
 
         protected override Node RunVisitor(Parser parser, ParsingKeeper keeper)
         {
-            return new ExprVisitor(keeper).Go(((ExprParser)parser).prog());
+            return (Node)new ExprVisitor((TablikKeeper)keeper).Go(((ExprParser)parser).prog());
         }
     }
 }

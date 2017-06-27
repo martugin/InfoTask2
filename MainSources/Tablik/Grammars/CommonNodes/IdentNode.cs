@@ -1,9 +1,11 @@
-﻿using Antlr4.Runtime.Tree;
+﻿using System;
+using Antlr4.Runtime.Tree;
+using CompileLibrary;
 
-namespace CompileLibrary
+namespace Tablik
 {
     //Узел - идентификатор
-    public class IdentNode : Node
+    internal class IdentNode : Node, ISyntacticNode
     {
         public IdentNode(ITerminalNode terminal) : base(terminal)
         {
@@ -15,5 +17,11 @@ namespace CompileLibrary
 
         //Тип узла
         protected override string NodeType { get { return "Ident"; } }
+
+        //Определить, что задает идентификатор
+        public IExprNode DefineSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

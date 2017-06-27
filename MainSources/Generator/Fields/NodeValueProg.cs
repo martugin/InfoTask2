@@ -7,7 +7,7 @@ namespace Generator
     //Программа без значения
     internal class NodeVoidProg : Node, IVoidNode
     {
-        public NodeVoidProg(params IVoidNode[] parts) : base(null)
+        public NodeVoidProg(params IVoidNode[] parts)
         {
             _voidParts = parts;
         }
@@ -41,7 +41,7 @@ namespace Generator
     //Программа, возвращающая значение
     internal class NodeValueProg : Node, IExprNode
     {
-        public NodeValueProg(NodeVoidProg voidProg, IExprNode expr) : base(null)
+        public NodeValueProg(NodeVoidProg voidProg, IExprNode expr)
         {
             _voidProg = voidProg;
             _expr = expr;

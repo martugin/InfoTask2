@@ -13,7 +13,7 @@ namespace Tablik
         public TablikParam(TablikModule module, IRecordRead rec, bool isSubParam, bool isGenerated) 
             : base(rec, isSubParam)
         {
-            _module = module;
+            Module = module;
             _keeper = new TablikKeeper(this);
             IsGenerated = isGenerated;
             if (!Code.IsCorrectCode())
@@ -41,7 +41,7 @@ namespace Tablik
         }
 
         //Модуль
-        private readonly TablikModule _module;
+        internal TablikModule Module { get; private set; }
 
         //Включен в расчет
         public bool CalcOn { get; private set; }
@@ -75,13 +75,13 @@ namespace Tablik
             if (Code == null) return;
             if (OwnerId != 0)
             {
-                Owner = _module.ParamsId[OwnerId];
+                Owner = Module.ParamsId[OwnerId];
                 FullCode = Owner.FullCode + "." + Code;
                 CalcOn &= Owner.CalcOn;
             }
             else FullCode = Code;
 
-            var owner = OwnerId == 0 ? (ICalcParamNode)_module : Owner;
+            var owner = OwnerId == 0 ? (ICalcParamNode)Module : Owner;
             owner.ParamsId.Add(ParamId, this);
             if (!owner.ParamsAll.ContainsKey(Code) || !owner.ParamsAll[Code].CalcOn)
                 owner.ParamsAll.Add(Code, this, true);
@@ -137,11 +137,11 @@ namespace Tablik
                         break;
 
                     case InputType.Param:
-                        if (!_module.Params.ContainsKey(node.TypeNode.Text))
+                        if (!Module.Params.ContainsKey(node.TypeNode.Text))
                             _keeper.AddError("Не найден расчетный параметр", node.TypeNode);
                         else 
                         {
-                            var par = _module.Params[node.TypeNode.Text];
+                            var par = Module.Params[node.TypeNode.Text];
                             if (node.SubTypeNode == null)
                             {
                                 if (!par.IsFun) 
@@ -163,7 +163,7 @@ namespace Tablik
                     case InputType.Signal:
                         string scode = node.TypeNode.Text;
                         ObjectType t = null;
-                        foreach (var con in _module.LinkedSources)
+                        foreach (var con in Module.LinkedSources)
                         {
                             if (con.ObjectsTypes.ContainsKey(scode))
                             {
@@ -180,7 +180,7 @@ namespace Tablik
                         else
                         {
                             TablikSignal sig = null;
-                            foreach (var con in _module.LinkedSources)
+                            foreach (var con in Module.LinkedSources)
                                 if (con.Signals.ContainsKey(scode))
                                 {
                                     if (sig == null) sig = con.Signals[scode];

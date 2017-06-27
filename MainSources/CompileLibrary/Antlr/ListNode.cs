@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 
 namespace CompileLibrary
 {
     //Промежуточный узел, собирающий список узлов 
     public class ListNode : Node
     {
-        public ListNode(IEnumerable<Node> children) : base(null)
+        public ListNode(IEnumerable<Node> children)
         {
             Children = children.ToList();
         }

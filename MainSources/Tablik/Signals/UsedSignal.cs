@@ -6,10 +6,10 @@ namespace Tablik
     //Используемый сигнал
     public class UsedSignal : ITablikSignalType
     {
-        public UsedSignal(TablikSignal signal, TablikObject o)
+        public UsedSignal(TablikSignal signal, TablikObject ob)
         {
             Signal = signal;
-            Object = o;
+            Object = ob;
         }
 
         //Сигнал
@@ -21,16 +21,18 @@ namespace Tablik
         public ITablikSignalType TablikSignalType { get { return this; } }
         public string Code { get { return Signal.Code; } }
         public string Name { get { return Signal.Name; } }
+        //Полный код
+        public string FullCode { get { return Object.Code + "." + Signal.Code; } }
 
         //Запись в рекордсет
         public void ToRecordset(DaoRec rec, int objectId)
         {
             rec.AddNew();
             rec.Put("ObjectId", objectId);
-            rec.Put("FullCode", Object.Code + "." + Signal.Code);
-            rec.Put("CodeSignal", Signal.Code);
-            rec.Put("NameSignal", Signal.Code);
-            rec.Put("DataType", Signal.DataType.ToRussian());
+            rec.Put("FullCode", FullCode);
+            rec.Put("CodeSignal", Code);
+            rec.Put("NameSignal", Name);
+            rec.Put("DataType", DataType.ToRussian());
             rec.Put("SignalType", Signal.SignalType);
             rec.Put("InfOut", Signal.InfOut);
             rec.Put("InfProp", Signal.InfProp);

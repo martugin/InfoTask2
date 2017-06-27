@@ -55,12 +55,16 @@
     <Compile Include="Common\TablikApp.cs" />
     <Compile Include="Common\ITablikType.cs" />
     <Compile Include="Common\TablikStatic.cs" />
+    <Compile Include="Grammars\CommonNodes\ConstNode.cs" />
+    <Compile Include="Grammars\CommonNodes\IdentNode.cs" />
+    <Compile Include="Grammars\CommonNodes\IExprNode.cs" />
+    <Compile Include="Grammars\ExprNodes\SignalNodes.cs" />
     <Compile Include="Grammars\Expr\ExprParsing.cs" />
     <Compile Include="Grammars\Expr\ExprVisitor.cs" />
     <Compile Include="Grammars\Inputs\InputsNodes.cs" />
     <Compile Include="Grammars\Inputs\InputsParsing.cs" />
     <Compile Include="Grammars\Inputs\InputsVisitor.cs" />
-    <Compile Include="Grammars\TablikKeeper.cs" />
+    <Compile Include="Grammars\CommonNodes\TablikKeeper.cs" />
     <Compile Include="obj\Debug\ExprBaseListener.cs" />
     <Compile Include="obj\Debug\ExprBaseVisitor.cs" />
     <Compile Include="obj\Debug\ExprLexer.cs" />

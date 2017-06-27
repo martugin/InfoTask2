@@ -7,7 +7,6 @@ namespace Tablik
     internal class InputArgNode : Node
     {
         public InputArgNode(ITerminalNode codeToken, ITerminalNode dataTypeNode = null) 
-            : base(null)
         {
             CodeToken = codeToken;
             if (dataTypeNode != null)

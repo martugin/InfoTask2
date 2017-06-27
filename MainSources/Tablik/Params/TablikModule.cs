@@ -8,14 +8,14 @@ namespace Tablik
     //Модуль для компиляции
     public class TablikModule : DataModule, ICalcParamNode
     {
-        public TablikModule(TablikProject tablik, string code)
-            : base(tablik.Project, code)
+        public TablikModule(TablikProject tablikProject, string code)
+            : base(tablikProject.Project, code)
         {
-            Tablik = tablik;
+            TablikProject = tablikProject;
         }
 
         //Проект Таблик
-        public TablikProject Tablik { get; private set; }
+        public TablikProject TablikProject { get; private set; }
 
         //Список связанных модулей
         private readonly List<TablikModule> _linkedModules = new List<TablikModule>();
