@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using CompileLibrary;
 
@@ -21,7 +22,7 @@ namespace Tablik
 
         public IExprNode DefineSemantic()
         {
-            
+            throw new NotImplementedException();
         }
 
         //Сигнал
