@@ -20,17 +20,17 @@ namespace Tablik
         
         //Словарь модулей
         private readonly DicS<TablikModule> _modules = new DicS<TablikModule>();
-        public IDicSForRead<TablikModule> Modules { get { return _modules; } }
+        internal IDicSForRead<TablikModule> Modules { get { return _modules; } }
         //Список модулей в порядке обсчета
         private readonly List<TablikModule> _modulesOrder = new List<TablikModule>();
-        public List<TablikModule> ModulesOrder { get { return _modulesOrder; } }
+        internal List<TablikModule> ModulesOrder { get { return _modulesOrder; } }
 
         //Словарь источников
         private readonly DicS<TablikSource> _sources = new DicS<TablikSource>();
-        public DicS<TablikSource> Sources { get { return _sources; } }
+        internal DicS<TablikSource> Sources { get { return _sources; } }
         //Словарь приемников
         private readonly DicS<TablikReceiver> _receivers = new DicS<TablikReceiver>();
-        public DicS<TablikReceiver> Receivers { get { return _receivers; } }
+        internal DicS<TablikReceiver> Receivers { get { return _receivers; } }
 
         //Загрузить сигналы всех провайдеров
         public void LoadAllSignals()
@@ -85,7 +85,7 @@ namespace Tablik
         }
 
         //Определение порядка вычисления модулей
-        public void MakeModuleGraph(TablikModule m)
+        internal void MakeModuleGraph(TablikModule m)
         {
             m.DfsStatus = DfsStatus.Process;
             foreach (var lm in m.LinkedModules)

@@ -4,7 +4,7 @@ using CommonTypes;
 namespace Tablik
 {
     //Используемый сигнал
-    public class UsedSignal : ITablikSignalType
+    internal class UsedSignal : ITablikSignalType
     {
         public UsedSignal(TablikSignal signal, TablikObject ob)
         {
@@ -17,10 +17,23 @@ namespace Tablik
         //Объект
         public TablikObject Object { get; private set; }
 
-        public DataType DataType { get { return Signal.DataType; } }
-        public ITablikSignalType TablikSignalType { get { return this; } }
+        //Код и имя сигнала
         public string Code { get { return Signal.Code; } }
         public string Name { get { return Signal.Name; } }
+
+        //Тип данных
+        public DataType DataType { get { return Signal.DataType; } }
+        public ITablikSignalType TablikSignalType { get { return this; } }
+        public SimpleType Simple { get { return Signal.Simple; } }
+
+        //Является типом
+        public bool IsOfType(ITablikType type)
+        {
+            if (type.TablikSignalType is TablikSignal)
+                return Signal == type.TablikSignalType;
+            return Simple.IsOfType(type);
+        }
+
         //Полный код
         public string FullCode { get { return Object.Code + "." + Signal.Code; } }
 

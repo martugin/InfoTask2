@@ -3,7 +3,7 @@
 namespace Tablik
 {
     //Переменная в расчетном параметре или выход
-    public class TablikVar
+    internal class TablikVar
     {
         public TablikVar(string code, ITablikType type = null, Mean defaultValue = null)
         {

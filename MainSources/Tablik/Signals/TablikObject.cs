@@ -5,7 +5,7 @@ using CommonTypes;
 namespace Tablik
 {
     //Один объект для Tablik
-    public class TablikObject : BaseObject, ITablikSignalType
+    internal class TablikObject : BaseObject, ITablikSignalType
     {
         public TablikObject(ObjectType type, IRecordRead rec) : base(rec)
         {
@@ -37,11 +37,21 @@ namespace Tablik
                 sig.ToRecordset(recSignals, id);
         }
 
-        //Тип данных как сигнал
-        public ITablikSignalType TablikSignalType { get { return this; } }
         //Сигнал по умолчанию
         public TablikSignal Signal { get { return ObjectType.DefaultSignal; } }
         //Тип данных
         public DataType DataType { get { return Signal.DataType; } }
+        //Тип данных - простой
+        public SimpleType Simple { get {return Signal.Simple;} }
+        //Тип данных как сигнал
+        public ITablikSignalType TablikSignalType { get { return this; } }
+
+        //Является типом
+        public bool IsOfType(ITablikType type)
+        {
+            if (type.TablikSignalType is ObjectType || type.TablikSignalType is TablikSignal)
+                return ObjectType.IsOfType(type);
+            return Simple.IsOfType(type);
+        }
     }
 }

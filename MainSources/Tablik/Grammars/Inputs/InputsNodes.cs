@@ -47,7 +47,7 @@ namespace Tablik
         public InputType InputType { get; private set; }
         //Тип данных, имя сигнала или параметра
         public IdentNode TypeNode { get; private set; }
-        //Имя подпараметра
+        //Имя подпараметра или массива
         public IdentNode SubTypeNode { get; private set; }
         //Значение по умолчанию
         public ConstNode ValueNode { get; private set; }

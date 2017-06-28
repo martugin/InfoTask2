@@ -5,10 +5,11 @@ grammar Inputs;
 
 prog : param (';' param)*;
 
-param : arg                                      #ParamArg
-          | arg ASSIGN constVal          #ParamConst
-          | SIGNAL IDENT					#ParamSignal
-          | identChain IDENT               #ParamClass
+param : arg                                                  #ParamArg
+          | arg ASSIGN constVal                      #ParamConst
+		  | ARRAY '(' DATATYPE ')' IDENT   #ParamArray
+          | SIGNAL IDENT				              #ParamSignal
+          | identChain IDENT                           #ParamClass
           ;
                
 arg : DATATYPE IDENT   #ArgDataType 
@@ -38,8 +39,14 @@ DATATYPE : [Bb][Oo][Oo][Ll] | [Ћл][ќо][√г][»и][„ч]
                   | [Rr][Ee][Aa][Ll] | [ƒд][≈е][…й][—с][“т][¬в]
                   | [Tt][Ii][Mm][Ee] | [¬в][–р][≈е][ћм][я€]
                   | [Ss][Tt][Rr][Ii][Nn][Gg] | [—с][“т][–р][ќо][ к][ја]
-                  | [Ss][Ee][Gg][Mm][Ee][Nn][Tt][Ss] | [—с][≈е][√г][ћм][≈е][Ќн][“т][џы] ;
-
+                  | [Ss][Ee][Gg][Mm][Ee][Nn][Tt][Ss] | [—с][≈е][√г][ћм][≈е][Ќн][“т][џы]
+				  ;
+//“ипы массивов
+ARRAY : [Ll][Ii][Ss][Tt] | [—с][ѕп][»и][—с][ќо][ к]
+			| [Dd][Ii][Cc][Nn][Uu][Mm][Bb][Ee][Rr][Ss] | [—с][Ћл][ќо][¬в][ја][–р][№ь][„ч][»и][—с][Ћл][ја]
+			| [Dd][Ii][Cc][Ss][Tt][Rr][Ii][Nn][Gg][Ss] | [—с][Ћл][ќо][¬в][ја][–р][№ь][—с][“т][–р][ќо][ к][»и]
+			;
+			
 // онстанты  и  идентификаторы
 fragment DIGIT : [0-9];
 fragment LETTER : [_a-zA-Zа-€ј-я];

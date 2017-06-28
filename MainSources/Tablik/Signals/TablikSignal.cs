@@ -5,7 +5,7 @@ using CommonTypes;
 namespace Tablik
 {
     //Интерфес для сигналов для Tablik
-    public interface ITablikSignalType : ITablikType
+    internal interface ITablikSignalType : ITablikType
     {
         //Код сигнала
         string Code { get; }
@@ -17,20 +17,32 @@ namespace Tablik
 
     //---------------------------------------------------------------------------------------
     //Сигнал из Signals
-    public class TablikSignal : BaseSignal, ITablikSignalType
+    internal class TablikSignal : BaseSignal, ITablikSignalType
     {
-        public TablikSignal(IRecordRead rec) 
-            : base(rec) { }
+        public TablikSignal(IRecordRead rec) : base(rec)
+        {
+            Simple = new SimpleType(DataType);
+        }
 
         //Сигнал
         public TablikSignal Signal { get { return this; } }
         //Тип данных - сигнал
         public ITablikSignalType TablikSignalType { get { return this; } }
+        //Тип данных - простой
+        public SimpleType Simple { get; private set; }
+
+        //Чвляется типом
+        public bool IsOfType(ITablikType type)
+        {
+            if (type.TablikSignalType is TablikSignal)
+                return this == type.TablikSignalType;
+            return Simple.IsOfType(type);
+        }
     }
 
     //---------------------------------------------------------------------------------------
     //Сигнал из SignalsCalc
-    public class TypeSignal : ITablikSignalType
+    internal class TypeSignal : ITablikSignalType
     {
         public TypeSignal(string code, string name)
         {
@@ -45,7 +57,16 @@ namespace Tablik
         //Ссылка на сигнал из Signals
         public TablikSignal Signal { get; set; }
 
+        //Тип данных
         public DataType DataType { get { return Signal.DataType; } }
+        //Тип данных - сигнал
         public ITablikSignalType TablikSignalType { get { return Signal; } }
+        //Тип данных - простой
+        public SimpleType Simple { get; private set; }
+
+        public bool IsOfType(ITablikType type)
+        {
+            return Signal.IsOfType(type);
+        }
     }
 }

@@ -45,6 +45,11 @@ namespace Tablik
             return new InputNode(arg.CodeToken, InputType.Simple, arg.TypeNode, null, (ConstNode)Go(context.constVal()));
         }
 
+        public override Node VisitParamArray(P.ParamArrayContext context)
+        {
+            return new InputNode(context.IDENT(), InputType.Simple, (IdentNode)Go(context.DATATYPE()), (IdentNode)Go(context.ARRAY()));
+        }
+
         public override Node VisitParamSignal(P.ParamSignalContext context)
         {
             return new InputNode(context.IDENT(), InputType.Signal, new IdentNode(context.SIGNAL()));

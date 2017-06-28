@@ -5,7 +5,7 @@ using CommonTypes;
 namespace Tablik
 {
     //Тип объекта 
-    public class ObjectType : ITablikSignalType
+    internal class ObjectType : ITablikSignalType
     {
         public ObjectType(int id, string code, string name, int signalCodeColumn)
         {
@@ -39,5 +39,20 @@ namespace Tablik
         public TablikSignal Signal { get { return DefaultSignal; } }
         //Тип данных
         public DataType DataType { get { return Signal.DataType; } }
+        //Тип данных - простой
+        public SimpleType Simple { get; private set; }
+
+        //Является типом
+        public bool IsOfType(ITablikType type)
+        {
+            if (type.TablikSignalType is ObjectType)
+            {
+                var ot = (ObjectType) type.TablikSignalType;
+                if (this == ot || BaseTypes.Contains(ot))
+                    return true;
+            }
+            if (type.TablikSignalType is TablikSignal && Signal == type.TablikSignalType) return true;
+            return Simple.IsOfType(type);
+        }
     }
 }

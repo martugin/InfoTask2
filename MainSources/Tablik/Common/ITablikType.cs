@@ -3,26 +3,48 @@
 namespace Tablik
 {
     //Интерфейс для типов данных элементов выражения
-    public interface ITablikType
+    internal interface ITablikType
     {
         //Тип данных
         DataType DataType { get; }
+        //Тип данных - простой
+        SimpleType Simple { get; }
         //Тип данных - сигнал
         ITablikSignalType TablikSignalType { get; }
+        
+        //Является типом
+        bool IsOfType(ITablikType type);
     }
 
-    //---------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------
     //Простой тип данных
-    public class SimpleType : ITablikType
+    internal class SimpleType : ITablikType
     {
-        public SimpleType(DataType dataType)
+        public SimpleType(DataType dataType, ArrayType arrayType = ArrayType.Single)
         {
             DataType = dataType;
+            ArrayType = arrayType;
+        }
+        public SimpleType() //Ошибка типа данных
+        {
+            DataType = DataType.Error;
+            ArrayType = ArrayType.Error;
         }
 
         //Тип данных
         public DataType DataType { get; private set; }
-        //Тип сигнала
+        //Тип массива
+        public ArrayType ArrayType { get; private set; }
+        //Тип данных - простой
+        public SimpleType Simple { get { return this; } }
+        //Тип данных - сигнал
         public ITablikSignalType TablikSignalType { get { return null; } }
+
+        //Является типом
+        public bool IsOfType(ITablikType type)
+        {
+            if (!(type is SimpleType)) return false;
+            return ArrayType == type.Simple.ArrayType && DataType.LessOrEquals(type.DataType);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BaseLibrary;
 using Calculation;
 using CommonTypes;
@@ -8,7 +9,7 @@ using CompileLibrary;
 namespace Tablik
 {
     //Один расчетный параметр для компиляции
-    public class TablikParam : BaseCalcParam, ICalcParamNode, ITablikType
+    internal class TablikParam : BaseCalcParam, ICalcParamNode, ITablikType
     {
         public TablikParam(TablikModule module, IRecordRead rec, bool isSubParam, bool isGenerated) 
             : base(rec, isSubParam)
@@ -118,7 +119,22 @@ namespace Tablik
         }
 
         //Накопитель ошибок 
-        private readonly ParsingKeeper _keeper;
+        private readonly TablikKeeper _keeper;
+
+        //Входы параметра
+        private readonly DicS<TablikVar> _inputs = new DicS<TablikVar>();
+        public DicS<TablikVar> Inputs { get { return _inputs; } }
+        //Все переменные, включая выходы
+        private readonly DicS<TablikVar> _vars = new DicS<TablikVar>();
+        public DicS<TablikVar> Vars { get { return _vars; } }
+
+        //Метки
+        private readonly List<IExprNode> _labels = new List<IExprNode>();
+        public List<IExprNode> Labels { get { return _labels; } }
+
+        //Параметры, используемые в данном
+        private readonly HashSet<TablikParam> _usedParams = new HashSet<TablikParam>();
+        public HashSet<TablikParam> UsedParams { get { return _usedParams; } }
 
         //Семантический разбор поля Inputs
         private void SemanticInputs(Node inputs)
@@ -133,7 +149,9 @@ namespace Tablik
                 {
                     case InputType.Simple:
                         var dt = node.TypeNode == null ? DataType.Real : node.TypeNode.Text.ToDataType();
-                        v = new TablikVar(varCode, new SimpleType(dt), node.ValueNode == null ? null : node.ValueNode.Mean);
+                        var at = node.SubTypeNode == null ? ArrayType.Single : node.SubTypeNode.Token.Text.ToArrayType();
+                        var val = node.ValueNode == null ? null : node.ValueNode.Mean;
+                        v = new TablikVar(varCode, new SimpleType(dt, at), val);
                         break;
 
                     case InputType.Param:
@@ -209,25 +227,34 @@ namespace Tablik
         #endregion
 
         #region DefineDataTypes
-
-        //Тип данных параметра
+        //Полный тип данных параметра
         internal ITablikType Type { get; private set; }
-        //Тип данных как сигнал
-        public ITablikSignalType TablikSignalType { get { return Type.TablikSignalType; } }
         //Тип данных
         public DataType DataType { get { return Type.DataType; } }
+        //Тип данных - простой
+        public SimpleType Simple { get { return Type.Simple; } }
+        //Тип данных как сигнал
+        public ITablikSignalType TablikSignalType { get { return Type.TablikSignalType; } }
 
         //Параметры, базовые для данного
         private readonly HashSet<TablikParam> _baseParams = new HashSet<TablikParam>();
         public HashSet<TablikParam> BaseParams { get { return _baseParams; } }
 
-        //Выходы параметра
-        private readonly DicS<TablikVar> _inputs = new DicS<TablikVar>();
-        public DicS<TablikVar> Inputs { get { return _inputs; } }
-        //Все переменные, включая выходы
-        private readonly DicS<TablikVar> _vars = new DicS<TablikVar>();
-        public DicS<TablikVar> Vars { get { return _vars; } }
-        
+        //Данный параметр является наследником указанного
+        public bool IsOfType(ITablikType type)
+        {
+            if (this == type) return true;
+            if (type is TablikParam)
+            {
+                if (Type is TablikParam && ((TablikParam)Type).IsOfType(type))
+                    return true;
+                return BaseParams.Any(bp => bp.IsOfType(type));    
+            }
+            if (type.TablikSignalType != null && TablikSignalType != null)
+                return TablikSignalType.IsOfType(type);
+            return Simple.IsOfType(type);
+        }
+
         //Определение типов данных и формирование порожденных параметров
         public void DefineDataTypes()
         {

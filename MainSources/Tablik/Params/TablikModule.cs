@@ -6,7 +6,7 @@ using Calculation;
 namespace Tablik
 {
     //Модуль для компиляции
-    public class TablikModule : DataModule, ICalcParamNode
+    internal class TablikModule : DataModule, ICalcParamNode
     {
         public TablikModule(TablikProject tablikProject, string code)
             : base(tablikProject.Project, code)

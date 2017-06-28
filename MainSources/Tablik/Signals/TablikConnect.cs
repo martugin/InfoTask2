@@ -6,7 +6,7 @@ using Microsoft.Office.Interop.Access.Dao;
 namespace Tablik
 {
     //Проайдер для компилятора
-    public abstract class TablikConnect : BaseConnect
+    internal abstract class TablikConnect : BaseConnect
     {
         protected TablikConnect(TablikProject tablik, string code, string complect) 
             : base(tablik.Project.App, code, complect, tablik.Project.Code) { }
@@ -123,7 +123,7 @@ namespace Tablik
 
     //--------------------------------------------------------------------------------------------------------
     //Источник для компилятора
-    public class TablikSource : TablikConnect
+    internal class TablikSource : TablikConnect
     {
         protected TablikSource(TablikProject tablik, string code, string complect)
             : base(tablik, code, complect)
@@ -137,7 +137,7 @@ namespace Tablik
 
     //--------------------------------------------------------------------------------------------------------
     //Приемник для компилятора
-    public class TablikReceiver : TablikConnect
+    internal class TablikReceiver : TablikConnect
     {
         protected TablikReceiver(TablikProject tablik, string code, string complect)
             : base(tablik, code, complect)

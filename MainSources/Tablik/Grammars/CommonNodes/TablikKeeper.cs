@@ -14,27 +14,28 @@ namespace Tablik
 
         //Текущий расчетный параметр
         internal TablikParam Param { get; private set; }
-        
+        //Текущий модуль
+        internal TablikModule Module { get { return Param.Module; } }
+        //Текущий проект
+        internal TablikProject Project { get { return Module.TablikProject; } }
+
+        //Создание узлов - констант
         protected override Node MakeConstNode(ITerminalNode terminal, bool b)
         {
             return new TablikConstNode(terminal, b);
         }
-
         protected override Node MakeConstNode(ITerminalNode terminal, int i)
         {
             return new TablikConstNode(terminal, i);
         }
-
         protected override Node MakeConstNode(ITerminalNode terminal, double r)
         {
             return new TablikConstNode(terminal, r);
         }
-
         protected override Node MakeConstNode(ITerminalNode terminal, DateTime d)
         {
             return new TablikConstNode(terminal, d);
         }
-
         protected override Node MakeConstNode(ITerminalNode terminal, string s)
         {
             return new TablikConstNode(terminal, s);
