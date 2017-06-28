@@ -65,18 +65,6 @@
     <Compile Include="Grammars\Inputs\InputsParsing.cs" />
     <Compile Include="Grammars\Inputs\InputsVisitor.cs" />
     <Compile Include="Grammars\CommonNodes\TablikKeeper.cs" />
-    <Compile Include="obj\Debug\ExprBaseListener.cs" />
-    <Compile Include="obj\Debug\ExprBaseVisitor.cs" />
-    <Compile Include="obj\Debug\ExprLexer.cs" />
-    <Compile Include="obj\Debug\ExprListener.cs" />
-    <Compile Include="obj\Debug\ExprParser.cs" />
-    <Compile Include="obj\Debug\ExprVisitor.cs" />
-    <Compile Include="obj\Debug\InputsBaseListener.cs" />
-    <Compile Include="obj\Debug\InputsBaseVisitor.cs" />
-    <Compile Include="obj\Debug\InputsLexer.cs" />
-    <Compile Include="obj\Debug\InputsListener.cs" />
-    <Compile Include="obj\Debug\InputsParser.cs" />
-    <Compile Include="obj\Debug\InputsVisitor.cs" />
     <Compile Include="Params\DfsStatus.cs" />
     <Compile Include="Params\ICalcParamNode.cs" />
     <Compile Include="Params\TablikDerivedParam.cs" />
@@ -113,7 +101,9 @@
       <Name>Generator</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="obj\Debug\" />
+  </ItemGroup>
   <ItemGroup>
     <Antlr4 Include="Grammars\Inputs\Inputs.g4">
       <Generator>MSBuild:Compile</Generator>
