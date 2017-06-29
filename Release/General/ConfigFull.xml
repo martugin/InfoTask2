@@ -115,23 +115,23 @@
     <Clones Description="Провайдеры архивов мгновенных значений InfoTask">
       <CloneSource ProviderType="Источник" Description="Клон архива" SignalType="Список">
         <ProviderProps>
-          <CloneFile PropNum="1" Description="Файл клона архива" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
-          </CloneFile>
+          <CloneDir PropNum="1" Description="Каталог клона архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFolder([Form], &quot;PropValue&quot;, &quot;Каталог клона архива&quot;)" />
+          </CloneDir>
         </ProviderProps>
       </CloneSource>
       <CloneComm ProviderType="Коммуникатор" Description="Клон архива">
         <ProviderProps>
-          <CloneFile PropNum="1" Description="Файл клона архива" ButText="...">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
-          </CloneFile>
+          <CloneDir PropNum="1" Description="Каталог клона архива" ButText="...">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFolder([Form], &quot;PropValue&quot;, &quot;Каталог клона архива&quot;)" />
+          </CloneDir>
         </ProviderProps>
       </CloneComm>
       <CloneReceiverComm ProviderType="КоммуникаторПриемник" Description="Коммуникатор приемника, сигналы берутся из клона ">
         <ProviderProps>
-          <CloneFile PropNum="1" Description="Файл клона архива" ButText...="">
-            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFile([Form], &quot;PropValue&quot;, &quot;Файл клона архива&quot;,&quot;БД Access 2007&quot;,&quot;*.accdb&quot;)" />
-          </CloneFile>
+          <CloneDir PropNum="1" Description="Каталог клона архива" ButText...="">
+            <PropOptions RowSourceType="Table/Query" RowSourceAction="PropsEditHistory" ButAction="=FileDialogGetFolder([Form], &quot;PropValue&quot;, &quot;Каталог клона архива&quot;)" />
+          </CloneDir>
         </ProviderProps>
       </CloneReceiverComm>
       <RealTimeArchive ProviderType="Приемник" Description="Архив мгновенных значений" SignalType="Приемник" />
