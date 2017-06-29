@@ -23,7 +23,7 @@ namespace Generator
 
         protected override Node RunVisitor(Parser parser, ParsingKeeper keeper)
         {
-            return new RuleVisitor(keeper).Go(((RuleParser)parser).tablGen());
+            return new RuleVisitor((GenKeeper)keeper).Go(((RuleParser)parser).tablGen());
         }
     }
 
@@ -36,7 +36,7 @@ namespace Generator
 
         protected override Node RunVisitor(Parser parser, ParsingKeeper keeper)
         {
-            return new RuleVisitor(keeper).Go(((RuleParser)parser).subTablGen());
+            return new RuleVisitor((GenKeeper)keeper).Go(((RuleParser)parser).subTablGen());
         }
     }
 }

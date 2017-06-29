@@ -9,13 +9,13 @@ namespace Generator
 {
     internal class RuleVisitor : RuleBaseVisitor<Node>
     {
-        public RuleVisitor(ParsingKeeper keeper)
+        public RuleVisitor(GenKeeper keeper)
         {
             _keeper = keeper;
         }
         
         //Формирование строки ошибки
-        private readonly ParsingKeeper _keeper;
+        private readonly GenKeeper _keeper;
 
         //Обход дерева разбора
         public Node Go(IParseTree tree)
@@ -27,9 +27,9 @@ namespace Generator
         {
             return (IExprNode)Go(tree);
         }
-        public ListNode GoList(IParseTree tree)
+        public ListNode<Node> GoList(IParseTree tree)
         {
-            return (ListNode)Go(tree);
+            return (ListNode<Node>)Go(tree);
         }
         public Node GoTabl(IParseTree tabl, IParseTree query)
         {
@@ -148,12 +148,12 @@ namespace Generator
         
         public override Node VisitParamsList(P.ParamsListContext context)
         {
-            return new ListNode(context.expr().Select(Visit).ToList());
+            return new ListNode<Node>(context.expr().Select(Visit).ToList());
         }
 
         public override Node VisitParamsEmpty(P.ParamsEmptyContext context)
         {
-            return new ListNode(new List<Node>());
+            return new ListNode<Node>(new List<Node>());
         }
 
         //Константы

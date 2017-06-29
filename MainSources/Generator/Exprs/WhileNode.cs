@@ -1,14 +1,13 @@
 ﻿using Antlr4.Runtime.Tree;
 using Calculation;
 using CommonTypes;
-using CompileLibrary;
 
 namespace Generator
 {
     //Цикл, возвращающий значение
     internal class WhileNode : KeeperNode, IExprNode
     {
-        public WhileNode(ParsingKeeper keeper, ITerminalNode terminal, IExprNode condition, IExprNode prog, IExprNode elseProg)
+        public WhileNode(GenKeeper keeper, ITerminalNode terminal, IExprNode condition, IExprNode prog, IExprNode elseProg)
             : base(keeper,terminal)
         {
             _condition = condition;
@@ -53,7 +52,7 @@ namespace Generator
     //Цикл, возвращающий значение
     internal class NodeWhileVoid : KeeperNode, IVoidNode
     {
-        public NodeWhileVoid(ParsingKeeper keeper, ITerminalNode terminal, IExprNode condition, IVoidNode prog)
+        public NodeWhileVoid(GenKeeper keeper, ITerminalNode terminal, IExprNode condition, IVoidNode prog)
             : base(keeper, terminal)
         {
             _condition = condition;

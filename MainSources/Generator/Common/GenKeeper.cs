@@ -66,4 +66,24 @@ namespace Generator
             return new GenConstNode(terminal, s);
         }
     }
+
+    //------------------------------------------------------------------
+    //Узел с возможностью записи ошибок
+    internal abstract class KeeperNode : Node
+    {
+        protected KeeperNode(GenKeeper keeper, ITerminalNode terminal)
+            : base(terminal)
+        {
+            Keeper = keeper;
+        }
+
+        //Накопитель ошибок
+        protected GenKeeper Keeper { get; private set; }
+
+        //Добавить ошибку и вернуть пустое значение
+        protected void AddError(string text)
+        {
+            Keeper.AddError(text, Token);
+        }
+    }
 }

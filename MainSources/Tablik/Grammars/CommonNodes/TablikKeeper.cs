@@ -1,4 +1,5 @@
 ﻿using System;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using CompileLibrary;
 
@@ -40,5 +41,36 @@ namespace Tablik
         {
             return new TablikConstNode(terminal, s);
         }
+    }
+
+    //------------------------------------------------------------------
+    //Узел с возможностью записи ошибок
+    internal abstract class KeeperNode : Node
+    {
+        protected KeeperNode(TablikKeeper keeper, ITerminalNode terminal)
+            : base(terminal)
+        {
+            Keeper = keeper;
+        }
+
+        //Накопитель ошибок
+        protected TablikKeeper Keeper { get; private set; }
+
+        //Добавить ошибку и вернуть пустое значение
+        protected void AddError(string text, IToken token)
+        {
+            Keeper.AddError(text, token);
+        }
+        protected void AddError(string text)
+        {
+            AddError(text, Token);
+        }
+
+        //Текущий расчетный параметр
+        internal TablikParam Param { get { return Keeper.Param; } }
+        //Текущий модуль
+        internal TablikModule Module { get { return Param.Module; } }
+        //Текущий проект
+        internal TablikProject Project { get { return Module.TablikProject; } }
     }
 }

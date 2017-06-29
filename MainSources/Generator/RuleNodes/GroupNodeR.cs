@@ -9,7 +9,7 @@ namespace Generator
     //Узел - родительский ряд для таблицы
     internal class GroupNodeR : KeeperNode, INodeRQuery
     {
-        public GroupNodeR(ParsingKeeper keeper, ITerminalNode terminal, IEnumerable<INode> fieldsNodes)
+        public GroupNodeR(GenKeeper keeper, ITerminalNode terminal, IEnumerable<INode> fieldsNodes)
             : base(keeper, terminal)
         {
             _fieldsNodes = (fieldsNodes ?? new INode[0]).ToArray();

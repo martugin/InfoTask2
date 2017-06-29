@@ -1,4 +1,6 @@
-﻿using Antlr4.Runtime.Tree;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Antlr4.Runtime.Tree;
 using CompileLibrary;
 using P = Tablik.ExprParser;
 
@@ -21,8 +23,47 @@ namespace Tablik
             return (ISyntacticNode)Visit(tree);
         }
 
-        //Обход разных типов узлов
 
+        //Выражения без значения
+
+
+
+        //Выражения со значением
+
+
+
+        //Список аргументов функции
+        public override Node VisitParamsList(P.ParamsListContext context)
+        {
+            return new ListNode<ISyntacticNode>(context.expr().Select(Go));
+        }
+        public override Node VisitParamsEmpty(P.ParamsEmptyContext context)
+        {
+            return new ListNode<ISyntacticNode>(new List<ISyntacticNode>());
+        }
+
+        //Тип данных переменной
+        public override Node VisitTypeSimple(P.TypeSimpleContext context)
+        {
+            return new DataTypeNode(context.DATATYPE());
+        }
+
+        public override Node VisitTypeArray(P.TypeArrayContext context)
+        {
+            return new ArrayTypeNode(context.ARRAY(), context.DATATYPE());
+        }
+
+        public override Node VisitTypeSignal(P.TypeSignalContext context)
+        {
+            return new SignalTypeNode(_keeper, context.SIGNAL());
+        }
+
+        public override Node VisitTypeParam(P.TypeParamContext context)
+        {
+            return new ParamTypeNode(_keeper, context.IDENT());
+        }
+
+        //Константы
         public override Node VisitConsInt(P.ConsIntContext context)
         {
             return _keeper.GetIntConst(context.INT());

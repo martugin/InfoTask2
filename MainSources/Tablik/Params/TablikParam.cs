@@ -9,7 +9,7 @@ using CompileLibrary;
 namespace Tablik
 {
     //Один расчетный параметр для компиляции
-    internal class TablikParam : BaseCalcParam, ICalcParamNode, ITablikType
+    internal class TablikParam : BaseCalcParam, ISubParams, ITablikType
     {
         public TablikParam(TablikModule module, IRecordRead rec, bool isSubParam, bool isGenerated) 
             : base(rec, isSubParam)
@@ -82,7 +82,7 @@ namespace Tablik
             }
             else FullCode = Code;
 
-            var owner = OwnerId == 0 ? (ICalcParamNode)Module : Owner;
+            var owner = OwnerId == 0 ? (ISubParams)Module : Owner;
             owner.ParamsId.Add(ParamId, this);
             if (!owner.ParamsAll.ContainsKey(Code) || !owner.ParamsAll[Code].CalcOn)
                 owner.ParamsAll.Add(Code, this, true);
@@ -113,7 +113,7 @@ namespace Tablik
         {
             _keeper.Errors.Clear();
             if (IsFatalError) return;
-            if (IsFun) SemanticInputs(new InputsParsing(_keeper, "входы", InputsStr).ResultTree);
+            if (IsFun) SemanticInputs((ListNode<InputNode>)new InputsParsing(_keeper, "входы", InputsStr).ResultTree);
             SemanticFormula(new ExprParsing(_keeper, "расч", UserExpr1).ResultTree, true);
             SemanticFormula(new ExprParsing(_keeper, "упр", UserExpr2).ResultTree, false);
         }
@@ -137,12 +137,12 @@ namespace Tablik
         public HashSet<TablikParam> UsedParams { get { return _usedParams; } }
 
         //Семантический разбор поля Inputs
-        private void SemanticInputs(Node inputs)
+        private void SemanticInputs(ListNode<InputNode> inputs)
         {
             Inputs.Clear();
             Vars.Clear();
             TablikVar v = null;
-            foreach (InputNode node in ((ListNode) inputs).Children)
+            foreach (var node in inputs.Children)
             {
                 var varCode = node.Token.Text;
                 switch (node.InputType)

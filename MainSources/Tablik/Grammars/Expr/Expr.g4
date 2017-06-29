@@ -13,6 +13,7 @@ valueProg : (voidExpr ':')* expr;
 
 //Выражения без значения
 voidExpr : IDENT '=' expr																		    #VoidExprVar
+			  | type IDENT '=' expr																	   #VoidExprDataType
 			  | IF '(' expr ';' voidProg (';' expr ';' voidProg)* (';' voidProg)? ')'    #VoidExprIf
 			  | WHILE '(' expr ';' voidProg ')'								 		               #VoidExprWhile
 			  | FOR '(' IDENT ';' expr ';' voidProg ')'										   #VoidExprFor
@@ -65,6 +66,13 @@ expr : cons                                               #ExprCons
 pars : expr (';' expr)*    #ParamsList
 	   |                            #ParamsEmpty              
 	   ;
+
+//Тип данных переменной
+type : DATATYPE                                     #TypeSimple       
+	   | ARRAY '(' DATATYPE ')'                #TypeArray
+       | SIGNAL 											#TypeSignal
+       | IDENT ('.' IDENT)*                       #TypeParam
+       ; 
 
 //Константы
 cons : INT                      #ConsInt

@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 
 namespace CompileLibrary
 {
     //Промежуточный узел, собирающий список узлов 
-    public class ListNode : Node
+    public class ListNode<T> : Node where T : INode
     {
-        public ListNode(IEnumerable<Node> children)
+        public ListNode(IEnumerable<T> children)
         {
             Children = children.ToList();
         }
@@ -17,10 +16,10 @@ namespace CompileLibrary
         //Запись в строку
         public override string ToTestString()
         {
-            return ToTestWithChildren(Children.ToArray());
+            return ToTestWithChildren(Children.Cast<INode>().ToArray());
         }
 
         // Список узлов 
-        public List<Node> Children { get; private set; }
+        public List<T> Children { get; private set; }
     }
 }

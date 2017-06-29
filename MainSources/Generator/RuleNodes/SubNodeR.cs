@@ -3,14 +3,13 @@ using System.Linq;
 using Antlr4.Runtime.Tree;
 using Calculation;
 using CommonTypes;
-using CompileLibrary;
 
 namespace Generator
 {
     //Узел - перебор рядов подтаблицы
     internal class SubNodeR : KeeperNode, INodeRTabl, INodeRQuery
     {
-        public SubNodeR(ParsingKeeper keeper, ITerminalNode terminal, IExprNode condition)
+        public SubNodeR(GenKeeper keeper, ITerminalNode terminal, IExprNode condition)
             : base(keeper, terminal)
         {
             Condition = condition;

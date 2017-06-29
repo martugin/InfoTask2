@@ -1,14 +1,13 @@
 ﻿using Antlr4.Runtime.Tree;
 using Calculation;
 using CommonTypes;
-using CompileLibrary;
 
 namespace Generator
 {
     //Значение поля таблицы
     internal class FieldNode : KeeperNode, IExprNode
     {
-        public FieldNode(ParsingKeeper keeper, ITerminalNode terminal)
+        public FieldNode(GenKeeper keeper, ITerminalNode terminal)
             : base(keeper, terminal)
         {
             if (terminal != null)

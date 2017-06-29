@@ -9,15 +9,15 @@ namespace Generator
     //Вычисление значения функции или операции
     internal class FunNode : KeeperNode, IExprNode
     {
-        public FunNode(ParsingKeeper keeper, ITerminalNode terminal, //Имя функции
+        public FunNode(GenKeeper keeper, ITerminalNode terminal, //Имя функции
                                 params IExprNode[] args) //Аргументы
             : base(keeper, terminal)
         {
             _args = args;
         }
 
-        public FunNode(ParsingKeeper keeper, ITerminalNode terminal, //Имя функции
-                                ListNode argsList) //Узел с аргументами
+        public FunNode(GenKeeper keeper, ITerminalNode terminal, //Имя функции
+                                ListNode<Node> argsList) //Узел с аргументами
             : base(keeper, terminal)
         {
             _args = argsList.Children.Cast<IExprNode>().ToArray();

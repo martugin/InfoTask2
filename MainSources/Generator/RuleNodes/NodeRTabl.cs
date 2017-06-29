@@ -3,14 +3,13 @@ using System.Linq;
 using Antlr4.Runtime.Tree;
 using Calculation;
 using CommonTypes;
-using CompileLibrary;
 
 namespace Generator
 {
     //Узел - проход по таблице
     internal class NodeRTabl : KeeperNode, INodeRTabl
     {
-        public NodeRTabl(ParsingKeeper keeper, ITerminalNode terminal, IExprNode condition)
+        public NodeRTabl(GenKeeper keeper, ITerminalNode terminal, IExprNode condition)
             : base(keeper, terminal)
         {
             if (terminal != null)

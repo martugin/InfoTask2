@@ -3,7 +3,7 @@
 namespace Tablik
 {
     //Узел дерева расчетных параметров, реализуется CalcParam и Module
-    internal interface ICalcParamNode
+    internal interface ISubParams
     {
         //Словарь расчетных параметров, ключи - коды, содержит только отмеченные и без грубых ошибок
         DicS<TablikParam> Params { get; }

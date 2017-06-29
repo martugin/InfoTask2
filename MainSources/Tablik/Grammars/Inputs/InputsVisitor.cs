@@ -21,16 +21,15 @@ namespace Tablik
         {
             return tree == null ? null : Visit(tree);
         }
-
-        public ListNode GoList(IParseTree tree)
+        public T Go<T>(IParseTree tree) where T : Node
         {
-            return (ListNode)Go(tree);
+            return tree == null ? null : (T)Visit(tree);
         }
 
         //Обход разных типов узлов
         public override Node VisitProg(P.ProgContext context)
         {
-            return new ListNode(context.param().Select(Go));
+            return new ListNode<InputNode>(context.param().Select(Go<InputNode>));
         }
 
         public override Node VisitParamArg(P.ParamArgContext context)
@@ -57,8 +56,8 @@ namespace Tablik
 
         public override Node VisitParamClass(P.ParamClassContext context)
         {
-            var list = (ListNode)Go(context.identChain());
-            return new InputNode(context.IDENT(), InputType.Param, (IdentNode)list.Children[0], list.Children.Count == 2 ? (IdentNode)list.Children[1] : null);
+            var list = (ListNode<IdentNode>)Go(context.identChain());
+            return new InputNode(context.IDENT(), InputType.Param, list.Children[0], list.Children.Count == 2 ? list.Children[1] : null);
         }
 
         public override Node VisitArgDataType(P.ArgDataTypeContext context)
@@ -73,7 +72,7 @@ namespace Tablik
 
         public override Node VisitIdentChain(P.IdentChainContext context)
         {
-            return new ListNode(context.IDENT().Select(Go));
+            return new ListNode<IdentNode>(context.IDENT().Select(Go<IdentNode>));
         }
 
         //Константы

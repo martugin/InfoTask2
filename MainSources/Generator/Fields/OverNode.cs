@@ -8,7 +8,7 @@ namespace Generator
     //Узел перехода к таблице - родителю, возвращает значение
     internal class OverNode : KeeperNode, IExprNode
     {
-        public OverNode(ParsingKeeper keeper, ITerminalNode terminal, IExprNode expr) 
+        public OverNode(GenKeeper keeper, ITerminalNode terminal, IExprNode expr) 
             : base(keeper, terminal) 
         {
             _expr = expr;
@@ -45,7 +45,7 @@ namespace Generator
     //Узел перехода к таблице - родителю, ничего не возвращает 
     internal class OverVoidNode : KeeperNode, IVoidNode
     {
-        public OverVoidNode(ParsingKeeper keeper, ITerminalNode terminal, IVoidNode prog)
+        public OverVoidNode(GenKeeper keeper, ITerminalNode terminal, IVoidNode prog)
             : base(keeper, terminal)
         {
             _prog = prog;

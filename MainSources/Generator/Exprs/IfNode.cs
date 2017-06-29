@@ -10,7 +10,7 @@ namespace Generator
     //Условие, возвращающее значение
     internal class IfNode : KeeperNode, IExprNode
     {
-        public IfNode(ParsingKeeper keeper, ITerminalNode terminal, List<IExprNode> conditions, List<IExprNode> variants)
+        public IfNode(GenKeeper keeper, ITerminalNode terminal, List<IExprNode> conditions, List<IExprNode> variants)
             : base(keeper, terminal)
         {
             _conditions = conditions;
@@ -57,7 +57,7 @@ namespace Generator
     //Условие, возвращающее значение
     internal class NodeIfVoid : KeeperNode, IVoidNode
     {
-        public NodeIfVoid(ParsingKeeper keeper, ITerminalNode terminal, List<IExprNode> conditions, List<IVoidNode> variants)
+        public NodeIfVoid(GenKeeper keeper, ITerminalNode terminal, List<IExprNode> conditions, List<IVoidNode> variants)
             : base(keeper, terminal)
         {
             _conditions = conditions;

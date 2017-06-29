@@ -10,7 +10,7 @@ namespace Generator
     //Узел прохода по подтаблице, возвращает значение
     internal class SubNode : KeeperNode, IExprNode
     {
-        public SubNode(ParsingKeeper keeper, ITerminalNode terminal,
+        public SubNode(GenKeeper keeper, ITerminalNode terminal,
                                  IEnumerable<IExprNode> pars) //Параметры, смысл каждого параметра определяется при проверке
             : base(keeper, terminal)
         {
@@ -84,7 +84,7 @@ namespace Generator
     //Узел прохода по подтаблице, ничего не возвращает
     internal class SubVoidNode : KeeperNode, IVoidNode
     {
-        public SubVoidNode(ParsingKeeper keeper, ITerminalNode terminal, IExprNode condition, IVoidNode prog)
+        public SubVoidNode(GenKeeper keeper, ITerminalNode terminal, IExprNode condition, IVoidNode prog)
             : base(keeper, terminal)
         {
             _condition = condition;

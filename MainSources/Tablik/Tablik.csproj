@@ -59,6 +59,7 @@
     <Compile Include="Grammars\CommonNodes\IdentNode.cs" />
     <Compile Include="Grammars\CommonNodes\IExprNode.cs" />
     <Compile Include="Grammars\ExprNodes\SignalNodes.cs" />
+    <Compile Include="Grammars\ExprNodes\TypeNodes.cs" />
     <Compile Include="Grammars\Expr\ExprParsing.cs" />
     <Compile Include="Grammars\Expr\ExprVisitor.cs" />
     <Compile Include="Grammars\Inputs\InputsNodes.cs" />
@@ -78,7 +79,7 @@
     <Compile Include="obj\Debug\InputsParser.cs" />
     <Compile Include="obj\Debug\InputsVisitor.cs" />
     <Compile Include="Params\DfsStatus.cs" />
-    <Compile Include="Params\ICalcParamNode.cs" />
+    <Compile Include="Params\ISubParams.cs" />
     <Compile Include="Params\TablikDerivedParam.cs" />
     <Compile Include="Params\TablikModule.cs" />
     <Compile Include="Params\TablikParam.cs" />

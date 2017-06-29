@@ -6,7 +6,7 @@ using CompileLibrary;
 namespace Generator
 {
     //Главный узел генерации значения поля
-    internal class NodeTextList : ListNode, IExprNode
+    internal class NodeTextList : ListNode<Node>, IExprNode
     {
         public NodeTextList(IEnumerable<Node> children)
             : base(children) { }
