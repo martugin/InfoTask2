@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime.Tree;
 using CompileLibrary;
@@ -17,7 +18,12 @@ namespace Tablik
         private readonly TablikKeeper _keeper;
 
         //Обход дерева разбора
-        internal ISyntacticNode Go(IParseTree tree)
+        internal Node Go(IParseTree tree)
+        {
+            if (tree == null) return null;
+            return Visit(tree);
+        }
+        internal ISyntacticNode GoSynt(IParseTree tree)
         {
             if (tree == null) return null;
             return (ISyntacticNode)Visit(tree);
@@ -25,17 +31,68 @@ namespace Tablik
 
 
         //Выражения без значения
-
-
+        
 
         //Выражения со значением
+        public override Node VisitExprCons(P.ExprConsContext context)
+        {
+            return Go(context.cons());
+        }
 
+        public override Node VisitExprSignal(P.ExprSignalContext context)
+        {
+            return new SignalNode(_keeper, context.SIGNAL());
+        }
 
+        public override Node VisitExprParen(P.ExprParenContext context)
+        {
+            return Go(context.expr());
+        }
+
+        public override Node VisitExprIf(P.ExprIfContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Node VisitExprAbsolute(P.ExprAbsoluteContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Node VisitExprGraphic(P.ExprGraphicContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Node VisitExprTabl(P.ExprTablContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Node VisitExprFun(P.ExprFunContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Node VisitExprMet(P.ExprMetContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Node VisitExprMetSignal(P.ExprMetSignalContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Node VisitExprUnary(P.ExprUnaryContext context)
+        {
+            return new FunNode(_keeper, );
+        }
 
         //Список аргументов функции
         public override Node VisitParamsList(P.ParamsListContext context)
         {
-            return new ListNode<ISyntacticNode>(context.expr().Select(Go));
+            return new ListNode<ISyntacticNode>(context.expr().Select(GoSynt));
         }
         public override Node VisitParamsEmpty(P.ParamsEmptyContext context)
         {

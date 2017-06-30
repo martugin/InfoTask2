@@ -17,6 +17,8 @@ namespace Tablik
 
         //Проект
         public SchemeProject Project { get; private set; }
+        //Таблик
+        public TablikApp App { get {return } }
         
         //Словарь модулей
         private readonly DicS<TablikModule> _modules = new DicS<TablikModule>();

@@ -5,7 +5,7 @@ using CommonTypes;
 namespace Tablik
 {
     //Общие данные приложения, использующего Tablik
-    public class TablikApp
+    internal class TablikApp
     {
         public TablikApp()
         {

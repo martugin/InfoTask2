@@ -19,6 +19,8 @@ namespace Tablik
         internal TablikModule Module { get { return Param.Module; } }
         //Текущий проект
         internal TablikProject Project { get { return Module.TablikProject; } }
+        //Таблик
+        internal TablikApp App { get; private set; }
 
         //Создание узлов - констант
         protected override Node MakeConstNode(ITerminalNode terminal, bool b)

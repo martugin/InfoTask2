@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BaseLibrary;
 using CommonTypes;
 
@@ -7,14 +8,14 @@ namespace Tablik
     //Параметр функции
     internal class FunParam
     {
-        public FunParam(DataType dataType, string defau = null)
+        public FunParam(DataType dataType, ArrayType arrayType = ArrayType.Single, string defau = null)
         {
-            DataType = dataType;
+            SimpleType = new SimpleType(dataType, arrayType);
             Default = defau;
         }
 
         //Тип данных, или Error, если в таблице записан нестандартный тип
-        public DataType DataType { get; private set; }
+        public SimpleType SimpleType { get; private set; }
         //Значение по умолчанию или null
         public string Default { get; private set; }
         //True, если участвует в формировании типа результата
@@ -35,6 +36,7 @@ namespace Tablik
         public bool IsCombined { get; private set; }
         //Тип результата (если не Combined и не нестандартный тип)
         public DataType ResultType { get; private set; }
+        public ArrayType ArratType { get; private set; }
 
         //Владелец 
         public FunClass Owner { get; private set; }
@@ -55,7 +57,9 @@ namespace Tablik
                 var t = reco.GetString("Operand" + i);
                 if (t.IsEmpty()) break;
                 var dt = t.ToDataType();
-                Inputs.Add(new FunParam(dt, reco.GetString("Default" + i)));
+                var at = ArrayType.Single;
+                if (i == 1) at = reco.GetString("Operand1Array").ToArrayType();
+                Inputs.Add(new FunParam(dt, at, reco.GetString("Default" + i)));
                 Code += dt.ToLetter();
             }
             for (int i = 1; i <= 2; ++i)
@@ -65,6 +69,7 @@ namespace Tablik
                 InputsMore.Add(new FunParam(t.ToDataType()));
             }
 
+            ArratType = reco.GetString("ResultArray").ToArrayType();
             var s = reco.GetString("Result");
             if (!IsCombined) ResultType = s.ToDataType();
             else
@@ -77,6 +82,14 @@ namespace Tablik
                     else Inputs[int.Parse(c) - 1].FormResult = true;
                 }
             }
+        }
+
+        //Проверка соответствия списка значений входным аргументам перегрузки 
+        //Возвращает возвращаемый тип данных или null, если не подходит
+        public ITablikType Check(ITablikType[] args, //Принимемые аргументы
+                                                int startPos = 1) //С какой позиции наинать
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -100,6 +113,18 @@ namespace Tablik
             Name = rec.GetString("Name");
             Synonym = rec.GetString("Synonym");
             Code = rec.GetString("Code") ?? (Synonym ?? Name).ToLower();
+        }
+
+        //Определение подходящей перегрузки, возвращает перегрузку и тип данных
+        public Tuple<FunOverload, ITablikType> DefineOverload(ITablikType[] args, //Принимемые аргументы
+            int startPos = 1) //С какой позиции наинать
+        {
+            foreach (var ov in Overloads)
+            {
+                var t = ov.Check(args, startPos);
+                if (t != null) return new Tuple<FunOverload, ITablikType>(ov, t);
+            }
+            return new Tuple<FunOverload, ITablikType>(null, new SimpleType());
         }
     }
 }

@@ -58,6 +58,7 @@
     <Compile Include="Grammars\CommonNodes\ConstNode.cs" />
     <Compile Include="Grammars\CommonNodes\IdentNode.cs" />
     <Compile Include="Grammars\CommonNodes\IExprNode.cs" />
+    <Compile Include="Grammars\ExprNodes\FunNode.cs" />
     <Compile Include="Grammars\ExprNodes\SignalNodes.cs" />
     <Compile Include="Grammars\ExprNodes\TypeNodes.cs" />
     <Compile Include="Grammars\Expr\ExprParsing.cs" />
