@@ -117,7 +117,7 @@ namespace Tablik
 
         //Определение подходящей перегрузки, возвращает перегрузку и тип данных
         public Tuple<FunOverload, ITablikType> DefineOverload(ITablikType[] args, //Принимемые аргументы
-            int startPos = 1) //С какой позиции наинать
+                                                                                             int startPos = 1) //С какой позиции наинать
         {
             foreach (var ov in Overloads)
             {

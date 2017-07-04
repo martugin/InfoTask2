@@ -56,7 +56,9 @@
     <Compile Include="Common\ITablikType.cs" />
     <Compile Include="Common\TablikStatic.cs" />
     <Compile Include="Grammars\CommonNodes\ConstNode.cs" />
-    <Compile Include="Grammars\CommonNodes\IdentNode.cs" />
+    <Compile Include="Grammars\ExprNodes\IfNode.cs" />
+    <Compile Include="Grammars\ExprNodes\TablikNode.cs" />
+    <Compile Include="Grammars\Inputs\IdentNode.cs" />
     <Compile Include="Grammars\CommonNodes\IExprNode.cs" />
     <Compile Include="Grammars\ExprNodes\FunNode.cs" />
     <Compile Include="Grammars\ExprNodes\SignalNodes.cs" />
@@ -79,10 +81,10 @@
     <Compile Include="obj\Debug\InputsListener.cs" />
     <Compile Include="obj\Debug\InputsParser.cs" />
     <Compile Include="obj\Debug\InputsVisitor.cs" />
-    <Compile Include="Params\DfsStatus.cs" />
+    <Compile Include="Project\DfsStatus.cs" />
     <Compile Include="Params\ISubParams.cs" />
     <Compile Include="Params\TablikDerivedParam.cs" />
-    <Compile Include="Params\TablikModule.cs" />
+    <Compile Include="Project\TablikModule.cs" />
     <Compile Include="Params\TablikParam.cs" />
     <Compile Include="Params\TablikVar.cs" />
     <Compile Include="Project\TablikProject.cs" />

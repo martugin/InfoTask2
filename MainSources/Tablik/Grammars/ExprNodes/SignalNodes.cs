@@ -6,12 +6,13 @@ using CompileLibrary;
 namespace Tablik
 {
     //Получение сигнала по полному коду
-    internal class SignalNode : KeeperNode, ISyntacticNode, IExprNode
+    internal class SignalNode : TablikKeeperNode
     {
         public SignalNode(TablikKeeper keeper, ITerminalNode terminal) 
             : base(keeper, terminal)
         {
             SignalCode = terminal.Symbol.Text;
+            throw new NotImplementedException();
         }
 
         //Тип узла
@@ -20,31 +21,22 @@ namespace Tablik
         //Код сигнала
         public string SignalCode { get; private set; }
 
-        public IExprNode DefineSemantic()
-        {
-            throw new NotImplementedException();
-        }
-
         //Сигнал
         public UsedSignal Signal { get; private set; }
 
-        //Тип данных
-        public ITablikType Type { get { return Signal; } }
-        public ITablikType DefineType() { return Type; }
-
         //Запись в скомпилированое выражение
-        public string CompiledText()
+        public override string CompiledText()
         {
-            return "Signal!{" + Signal.FullCode + "}";
+            return "{" + Signal.FullCode + "}";
         }
     }
 
     //------------------------------------------------------------------------------------------------
     //Получение объекта по коду
-    internal class ObjectNode : Node, IExprNode
+    internal class ObjectNode : TablikKeeperNode
     {
-        public ObjectNode(IToken token, TablikObject ob) 
-            : base(token)
+        public ObjectNode(TablikKeeper keeper, ITerminalNode terminal, TablikObject ob) 
+            : base(keeper, terminal)
         {
             Object = ob;
         }
@@ -54,39 +46,29 @@ namespace Tablik
 
         //Объект
         public TablikObject Object { get; private set; }
-
-        //Тип данных
-        public ITablikType Type { get { return Object; } }
-        public ITablikType DefineType() { return Type; }
-
-        public string CompiledText()
+        
+        public string CompiledFullText()
         {
-            return "Object!{" + Object.Code + "}";
+            return "{" + Object.Code + "}";
         }
     }
 
     //------------------------------------------------------------------------------------------------
     //Получение сигнала от объекта или типа
-    internal class GetSignalNode : Node, ISyntacticNode, IExprNode
+    internal class GetSignalNode : TablikKeeperNode
     {
         //Тип узла
-        protected override string NodeType { get { return "GetSignal"; } }
+        public GetSignalNode(TablikKeeper keeper, ITerminalNode terminal, params IExprNode[] args) 
+            : base(keeper, terminal, args) { }
 
-        public IExprNode DefineSemantic()
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override string NodeType { get { return "GetSignal"; } }
 
         //Тип сигнала
         public TypeSignal Signal { get; private set; }
 
-        //Тип данных
-        public ITablikType Type { get { return Signal; } }
-        public ITablikType DefineType() { return Signal;}
-
-        public string CompiledText()
+        public override string CompiledText()
         {
-            return "GetSignal!{" + Signal.Code + "}!1";
+            return "{" + Signal.Code + "}!1";
         }
     }
 }

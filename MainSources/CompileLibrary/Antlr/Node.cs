@@ -20,7 +20,7 @@ namespace CompileLibrary
         //Ссылка на токен
         public IToken Token { get; private set; }
         //Тип узла, для записи в строку
-        protected abstract string NodeType { get; }
+        protected virtual string NodeType { get { return ""; } }
 
         //Запись в строку
         public virtual string ToTestString()

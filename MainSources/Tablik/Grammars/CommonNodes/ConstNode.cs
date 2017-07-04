@@ -6,7 +6,7 @@ using CompileLibrary;
 namespace Tablik
 {
     //Константа в расчетном выражении
-    internal class TablikConstNode : ConstNode, ISyntacticNode, IExprNode
+    internal class TablikConstNode : ConstNode, IExprNode
     {
         public TablikConstNode(Mean mean) : base(mean) { }
         public TablikConstNode(ITerminalNode terminal, bool b) : base(terminal, b) { }
@@ -16,25 +16,20 @@ namespace Tablik
         public TablikConstNode(ITerminalNode terminal, string s) : base(terminal, s) { }
         public TablikConstNode(ITerminalNode terminal, DataType dtype, string s) : base(terminal, dtype, s) { }
 
-        public IExprNode DefineSemantic()
-        {
-            return this;
-        }
-
         //Тип данных
         public ITablikType Type { get; private set; }
 
         //Определение расчетного типа данных
-        public ITablikType DefineType()
+        public void DefineType()
         {
-            return Type = new SimpleType(DataType);
+            Type = new SimpleType(DataType);
         }
 
         //Запись в скомпилированое выражение
-        public string CompiledText()
+        public string CompiledFullText()
         {
             string val = Mean.DataType != DataType.String ? Mean.String : "\'" + Mean.String + "\'";
-            return DataType.ToEnglish() + "!" + val;
+            return DataType.ToEnglish() + "!" + val + ";";
         }
     }
 }

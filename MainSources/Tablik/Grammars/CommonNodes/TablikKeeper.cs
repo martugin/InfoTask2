@@ -20,7 +20,7 @@ namespace Tablik
         //Текущий проект
         internal TablikProject Project { get { return Module.TablikProject; } }
         //Таблик
-        internal TablikApp App { get; private set; }
+        internal TablikApp Tablik { get { return Project.Tablik; } }
 
         //Создание узлов - констант
         protected override Node MakeConstNode(ITerminalNode terminal, bool b)
@@ -67,12 +67,5 @@ namespace Tablik
         {
             AddError(text, Token);
         }
-
-        //Текущий расчетный параметр
-        internal TablikParam Param { get { return Keeper.Param; } }
-        //Текущий модуль
-        internal TablikModule Module { get { return Param.Module; } }
-        //Текущий проект
-        internal TablikProject Project { get { return Module.TablikProject; } }
     }
 }

@@ -1,14 +1,18 @@
 ﻿using BaseLibrary;
 using ProcessingLibrary;
 using ProvidersLibrary;
+using Tablik;
 
 namespace AppLibrary
 {
     //Внешнее приложение, вызывающее библиотеки
     public class App : ProcessApp
     {
-        public App(string code, IIndicator indicator) 
-            : base(code, indicator) { }
+        public App(string code, IIndicator indicator, bool useTablik)
+            : base(code, indicator)
+        {
+            if (useTablik) Tablik = new TablikApp();
+        }
 
         //Создание соединения-клонера и присоединение провайдера
         public ClonerConnect LoadCloner(string providerCode, string providerInf)
@@ -18,6 +22,9 @@ namespace AppLibrary
             return _cloner;
         }
         private ClonerConnect _cloner;
+
+        //Приложение Tablik
+        public TablikApp Tablik { get; private set; } 
 
         //Очистка ресурсов
         protected override void DisposeLogger()

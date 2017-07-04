@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using Antlr4.Runtime.Tree;
 
 namespace Tablik
 {
-    internal class FunNode : KeeperNode, IExprNode
+    internal class FunNode : TablikKeeperNode
     {
-        public FunNode(TablikKeeper keeper, ITerminalNode terminal, params ITablikType[] args)
-            : base(keeper, terminal)
+        public FunNode(TablikKeeper keeper, ITerminalNode terminal, params IExprNode[] args)
+            : base(keeper, terminal, args)
         {
-            Fun = Keeper.App.Funs[Token.Text];
-            _args = args;
+            Fun = Keeper.Tablik.Funs[Token.Text];
         }
 
         //Имя узла
@@ -20,24 +19,18 @@ namespace Tablik
         //Перегрузка
         public FunOverload Overload { get; private set; }
 
-        //Входные значения
-        private readonly ITablikType[] _args;
-
-        //Возвращаемый тип
-        public ITablikType Type { get; private set; }
-        
         //Определение типа данных
-        public virtual ITablikType DefineType()
+        public override void DefineType()
         {
-            var res = Fun.DefineOverload(_args);
+            var res = Fun.DefineOverload(Args.Select(x => x.Type).ToArray());
             Overload = res.Item1;
-            return  Type = res.Item2;
+            Type = res.Item2;
         }
 
         //Запись в скомпилированное выражение
-        public virtual string CompiledText()
+        public override string CompiledText()
         {
-            return "Fun!" + Overload.Code + "!" + _args.Count;
+            return Overload.Code;
         }
     }
 }

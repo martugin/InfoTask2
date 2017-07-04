@@ -322,7 +322,7 @@ namespace ProvidersTest
         {
             TestLib.CopyDir(@"Providers\Mir", "Clone");
 
-            var app = new App("Test", new TestIndicator());
+            var app = new App("Test", new TestIndicator(), false);
             app.InitTest();
             var con = new ClonerConnect(app);
             con.JoinProvider(app.ProvidersFactory.CreateProvider(app, "MirSource", TestLib.TestSqlInf("EnergyRes")));

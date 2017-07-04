@@ -14,7 +14,8 @@ namespace ComLaunchers
     public interface IItLauncher
     {
         //Инициализация
-        void Initialize(string appCode); //Код приложения
+        void Initialize(string appCode, //Код приложения
+                              bool useTablik = false); //Использовать таблик
         //Закрытие клиента
         void Close();
 
@@ -114,17 +115,18 @@ namespace ComLaunchers
     public class ItLauncher :  IItLauncher
     {
         //Инициализация для нового приложения
-        public void Initialize(string appCode) //Код приложения
+        public void Initialize(string appCode,  //Код приложения
+                                        bool useTablik = false) //Использовать таблик
         {
-            App = new App(appCode, new AppIndicator());
+            App = new App(appCode, new AppIndicator(), useTablik);
             App.Init();
             App.ExecutionFinished += OnExecutionFinished;
         }
 
         //Инициализация для тестов
-        public void InitializeTest(string appCode)
+        public void InitializeTest(string appCode, bool useTablik = false)
         {
-            App = new App(appCode, new TestIndicator());
+            App = new App(appCode, new TestIndicator(), useTablik);
             App.InitTest();
         }
 

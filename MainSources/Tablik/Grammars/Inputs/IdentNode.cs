@@ -5,7 +5,7 @@ using CompileLibrary;
 namespace Tablik
 {
     //Узел - идентификатор
-    internal class IdentNode : Node, ISyntacticNode
+    internal class IdentNode : Node
     {
         public IdentNode(ITerminalNode terminal) : base(terminal)
         {
@@ -17,11 +17,5 @@ namespace Tablik
 
         //Тип узла
         protected override string NodeType { get { return "Ident"; } }
-
-        //Определить, что задает идентификатор
-        public IExprNode DefineSemantic()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

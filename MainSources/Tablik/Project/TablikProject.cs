@@ -8,17 +8,18 @@ namespace Tablik
     //Проект для Таблика
     public class TablikProject : ExternalLogger
     {
-        public TablikProject(SchemeProject project)
+        public TablikProject(SchemeProject project, TablikApp tablik)
             : base(project.App, project.Code, project.Code)
         {
             Project = project;
+            Tablik = tablik;
             LoadAllSignals();
         }
 
         //Проект
         public SchemeProject Project { get; private set; }
         //Таблик
-        public TablikApp App { get {return } }
+        public TablikApp Tablik { get; private set; }
         
         //Словарь модулей
         private readonly DicS<TablikModule> _modules = new DicS<TablikModule>();

@@ -18,25 +18,19 @@ namespace Tablik
         private readonly TablikKeeper _keeper;
 
         //Обход дерева разбора
-        internal Node Go(IParseTree tree)
+        internal IExprNode Go(IParseTree tree)
         {
             if (tree == null) return null;
-            return Visit(tree);
+            return (IExprNode)Visit(tree);
         }
-        internal ISyntacticNode GoSynt(IParseTree tree)
-        {
-            if (tree == null) return null;
-            return (ISyntacticNode)Visit(tree);
-        }
-
-
+        
         //Выражения без значения
         
 
         //Выражения со значением
         public override Node VisitExprCons(P.ExprConsContext context)
         {
-            return Go(context.cons());
+            return (Node)Go(context.cons());
         }
 
         public override Node VisitExprSignal(P.ExprSignalContext context)
@@ -46,12 +40,12 @@ namespace Tablik
 
         public override Node VisitExprParen(P.ExprParenContext context)
         {
-            return Go(context.expr());
+            return (Node)Go(context.expr());
         }
 
         public override Node VisitExprIf(P.ExprIfContext context)
         {
-            throw new NotImplementedException();
+            return new IfNode(_keeper, context.IF(), context.expr().Select(Go), context.valueProg().Select(Go));
         }
 
         public override Node VisitExprAbsolute(P.ExprAbsoluteContext context)
@@ -86,17 +80,23 @@ namespace Tablik
 
         public override Node VisitExprUnary(P.ExprUnaryContext context)
         {
-            return new FunNode(_keeper, );
+            return new FunNode(_keeper, context.MINUS(), Go(context.expr()));
+        }
+
+        public override Node VisitExprOper(P.ExprOperContext context)
+        {
+            var fun = (ITerminalNode)context.children[1];
+            return new FunNode(_keeper, fun, Go(context.expr(0)), Go(context.expr(1)));
         }
 
         //Список аргументов функции
         public override Node VisitParamsList(P.ParamsListContext context)
         {
-            return new ListNode<ISyntacticNode>(context.expr().Select(GoSynt));
+            return new ListNode<IExprNode>(context.expr().Select(Go));
         }
         public override Node VisitParamsEmpty(P.ParamsEmptyContext context)
         {
-            return new ListNode<ISyntacticNode>(new List<ISyntacticNode>());
+            return new ListNode<IExprNode>(new List<IExprNode>());
         }
 
         //Тип данных переменной
