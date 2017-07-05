@@ -43,7 +43,7 @@ namespace Generator
         //Получение типа данных
         public DataType Check(ITablStruct tabl)
         {
-            var generator = ((GenKeeper) Keeper).Generator;
+            var generator = Keeper.Generator;
             var t = generator.FunsChecker.DefineFun(Token.Text, _args.Select(a => a.Check(tabl)).ToArray());
             if (t.Item2 == DataType.Error)
                 AddError(t.Item1);

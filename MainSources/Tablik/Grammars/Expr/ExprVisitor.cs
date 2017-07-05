@@ -55,10 +55,17 @@ namespace Tablik
 
         public override Node VisitExprGraphic(P.ExprGraphicContext context)
         {
-            throw new NotImplementedException();
+            return new GraficNode(_keeper, 
+                                               context.IDENT(), 
+                                               (ListNode<IExprNode>)Go(context.pars()));
         }
 
         public override Node VisitExprTabl(P.ExprTablContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Node VisitExprTablC(P.ExprTablCContext context)
         {
             throw new NotImplementedException();
         }

@@ -56,8 +56,10 @@
     <Compile Include="Common\ITablikType.cs" />
     <Compile Include="Common\TablikStatic.cs" />
     <Compile Include="Grammars\CommonNodes\ConstNode.cs" />
+    <Compile Include="Grammars\ExprNodes\GraficNode.cs" />
     <Compile Include="Grammars\ExprNodes\IfNode.cs" />
     <Compile Include="Grammars\ExprNodes\TablikNode.cs" />
+    <Compile Include="Grammars\ExprNodes\TablNode.cs" />
     <Compile Include="Grammars\Inputs\IdentNode.cs" />
     <Compile Include="Grammars\CommonNodes\IExprNode.cs" />
     <Compile Include="Grammars\ExprNodes\FunNode.cs" />

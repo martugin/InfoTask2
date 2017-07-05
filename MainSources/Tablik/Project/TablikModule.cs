@@ -44,10 +44,17 @@ namespace Tablik
         private readonly List<TablikParam> _paramsOrder = new List<TablikParam>();
         public List<TablikParam> ParamsOrder { get { return _paramsOrder; }}
 
+        //Список графиков
+        private readonly DicS<Grafic> _grafics = new DicS<Grafic>();
+        public DicS<Grafic> Grafics { get { return _grafics; } }
+        //Список таблиц
+        public TablsList Tabls { get; private set; }
+
+
         //Компиляция модуля
         public void Compile()
         {
-            LoadParams();
+            LoadModule();
             Parse();
             MakeParamsGraph();
             DefineDataTypes();
@@ -55,7 +62,7 @@ namespace Tablik
         }
 
         //Загрузить список параметров
-        private void LoadParams()
+        private void LoadModule()
         {
             AddEvent("Загрузка расчетных параметров");
             using (var db = new DaoDb(Dir + "CalParams.accdb")) 
@@ -71,6 +78,8 @@ namespace Tablik
                 AddEvent("Загрузка сгенерированных подпараметров");
                 LoadSubPars(new DaoRec(db, "GeneratedSubParams"));
             }
+            LoadGrafics();
+            LoadTabls();
         }
         
         //Загрузить параметры из таблицы
@@ -100,6 +109,26 @@ namespace Tablik
                     if (par.CalcOn && !par.IsFatalError)
                         opar.Params.Add(par.Code, par);
                 }   
+        }
+
+        //Загрузка списка графиков
+        private void LoadGrafics()
+        {
+            AddEvent("Загрузка списка графиков");
+            using (var rec = new DaoRec(Dir + "Grafics.accdb", "GraficsList"))
+                while (rec.Read())
+                {
+                    var code = rec.GetString("Code");
+                    Grafics.Add(code, new Grafic(code, rec.GetInt("Dimension"), rec.GetString("GraficType").ToGraficType()));
+                }
+        }
+
+        //Загрузка структур таблиц
+        private void LoadTabls()
+        {
+            AddEvent("Загрузка структур таблиц");
+            using (var db = new DaoDb(Dir + "Tables.accdb"))
+                Tabls.AddDbStructs(db);
         }
 
         //Синтаксический анализ всех параметров

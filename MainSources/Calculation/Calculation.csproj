@@ -55,6 +55,7 @@
     <Compile Include="BaseObjects\Scheme\SchemeModule.cs" />
     <Compile Include="BaseObjects\Scheme\SchemeProject.cs" />
     <Compile Include="BaseObjects\Signals\ObjectProp.cs" />
+    <Compile Include="BaseObjects\Tabls\Grafic.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="FunsCalc\BaseFunctions.cs" />
     <Compile Include="FunsCalc\CalcBaseFun.cs" />
@@ -70,12 +71,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modules\CalcModule.cs" />
     <Compile Include="BaseObjects\Scheme\SchemeProxy.cs" />
-    <Compile Include="Tabls\SubRows.cs" />
-    <Compile Include="Tabls\Tabl.cs" />
-    <Compile Include="Tabls\TablGroup.cs" />
-    <Compile Include="Tabls\TablRow.cs" />
-    <Compile Include="Tabls\TablsList.cs" />
-    <Compile Include="Tabls\TablStruct.cs" />
+    <Compile Include="BaseObjects\Tabls\SubRows.cs" />
+    <Compile Include="BaseObjects\Tabls\Tabl.cs" />
+    <Compile Include="BaseObjects\Tabls\TablGroup.cs" />
+    <Compile Include="BaseObjects\Tabls\TablRow.cs" />
+    <Compile Include="BaseObjects\Tabls\TablsList.cs" />
+    <Compile Include="BaseObjects\Tabls\TablStruct.cs" />
     <Compile Include="Values\Segment.cs" />
   </ItemGroup>
   <ItemGroup>

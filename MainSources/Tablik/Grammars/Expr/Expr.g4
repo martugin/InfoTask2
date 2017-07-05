@@ -36,7 +36,8 @@ expr : cons                                               #ExprCons
         | IF '(' expr ';' valueProg (';' expr ';' valueProg)* (';' valueProg)? ')'    #ExprIf        
         | ABSOLUTE '(' expr (';' expr)? ')'  #ExprAbsolute		
         | GRAPHIC '(' IDENT ';' pars ')'     #ExprGraphic
-        | TABL '(' IDENT (';' IDENT)? ';' pars ')'     #ExprTabl
+        | TABL '(' IDENT ';' IDENT ';' pars ')'     #ExprTabl
+		| TABLC '(' IDENT ';' pars ')'          #ExprTablC
         | IDENT                                          #ExprIdent		
         | IDENT '(' pars ')'			               #ExprFun	
         | expr '.' IDENT		                       #ExprMet
@@ -123,9 +124,9 @@ WHILE : [Ww][Hh][Ii][Ll][Ee]
 FOR : [Ff][Oo][Rr] | [ƒ‰][ÀÎ][ﬂˇ];
 
 GRAPHIC :[Gg][Rr][Aa][Pp][HH][Ii][Cc] | [√„][–][¿‡][‘Ù][»Ë][ Í];
-TABL : [Tt][Aa][Bb][Ll][Cc][Oo][Nn][Tt][Aa][Ii][Nn][Ss] 
-         | [“Ú][¿‡][¡·][ÀÎ][—Ò][ŒÓ][ƒ‰][≈Â][–][∆Ê][»Ë][“Ú]
-         | [Tt][Aa][Bb][Ll] 
+TABLC : [Tt][Aa][Bb][Ll][Cc][Oo][Nn][Tt][Aa][Ii][Nn][Ss] 
+			| [“Ú][¿‡][¡·][ÀÎ][—Ò][ŒÓ][ƒ‰][≈Â][–][∆Ê][»Ë][“Ú];
+TABL : [Tt][Aa][Bb][Ll] 
          | [“Ú][¿‡][¡·][ÀÎ]
          | [Tt][Aa][Bb][Ll][Ll][Ii][Ss][Tt] 
          | [“Ú][¿‡][¡·][ÀÎ][—Ò][œÔ][»Ë][—Ò][ŒÓ][ Í]
