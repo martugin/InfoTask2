@@ -70,6 +70,10 @@
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CompileLibrary\CompileLibrary.csproj">
+      <Project>{A4C38FD4-7489-4B6D-95D5-CED9527C791B}</Project>
+      <Name>CompileLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fictive\Fictive.csproj">
       <Project>{D64B5872-98C2-444A-A449-9FFD2D881D9A}</Project>
       <Name>Fictive</Name>

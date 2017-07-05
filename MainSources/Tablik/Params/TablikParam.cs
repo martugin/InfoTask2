@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BaseLibrary;
-using Calculation;
 using CommonTypes;
 using CompileLibrary;
 
@@ -127,10 +126,6 @@ namespace Tablik
         //Все переменные, включая выходы
         private readonly DicS<TablikVar> _vars = new DicS<TablikVar>();
         public DicS<TablikVar> Vars { get { return _vars; } }
-
-        //Метки
-        private readonly List<IExprNode> _labels = new List<IExprNode>();
-        public List<IExprNode> Labels { get { return _labels; } }
 
         //Параметры, используемые в данном
         private readonly HashSet<TablikParam> _usedParams = new HashSet<TablikParam>();

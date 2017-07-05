@@ -1,7 +1,7 @@
 ﻿using BaseLibrary;
 using Microsoft.Office.Interop.Access.Dao;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Список таблиц одного файла
     public class TablsList

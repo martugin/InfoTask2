@@ -1,6 +1,6 @@
 ﻿using CommonTypes;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Соединение с провайдером для схемы проекта
     public class SchemeConnect

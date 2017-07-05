@@ -35,8 +35,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Antlr4.Runtime.4.5.3\lib\net40-client\Antlr4.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.interop.access.dao, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,12 +51,31 @@
     <Compile Include="Antlr\ConstNode.cs" />
     <Compile Include="Antlr\ErrorListeners.cs" />
     <Compile Include="Antlr\INode.cs" />
-    <Compile Include="Antlr\KeeperNode.cs" />
     <Compile Include="Antlr\ListNode.cs" />
     <Compile Include="Antlr\Node.cs" />
     <Compile Include="Antlr\Parsing.cs" />
     <Compile Include="Antlr\ParsingError.cs" />
     <Compile Include="Antlr\ParsingKeeper.cs" />
+    <Compile Include="BaseParams\BaseCalcParam.cs" />
+    <Compile Include="BaseParams\BaseDerivedParam.cs" />
+    <Compile Include="BaseParams\BaseParam.cs" />
+    <Compile Include="Common\CompileStatic.cs" />
+    <Compile Include="Common\CompileEnums.cs" />
+    <Compile Include="Scheme\DataModule.cs" />
+    <Compile Include="Scheme\SchemeConnect.cs" />
+    <Compile Include="Scheme\SchemeModule.cs" />
+    <Compile Include="Scheme\SchemeProject.cs" />
+    <Compile Include="Scheme\SchemeProxy.cs" />
+    <Compile Include="BaseSignals\BaseObject.cs" />
+    <Compile Include="BaseSignals\BaseSignal.cs" />
+    <Compile Include="BaseSignals\ObjectProp.cs" />
+    <Compile Include="Tabls\Grafic.cs" />
+    <Compile Include="Tabls\SubRows.cs" />
+    <Compile Include="Tabls\Tabl.cs" />
+    <Compile Include="Tabls\TablGroup.cs" />
+    <Compile Include="Tabls\TablRow.cs" />
+    <Compile Include="Tabls\TablsList.cs" />
+    <Compile Include="Tabls\TablStruct.cs" />
     <Compile Include="FunsCompile\FunCompile.cs" />
     <Compile Include="FunsCompile\FunOverload.cs" />
     <Compile Include="FunsCompile\FunParam.cs" />

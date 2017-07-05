@@ -1,5 +1,4 @@
-﻿using Calculation;
-using CommonTypes;
+﻿using CommonTypes;
 using CompileLibrary;
 
 namespace Generator

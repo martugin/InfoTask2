@@ -1,7 +1,7 @@
 using BaseLibrary;
 using CommonTypes;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Одно свойство объекта
     public class ObjectProp

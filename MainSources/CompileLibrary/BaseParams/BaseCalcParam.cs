@@ -1,6 +1,6 @@
 ﻿using BaseLibrary;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Базовый класс для расчетных параметров расчета и компиляции
     public abstract class BaseCalcParam : BaseParam

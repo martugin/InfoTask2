@@ -62,6 +62,10 @@
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CompileLibrary\CompileLibrary.csproj">
+      <Project>{A4C38FD4-7489-4B6D-95D5-CED9527C791B}</Project>
+      <Name>CompileLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProcessingLibrary\ProcessingLibrary.csproj">
       <Project>{8979E35E-C778-4D90-BB5E-74D63D9C5C55}</Project>
       <Name>ProcessingLibrary</Name>

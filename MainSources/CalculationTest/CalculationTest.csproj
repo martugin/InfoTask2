@@ -69,6 +69,10 @@
       <Project>{3E24724C-EA0D-4E31-8EDB-3EB073911477}</Project>
       <Name>CommonTypes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CompileLibrary\CompileLibrary.csproj">
+      <Project>{A4C38FD4-7489-4B6D-95D5-CED9527C791B}</Project>
+      <Name>CompileLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InfoTaskLauncher\InfoTaskLauncher.csproj">
       <Project>{BD29E947-8542-4B33-B209-87F5A98593A8}</Project>
       <Name>InfoTaskLauncher</Name>

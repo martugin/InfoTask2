@@ -1,11 +1,10 @@
 ﻿using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using System.Xml.Linq;
 using BaseLibrary;
 using CommonTypes;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Проект, содержащий схему взаимодействия соединений и модулей
     public class SchemeProject : BaseProject

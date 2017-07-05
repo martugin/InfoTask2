@@ -1,4 +1,4 @@
-﻿namespace Calculation
+﻿namespace CompileLibrary
 {
     //Базовый класс для расчетных и порожденных параметров
     public abstract class BaseParam

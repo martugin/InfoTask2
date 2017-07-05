@@ -2,7 +2,7 @@
 using CommonTypes;
 using Microsoft.Office.Interop.Access.Dao;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Одна строка таблицы
     public class TablRow : SubRows

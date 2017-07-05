@@ -1,4 +1,4 @@
-﻿namespace Calculation
+﻿namespace CompileLibrary
 {
     //Один график для расчета
     public class Grafic
@@ -16,4 +16,5 @@
         public int Dim { get; private set; }
         //Тип графика
         public GraficType GraficType { get; private set; }
+    }
 }

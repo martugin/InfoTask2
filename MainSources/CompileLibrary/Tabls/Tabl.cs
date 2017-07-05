@@ -1,6 +1,6 @@
 ﻿using BaseLibrary;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Данные старшей таблицы
     public class Tabl : SubRows

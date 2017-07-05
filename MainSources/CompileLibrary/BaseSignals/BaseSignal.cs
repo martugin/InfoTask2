@@ -1,7 +1,7 @@
 ﻿using BaseLibrary;
 using CommonTypes;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Базовый класс для сигналов расчета и компиляции
     public class BaseSignal

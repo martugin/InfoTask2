@@ -1,5 +1,5 @@
 ﻿using BaseLibrary;
-using Calculation;
+using CompileLibrary;
 
 namespace Generator
 {

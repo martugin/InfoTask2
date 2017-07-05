@@ -45,7 +45,7 @@ namespace ComLaunchers
         //Генерация параметров
         public void GenerateParams(string moduleDir)
         {
-            _project.Tablik.GenerateParams(moduleDir);
+            //_project.Tablik.GenerateParams(moduleDir);
         }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using BaseLibrary;
 using BaseLibraryTest;
-using Calculation;
+using CompileLibrary;
 using Generator;
-using InfoTaskLauncherTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneratorTest

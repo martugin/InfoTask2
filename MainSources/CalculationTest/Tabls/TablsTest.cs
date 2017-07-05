@@ -1,8 +1,8 @@
 ﻿using System;
 using BaseLibrary;
 using BaseLibraryTest;
-using Calculation;
 using CommonTypes;
+using CompileLibrary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CalculationTest

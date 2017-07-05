@@ -1,7 +1,7 @@
 ﻿using BaseLibrary;
 using CommonTypes;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Интерфейс для структур таблиц и сгруппированых рядов
     public interface ITablStruct

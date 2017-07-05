@@ -2,7 +2,7 @@
 using CommonTypes;
 using Microsoft.Office.Interop.Access.Dao;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Структура групы пользовательских таблиц
     public class TablGroup

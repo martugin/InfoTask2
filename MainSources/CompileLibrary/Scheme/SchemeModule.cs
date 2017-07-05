@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
 using BaseLibrary;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Модуль для схемы проекта
     public class SchemeModule : DataModule

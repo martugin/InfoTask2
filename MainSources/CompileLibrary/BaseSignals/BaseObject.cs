@@ -1,6 +1,6 @@
 using BaseLibrary;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Ѕазовый класс дл€ объектов расчета и компил€ции
     public abstract class BaseObject

@@ -1,7 +1,5 @@
 ﻿using System;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using CompileLibrary;
 
 namespace Tablik
 {
@@ -47,7 +45,7 @@ namespace Tablik
         //Объект
         public TablikObject Object { get; private set; }
         
-        public string CompiledFullText()
+        public override string CompiledText()
         {
             return "{" + Object.Code + "}";
         }

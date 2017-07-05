@@ -1,121 +1,10 @@
-﻿using BaseLibrary;
-using CommonTypes;
+﻿using CommonTypes;
 
-namespace Calculation
+namespace CompileLibrary
 {
-    //Тип функции
-    public enum FunType
+    //Статические функции и конвертеры
+    public static class CompileStatic
     {
-        Scalar, //Скалярные
-        ScalarComplex, //Скалярные с указанием переменных, используемых в данной точке
-        ScalarObject, //Скалярные с первым не скалярным параметром 
-        Const, //Без параметров 
-        Object, //С первым не скалярным параметром (Tabl, Prev), а остальными - Mom
-        Moments, //Работа со списками мгновенных значений
-        CalcData, //Работа с сегментами и статистические функции
-        Calc, //Работа с расчетными значениями
-        Val, //Общие функции
-        Operator //Операторы
-    }
-
-    //--------------------------------------------------------------------
-    //Тип графика
-    public enum GraficType
-    {
-        Grafic, //График
-        Grafic0, //График - ступенчатая интерполяция
-        Diagramm, //Диаграмма
-        Error
-    }
-
-    //----------------------------------------------------------------------
-    //Способ формирования параметра для ведомости или архива результатов
-    public enum ArchiveParamType
-    {
-        Param, //Параметр
-        SubParam, //Подпараметр
-        NotSave, //Не сохранять
-        Error //Ошибка
-    }
-
-    //----------------------------------------------------------------------
-    //Типы накопления
-    public enum SuperProcess
-    {
-        Moment, //Мгновенные
-        First, //Первое
-        Last, //Последнее
-        Min, //Минимум
-        Max, //Максимум
-        Average, //Среднее
-        Summ, //Сумма
-        None, //Нет накопления
-        Error //Не правильно заполненное
-    }
-
-    //----------------------------------------------------------------------
-    //Работа с перечислениями
-    public static class CalulationEnumsConv
-    {
-        //Перевод типа функции в строку
-        public static string ToString(this FunType f)
-        {
-            switch (f)
-            {
-                case FunType.Scalar:
-                    return "Scalar";
-                case FunType.CalcData:
-                    return "CalcData";
-                case FunType.Moments:
-                    return "Moments";
-                case FunType.Operator:
-                    return "Operator";
-                case FunType.Const:
-                    return "Const";
-                case FunType.ScalarObject:
-                    return "ScalarObject";
-                case FunType.Object:
-                    return "Object";
-                case FunType.ScalarComplex:
-                    return "ScalarComplex";
-                case FunType.Val:
-                    return "Val";
-                case FunType.Calc:
-                    return "Calc";
-            }
-            return "Val";
-        }
-
-        //Перевод строки в тип функции
-        public static FunType ToFunType(this string s)
-        {
-            if (s.IsEmpty()) return FunType.Val;
-            switch (s.ToLower())
-            {
-                case "scalar":
-                    return FunType.Scalar;
-                case "calcdata":
-                    return FunType.CalcData;
-                case "moments":
-                    return FunType.Moments;
-                case "operator":
-                    return FunType.Operator;
-                case "const":
-                    return FunType.Const;
-                case "scalarobject":
-                    return FunType.ScalarObject;
-                case "object":
-                    return FunType.Object;
-                case "scalarcomplex":
-                    return FunType.ScalarComplex;
-                case "val":
-                    return FunType.Val;
-                case "calc":
-                    return FunType.Calc;
-            }
-            return FunType.Val;
-        }
-
         //Перевод строки в тип графика
         public static GraficType ToGraficType(this string t)
         {
@@ -244,7 +133,6 @@ namespace Calculation
         {
             return t == SuperProcess.None || t == SuperProcess.Error;
         }
-
 
         //Как преобразуется тип расчетного параметра при преобразовании в архивный параметр с учетом типа накопления
         public static DataType AplySuperProcess(this DataType dt, SuperProcess sp)

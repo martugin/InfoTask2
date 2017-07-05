@@ -2,7 +2,7 @@
 using BaseLibrary;
 using CommonTypes;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Интерфейс для строк таблиц и данных старшей таблицы
     public class SubRows

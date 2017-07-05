@@ -1,7 +1,7 @@
 ﻿using BaseLibrary;
 using CommonTypes;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Прокси для схемы проекта
     public class SchemeProxy

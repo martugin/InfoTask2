@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BaseLibrary;
 using CommonTypes;
+using CompileLibrary;
 
 namespace Calculation
 {

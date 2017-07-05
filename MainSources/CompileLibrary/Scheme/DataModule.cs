@@ -1,7 +1,7 @@
 ﻿using BaseLibrary;
 using CommonTypes;
 
-namespace Calculation
+namespace CompileLibrary
 {
     //Модуль, имеющий ссылку на каталог
     public abstract class DataModule : BaseModule

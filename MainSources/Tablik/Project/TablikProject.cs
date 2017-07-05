@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using BaseLibrary;
-using Calculation;
-using Generator;
+using CompileLibrary;
 
 namespace Tablik
 {
@@ -104,15 +103,15 @@ namespace Tablik
 
         #region Generator
         //Ссылка на генератор параметров
-        internal TablGenerator Generator { get; private set; }
+        //internal TablGenerator Generator { get; private set; }
 
-        //Генерация параметров
-        public void GenerateParams(string moduleDir)
-        {
-            if (Generator == null)
-                Generator = new TablGenerator(Project.App);
-            RunSyncCommand(() => Generator.GenerateParams(moduleDir));
-        }
+        ////Генерация параметров
+        //public void GenerateParams(string moduleDir)
+        //{
+        //    if (Generator == null)
+        //        Generator = new TablGenerator(Project.App);
+        //    RunSyncCommand(() => Generator.GenerateParams(moduleDir));
+        //}
         #endregion
     }
 }
