@@ -11,27 +11,28 @@ namespace CompileLibrary
         internal FunOverload(FunCompile fun, //Функция-владелец
                                         IRecordRead rec) //Рекордсет с таблицей FunctionsOverloads
         {
-            _funCompile = fun;
+            _isCombined = rec.GetBool("IsCombined");
+            _arrayType = rec.GetString("ResultArray").ToArrayType();
+            Code = fun.Code + "_";
 
-            RealisationName = _funCompile.Code + "_";
             for (int i = 1; i <= 9; ++i)
             {
-                var t = rec.GetString("Operand" + i);
-                if (t.IsEmpty()) break;
-                var fp = new FunParam(t, rec.GetString("Default" + i));
+                var dtype = rec.GetString("Operand" + i);
+                if (dtype.IsEmpty()) break;
+                string atype = i == 1 ? rec.GetString("Operand1Array") : "";
+                var fp = new FunParam(dtype, atype, rec.GetString("Default" + i));
                 _inputs.Add(fp);
-                RealisationName += fp.DataType.ToLetter();
+                Code += fp.DataType.ToLetter();
             }
             for (int i = 1; i <= 2; ++i)
             {
-                var t = rec.GetString("More" + i);
-                if (t.IsEmpty()) break;
-                var fp = new FunParam(t);
+                var dtype = rec.GetString("More" + i);
+                if (dtype.IsEmpty()) break;
+                var fp = new FunParam(dtype);
                 _inputsMore.Add(fp);
-                RealisationName += fp.DataType.ToLetter();
+                Code += fp.DataType.ToLetter();
             }
-
-            _isCombined = rec.GetBool("IsCombined");
+            
             var s = rec.GetString("Result");
             if (!_isCombined) _resultType = s.ToDataType();
             else
@@ -54,24 +55,27 @@ namespace CompileLibrary
         private readonly bool _isCombined;
         //Тип результата (если не Combined)
         private readonly DataType _resultType;
-        //Ссылка на FunCompile 
-        private readonly FunCompile _funCompile;
-        
-        //Имя функции-реализации
-        internal string RealisationName { get; private set; }
+        //Тип массива
+        private readonly ArrayType _arrayType;
+
+        //Код для записи в скомпилированное выражение
+        public string Code { get; private set; }
 
         //Проверка допустимости списка типов аргументов, 
-        //Возвращает тип данных, или DataType.Error - если аргументы не подходят
-        internal DataType Check(DataType[] par)
+        //Если перегрузка подходит, то возвращает ее вместе с итоговым типом данных, иначе возвращает null
+        internal FunSelected Check(DataType[] par, //Типы данных принимемых аргументов
+                                                 int startPos, //С какой позиции начинать проверку
+                                                 ArrayType[] apar) //Типы массива принимаемых аргументов
         {
             var res = DataType.Value;
             int i, k = 0;
-            for (i = 0; i < par.Length; i++)
+            for (i = startPos; i < par.Length; i++)
             {
                 if (i < _inputs.Count)
                 {
                     var inp = _inputs[i];
                     if (!par[i].LessOrEquals(inp.DataType)) break;
+                    if (apar != null && apar[i] != inp.ArrayType) break;
                     if (_isCombined && inp.UsedInResult)
                         res = res.Add(inp.DataType);
                 }
@@ -81,6 +85,7 @@ namespace CompileLibrary
                     {
                         var inp = _inputsMore[k];
                         if (!par[i].LessOrEquals(inp.DataType)) break;
+                        if (apar != null && apar[i] != inp.ArrayType) break;
                         if (_isCombined && inp.UsedInResult)
                             res = res.Add(inp.DataType);
                         k = (k + 1) % _inputsMore.Count;
@@ -88,10 +93,9 @@ namespace CompileLibrary
                     else break;
                 }
             }
-            if (i < par.Length) return DataType.Error;
-            if (i <_inputs.Count && _inputs[i].Default.IsEmpty()) return DataType.Error;
-            if (!_isCombined) return _resultType;
-            return res;
+            if (i < par.Length) return null;
+            if (i <_inputs.Count && _inputs[i].Default.IsEmpty()) return null;
+            return new FunSelected(this, _isCombined ? res : _resultType, _arrayType);
         }
     }
 }

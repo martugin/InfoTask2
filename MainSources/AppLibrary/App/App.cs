@@ -1,7 +1,7 @@
 ﻿using BaseLibrary;
+using CompileLibrary;
 using ProcessingLibrary;
 using ProvidersLibrary;
-using Tablik;
 
 namespace AppLibrary
 {
@@ -11,7 +11,7 @@ namespace AppLibrary
         public App(string code, IIndicator indicator, bool useTablik)
             : base(code, indicator)
         {
-            if (useTablik) Tablik = new TablikApp();
+            if (useTablik) FunsChecker = new FunsChecker(FunsCheckType.Calc);
         }
 
         //Создание соединения-клонера и присоединение провайдера
@@ -23,8 +23,9 @@ namespace AppLibrary
         }
         private ClonerConnect _cloner;
 
-        //Приложение Tablik
-        public TablikApp Tablik { get; private set; } 
+        //Список функций для компиляция
+        public FunsChecker FunsChecker { get; private set; }
+        
 
         //Очистка ресурсов
         protected override void DisposeLogger()

@@ -123,6 +123,9 @@ namespace Tablik
         //Входы параметра
         private readonly DicS<TablikVar> _inputs = new DicS<TablikVar>();
         public DicS<TablikVar> Inputs { get { return _inputs; } }
+        //Входы параметра в списке по порядку
+        private readonly List<TablikVar> _inputsList = new List<TablikVar>();
+        public List<TablikVar> InputsList { get { return _inputsList; } }
         //Все переменные, включая выходы
         private readonly DicS<TablikVar> _vars = new DicS<TablikVar>();
         public DicS<TablikVar> Vars { get { return _vars; } }
@@ -135,9 +138,10 @@ namespace Tablik
         private void SemanticInputs(ListNode<InputNode> inputs)
         {
             Inputs.Clear();
+            InputsList.Clear();
             Vars.Clear();
             TablikVar v = null;
-            foreach (var node in inputs.Children)
+            foreach (var node in inputs.Nodes)
             {
                 var varCode = node.Token.Text;
                 switch (node.InputType)
@@ -205,7 +209,7 @@ namespace Tablik
                         break;
                 }
                 if (v != null && !Inputs.ContainsKey(v.Code))
-                    Vars.Add(v.Code, Inputs.Add(v.Code, v));
+                    InputsList.Add(Vars.Add(v.Code, Inputs.Add(v.Code, v)));
                 else _keeper.AddError("Два входа с одинаковыми именами", node);
             }
         }
@@ -236,18 +240,18 @@ namespace Tablik
         public HashSet<TablikParam> BaseParams { get { return _baseParams; } }
 
         //Данный параметр является наследником указанного
-        public bool IsOfType(ITablikType type)
+        public bool LessOrEquals(ITablikType type)
         {
             if (this == type) return true;
             if (type is TablikParam)
             {
-                if (Type is TablikParam && ((TablikParam)Type).IsOfType(type))
+                if (Type is TablikParam && ((TablikParam)Type).LessOrEquals(type))
                     return true;
-                return BaseParams.Any(bp => bp.IsOfType(type));    
+                return BaseParams.Any(bp => bp.LessOrEquals(type));    
             }
             if (type.TablikSignalType != null && TablikSignalType != null)
-                return TablikSignalType.IsOfType(type);
-            return Simple.IsOfType(type);
+                return TablikSignalType.LessOrEquals(type);
+            return Simple.LessOrEquals(type);
         }
 
         //Определение типов данных и формирование порожденных параметров

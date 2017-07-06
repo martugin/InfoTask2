@@ -2,6 +2,7 @@
 using System.Linq;
 using Antlr4.Runtime.Tree;
 using CommonTypes;
+using CompileLibrary;
 
 namespace Tablik
 {
@@ -44,10 +45,7 @@ namespace Tablik
                     Type = con.Signals[signalCode];
             }
             if (Type == null)
-            {
                 AddError("Не найден тип объекта или сигнала");
-                Type = new SimpleType();    
-            }
         }
     }
 

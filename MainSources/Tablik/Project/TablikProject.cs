@@ -7,18 +7,18 @@ namespace Tablik
     //Проект для Таблика
     public class TablikProject : ExternalLogger
     {
-        public TablikProject(SchemeProject project, TablikApp tablik)
+        public TablikProject(SchemeProject project, FunsChecker funsChecker)
             : base(project.App, project.Code, project.Code)
         {
             Project = project;
-            Tablik = tablik;
+            FunsChecker = funsChecker;
             LoadAllSignals();
         }
 
         //Проект
         public SchemeProject Project { get; private set; }
         //Таблик
-        public TablikApp Tablik { get; private set; }
+        public FunsChecker FunsChecker { get; private set; }
         
         //Словарь модулей
         private readonly DicS<TablikModule> _modules = new DicS<TablikModule>();

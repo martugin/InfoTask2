@@ -61,6 +61,7 @@
     <Compile Include="BaseParams\BaseParam.cs" />
     <Compile Include="Common\CompileStatic.cs" />
     <Compile Include="Common\CompileEnums.cs" />
+    <Compile Include="FunsCompile\FunSelected.cs" />
     <Compile Include="Scheme\DataModule.cs" />
     <Compile Include="Scheme\SchemeConnect.cs" />
     <Compile Include="Scheme\SchemeModule.cs" />

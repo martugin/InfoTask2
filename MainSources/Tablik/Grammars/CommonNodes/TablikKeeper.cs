@@ -20,7 +20,7 @@ namespace Tablik
         //Текущий проект
         internal TablikProject Project { get { return Module.TablikProject; } }
         //Таблик
-        internal TablikApp Tablik { get { return Project.Tablik; } }
+        internal FunsChecker FunsChecker { get { return Project.FunsChecker; } }
 
         //Создание узлов - констант
         protected override Node MakeConstNode(ITerminalNode terminal, bool b)

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using BaseLibrary;
+using CommonTypes;
 
 namespace CompileLibrary
 {
     //Одна функция
-    internal class FunCompile
+    public class FunCompile
     {
         //Конструктор, на входе рекордсет с таблицей Functions
         internal FunCompile(IRecordRead rec)
@@ -27,5 +28,15 @@ namespace CompileLibrary
         //Перегрузки
         private readonly List<FunOverload> _overloads = new List<FunOverload>();
         internal List<FunOverload> Overloads { get { return _overloads; } }
+
+        //Определение подходящей перегрузки, возвращает перегрузку и тип данных
+        public FunSelected DefineOverload(DataType[] par, //Типы данных принимемых аргументов
+                                                              int startPos = 0, //С какой позиции начинать проверку
+                                                              ArrayType[] apar = null) //Типы массива принимаемых аргументов
+        {
+            foreach (var ov in Overloads)
+                return ov.Check(par, startPos, apar);
+            return null;
+        }
     }
 }

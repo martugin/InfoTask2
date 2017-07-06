@@ -30,9 +30,9 @@ namespace Generator
         {
             return (IVoidNode)Go(tree);
         }
-        public ListNode<Node> GoList(IParseTree tree)
+        public ListNode GoList(IParseTree tree)
         {
-            return (ListNode<Node>)Go(tree);
+            return (ListNode)Go(tree);
         }
 
         public override Node VisitFieldGen(P.FieldGenContext context)
@@ -188,12 +188,12 @@ namespace Generator
 
         public override Node VisitParamsList(P.ParamsListContext context)
         {
-            return new ListNode<Node>(context.expr().Select(Go));
+            return new ListNode(context.expr().Select(Go));
         }
 
         public override Node VisitParamsEmpty(P.ParamsEmptyContext context)
         {
-            return new ListNode<Node>(new Node[0]);
+            return new ListNode(new Node[0]);
         }
 
         //Константы

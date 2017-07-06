@@ -14,7 +14,7 @@ namespace AppLibrary
         private TablikProject _tablik;
         public TablikProject Tablik 
         {
-            get { return _tablik = _tablik ?? new TablikProject(this, ((App)App).Tablik); }
+            get { return _tablik = _tablik ?? new TablikProject(this, ((App)App).FunsChecker); }
         }
 
         //Открыть разовый поток

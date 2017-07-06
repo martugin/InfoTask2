@@ -27,11 +27,11 @@ namespace Tablik
         public SimpleType Simple { get { return Signal.Simple; } }
 
         //явл€етс€ типом
-        public bool IsOfType(ITablikType type)
+        public bool LessOrEquals(ITablikType type)
         {
             if (type.TablikSignalType is TablikSignal)
                 return Signal == type.TablikSignalType;
-            return Simple.IsOfType(type);
+            return Simple.LessOrEquals(type);
         }
 
         //ѕолный код

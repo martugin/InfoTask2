@@ -47,11 +47,11 @@ namespace Tablik
         public ITablikSignalType TablikSignalType { get { return this; } }
 
         //Является типом
-        public bool IsOfType(ITablikType type)
+        public bool LessOrEquals(ITablikType type)
         {
             if (type.TablikSignalType is ObjectType || type.TablikSignalType is TablikSignal)
-                return ObjectType.IsOfType(type);
-            return Simple.IsOfType(type);
+                return ObjectType.LessOrEquals(type);
+            return Simple.LessOrEquals(type);
         }
     }
 }

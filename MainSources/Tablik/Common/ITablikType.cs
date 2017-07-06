@@ -1,4 +1,5 @@
 ﻿using CommonTypes;
+using CompileLibrary;
 
 namespace Tablik
 {
@@ -13,7 +14,7 @@ namespace Tablik
         ITablikSignalType TablikSignalType { get; }
         
         //Является типом
-        bool IsOfType(ITablikType type);
+        bool LessOrEquals(ITablikType type);
     }
 
     //----------------------------------------------------------------------------------------
@@ -41,7 +42,7 @@ namespace Tablik
         public ITablikSignalType TablikSignalType { get { return null; } }
 
         //Является типом
-        public bool IsOfType(ITablikType type)
+        public bool LessOrEquals(ITablikType type)
         {
             if (!(type is SimpleType)) return false;
             return ArrayType == type.Simple.ArrayType && DataType.LessOrEquals(type.DataType);

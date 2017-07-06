@@ -5,7 +5,7 @@ using CompileLibrary;
 namespace Generator
 {
     //Главный узел генерации значения поля
-    internal class NodeTextList : ListNode<Node>, IExprNode
+    internal class NodeTextList : ListNode, IExprNode
     {
         public NodeTextList(IEnumerable<Node> children)
             : base(children) { }
@@ -14,7 +14,7 @@ namespace Generator
         public DataType Check(ITablStruct tabl)
         {
             var dtype = DataType.Value;
-            foreach (var child in Children)
+            foreach (var child in Nodes)
                 if (child is IExprNode)
                 {
                     var res = ((IExprNode)child).Check(tabl);
@@ -28,10 +28,10 @@ namespace Generator
         //Генерация значения
         public IReadMean Generate(SubRows row)
         {
-            if (Children.Count == 1)
-                return ((IExprNode) Children[0]).Generate(row);
+            if (Nodes.Length == 1)
+                return ((IExprNode) Nodes[0]).Generate(row);
             string s = "";
-            foreach (var child in Children)
+            foreach (var child in Nodes)
             {
                 if (child is IExprNode)
                     s += ((IExprNode)child).Generate(row).String;

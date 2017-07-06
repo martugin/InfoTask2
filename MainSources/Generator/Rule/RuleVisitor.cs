@@ -27,9 +27,9 @@ namespace Generator
         {
             return (IExprNode)Go(tree);
         }
-        public ListNode<Node> GoList(IParseTree tree)
+        public ListNode GoList(IParseTree tree)
         {
-            return (ListNode<Node>)Go(tree);
+            return (ListNode)Go(tree);
         }
         public Node GoTabl(IParseTree tabl, IParseTree query)
         {
@@ -148,12 +148,12 @@ namespace Generator
         
         public override Node VisitParamsList(P.ParamsListContext context)
         {
-            return new ListNode<Node>(context.expr().Select(Visit).ToList());
+            return new ListNode(context.expr().Select(Visit).ToList());
         }
 
         public override Node VisitParamsEmpty(P.ParamsEmptyContext context)
         {
-            return new ListNode<Node>(new List<Node>());
+            return new ListNode(new List<Node>());
         }
 
         //Константы

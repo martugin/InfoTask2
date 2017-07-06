@@ -16,10 +16,10 @@ namespace Generator
         }
 
         public FunNode(GenKeeper keeper, ITerminalNode terminal, //Имя функции
-                                ListNode<Node> argsList) //Узел с аргументами
+                                ListNode argsList) //Узел с аргументами
             : base(keeper, terminal)
         {
-            _args = argsList.Children.Cast<IExprNode>().ToArray();
+            _args = argsList.Nodes.Cast<IExprNode>().ToArray();
         }
 
         protected override string NodeType
@@ -31,8 +31,8 @@ namespace Generator
         private readonly IExprNode[] _args;
         //Функция для расчета
         private IGenFun _fun;
-        //Тип данных результата
-        private DataType _resultType;
+        //Возвращаемый тип данных
+        private DataType _resultType = DataType.Error;
 
         public override string ToTestString()
         {
@@ -43,11 +43,21 @@ namespace Generator
         public DataType Check(ITablStruct tabl)
         {
             var generator = Keeper.Generator;
-            var t = generator.FunsChecker.DefineFun(Token.Text, _args.Select(a => a.Check(tabl)).ToArray());
-            if (t.Item2 == DataType.Error)
-                AddError(t.Item1);
-            else _fun = (IGenFun)generator.Functions.Funs[t.Item1];
-            return _resultType = t.Item2;
+            var funs = generator.FunsChecker.Funs;
+            if (!funs.ContainsKey(Token.Text))
+                AddError("Неизвестная функция");
+            else
+            {
+                var fs = funs[Token.Text].DefineOverload( _args.Select(a => a.Check(tabl)).ToArray());
+                if (fs == null)
+                {
+                    AddError("Недопустимые типы данных параметров функции");
+                    return DataType.Error;
+                }
+                _fun = (IGenFun) generator.Functions.Funs[fs.Overload.Code];
+                return _resultType = fs.DataType;
+            }
+            return DataType.Error;
         }
 
         //Вычисленное значение

@@ -8,18 +8,26 @@ namespace CompileLibrary
     {
         public ListNode(IEnumerable<T> children)
         {
-            Children = children.ToList();
+            Nodes = children.ToArray();
         }
-        
+
         protected override string NodeType { get { return "NodeList"; } }
 
         //Запись в строку
         public override string ToTestString()
         {
-            return ToTestWithChildren(Children.Cast<INode>().ToArray());
+            return ToTestWithChildren(Nodes.Cast<INode>().ToArray());
         }
 
         // Список узлов 
-        public List<T> Children { get; private set; }
+        public T[] Nodes { get; private set; }
+    }
+
+    //-------------------------------------------------------------------------------
+    //Список узлов типа Node
+    public class ListNode : ListNode<Node>
+    {
+        public ListNode(IEnumerable<Node> children)
+            : base(children) { }
     }
 }

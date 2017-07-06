@@ -12,7 +12,7 @@ voidProg : voidExpr (':' voidExpr)*;
 valueProg : (voidExpr ':')* expr;	
 
 //Выражения без значения
-voidExpr : IDENT '=' expr																		    #VoidExprVar
+voidExpr : IDENT '=' expr																		   #VoidExprVar
               | type IDENT '=' expr																	   #VoidExprDataType
               | IF '(' expr ';' voidProg (';' expr ';' voidProg)* (';' voidProg)? ')'    #VoidExprIf
               | WHILE '(' expr ';' voidProg ')'								 		               #VoidExprWhile
@@ -41,6 +41,7 @@ expr : cons                                               #ExprCons
         | IDENT                                          #ExprIdent		
         | IDENT '(' pars ')'			               #ExprFun	
         | expr '.' IDENT		                       #ExprMet
+		| expr '.' IDENT '(' pars ')'             #ExprMetFun
         | expr '.' SIGNAL		                       #ExprMetSignal
         | MINUS expr								   #ExprUnary		
         | expr OPER5 expr						   #ExprOper		
@@ -54,6 +55,8 @@ expr : cons                                               #ExprCons
         | '(' expr ')' ')'							       #ExprParen		
         | IDENT '(' pars                             #ExprFun
         | IDENT '(' pars ')' ')'				       #ExprFun
+		| expr '.' IDENT '(' pars                 #ExprMetFun
+		| expr '.' IDENT '(' pars ')' ')'        #ExprMetFun
         | IF '(' expr ';' valueProg (';' expr ';' valueProg)* (';' valueProg)?             #ExprIf
         | IF '(' expr ';' valueProg (';' expr ';' valueProg)* (';' valueProg)? ')' ')'    #ExprIf
         | ABSOLUTE '(' expr (';' expr)?                     #ExprAbsolute		
@@ -62,6 +65,8 @@ expr : cons                                               #ExprCons
         | GRAPHIC '(' IDENT ';' pars ')' ')'                #ExprGraphic
         | TABL '(' IDENT (';' IDENT)? ';' pars           #ExprTabl
         | TABL '(' IDENT (';' IDENT)? ';' pars ')' ')'  #ExprTabl
+		| TABLC '(' IDENT (';' IDENT)? ';' pars           #ExprTablC
+        | TABLC '(' IDENT (';' IDENT)? ';' pars ')' ')'  #ExprTablC
         ;
 
 pars : expr (';' expr)*    #ParamsList

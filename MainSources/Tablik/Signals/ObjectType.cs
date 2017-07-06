@@ -43,7 +43,7 @@ namespace Tablik
         public SimpleType Simple { get; private set; }
 
         //Является типом
-        public bool IsOfType(ITablikType type)
+        public bool LessOrEquals(ITablikType type)
         {
             if (type.TablikSignalType is ObjectType)
             {
@@ -52,7 +52,7 @@ namespace Tablik
                     return true;
             }
             if (type.TablikSignalType is TablikSignal && Signal == type.TablikSignalType) return true;
-            return Simple.IsOfType(type);
+            return Simple.LessOrEquals(type);
         }
     }
 }

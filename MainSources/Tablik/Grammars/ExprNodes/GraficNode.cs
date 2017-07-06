@@ -1,3 +1,4 @@
+using System.Linq;
 using Antlr4.Runtime.Tree;
 using CommonTypes;
 using CompileLibrary;
@@ -22,12 +23,8 @@ namespace Tablik
             {
                 if (args.Length != Grafic.Dim)
                     AddError("Количество аргументов функции не совпадает с рамерностью графика");
-                else foreach (var arg in args)
-                    if (!arg.Type.DataType.LessOrEquals(DataType.Real))
-                    {
-                        AddError("Недопустимые аргументы функции График");
-                        break;
-                    }
+                else if (args.Any(arg => !arg.Type.DataType.LessOrEquals(DataType.Real)))
+                    AddError("Недопустимые аргументы функции График");
             }
         }
 

@@ -1,10 +1,65 @@
-﻿using CommonTypes;
+﻿using BaseLibrary;
+using CommonTypes;
 
 namespace CompileLibrary
 {
     //Статические функции и конвертеры
     public static class CompileStatic
     {
+        //Перевод строки в ArrayType
+        public static ArrayType ToArrayType(this string s)
+        {
+            if (s.IsEmpty()) return ArrayType.Single;
+            switch (s.ToLower())
+            {
+                case "list":
+                case "список":
+                    return ArrayType.List;
+                case "dicnumbers":
+                case "словарьчисла":
+                    return ArrayType.DicNumbers;
+                case "dicstrings":
+                case "словарьстроки":
+                    return ArrayType.DicStrings;
+            }
+            return ArrayType.Error;
+        }
+
+        //Перевод ArrayType в английскую строку
+        public static string ToEnglish(this ArrayType t)
+        {
+            switch (t)
+            {
+                case ArrayType.Single:
+                    return "";
+                case ArrayType.List:
+                    return "List";
+                case ArrayType.DicNumbers:
+                    return "DicNumbers";
+                case ArrayType.DicStrings:
+                    return "DicStrings";
+            }
+            return "";
+        }
+
+
+        //Перевод ArrayType в русскую строку
+        public static string ToRussian(this ArrayType t)
+        {
+            switch (t)
+            {
+                case ArrayType.Single:
+                    return "";
+                case ArrayType.List:
+                    return "Список";
+                case ArrayType.DicNumbers:
+                    return "СловарьЧисла";
+                case ArrayType.DicStrings:
+                    return "СловарьСтроки";
+            }
+            return "";
+        }
+
         //Перевод строки в тип графика
         public static GraficType ToGraficType(this string t)
         {

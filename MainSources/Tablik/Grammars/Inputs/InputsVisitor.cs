@@ -56,7 +56,7 @@ namespace Tablik
         public override Node VisitParamClass(P.ParamClassContext context)
         {
             var list = (ListNode<IdentNode>)Go(context.identChain());
-            return new InputNode(context.IDENT(), InputType.Param, list.Children[0], list.Children.Count == 2 ? list.Children[1] : null);
+            return new InputNode(context.IDENT(), InputType.Param, list.Nodes[0], list.Nodes.Length == 2 ? list.Nodes[1] : null);
         }
 
         public override Node VisitArgDataType(P.ArgDataTypeContext context)
