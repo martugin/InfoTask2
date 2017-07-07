@@ -24,7 +24,7 @@ namespace Tablik
 
     //----------------------------------------------------------------------------------------------------
     //Базовый класс для узлов с аргументами и накопителм ошибок
-    internal abstract class TablikKeeperNode : KeeperNode, IExprNode
+    public abstract class TablikKeeperNode : KeeperNode, IExprNode
     {
         //Тип данных
         protected TablikKeeperNode(TablikKeeper keeper, ITerminalNode terminal, params IExprNode[] args) 

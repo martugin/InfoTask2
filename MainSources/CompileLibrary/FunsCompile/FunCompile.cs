@@ -12,7 +12,7 @@ namespace CompileLibrary
         {
             Name = rec.GetString("Name");
             Synonym = rec.GetString("Synonym");
-            Code = rec.GetString("Code") ?? (Synonym ?? Name);
+            Code = (rec.GetString("Code") ?? (Synonym ?? Name)).ToLower();
             Id = rec.GetInt("Id");
         }
 
@@ -21,7 +21,7 @@ namespace CompileLibrary
         //Английский синоним
         internal string Synonym { get; private set; }
         //Код на английском, без спецсимволов, маленькими буквами
-        internal string Code { get; private set; }
+        public string Code { get; private set; }
         //Id
         internal int Id { get; private set; }
 

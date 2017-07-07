@@ -17,7 +17,7 @@ namespace Tablik
         //Переменная
         public TablikVar Var { get; private set; }
 
-        //Определить тип данных
+        //Определение типа данных
         public override void DefineType()
         {
             Type = Var.Type;

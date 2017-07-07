@@ -15,7 +15,7 @@ namespace Tablik
         //Имя переменной
         public string Code { get; private set; }
         //Тип данных
-        public ITablikType Type { get; private set; }
+        public ITablikType Type { get; set; }
         //Значение по умолчанию
         public Mean DefaultValue { get; private set; }
     }

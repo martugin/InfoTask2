@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Antlr4.Runtime.Tree;
-using CompileLibrary;
 using P = Tablik.ExprParser;
 
 namespace Tablik
@@ -26,8 +24,67 @@ namespace Tablik
             return tree == null ? null : ((ListExprNode)Visit(tree)).Nodes;
         }
 
+        public override IExprNode VisitProgVoid(P.ProgVoidContext context)
+        {
+            return Go(context.voidProg());
+        }
+
+        public override IExprNode VisitProgValue(P.ProgValueContext context)
+        {
+            return Go(context.valueProg());
+        }
+
+        public override IExprNode VisitVoidProg(P.VoidProgContext context)
+        {
+            return new ListExprNode(context.voidExpr().Select(Go));
+        }
+
+        public override IExprNode VisitValueProg(P.ValueProgContext context)
+        {
+            var list = context.voidExpr().Select(Go).ToList();
+            list.Add(Go(context.expr()));
+            return new ListExprNode(list);
+        }
+
         //Выражения без значения
-        
+        public override IExprNode VisitVoidExprVar(P.VoidExprVarContext context)
+        {
+            return new AssignNode(_keeper, context.ASSIGN(), context.IDENT(), Go(context.expr()));
+        }
+
+        public override IExprNode VisitVoidExprDataType(P.VoidExprDataTypeContext context)
+        {
+            return new AssignNode(_keeper, context.ASSIGN(), context.IDENT(), Go(context.expr()), Go(context.type()));
+        }
+
+        public override IExprNode VisitVoidExprIf(P.VoidExprIfContext context)
+        {
+            _keeper.CheckParenths(context);
+            return new IfNode(_keeper, context.IF(), context.expr().Select(Go), context.voidProg().Select(Go));
+        }
+
+        public override IExprNode VisitVoidExprWhile(P.VoidExprWhileContext context)
+        {
+            _keeper.CheckParenths(context);
+            return new WhileNode(_keeper, context.WHILE(), Go(context.expr()), Go(context.voidProg()));
+        }
+
+        public override IExprNode VisitVoidExprFor(P.VoidExprForContext context)
+        {
+            _keeper.CheckParenths(context);
+            var vcode = context.IDENT().Symbol.Text;
+            var vars = _keeper.Param.Vars;
+            TablikVar v;
+            if (vars.ContainsKey(vcode)) v = vars[vcode];
+            else vars.Add(vcode, v = new TablikVar(vcode));
+            return new ForNode(_keeper, context.FOR(), v, Go(context.expr()), Go(context.voidProg()));
+        }
+
+        public override IExprNode VisitVoidExprSubParams(P.VoidExprSubParamsContext context)
+        {
+            _keeper.CheckParenths(context);
+            return new SubParamsNode(_keeper, context.SUBPARAMS(), Go(context.expr()));
+        }
 
         //Выражения со значением
         public override IExprNode VisitExprCons(P.ExprConsContext context)
@@ -54,7 +111,7 @@ namespace Tablik
         public override IExprNode VisitExprAbsolute(P.ExprAbsoluteContext context)
         {
             _keeper.CheckParenths(context);
-            throw new NotImplementedException();
+            return new PrevNode(_keeper, context.ABSOLUTE(), context.expr().Select(Go).ToArray());
         }
 
         public override IExprNode VisitExprGraphic(P.ExprGraphicContext context)
@@ -66,13 +123,13 @@ namespace Tablik
         public override IExprNode VisitExprTabl(P.ExprTablContext context)
         {
             _keeper.CheckParenths(context);
-            throw new NotImplementedException();
+            return new TablNode(_keeper, context.TABL(), context.IDENT(0), context.IDENT(1), GoList(context.pars()));
         }
 
         public override IExprNode VisitExprTablC(P.ExprTablCContext context)
         {
             _keeper.CheckParenths(context);
-            throw new NotImplementedException();
+            return new TablNode(_keeper, context.TABLC(), context.IDENT(0), null, GoList(context.pars()));
         }
 
         public override IExprNode VisitExprIdent(P.ExprIdentContext context)

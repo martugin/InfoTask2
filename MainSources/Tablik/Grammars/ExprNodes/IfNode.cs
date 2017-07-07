@@ -23,6 +23,7 @@ namespace Tablik
                 Args[Args.Length-1] = _variants[_variants.Count-1];
         }
 
+        //Тип узла
         protected override string NodeType { get { return "If"; } }
 
         //Список условий
@@ -36,13 +37,16 @@ namespace Tablik
             foreach (var c in _conditions)
                 if (c.Type.DataType != DataType.Boolean)
                 {
-                    AddError("Недопустимый тип данных условия", c.Token);
+                    AddError("Недопустимый тип данных условия");
                     break;
                 }
             foreach (var expr in _variants)
                 Type = Type.Add(expr.Type);
+            if (Type.DataType == DataType.Error)
+                AddError("Несовместимые типы данных аргументов функции");
         }
 
+        //Запись в скомпилированное выражение
         public override string CompiledText()
         {
             return Token.Text;
