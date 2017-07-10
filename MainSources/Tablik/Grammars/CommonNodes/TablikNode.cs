@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime.Tree;
+﻿using System.Text;
+using Antlr4.Runtime.Tree;
 using CompileLibrary;
 
 namespace Tablik
@@ -14,17 +15,17 @@ namespace Tablik
 
         public virtual void DefineType() { }
 
-        //Полный текст, записываемый в скомпилированное выражение
-        public string CompiledFullText()
+        //Записать текст в скомпилированное выражение
+        public void SaveCompiled(StringBuilder sb)
         {
-            return NodeType + "!" + CompiledText() + "!0;";
+            sb.Append(NodeType).Append("!").Append(CompiledText()).Append(";");
         } 
         public virtual string CompiledText() { return "";}
     }
 
     //----------------------------------------------------------------------------------------------------
     //Базовый класс для узлов с аргументами и накопителм ошибок
-    public abstract class TablikKeeperNode : KeeperNode, IExprNode
+    internal abstract class TablikKeeperNode : KeeperNode, IExprNode
     {
         //Тип данных
         protected TablikKeeperNode(TablikKeeper keeper, ITerminalNode terminal, params IExprNode[] args) 
@@ -41,10 +42,12 @@ namespace Tablik
 
         public virtual void DefineType() { }
 
-        //Полный текст, записываемый в скомпилированное выражение
-        public string CompiledFullText()
+        //Записать текст в скомпилированное выражение
+        public void SaveCompiled(StringBuilder sb)
         {
-            return NodeType + "!" + CompiledText() + "!" + Args.Length + ";";
+            foreach (var arg in Args)
+                arg.SaveCompiled(sb);
+            sb.Append(NodeType).Append("!").Append(CompiledText()).Append("!").Append(Args.Length).Append(";");
         }
         public virtual string CompiledText() { return ""; }
     }

@@ -53,5 +53,11 @@ namespace Tablik
                 return ObjectType.LessOrEquals(type);
             return Simple.LessOrEquals(type);
         }
+
+        //Запись в строку
+        public string ToResString()
+        {
+            return "{" + Code + "}" + "(" + DataType + ")";
+        }
     }
 }

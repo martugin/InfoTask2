@@ -53,5 +53,11 @@ namespace Tablik
             rec.Put("Formula", Signal.Formula);
             rec.Update();
         }
+
+        //Запись в строку
+        public string ToResString()
+        {
+            return "{" + Object.Code + "." + Code + "}" + "(" + DataType + ")";
+        }
     }
 }

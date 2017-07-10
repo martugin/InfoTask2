@@ -17,7 +17,7 @@ namespace Tablik
 
         //Проект
         public SchemeProject Project { get; private set; }
-        //Таблик
+        //Проверка функций
         public FunsChecker FunsChecker { get; private set; }
         
         //Словарь модулей
@@ -100,18 +100,5 @@ namespace Tablik
             ModulesOrder.Add(m);
             m.DfsStatus = DfsStatus.After;
         }
-
-        #region Generator
-        //Ссылка на генератор параметров
-        //internal TablGenerator Generator { get; private set; }
-
-        ////Генерация параметров
-        //public void GenerateParams(string moduleDir)
-        //{
-        //    if (Generator == null)
-        //        Generator = new TablGenerator(Project.App);
-        //    RunSyncCommand(() => Generator.GenerateParams(moduleDir));
-        //}
-        #endregion
     }
 }

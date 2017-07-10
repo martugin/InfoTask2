@@ -21,7 +21,7 @@ namespace Tablik
         }
         internal IExprNode[] GoList(IParseTree tree)
         {
-            return tree == null ? null : ((ListExprNode)Visit(tree)).Nodes;
+            return tree == null ? null : ((TablikListNode)Visit(tree)).Nodes;
         }
 
         public override IExprNode VisitProgVoid(P.ProgVoidContext context)
@@ -36,14 +36,14 @@ namespace Tablik
 
         public override IExprNode VisitVoidProg(P.VoidProgContext context)
         {
-            return new ListExprNode(context.voidExpr().Select(Go));
+            return new TablikListNode(context.voidExpr().Select(Go));
         }
 
         public override IExprNode VisitValueProg(P.ValueProgContext context)
         {
             var list = context.voidExpr().Select(Go).ToList();
             list.Add(Go(context.expr()));
-            return new ListExprNode(list);
+            return new TablikListNode(list);
         }
 
         //Выражения без значения
@@ -192,11 +192,11 @@ namespace Tablik
         //Список аргументов функции
         public override IExprNode VisitParamsList(P.ParamsListContext context)
         {
-            return new ListExprNode(context.expr().Select(Go));
+            return new TablikListNode(context.expr().Select(Go));
         }
         public override IExprNode VisitParamsEmpty(P.ParamsEmptyContext context)
         {
-            return new ListExprNode();
+            return new TablikListNode();
         }
 
         //Тип данных переменной

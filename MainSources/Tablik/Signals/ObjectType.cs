@@ -31,7 +31,16 @@ namespace Tablik
         private readonly DicS<ITablikSignalType> _signals = new DicS<ITablikSignalType>();
         public DicS<ITablikSignalType> Signals { get { return _signals; } }
         //Сигнал по умолчанию
-        public TablikSignal DefaultSignal { get; set; }
+        private TablikSignal _defaultSignal;
+        public TablikSignal DefaultSignal 
+        { 
+            get { return _defaultSignal; }
+            set
+            {
+                _defaultSignal = value;
+                Simple = new SimpleType(value.DataType);
+            } 
+        }
 
         //Тип данных как сигнал
         public ITablikSignalType TablikSignalType { get { return this; } }
@@ -53,6 +62,12 @@ namespace Tablik
             }
             if (type.TablikSignalType is TablikSignal && Signal == type.TablikSignalType) return true;
             return Simple.LessOrEquals(type);
+        }
+
+        //Запись в строку
+        public string ToResString()
+        {
+            return "{" + Code + "}" + "(" + DataType + ")";
         }
     }
 }

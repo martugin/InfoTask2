@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Antlr4.Runtime.Tree;
 using CommonTypes;
 using CompileLibrary;
@@ -25,11 +26,11 @@ namespace Tablik
             Type = new SimpleType(DataType);
         }
 
-        //Запись в скомпилированое выражение
-        public string CompiledFullText()
+        //Записать текст в скомпилированное выражение
+        public void SaveCompiled(StringBuilder sb)
         {
             string val = Mean.DataType != DataType.String ? Mean.String : "\'" + Mean.String + "\'";
-            return DataType.ToEnglish() + "!" + val + ";";
+            sb.Append(DataType.ToEnglish()).Append("!").Append(val).Append(";");
         }
     }
 }

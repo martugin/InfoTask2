@@ -13,6 +13,8 @@ namespace Tablik
         //Тип данных - сигнал
         ITablikSignalType TablikSignalType { get; }
         
+        //Запись в строку
+        string ToResString();
         //Является типом
         bool LessOrEquals(ITablikType type);
     }
@@ -46,6 +48,14 @@ namespace Tablik
         {
             if (!(type is SimpleType)) return false;
             return ArrayType == type.Simple.ArrayType && DataType.LessOrEquals(type.DataType);
+        }
+
+        //Запись в строку
+        public string ToResString()
+        {
+            if (ArrayType == ArrayType.Single)
+                return DataType.ToEnglish();
+            return ArrayType.ToEnglish() + "(" + DataType.ToEnglish() + ")";
         }
     }
 }

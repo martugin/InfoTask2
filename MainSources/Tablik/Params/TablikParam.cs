@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using Antlr4.Runtime;
 using BaseLibrary;
 using CommonTypes;
 using CompileLibrary;
@@ -14,7 +16,7 @@ namespace Tablik
             : base(rec, isSubParam)
         {
             Module = module;
-            _keeper = new TablikKeeper(this);
+            Keeper = new TablikKeeper(this);
             IsGenerated = isGenerated;
             if (!Code.IsCorrectCode())
             {
@@ -110,15 +112,14 @@ namespace Tablik
         //Синтаксический анализ
         public void Parse()
         {
-            _keeper.Errors.Clear();
+            Keeper.Errors.Clear();
             if (IsFatalError) return;
-            if (IsFun) SemanticInputs((ListNode<InputNode>)new InputsParsing(_keeper, "входы", InputsStr).ResultTree);
-            SemanticFormula(new ExprParsing(_keeper, "расч", UserExpr1).ResultTree, true);
-            SemanticFormula(new ExprParsing(_keeper, "упр", UserExpr2).ResultTree, false);
+            if (IsFun) ParseInputs();
+            ParseFormula();
         }
 
         //Накопитель ошибок 
-        private readonly TablikKeeper _keeper;
+        public TablikKeeper Keeper { get; private set; }
 
         //Входы параметра
         private readonly DicS<TablikVar> _inputs = new DicS<TablikVar>();
@@ -131,15 +132,16 @@ namespace Tablik
         public DicS<TablikVar> Vars { get { return _vars; } }
 
         //Параметры, используемые в данном
-        private readonly HashSet<TablikParam> _usedParams = new HashSet<TablikParam>();
-        public HashSet<TablikParam> UsedParams { get { return _usedParams; } }
-
+        private readonly Dictionary<TablikParam, IToken> _usedParams = new Dictionary<TablikParam, IToken>();
+        public Dictionary<TablikParam, IToken> UsedParams { get { return _usedParams; } }
+        
         //Семантический разбор поля Inputs
-        private void SemanticInputs(ListNode<InputNode> inputs)
+        private void ParseInputs()
         {
             Inputs.Clear();
             InputsList.Clear();
             Vars.Clear();
+            var inputs = (ListNode<InputNode>) new InputsParsing(Keeper, "входы", InputsStr).ResultTree;
             TablikVar v = null;
             foreach (var node in inputs.Nodes)
             {
@@ -155,23 +157,23 @@ namespace Tablik
 
                     case InputType.Param:
                         if (!Module.Params.ContainsKey(node.TypeNode.Text))
-                            _keeper.AddError("Не найден расчетный параметр", node.TypeNode);
+                            Keeper.AddError("Не найден расчетный параметр", node.TypeNode);
                         else 
                         {
                             var par = Module.Params[node.TypeNode.Text];
                             if (node.SubTypeNode == null)
                             {
                                 if (!par.IsFun) 
-                                    _keeper.AddError("Параметр без входов не может быть типом данных входа", node.TypeNode);
+                                    Keeper.AddError("Параметр без входов не может быть типом данных входа", node.TypeNode);
                                 else v = new TablikVar(varCode, par);
                             }
                             else if (!par.Params.ContainsKey(node.SubTypeNode.Text))
-                                _keeper.AddError("Не найден расчетный подпараметр", node.SubTypeNode);
+                                Keeper.AddError("Не найден расчетный подпараметр", node.SubTypeNode);
                             else
                             {
                                 var spar = par.Params[node.SubTypeNode.Text];
                                 if (!spar.IsFun) 
-                                    _keeper.AddError("Подпараметр без входов не может быть типом данных входа", node.SubTypeNode);
+                                    Keeper.AddError("Подпараметр без входов не может быть типом данных входа", node.SubTypeNode);
                                 else v = new TablikVar(varCode, spar);
                             }
                         }
@@ -185,12 +187,12 @@ namespace Tablik
                             if (con.ObjectsTypes.ContainsKey(scode))
                             {
                                 if (t == null) t = con.ObjectsTypes[scode];
-                                else _keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
+                                else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
                             if (con.BaseTypes.ContainsKey(scode))
                             {
                                 if (t == null) t = con.BaseTypes[scode];
-                                else _keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
+                                else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
                         }
                         if (t != null) v = new TablikVar(varCode, t);
@@ -201,28 +203,50 @@ namespace Tablik
                                 if (con.Signals.ContainsKey(scode))
                                 {
                                     if (sig == null) sig = con.Signals[scode];
-                                    else _keeper.AddError("Одинаковый код типа сигнала в двух разных источниках", node);
+                                    else Keeper.AddError("Одинаковый код типа сигнала в двух разных источниках", node);
                                 }
                             if (sig != null) v = new TablikVar(varCode, sig);
-                            else _keeper.AddError("Не найден тип объекта или сигнала", node);
+                            else Keeper.AddError("Не найден тип объекта или сигнала", node);
                         }
                         break;
                 }
                 if (v != null && !Inputs.ContainsKey(v.Code))
                     InputsList.Add(Vars.Add(v.Code, Inputs.Add(v.Code, v)));
-                else _keeper.AddError("Два входа с одинаковыми именами", node);
+                else Keeper.AddError("Два входа с одинаковыми именами", node);
             }
         }
 
+        //Узлы расчетного и управляющего выражения
+        private TablikListNode _expr1;
+        private TablikListNode _expr2;
+
         //Семантический разбор формулы
-        private void SemanticFormula(Node formula, bool isCalc)//расчетное или управляющее выражение
+        private void ParseFormula()//расчетное или управляющее выражение
         {
-            throw new NotImplementedException();
+            _expr1 = (TablikListNode)new ExprParsing(Keeper, "расч", UserExpr1).ResultTree;
+            if (!Vars.ContainsKey("result"))
+                Vars.Add("result", new TablikVar("result"));
+            _expr2 = (TablikListNode)new ExprParsing(Keeper, "упр", UserExpr2).ResultTree;
         }
 
         //Флаг для построения графа зависимости параметров
         public DfsStatus DfsStatus { get; set; }
 
+        public void Dfs(List<TablikParam> paramsOrder) //Параметры, упорядоченный по порядку обсчета
+        {
+            DfsStatus = DfsStatus.Process;
+            foreach (var p in UsedParams.Keys)
+            {
+                if (p.DfsStatus == DfsStatus.Before)
+                    p.Dfs(paramsOrder);
+                else if (p.DfsStatus == DfsStatus.Process)
+                    Keeper.AddError("Циклическая зависимость параметров", UsedParams[p]);
+            }
+            paramsOrder.Add(this);
+            foreach (var p in Params.Values)
+                p.Dfs(paramsOrder);
+            DfsStatus = DfsStatus.After;
+        }
         #endregion
 
         #region DefineDataTypes
@@ -257,7 +281,39 @@ namespace Tablik
         //Определение типов данных и формирование порожденных параметров
         public void DefineDataTypes()
         {
-            throw new NotImplementedException();
+            ITablikType t = null;
+            foreach (var node in _expr1.Nodes)
+            {
+                node.DefineType();
+                t = node.Type;
+            }
+            Vars["result"].Type = Vars["result"].Type.Add(t);
+            foreach (var node in _expr2.Nodes)
+            {
+                node.DefineType();
+                t = node.Type;
+            }
+            Type = t;
+        }
+
+        //Создать попрожденные параметры
+        public void AddDerivedParams(string prefix, //Префикс, задаваемый вызывающими параметрами
+                                                      string prefixName, //Префикс для имени
+                                                      string task, //Задача
+                                                      bool isCaller) //Первый в цепочке вызовов
+        {
+            if (Keeper.Errors.Count > 0) return;
+            foreach (var p in BaseParams)
+                AddDerivedParams(prefix, prefixName, task, false);
+            if (Type is TablikParam)
+                ((TablikParam)Type).AddDerivedParams(prefix, prefixName, task, false);
+            foreach (var p in Params.Values)
+                p.AddDerivedParams(prefix + "." + p.Code, prefixName + "." + p.Name, task, true);
+            if (isCaller)
+            {
+                var dp = new TablikDerivedParam(Code, prefix, Name, prefixName, task, SuperProcess, Units, Min.ToDouble(), Max.ToDouble(), ObjectCode);
+                Module.DerivedParams.Add(dp);
+            }
         }
 
         #endregion
@@ -266,9 +322,23 @@ namespace Tablik
         public void SaveCompileResults(IRecordAdd rec)
         {
             rec.Put("ErrMess", _errMess);
-            rec.Put("CompiledExpr", CompiledExpr);
-            rec.Put("ResiltType", "");
+            rec.Put("ResiltType", Type.ToResString());
+
+            var sb = new StringBuilder();
+            foreach (var node in _expr1.Nodes)
+                node.SaveCompiled(sb);
+            if (Vars["result"].Type.DataType != DataType.Void)
+                sb.Append("Assign!Result!1;");
+            foreach (var node in _expr2.Nodes)
+                node.SaveCompiled(sb);
+            rec.Put("CompiledExpr", sb.ToString());
             rec.Update();
+        }
+
+        //Запись в строку
+        public string ToResString()
+        {
+            return FullCode + "(" + DataType + ")";
         }
     }
 }

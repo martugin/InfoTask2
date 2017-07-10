@@ -1,4 +1,5 @@
-﻿using CompileLibrary;
+﻿using System.Text;
+using CompileLibrary;
 
 namespace Tablik
 {
@@ -10,6 +11,6 @@ namespace Tablik
         //Определение типа данных
         void DefineType();
         //Запись в скомпилированое выражение
-        string CompiledFullText();
+        void SaveCompiled(StringBuilder sb);
     }
 } 

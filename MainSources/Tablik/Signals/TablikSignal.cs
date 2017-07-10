@@ -38,6 +38,12 @@ namespace Tablik
                 return this == type.TablikSignalType;
             return Simple.LessOrEquals(type);
         }
+
+        //Запись в строку
+        public string ToResString()
+        {
+            return "{" + Code + "}" + "(" + DataType + ")";
+        }
     }
 
     //---------------------------------------------------------------------------------------
@@ -67,6 +73,12 @@ namespace Tablik
         public bool LessOrEquals(ITablikType type)
         {
             return Signal.LessOrEquals(type);
+        }
+
+        //Запись в строку
+        public string ToResString()
+        {
+            return "{" + Code + "}" + "(" + DataType + ")";
         }
     }
 }

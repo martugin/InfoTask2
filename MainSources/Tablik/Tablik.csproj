@@ -58,7 +58,7 @@
     <Compile Include="Grammars\ExprNodes\ForNode.cs" />
     <Compile Include="Grammars\ExprNodes\PrevNode.cs" />
     <Compile Include="Grammars\CommonNodes\ErrorNode.cs" />
-    <Compile Include="Grammars\CommonNodes\ListExprNode.cs" />
+    <Compile Include="Grammars\CommonNodes\TablikListNode.cs" />
     <Compile Include="Grammars\ExprNodes\GraficNode.cs" />
     <Compile Include="Grammars\ExprNodes\IfNode.cs" />
     <Compile Include="Grammars\ExprNodes\MetNode.cs" />

@@ -21,7 +21,11 @@ namespace Tablik
             Type = new SimpleType(DataType.Void);
             if (!(Args[0].Type is TablikParam) || ((TablikParam) Args[0].Type).Params.Count == 0)
                 AddError("Аргументом функция Подпараметры может быть только параметр с подпараметрами");
-            else Param = (TablikParam) Args[0].Type;
+            else
+            {
+                Param = (TablikParam) Args[0].Type;
+                Keeper.Param.BaseParams.Add(Param);
+            }
         }
 
         //Запись в скомпилированное выражение

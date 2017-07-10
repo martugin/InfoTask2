@@ -12,6 +12,8 @@ namespace Tablik
         {
             Param = param;
             Args = args != null ? args.ToArray() : new IExprNode[0];
+            if (Keeper.Module == param.Module && !Keeper.Param.UsedParams.ContainsKey(param))
+                    Keeper.Param.UsedParams.Add(param, terminal.Symbol);
         }
 
         //Тип узла

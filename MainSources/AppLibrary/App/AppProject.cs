@@ -1,4 +1,5 @@
 ﻿using BaseLibrary;
+using Generator;
 using ProcessingLibrary;
 using Tablik;
 
@@ -15,6 +16,16 @@ namespace AppLibrary
         public TablikProject Tablik 
         {
             get { return _tablik = _tablik ?? new TablikProject(this, ((App)App).FunsChecker); }
+        }
+
+        //Генератор
+        internal TablGenerator Generator { get; private set; }
+        //Генерация параметров
+        public void GenerateParams(string moduleDir)
+        {
+            if (Generator == null)
+                Generator = new TablGenerator(App);
+            RunSyncCommand(() => Generator.GenerateParams(moduleDir));
         }
 
         //Открыть разовый поток
