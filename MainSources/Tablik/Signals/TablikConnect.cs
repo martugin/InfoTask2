@@ -15,10 +15,10 @@ namespace Tablik
         protected string SignalsFile { get; set; }
 
         //Расчетные типы объектов
-        private readonly DicS<ObjectType> _baseTypes = new DicS<ObjectType>();
-        public DicS<ObjectType> BaseTypes { get { return _baseTypes; } }
-        private readonly DicI<ObjectType> _baseTypesId = new DicI<ObjectType>();
-        public DicI<ObjectType> BaseTypesId { get { return _baseTypesId; } }
+        private readonly DicS<ObjectType> _objectsCalcTypes = new DicS<ObjectType>();
+        public DicS<ObjectType> ObjectsCalcTypes { get { return _objectsCalcTypes; } }
+        private readonly DicI<ObjectType> _objectCalcTypesId = new DicI<ObjectType>();
+        public DicI<ObjectType> ObjectCalcTypesId { get { return _objectCalcTypesId; } }
         //Типы объектов 
         private readonly DicS<ObjectType> _objectsTypes = new DicS<ObjectType>();
         public DicS<ObjectType> ObjectsTypes { get { return _objectsTypes; } }
@@ -38,8 +38,8 @@ namespace Tablik
         {
             StartLog("Загрузка сигналов", null, Type + " " + Code).Run(() =>
             {
-                BaseTypes.Clear();
-                BaseTypesId.Clear();
+                ObjectsCalcTypes.Clear();
+                ObjectCalcTypesId.Clear();
                 ObjectsTypes.Clear();
                 ObjectsTypesId.Clear();
                 Objects.Clear();
@@ -52,9 +52,9 @@ namespace Tablik
                         {
                             var t = new ObjectType(rec.GetInt("TypeCalcId"), rec.GetString("CodeType"),
                                 rec.GetString("NameType"), rec.GetInt("SignalCodeColumn"));
-                            BaseTypesId.Add(t.Id, t);
-                            BaseTypes.Add(t.Code, t);
-                            BaseTypes.Add(Code + "." + t.Code, t);
+                            ObjectCalcTypesId.Add(t.Id, t);
+                            ObjectsCalcTypes.Add(t.Code, t);
+                            ObjectsCalcTypes.Add(Code + "." + t.Code, t);
                         }
 
                     using (var rec = new DaoRec(db, "ObjectTypes"))
@@ -67,8 +67,8 @@ namespace Tablik
                             ObjectsTypes.Add(Code + "." + t.Code, t);
                             var list = rec.GetString("CalcTypes").ToPropertyList();
                             foreach (var bt in list)
-                                if (BaseTypes.ContainsKey(bt))
-                                    t.BaseTypes.Add(BaseTypes[bt]);
+                                if (ObjectsCalcTypes.ContainsKey(bt))
+                                    t.BaseTypes.Add(ObjectsCalcTypes[bt]);
                         }
 
                     using (var rec = new DaoRec(db, "Objects"))
@@ -77,7 +77,7 @@ namespace Tablik
                             var t = rec.GetString("TypeObject");
                             if (ObjectsTypes.ContainsKey(t))
                             {
-                                var ob = new TablikObject(ObjectsTypes[t], rec);
+                                var ob = new TablikObject(this, ObjectsTypes[t], rec);
                                 ObjectsId.Add(ob.Id, ob);
                                 Objects.Add(ob.Code, ob);
                                 Objects.Add(Code + "." + ob.Code, ob);
@@ -95,7 +95,7 @@ namespace Tablik
                         while (rec.Read())
                         {
                             var s = new TablikSignal(rec);
-                            var t = BaseTypesId[rec.GetInt("ObjectId")];
+                            var t = ObjectCalcTypesId[rec.GetInt("ObjectId")];
                             t.Signals.Add(s.Code, s);
                             Signals.Add(t.Code + "." + s.Code, s);
                             Signals.Add(Code + "." + t.Code + "." + s.Code, s);
@@ -125,7 +125,7 @@ namespace Tablik
     //Источник для компилятора
     internal class TablikSource : TablikConnect
     {
-        protected TablikSource(TablikProject tablik, string code, string complect)
+        public TablikSource(TablikProject tablik, string code, string complect)
             : base(tablik, code, complect)
         {
             SignalsFile = tablik.Project.Dir + @"SignalsSource\" + code + ".accdb";
@@ -139,7 +139,7 @@ namespace Tablik
     //Приемник для компилятора
     internal class TablikReceiver : TablikConnect
     {
-        protected TablikReceiver(TablikProject tablik, string code, string complect)
+        public TablikReceiver(TablikProject tablik, string code, string complect)
             : base(tablik, code, complect)
         {
             SignalsFile = tablik.Project.Dir + @"SignalsReceiver\" + code + ".accdb";

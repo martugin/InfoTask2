@@ -57,7 +57,7 @@ namespace Tablik
         //Запись в строку
         public string ToResString()
         {
-            return "{" + Object.Code + "." + Code + "}" + "(" + DataType + ")";
+            return "{" + Object.Connect.Code + "." + Object.Code + "." + Code + "}" + "(" + DataType + ")";
         }
     }
 }

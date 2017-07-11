@@ -13,6 +13,8 @@ namespace Tablik
             var vars = Keeper.Param.Vars;
             if (vars.ContainsKey(vcode)) Var = vars[vcode];
             else vars.Add(vcode, Var = new TablikVar(vcode, type == null ? null : type.Type));
+            if (Keeper.Param.Inputs.ContainsKey(vcode))
+                AddError("Нельзя присваивать значение входу");
         }
 
         //Тип узла

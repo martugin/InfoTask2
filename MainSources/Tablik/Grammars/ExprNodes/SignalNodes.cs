@@ -9,15 +9,51 @@ namespace Tablik
         public SignalNode(TablikKeeper keeper, ITerminalNode terminal) 
             : base(keeper, terminal)
         {
-            SignalCode = terminal.Symbol.Text;
-            throw new NotImplementedException();
+            var code = terminal.Symbol.Text;
+            string ocode = null, scode = null;
+            int pos = code.LastIndexOf('.');
+            if (pos != -1)
+            {
+                scode = code.Substring(pos + 1);
+                ocode = code.Substring(0, pos);
+            }
+                
+            foreach (var source in Keeper.Project.Sources.Values)
+            {
+                var objs = source.Objects;
+                var uobjs = Keeper.Module.UsedObjects;
+                if (objs.ContainsKey(code))
+                {
+                    var ob = objs[code];
+                    if (!uobjs.ContainsKey(code))
+                        uobjs.Add(code, ob);
+                    if (ob.UsedSignals.ContainsKey(ob.Signal.Code))
+                        Signal = ob.UsedSignals[ob.Signal.Code];
+                    else
+                    {
+                        Signal = new UsedSignal(ob.Signal, ob);
+                        ob.UsedSignals.Add(Signal.Code, Signal);    
+                    }
+                }
+                if (pos != -1)
+                    if (objs.ContainsKey(ocode) && objs[ocode].ObjectType.Signals.ContainsKey(scode))
+                    {
+                        var ob = objs[ocode];
+                        if (!uobjs.ContainsKey(ocode))
+                            uobjs.Add(ocode, ob);
+                        if (ob.UsedSignals.ContainsKey(scode))
+                            Signal = ob.UsedSignals[scode];
+                        else
+                        {
+                            Signal = new UsedSignal((TablikSignal)ob.ObjectType.Signals[scode], ob);
+                            ob.UsedSignals.Add(scode, Signal);    
+                        }
+                    }
+            }
         }
 
         //Тип узла
         protected override string NodeType { get { return "Signal"; }}
-        
-        //Код сигнала
-        public string SignalCode { get; private set; }
 
         //Сигнал
         public UsedSignal Signal { get; private set; }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BaseLibrary;
+using CommonTypes;
 using CompileLibrary;
 
 namespace Tablik
@@ -37,19 +38,35 @@ namespace Tablik
         //Загрузить сигналы всех провайдеров
         public void LoadAllSignals()
         {
-            foreach (var source in Sources.Values)
-                source.LoadSignals();
-            foreach (var receiver in Receivers.Values)
-                receiver.LoadSignals();
+            Sources.Clear();
+            Receivers.Clear();
+            foreach (var s in Project.SchemeSources.Values)
+            {
+                Sources.Add(s.Code, new TablikSource(this, s.Code, s.Complect));
+                Sources[s.Code].LoadSignals();
+            }
+            foreach (var r in Project.SchemeReceivers.Values)
+            {
+                Receivers.Add(r.Code, new TablikReceiver(this, r.Code, r.Complect));
+                Receivers[r.Code].LoadSignals();
+            }
         }
 
         //Загрузить сигналы указанного провайдера
-        public void LoadSignals(string providerCode)
+        public void LoadSignals(string connectCode)
         {
-            if (Sources.ContainsKey(providerCode))
-                Sources[providerCode].LoadSignals();
-            if (Receivers.ContainsKey(providerCode))
-                Receivers[providerCode].LoadSignals();
+            if (Project.SchemeSources.ContainsKey(connectCode))
+            {
+                if (!Sources.ContainsKey(connectCode))
+                    Sources.Add(connectCode, new TablikSource(this, connectCode, Project.SchemeSources[connectCode].Complect));
+                Sources[connectCode].LoadSignals();
+            }
+            if (Project.SchemeReceivers.ContainsKey(connectCode))
+            {
+                if (!Receivers.ContainsKey(connectCode))
+                    Receivers.Add(connectCode, new TablikReceiver(this, connectCode, Project.SchemeReceivers[connectCode].Complect));
+                Receivers[connectCode].LoadSignals();
+            }
         }
 
         //Очистить список модулей
@@ -67,7 +84,17 @@ namespace Tablik
                 _modules.Add(code, mod);
                 var smod = Project.SchemeModules[code];
                 foreach (var m in smod.LinkedModules.Values)
-                    AddModule(m);    
+                {
+                    AddModule(m);
+                    mod.LinkedModules.Add(_modules[m]);
+                }
+                foreach (var c in smod.LinkedConnects.Values)
+                {
+                    if (Project.SchemeSources.ContainsKey(c))
+                        mod.LinkedSources.Add(Sources[c]);
+                    if (Project.SchemeReceivers.ContainsKey(c))
+                        mod.LinkedReceivers.Add(Receivers[c]);
+                }
             }
         }
 

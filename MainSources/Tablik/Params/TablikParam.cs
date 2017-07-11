@@ -189,9 +189,9 @@ namespace Tablik
                                 if (t == null) t = con.ObjectsTypes[scode];
                                 else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
-                            if (con.BaseTypes.ContainsKey(scode))
+                            if (con.ObjectsCalcTypes.ContainsKey(scode))
                             {
-                                if (t == null) t = con.BaseTypes[scode];
+                                if (t == null) t = con.ObjectsCalcTypes[scode];
                                 else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
                         }
@@ -304,7 +304,7 @@ namespace Tablik
         {
             if (Keeper.Errors.Count > 0) return;
             foreach (var p in BaseParams)
-                AddDerivedParams(prefix, prefixName, task, false);
+                p.AddDerivedParams(prefix, prefixName, task, false);
             if (Type is TablikParam)
                 ((TablikParam)Type).AddDerivedParams(prefix, prefixName, task, false);
             foreach (var p in Params.Values)

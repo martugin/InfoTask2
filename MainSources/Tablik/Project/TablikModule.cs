@@ -48,10 +48,14 @@ namespace Tablik
         //Список порожденных параметров
         private readonly List<TablikDerivedParam> _derivedParams = new List<TablikDerivedParam>();
         public List<TablikDerivedParam> DerivedParams { get { return _derivedParams; } }
-        
+        //Словарь используемых объектов
+        private readonly DicS<TablikObject> _usedObjects = new DicS<TablikObject>();
+        public DicS<TablikObject> UsedObjects { get { return _usedObjects; } }
+
         //Список графиков
         private readonly DicS<Grafic> _grafics = new DicS<Grafic>();
         public DicS<Grafic> Grafics { get { return _grafics; } }
+
         //Список таблиц
         public TablsList Tabls { get; private set; }
         

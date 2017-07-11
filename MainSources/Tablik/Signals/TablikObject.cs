@@ -7,11 +7,14 @@ namespace Tablik
     //Один объект для Tablik
     internal class TablikObject : BaseObject, ITablikSignalType
     {
-        public TablikObject(ObjectType type, IRecordRead rec) : base(rec)
+        public TablikObject(TablikConnect con, ObjectType type, IRecordRead rec) : base(rec)
         {
+            Connect = con;
             ObjectType = type;
         }
 
+        //Соединение 
+        public TablikConnect Connect { get; private set; }
         //Тип объекта
         public ObjectType ObjectType { get; private set; }
 
