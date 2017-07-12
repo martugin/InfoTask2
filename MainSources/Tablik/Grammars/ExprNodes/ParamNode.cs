@@ -33,8 +33,33 @@ namespace Tablik
             if (Args.Length > inputs.Count ||
                 Args.Length < inputs.Count && inputs[Args.Length].DefaultValue == null)
                 AddError("Количество входов расчетного параметра не совпадает с количеством аргументов");
-            if (Args.Where((t, i) => !t.Type.LessOrEquals(inputs[i].Type)).Any())
+            else if (Args.Where((t, i) => !t.Type.LessOrEquals(inputs[i].Type)).Any())
                 AddError("Недопустимые типы аргументов расчетного параметра");
+            else MakeUsedMetSignals();
+        }
+
+        //Сформировать используемые сигналы по входам типа объекта
+        private void MakeUsedMetSignals()
+        {
+            for (int i = 0; i < Args.Length; i++)
+            {
+                var imet = Param.InputsList[i].MetSignals;
+                if (imet != null)
+                {
+                    var amet = Keeper.GetMetSignals(Args[i]);
+                    if (amet != null)
+                        foreach (var m in amet.Values)
+                            imet.Add(m);
+                    if (Args[i].Type is TablikObject)
+                    {
+                        var ob = (TablikObject) Args[i].Type;
+                        var t = (ObjectType)Param.InputsList[i].Type;
+                        foreach (var sigCode in imet.Values)
+                            if (ob.UsedSignals.ContainsKey(sigCode))
+                                ob.UsedSignals.Add(sigCode, new UsedSignal(t.Signals[sigCode].Signal, ob));
+                    }
+                }
+            }
         }
 
         //Запись в скомпилированное выражение

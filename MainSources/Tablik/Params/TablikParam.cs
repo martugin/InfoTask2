@@ -195,7 +195,8 @@ namespace Tablik
                                 else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
                         }
-                        if (t != null) v = new TablikVar(varCode, t);
+                        if (t != null)
+                            v = new TablikVar(varCode, t) { MetSignals = new SetS() };
                         else
                         {
                             TablikSignal sig = null;
@@ -263,6 +264,9 @@ namespace Tablik
         private readonly HashSet<TablikParam> _baseParams = new HashSet<TablikParam>();
         public HashSet<TablikParam> BaseParams { get { return _baseParams; } }
 
+        //Список взятий сигналов для переменной типа объекта
+        public SetS MetSignals { get; set; }
+
         //Данный параметр является наследником указанного
         public bool LessOrEquals(ITablikType type)
         {
@@ -281,19 +285,14 @@ namespace Tablik
         //Определение типов данных и формирование порожденных параметров
         public void DefineDataTypes()
         {
-            ITablikType t = null;
             foreach (var node in _expr1.Nodes)
-            {
                 node.DefineType();
-                t = node.Type;
-            }
-            Vars["result"].Type = Vars["result"].Type.Add(t);
+            Vars["result"].Type = Vars["result"].Type.Add(_expr1.Nodes.Last().Type);
             foreach (var node in _expr2.Nodes)
-            {
                 node.DefineType();
-                t = node.Type;
-            }
-            Type = t;
+            var last = _expr2.Nodes.Last();
+            Type = last.Type;
+            MetSignals = Keeper.GetMetSignals(last);
         }
 
         //Создать попрожденные параметры

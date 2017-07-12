@@ -26,10 +26,12 @@ namespace Tablik
         //Определение типа данных
         public override void DefineType()
         {
-            Var.Type = Var.Type.Add(Args[0].Type);
+            var val = Args[0];
+            Var.Type = Var.Type.Add(val.Type);
             if (Var.Type.DataType == DataType.Error)
-                AddError("Недопустипое присвоение переменной");
+                AddError("Недопустимое присвоение переменной");
             Type = new SimpleType(DataType.Void);
+            Var.MetSignals = Keeper.GetMetSignals(val);
         }
 
         //Запись в скомпилированное выражение

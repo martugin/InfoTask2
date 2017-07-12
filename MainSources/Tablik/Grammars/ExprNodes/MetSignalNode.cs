@@ -28,7 +28,11 @@ namespace Tablik
                 var type = t is ObjectType ? (ObjectType) t : ((TablikObject) t).ObjectType;
                 var code = Token.Text.Substring(1, Token.Text.Length - 2);
                 if (type.Signals.ContainsKey(code))
+                {
                     Type = type.Signals[code];
+                    var metSignals =  Keeper.GetMetSignals(Parent);
+                    if (metSignals != null) metSignals.Add(code);
+                }
                 else AddError("Не найден сигнал");
             }
         }

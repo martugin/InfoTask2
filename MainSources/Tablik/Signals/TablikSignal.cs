@@ -61,7 +61,16 @@ namespace Tablik
         //Имя сигнала
         public string Name { get; private set; }
         //Ссылка на сигнал из Signals
-        public TablikSignal Signal { get; set; }
+        private TablikSignal _signal;
+        public TablikSignal Signal
+        {
+            get { return _signal; }
+            set
+            {
+                _signal = value;
+                Simple = new SimpleType(DataType);
+            }
+        }
 
         //Тип данных
         public DataType DataType { get { return Signal.DataType; } }

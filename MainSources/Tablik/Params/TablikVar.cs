@@ -1,4 +1,5 @@
-﻿using CommonTypes;
+﻿using BaseLibrary;
+using CommonTypes;
 
 namespace Tablik
 {
@@ -18,5 +19,8 @@ namespace Tablik
         public ITablikType Type { get; set; }
         //Значение по умолчанию
         public Mean DefaultValue { get; private set; }
+
+        //Список взятий сигналов для переменной типа объекта
+        public SetS MetSignals { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using BaseLibrary;
 using CompileLibrary;
 
 namespace Tablik
@@ -42,6 +43,16 @@ namespace Tablik
         protected override Node MakeConstNode(ITerminalNode terminal, string s)
         {
             return new TablikConstNode(terminal, s);
+        }
+
+        //Получить список MetSignals от вершины
+        public SetS GetMetSignals(IExprNode node)
+        {
+            if (node is VarNode)
+                return ((VarNode)node).Var.MetSignals;
+            if (node.Type is TablikParam)
+                return ((TablikParam)node.Type).MetSignals;
+            return null;
         }
     }
 
