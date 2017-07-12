@@ -7,9 +7,10 @@ namespace Tablik
     internal class MetNode : TablikKeeperNode
     {
         public MetNode(TablikKeeper keeper, ITerminalNode terminal, IExprNode parent, params IExprNode[] args)
-            : base(keeper, terminal, args)
+            : base(keeper, terminal, parent)
         {
             Parent = parent;
+            IsMet = true;
         }
 
         //Тип узла
@@ -48,12 +49,6 @@ namespace Tablik
                         AddError("Недопустимые типы аргументов подпараметра");
                 }
             }
-        }
-        
-        //Запись в скомпилированное выражение
-        public override string CompiledText()
-        {
-            return Token.Text;
         }
     }
 }

@@ -47,6 +47,11 @@ namespace Tablik
         }
 
         //Выражения без значения
+        public override IExprNode VisitVoidExprVoid(P.VoidExprVoidContext context)
+        {
+            return new VoidNode(context.VOID());
+        }
+
         public override IExprNode VisitVoidExprVar(P.VoidExprVarContext context)
         {
             return new AssignNode(_keeper, context.ASSIGN(), context.IDENT(), Go(context.expr()));
@@ -162,6 +167,21 @@ namespace Tablik
             return new ErrorNode(context.IDENT());
         }
 
+        public override IExprNode VisitExprProp(P.ExprPropContext context)
+        {
+            var expr = Go(context.expr());
+            string prop = context.IDENT().Symbol.Text;
+            if (expr.Type is TablikParam && _keeper.FunsChecker.ParamProps.ContainsKey(prop))
+                return new ParamPropNode(_keeper, context.PROP(), context.IDENT());
+            var st = expr.Type.TablikSignalType;
+            if (st == null)
+            {
+                _keeper.AddError("Недопустимое свойство", context.IDENT());
+                return new ErrorNode(context.PROP());
+            }
+            return new ObjectPropNode(_keeper, (TablikObject)expr.Type.TablikSignalType, context.PROP(), context.IDENT());
+        }
+
         public override IExprNode VisitExprMet(P.ExprMetContext context)
         {
             return new MetNode(_keeper, context.IDENT(), Go(context.expr()));
@@ -176,6 +196,11 @@ namespace Tablik
         public override IExprNode VisitExprMetSignal(P.ExprMetSignalContext context)
         {
             return new MetSignalNode(_keeper, context.SIGNAL(), Go(context.expr()));
+        }
+
+        public override IExprNode VisitExprOwner(P.ExprOwnerContext context)
+        {
+            return new OwnerNode(_keeper, context.OWNER());
         }
 
         public override IExprNode VisitExprUnary(P.ExprUnaryContext context)

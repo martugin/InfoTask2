@@ -56,6 +56,9 @@
     <Compile Include="Grammars\CommonNodes\ConstNode.cs" />
     <Compile Include="Grammars\ExprNodes\AssignNode.cs" />
     <Compile Include="Grammars\ExprNodes\ForNode.cs" />
+    <Compile Include="Grammars\ExprNodes\ObjectPropNode.cs" />
+    <Compile Include="Grammars\ExprNodes\OwnerNode.cs" />
+    <Compile Include="Grammars\ExprNodes\ParamPropNode.cs" />
     <Compile Include="Grammars\ExprNodes\PrevNode.cs" />
     <Compile Include="Grammars\CommonNodes\ErrorNode.cs" />
     <Compile Include="Grammars\CommonNodes\TablikListNode.cs" />
@@ -68,6 +71,7 @@
     <Compile Include="Grammars\CommonNodes\TablikNode.cs" />
     <Compile Include="Grammars\ExprNodes\TablNode.cs" />
     <Compile Include="Grammars\ExprNodes\VarNode.cs" />
+    <Compile Include="Grammars\ExprNodes\VoidNode.cs" />
     <Compile Include="Grammars\ExprNodes\WhileNode.cs" />
     <Compile Include="Grammars\Inputs\IdentNode.cs" />
     <Compile Include="Grammars\CommonNodes\IExprNode.cs" />

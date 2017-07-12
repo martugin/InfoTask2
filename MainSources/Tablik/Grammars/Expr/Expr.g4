@@ -12,12 +12,14 @@ voidProg : voidExpr (':' voidExpr)*;
 valueProg : (voidExpr ':')* expr;	
 
 //¬ыражени€ без значени€
-voidExpr : IDENT ASSIGN expr																   #VoidExprVar
+voidExpr : VOID                                                                                          #VoidExprVoid
+			  | IDENT ASSIGN expr																   #VoidExprVar
 			  | type IDENT ASSIGN expr														   #VoidExprDataType
 			  | IF '(' expr ';' voidProg (';' expr ';' voidProg)* (';' voidProg)? ')'    #VoidExprIf
 			  | WHILE '(' expr ';' voidProg ')'								 		               #VoidExprWhile
 			  | FOR '(' IDENT ';' expr ';' voidProg ')'										   #VoidExprFor
 			  | SUBPARAMS '(' expr ')'												               #VoidExprSubParams	
+
 			  //ќшибки		
 			  | IF '(' expr ';' voidProg (';' expr ';' voidProg)* (';' voidProg)?   		    #VoidExprIf
 			  | IF '(' expr ';' voidProg (';' expr ';' voidProg)* (';' voidProg)? ')' ')'		#VoidExprIf
@@ -40,9 +42,11 @@ expr : cons                                               #ExprCons
 		| TABLC '(' IDENT ';' pars ')'          #ExprTablC
 		| IDENT                                          #ExprIdent		
 		| IDENT '(' pars ')'			               #ExprFun	
+		| expr '.' PROP '(' IDENT ')'           #ExprProp
 		| expr '.' IDENT		                       #ExprMet
 		| expr '.' IDENT '(' pars ')'             #ExprMetFun
 		| expr '.' SIGNAL		                       #ExprMetSignal
+		| OWNER                                        #ExprOwner
 		| MINUS expr								   #ExprUnary		
 		| expr OPER5 expr						   #ExprOper		
 		| expr OPER4 expr						   #ExprOper		
@@ -50,11 +54,14 @@ expr : cons                                               #ExprCons
 		| expr OPER2 expr						   #ExprOper		
 		| NOT expr									   #ExprUnary
 		| expr OPER1 expr							   #ExprOper				
+
 		//ќшибки		
 		| '(' expr						   		           #ExprParen		
 		| '(' expr ')' ')'							       #ExprParen		
 		| IDENT '(' pars                             #ExprFun
 		| IDENT '(' pars ')' ')'				       #ExprFun
+		| expr '.' PROP '(' IDENT                #ExprProp
+		| expr '.' PROP '(' IDENT ')' ')'       #ExprProp
 		| expr '.' IDENT '(' pars                 #ExprMetFun
 		| expr '.' IDENT '(' pars ')' ')'        #ExprMetFun
 		| IF '(' expr ';' valueProg (';' expr ';' valueProg)* (';' valueProg)?             #ExprIf
@@ -117,6 +124,7 @@ VOID: [Vv][Oo][Ii][Dd] | [ѕп][”у][—с][“т][ќо][…й];
 CALC: [Cc][Aa][Ll][Cc] | [–р][ја][—с][„ч][≈е][“т];
 
 OWNER: [Oo][Ww][Nn][Ee][Rr] | [¬в][Ћл][ја][ƒд][≈е][Ћл][≈е][÷ц];
+PROP: [Pp][Rr][Oo][Pp] | [—с][¬в][ќо][…й][—с][“т][¬в][ќо];
 SUBPARAMS: [Ss][Uu][Bb][Pp][Aa][Rr][Aa][Mm][Ss] | [ѕп][ќо][ƒд][ѕп][ја][–р][ја][ћм][≈е][“т][–р][џы];
 ABSOLUTE : [Aa][Bb][Ss][Oo][Ll][Uu][Tt][Ee] | [ја][Ѕб][—с][ќо][Ћл][ёю][“т];
 

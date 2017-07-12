@@ -25,6 +25,7 @@ namespace CompileLibrary
                             if (!f.Synonym.IsEmpty())
                                 _funs.Add(f.Synonym, f);
                         }    
+
                     using ( var rec = new AdoReader(db, "SELECT FunctionsOverloads.* FROM Functions INNER JOIN FunctionsOverloads ON Functions.Id = FunctionsOverloads.FunctionId "
                                                                     + where + "ORDER BY FunctionsOverloads.FunctionId, FunctionsOverloads.RunNumber"))
                     {
@@ -40,6 +41,14 @@ namespace CompileLibrary
                             }
                         }
                     }
+
+                    using (var rec = new AdoReader(db, "ParamProps"))
+                        while (rec.Read())
+                        {
+                            var dt = rec.GetString("DataType").ToDataType();
+                            ParamProps.Add(rec.GetString("EnglishCode"), dt);
+                            ParamProps.Add(rec.GetString("RussianCode"), dt);
+                        }
                 }
             }
             catch (Exception ex)
@@ -51,5 +60,9 @@ namespace CompileLibrary
         //Словарь всех функций, ключи - все возможные имена
         private readonly DicS<FunCompile> _funs = new DicS<FunCompile>();
         public DicS<FunCompile> Funs { get { return _funs; } }
+
+        //Словарь свойств расчетного параметра
+        private readonly DicS<DataType> _paramProps = new DicS<DataType>();
+        public DicS<DataType> ParamProps { get { return _paramProps; } }
     }
 }

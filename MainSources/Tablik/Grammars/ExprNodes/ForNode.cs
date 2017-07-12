@@ -22,11 +22,5 @@ namespace Tablik
         {
             Type = new SimpleType(DataType.Void);
         }
-
-        //Запись в скомпилированное выражение
-        public override string CompiledText()
-        {
-            return Token.Text;
-        }
     }
 }

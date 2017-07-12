@@ -30,11 +30,5 @@ namespace Tablik
 
         //График
         public Grafic Grafic { get; private set; }
-
-        //Запись результатов компиляции
-        public override string CompiledText()
-        {
-            return Token.Text;
-        }
     }
 }

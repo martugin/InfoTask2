@@ -36,11 +36,5 @@ namespace Tablik
                 else AddError("Не найден сигнал");
             }
         }
-
-        //Запись в скомпилированное выражение
-        public override string CompiledText()
-        {
-            return Token.Text;
-        }
     }
 }

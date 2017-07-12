@@ -19,11 +19,5 @@ namespace Tablik
                 AddError("Недопустимый тип данных условия");
             Type = new SimpleType(DataType.Void);
         }
-
-        //Запись в скомпилированное выражение
-        public override string CompiledText()
-        {
-            return Token.Text;
-        }
     }
 }

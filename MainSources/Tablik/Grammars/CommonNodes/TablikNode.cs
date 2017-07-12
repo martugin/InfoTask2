@@ -19,8 +19,12 @@ namespace Tablik
         public void SaveCompiled(StringBuilder sb)
         {
             sb.Append(NodeType).Append("!").Append(CompiledText()).Append(";");
-        } 
-        public virtual string CompiledText() { return "";}
+        }
+
+        public virtual string CompiledText()
+        {
+            return Token == null ? "" : Token.Text;
+        }
     }
 
     //----------------------------------------------------------------------------------------------------
@@ -36,6 +40,8 @@ namespace Tablik
 
         //Аргументы
         public IExprNode[] Args { get; protected set; }
+        //Является взятием метода
+        public bool IsMet { get; protected set; }
         
         //Тип данных
         public ITablikType Type { get; protected set; }
@@ -47,8 +53,11 @@ namespace Tablik
         {
             foreach (var arg in Args)
                 arg.SaveCompiled(sb);
-            sb.Append(NodeType).Append("!").Append(CompiledText()).Append("!").Append(Args.Length).Append(";");
+            sb.Append(NodeType).Append("!").Append(CompiledText()).Append("!").Append(Args.Length + (IsMet ? 1 : 0)).Append(";");
         }
-        public virtual string CompiledText() { return ""; }
+        public virtual string CompiledText()
+        {
+            return Token == null ? "" : Token.Text;
+        }
     }
 }

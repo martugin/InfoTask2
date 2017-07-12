@@ -27,11 +27,5 @@ namespace Tablik
                 Keeper.Param.BaseParams.Add(Param);
             }
         }
-
-        //Запись в скомпилированное выражение
-        public override string CompiledText()
-        {
-            return "SubParams";
-        }
     }
 }

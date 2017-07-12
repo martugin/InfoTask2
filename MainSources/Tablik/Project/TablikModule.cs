@@ -192,7 +192,12 @@ namespace Tablik
         private void SaveCompile()
         {
             AddEvent("Сохранение используемых сигналов");
-
+            using (var reco = new DaoRec(Dir + "UsedSignals.accdb", "UsedObjects"))
+                using (var recs = new DaoRec(reco.DaoDb, "UsedSignals"))
+                    using (var recp = new DaoRec(reco.DaoDb, "UsedObjectsProps"))
+                        foreach (var ob in UsedObjects.Values)
+                            ob.ToRecordsets(reco, recs, recp);
+            
             AddEvent("Сохранение скомпилированных расчетных параметров");
             using (var db = new DaoDb(Dir + "CalParams.accdb"))
             {
@@ -220,20 +225,14 @@ namespace Tablik
         private void SavePars(DaoRec rec)
         {
             while (rec.Read())
-            {
-                int id = rec.GetInt("ParamId");
-                ParamsId[id].SaveCompileResults(rec);
-            }
+                ParamsId[rec.GetInt("ParamId")].SaveCompileResults(rec);
         }
 
         //Сохранить подпараметры в таблицу
         private void SaveSubPars(DaoRec rec)
         {
             while (rec.Read())
-            {
-                int id = rec.GetInt("SubParamId");
-                SubParamsId[id].SaveCompileResults(rec);
-            }
+                SubParamsId[rec.GetInt("SubParamId")].SaveCompileResults(rec);
         }
 
         //Сохранить порожденные параметры
