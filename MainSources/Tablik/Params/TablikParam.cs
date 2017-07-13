@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Antlr4.Runtime;
@@ -141,11 +140,15 @@ namespace Tablik
             Inputs.Clear();
             InputsList.Clear();
             Vars.Clear();
-            var inputs = (ListNode<InputNode>) new InputsParsing(Keeper, "входы", InputsStr).ResultTree;
+            var inputs = (ListNode<InputNode>) new InputsParsing(Keeper, InputsStr).ResultTree;
             TablikVar v = null;
             foreach (var node in inputs.Nodes)
             {
                 var varCode = node.Token.Text;
+                if (Inputs.ContainsKey(varCode))
+                    Keeper.AddError("Два входа с одинаковыми именами", node);
+                else if (varCode.ToLower() == "расчет" || varCode.ToLower() == "calc")
+                    Keeper.AddError("Недопустимое имя входа", node);
                 switch (node.InputType)
                 {
                     case InputType.Simple:
@@ -224,9 +227,8 @@ namespace Tablik
         //Семантический разбор формулы
         private void ParseFormula()//расчетное или управляющее выражение
         {
+            Vars.Add("расчет", Vars.Add("calc", new TablikVar("расчет")));
             _expr1 = (TablikListNode)new ExprParsing(Keeper, "расч", UserExpr1).ResultTree;
-            if (!Vars.ContainsKey("result"))
-                Vars.Add("result", new TablikVar("result"));
             _expr2 = (TablikListNode)new ExprParsing(Keeper, "упр", UserExpr2).ResultTree;
         }
 
@@ -287,10 +289,16 @@ namespace Tablik
         {
             foreach (var node in _expr1.Nodes)
                 node.DefineType();
-            Vars["result"].Type = Vars["result"].Type.Add(_expr1.Nodes.Last().Type);
+
+            var last = _expr1.Nodes.Last();
+            if (last.Type.DataType != DataType.Void)
+            {
+                var resVar = Vars["calc"];
+                resVar.Type = resVar.Type.Add(last.Type);
+            }
             foreach (var node in _expr2.Nodes)
                 node.DefineType();
-            var last = _expr2.Nodes.Last();
+            last = _expr2.Nodes.Last();
             Type = last.Type;
             MetSignals = Keeper.GetMetSignals(last);
         }
@@ -326,8 +334,8 @@ namespace Tablik
             var sb = new StringBuilder();
             foreach (var node in _expr1.Nodes)
                 node.SaveCompiled(sb);
-            if (Vars["result"].Type.DataType != DataType.Void)
-                sb.Append("Assign!Result!1;");
+            if (Vars["calc"].Type.DataType != DataType.Void)
+                sb.Append("Assign!Calc!1;");
             foreach (var node in _expr2.Nodes)
                 node.SaveCompiled(sb);
             rec.Put("CompiledExpr", sb.ToString());

@@ -22,7 +22,6 @@ namespace Tablik
         //Значение по умолчанию
         public IExprNode Def { get; private set; }
 
-        
         //Определение типа
         public override void DefineType()
         {

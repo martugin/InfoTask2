@@ -139,12 +139,12 @@ namespace CompileLibrary
 
         //Обработка токена строковой константы
         public Node GetStringConst(ITerminalNode terminal, 
-                                                  bool delAportrof) //Удалять кавычки
+                                                  bool delApostrof) //Удалять кавычки
         {
             if (terminal == null || terminal.Symbol == null)
                 return MakeConstNode(null, "");
             var text = terminal.Symbol.Text;
-            return MakeConstNode(terminal, delAportrof ? text.Substring(1, text.Length - 2) : text);
+            return MakeConstNode(terminal, delApostrof ? text.Substring(1, text.Length - 2) : text);
         }
     }
 }

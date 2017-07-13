@@ -7,8 +7,8 @@ namespace Tablik
     //Класс, запускающий разбор для списка входов
     public class InputsParsing : Parsing
     {
-        public InputsParsing(ParsingKeeper keeper, string fieldName, string fieldValue)
-            : base(keeper, fieldName, fieldValue + Environment.NewLine)
+        public InputsParsing(ParsingKeeper keeper, string fieldValue)
+            : base(keeper, "входы", fieldValue + Environment.NewLine)
         {
         }
 
