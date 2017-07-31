@@ -4,7 +4,7 @@ using CompileLibrary;
 
 namespace Tablik
 {
-    //Модуль для компиляции
+    //Модуль для компиляции 
     internal class TablikModule : DataModule, ISubParams
     {
         public TablikModule(TablikProject tablikProject, string code)
@@ -29,7 +29,7 @@ namespace Tablik
         //Флаг для построения графа зависимости модулей
         public DfsStatus DfsStatus { get; set; }
 
-        //Словарь расчетных параметров, ключи - коды, содержит только отмеченные и без грубых ошибок
+        //Словарь расчетных параметров, ключи - коды, содержит только отмеченные и без грубых ошибок 
         private readonly DicS<TablikParam> _params = new DicS<TablikParam>();
         public DicS<TablikParam> Params { get { return _params; } }
         //Словарь всех расчетных параметров, ключи - коды

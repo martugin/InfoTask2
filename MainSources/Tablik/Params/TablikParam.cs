@@ -8,7 +8,7 @@ using CompileLibrary;
 
 namespace Tablik
 {
-    //Один расчетный параметр для компиляции
+    //Один расчетный параметр для компиляции 
     internal class TablikParam : BaseCalcParam, ISubParams, ITablikType
     {
         public TablikParam(TablikModule module, IRecordRead rec, bool isSubParam, bool isGenerated) 
