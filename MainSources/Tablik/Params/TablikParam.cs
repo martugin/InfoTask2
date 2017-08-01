@@ -126,7 +126,7 @@ namespace Tablik
         //Входы параметра в списке по порядку
         private readonly List<TablikVar> _inputsList = new List<TablikVar>();
         public List<TablikVar> InputsList { get { return _inputsList; } }
-        //Все переменные, включая выходы
+        //Все переменные, включая входы
         private readonly DicS<TablikVar> _vars = new DicS<TablikVar>();
         public DicS<TablikVar> Vars { get { return _vars; } }
 
@@ -235,7 +235,7 @@ namespace Tablik
         //Флаг для построения графа зависимости параметров
         public DfsStatus DfsStatus { get; set; }
 
-        public void Dfs(List<TablikParam> paramsOrder) //Параметры, упорядоченный по порядку обсчета
+        public void Dfs(List<TablikParam> paramsOrder) //Параметры, упорядоченные по порядку обсчета
         {
             DfsStatus = DfsStatus.Process;
             foreach (var p in UsedParams.Keys)
@@ -269,7 +269,7 @@ namespace Tablik
         //Список взятий сигналов для переменной типа объекта
         public SetS MetSignals { get; set; }
 
-        //Данный параметр является наследником указанного
+        //Данный параметр является наследником указанного типа
         public bool LessOrEquals(ITablikType type)
         {
             if (this == type) return true;

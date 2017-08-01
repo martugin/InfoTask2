@@ -55,7 +55,6 @@ namespace Tablik
         //Список графиков
         private readonly DicS<Grafic> _grafics = new DicS<Grafic>();
         public DicS<Grafic> Grafics { get { return _grafics; } }
-
         //Список таблиц
         public TablsList Tabls { get; private set; }
         
@@ -207,6 +206,7 @@ namespace Tablik
                 using (var rec = new DaoRec(db, "CalcSubParams"))
                     SaveSubPars(rec);
             }
+
             AddEvent("Сохранение скомпилированных сгенерированных параметров");
             using (var db = new DaoDb(Dir + "Compiled.accdb"))
             {
@@ -215,9 +215,11 @@ namespace Tablik
                 AddEvent("Сохранение скомпилированных сгенерированных подпараметров");
                 using (var rec = new DaoRec(db, "GeneratedSubParams"))
                     SaveSubPars(rec);
+
                 AddEvent("Сохранение порожденных параметров");
                 using (var rec = new DaoRec(db, "DerivedParams"))
-                    SaveDerivedPars(rec);
+                    foreach (var dp in DerivedParams)
+                        dp.ToRecordset(rec);
             }
         }
 
@@ -233,13 +235,6 @@ namespace Tablik
         {
             while (rec.Read())
                 SubParamsId[rec.GetInt("SubParamId")].SaveCompileResults(rec);
-        }
-
-        //Сохранить порожденные параметры
-        private void SaveDerivedPars(DaoRec rec)
-        {
-            foreach (var dp in DerivedParams)
-                dp.ToRecordset(rec);
         }
     }
 }
