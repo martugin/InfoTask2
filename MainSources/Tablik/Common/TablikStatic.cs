@@ -2,7 +2,7 @@
 
 namespace Tablik
 {
-    //Общие статические функции для Tablik
+    //Общие статические функции для Tablik 
     internal static class TablikStatic
     {
         //Сложение типов данных
