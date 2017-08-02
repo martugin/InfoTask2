@@ -22,7 +22,7 @@ namespace Tablik
         {
             var t = Parent.Type;
             if (!(t is TablikObject) && !(t is ObjectType))
-                AddError("Взятие сигнала от выражения, не являющего объектом");
+                AddError("Взятие сигнала от выражения, не являющегося объектом");
             else
             {
                 var type = t is ObjectType ? (ObjectType) t : ((TablikObject) t).ObjectType;

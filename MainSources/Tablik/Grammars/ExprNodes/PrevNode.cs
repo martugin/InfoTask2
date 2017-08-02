@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime.Tree;
 using CommonTypes;
+using CompileLibrary;
 
 namespace Tablik
 {
@@ -25,7 +26,7 @@ namespace Tablik
         //Определение типа
         public override void DefineType()
         {
-            var dt = Def == null ? Param.DataType : Param.DataType.Add(Def.Type.DataType);
+            var dt = Def == null ? Param.DataType : Param.DataType.Add(Def.Type.DataType).AplySuperProcess(Param.SuperProcess);
             Type = new SimpleType(dt);    
         }
 

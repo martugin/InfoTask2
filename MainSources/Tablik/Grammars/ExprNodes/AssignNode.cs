@@ -29,7 +29,7 @@ namespace Tablik
             var val = Args[0];
             Var.Type = Var.Type.Add(val.Type);
             if (Var.Type.DataType == DataType.Error)
-                AddError("Недопустимое присвоение переменной");
+                AddError("Несовместимость типов данных при присвоении переменной");
             Type = new SimpleType(DataType.Void);
             Var.MetSignals = Keeper.GetMetSignals(val);
         }

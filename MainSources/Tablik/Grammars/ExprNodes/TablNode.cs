@@ -17,7 +17,10 @@ namespace Tablik
                 Tabl = Keeper.Module.Tabls.Structs[t];
             else foreach (var m in Keeper.Module.LinkedModules)
                 if (m.Tabls.Structs.ContainsKey(t))
-                    Tabl = m.Tabls.Structs[t];
+                {
+                    if (Tabl != null) AddError("Таблица присутствует сразу в нескольких модулях");
+                    else Tabl = m.Tabls.Structs[t];
+                }
             if (Tabl == null) AddError("Не найдена таблица");
             else
             {

@@ -214,9 +214,17 @@ namespace Tablik
                         }
                         break;
                 }
-                if (v != null && !Inputs.ContainsKey(v.Code))
-                    InputsList.Add(Vars.Add(v.Code, Inputs.Add(v.Code, v)));
-                else Keeper.AddError("Два входа с одинаковыми именами", node);
+                if (v != null)
+                {
+                    if (Inputs.ContainsKey(v.Code))
+                        Keeper.AddError("Два входа с одинаковыми именами", node);
+                    else
+                    {
+                        if (v.DefaultValue == null && InputsList.Count > 0 && InputsList[InputsList.Count-1].DefaultValue != null)
+                            Keeper.AddError("Входы со значениямия по умолчанию должны располагаться в конце списка входов", node);
+                        InputsList.Add(Vars.Add(v.Code, Inputs.Add(v.Code, v)));
+                    }
+                }
             }
         }
 
@@ -331,7 +339,11 @@ namespace Tablik
             rec.Put("ErrMess", _errMess);
             rec.Put("ResiltType", Type.ToResString());
 
-            var sb = new StringBuilder();
+            var sb = new StringBuilder("Vars:");
+            foreach (var v in Vars.Values)
+                sb.Append(v.Code).Append("!").Append(v.Type.ToResString()).Append(";");
+
+            sb.Append("Expr:");
             foreach (var node in _expr1.Nodes)
                 node.SaveCompiled(sb);
             if (Vars["calc"].Type.DataType != DataType.Void)

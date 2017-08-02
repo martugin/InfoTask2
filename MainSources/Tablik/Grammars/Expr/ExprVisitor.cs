@@ -140,12 +140,15 @@ namespace Tablik
         public override IExprNode VisitExprIdent(P.ExprIdentContext context)
         {
             var text = context.IDENT().Symbol.Text;
-            if (_keeper.Param.Vars.ContainsKey(text))
-                return new VarNode(context.IDENT(), _keeper.Param.Vars[text]);
+            var par = _keeper.Param;
+            if (par.Vars.ContainsKey(text))
+                return new VarNode(context.IDENT(), par.Vars[text]);
+            if (par.Owner != null && par.Owner.Vars.ContainsKey(text))
+                return new VarNode(context.IDENT(), par.Owner.Vars[text]);
             if (_keeper.Module.Params.ContainsKey(text))
                 return new ParamNode(_keeper, context.IDENT(), _keeper.Module.Params[text]);
-            if (_keeper.Param.Params.ContainsKey(text))
-                return new ParamNode(_keeper, context.IDENT(), _keeper.Param.Params[text]);
+            if (par.Params.ContainsKey(text))
+                return new ParamNode(_keeper, context.IDENT(), par.Params[text]);
             if (_keeper.FunsChecker.Funs.ContainsKey(text))
                 return new FunNode(_keeper, context.IDENT());
             _keeper.AddError("Неизвестный идентификатор", context.IDENT());
@@ -173,8 +176,8 @@ namespace Tablik
             string prop = context.IDENT().Symbol.Text;
             if (expr.Type is TablikParam && _keeper.FunsChecker.ParamProps.ContainsKey(prop))
                 return new ParamPropNode(_keeper, context.PROP(), context.IDENT());
-            var st = expr.Type.TablikSignalType;
-            if (st == null)
+            var stype = expr.Type.TablikSignalType;
+            if (stype == null)
             {
                 _keeper.AddError("Недопустимое свойство", context.IDENT());
                 return new ErrorNode(context.PROP());
@@ -205,7 +208,8 @@ namespace Tablik
 
         public override IExprNode VisitExprUnary(P.ExprUnaryContext context)
         {
-            return new FunNode(_keeper, context.MINUS(), Go(context.expr()));
+            var fun = (ITerminalNode)context.children[0];
+            return new FunNode(_keeper, fun, Go(context.expr()));
         }
 
         public override IExprNode VisitExprOper(P.ExprOperContext context)
