@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Свойства модуля-->
+<ModuleProperties ModuleCode="Mod1" ModuleName="Главный модуль" Description="" ModuleType="Разовый">
+  <LinkedModules></LinkedModules>
+  <LinkedConnects>
+    <Sour1 />
+    <Sour2 />
+  </LinkedConnects>
+</ModuleProperties>

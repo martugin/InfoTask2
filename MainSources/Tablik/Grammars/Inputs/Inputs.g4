@@ -16,9 +16,7 @@ arg : DATATYPE IDENT   #ArgDataType
       | IDENT                     #ArgIdent 
       ;
 
-identChain : IDENT ('.' IDENT)*;
-
-signalChain : IDENT ('.' IDENT)* '.' STRING;
+identChain : IDENT ('.' IDENT)?;
 
 constVal : INT 	         #ConsInt
              | STRING     #ConsString 

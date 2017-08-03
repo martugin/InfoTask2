@@ -45,7 +45,7 @@ namespace Tablik
 
         public override Node VisitParamArray(P.ParamArrayContext context)
         {
-            return new InputNode(context.IDENT(), InputType.Simple, (IdentNode)Go(context.DATATYPE()), (IdentNode)Go(context.ARRAY()));
+            return new InputNode(context.IDENT(), InputType.Simple, new IdentNode(context.DATATYPE()), new IdentNode(context.ARRAY()));
         }
 
         public override Node VisitParamSignal(P.ParamSignalContext context)
@@ -71,7 +71,7 @@ namespace Tablik
 
         public override Node VisitIdentChain(P.IdentChainContext context)
         {
-            return new ListNode<IdentNode>(context.IDENT().Select(Go<IdentNode>));
+            return new ListNode<IdentNode>(context.IDENT().Select(x => new IdentNode(x)));
         }
 
         //Константы

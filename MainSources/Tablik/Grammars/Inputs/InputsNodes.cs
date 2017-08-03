@@ -22,15 +22,6 @@ namespace Tablik
     }
 
     //-----------------------------------------------------------------------------------
-    //Тип входа 
-    internal enum InputType
-    {
-        Simple, //Обычный тип данных
-        Signal, //Тип объекта
-        Param //Расчетная функция
-    }
-
-    //-----------------------------------------------------------------------------------
     //Полное описание одного входа
     internal class InputNode : Node
     {
@@ -52,6 +43,11 @@ namespace Tablik
         //Значение по умолчанию
         public ConstNode ValueNode { get; private set; }
 
-        protected override string NodeType { get { return "Input"; } }
+        protected override string NodeType { get { return "Input" + InputType; } }
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(TypeNode, SubTypeNode, ValueNode);
+        }
     }
 }
