@@ -198,20 +198,8 @@ namespace Tablik
                                 else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
                         }
-                        if (t != null)
-                            v = new TablikVar(varCode, t) { MetSignals = new SetS() };
-                        else
-                        {
-                            TablikSignal sig = null;
-                            foreach (var con in Module.LinkedSources)
-                                if (con.Signals.ContainsKey(scode))
-                                {
-                                    if (sig == null) sig = con.Signals[scode];
-                                    else Keeper.AddError("Одинаковый код типа сигнала в двух разных источниках", node);
-                                }
-                            if (sig != null) v = new TablikVar(varCode, sig);
-                            else Keeper.AddError("Не найден тип объекта или сигнала", node);
-                        }
+                        if (t != null) v = new TablikVar(varCode, t) { MetSignals = new SetS() };
+                        else Keeper.AddError("Не найден тип объекта или сигнала", node);
                         break;
                 }
                 if (v != null)

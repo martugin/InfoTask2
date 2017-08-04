@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <!--Файл свойств проекта (ProjectProperties.xml)-->
 <ProjectProperties ProjectCode="TablikProject" ProjectName="Главный проект тестирования Tablik" Description="" ProjectType="Single">
-  <Connects></Connects>
-  <Source Code="Sour1" Description="Первый источник" Complect="Fictive" />
-  <Source Code="Sour2" Description="Второй источник" Complect="Fictive" />
+  <Connects>
+    <Source Code="Sour1" Description="Первый источник" Complect="Fictive" />
+    <Source Code="Sour2" Description="Второй источник" Complect="Fictive" />
+  </Connects>
 </ProjectProperties>

@@ -30,22 +30,20 @@ namespace Tablik
         //Словарь сигналов
         private readonly DicS<ITablikSignalType> _signals = new DicS<ITablikSignalType>();
         public DicS<ITablikSignalType> Signals { get { return _signals; } }
-        //Сигнал по умолчанию
-        private TablikSignal _defaultSignal;
-        public TablikSignal DefaultSignal 
-        { 
-            get { return _defaultSignal; }
-            set
-            {
-                _defaultSignal = value;
-                Simple = new SimpleType(value.DataType);
-            } 
-        }
-
+        
         //Тип данных как сигнал
         public ITablikSignalType TablikSignalType { get { return this; } }
         //Сигнал по умолчанию
-        public TablikSignal Signal { get { return DefaultSignal; } }
+        private TablikSignal _signal;
+        public TablikSignal Signal
+        {
+            get { return _signal; }
+            set
+            {
+                _signal = value;
+                Simple = new SimpleType(value.DataType);
+            }
+        }
         //Тип данных
         public DataType DataType { get { return Signal.DataType; } }
         //Тип данных - простой

@@ -11,7 +11,6 @@ namespace CompileLibrary
         internal FunOverload(FunCompile fun, //Функция-владелец
                                         IRecordRead rec) //Рекордсет с таблицей FunctionsOverloads
         {
-            _isCombined = rec.GetBool("IsCombined");
             _arrayType = rec.GetString("ResultArray").ToArrayType();
             Code = fun.Code + "_";
 
@@ -34,7 +33,9 @@ namespace CompileLibrary
             }
             
             var s = rec.GetString("Result");
-            if (!_isCombined) _resultType = s.ToDataType();
+            var dt = s.ToDataType();
+            _isCombined = dt == DataType.Error;
+            if (!_isCombined) _resultType = dt;
             else
             {
                 var p = s.Split('+');

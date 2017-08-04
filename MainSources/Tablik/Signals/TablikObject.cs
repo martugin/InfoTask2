@@ -41,7 +41,7 @@ namespace Tablik
         }
 
         //Сигнал по умолчанию
-        public TablikSignal Signal { get { return ObjectType.DefaultSignal; } }
+        public TablikSignal Signal { get { return ObjectType.Signal; } }
         //Тип данных
         public DataType DataType { get { return Signal.DataType; } }
         //Тип данных - простой

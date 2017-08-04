@@ -41,8 +41,6 @@ namespace Tablik
                     Type = con.ObjectsTypes[signalCode];
                 if (con.ObjectsCalcTypes.ContainsKey(signalCode))
                     Type = con.ObjectsCalcTypes[signalCode];
-                if (con.Signals.ContainsKey(signalCode))
-                    Type = con.Signals[signalCode];
             }
             if (Type == null)
                 AddError("Не найден тип объекта или сигнала");

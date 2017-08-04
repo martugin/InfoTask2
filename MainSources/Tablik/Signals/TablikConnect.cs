@@ -17,16 +17,13 @@ namespace Tablik
         //Расчетные типы объектов
         private readonly DicS<ObjectType> _objectsCalcTypes = new DicS<ObjectType>();
         public DicS<ObjectType> ObjectsCalcTypes { get { return _objectsCalcTypes; } }
-        private readonly DicI<ObjectType> _objectCalcTypesId = new DicI<ObjectType>();
-        public DicI<ObjectType> ObjectCalcTypesId { get { return _objectCalcTypesId; } }
+        private readonly DicI<ObjectType> _objectsCalcTypesId = new DicI<ObjectType>();
+        public DicI<ObjectType> ObjectsCalcTypesId { get { return _objectsCalcTypesId; } }
         //Типы объектов 
         private readonly DicS<ObjectType> _objectsTypes = new DicS<ObjectType>();
         public DicS<ObjectType> ObjectsTypes { get { return _objectsTypes; } }
         private readonly DicI<ObjectType> _objectsTypesId = new DicI<ObjectType>();
         public DicI<ObjectType> ObjectsTypesId { get { return _objectsTypesId; } }
-        //Сигналы типов
-        private readonly DicS<TablikSignal> _signals = new DicS<TablikSignal>();
-        public DicS<TablikSignal> Signals { get { return _signals; } }
         //Объекты
         private readonly DicS<TablikObject> _objects = new DicS<TablikObject>();
         public DicS<TablikObject> Objects { get { return _objects; } }
@@ -39,7 +36,7 @@ namespace Tablik
             StartLog("Загрузка сигналов", null, Type + " " + Code).Run(() =>
             {
                 ObjectsCalcTypes.Clear();
-                ObjectCalcTypesId.Clear();
+                ObjectsCalcTypesId.Clear();
                 ObjectsTypes.Clear();
                 ObjectsTypesId.Clear();
                 Objects.Clear();
@@ -52,7 +49,7 @@ namespace Tablik
                         {
                             var t = new ObjectType(rec.GetInt("TypeCalcId"), rec.GetString("CodeType"),
                                 rec.GetString("NameType"), rec.GetInt("SignalCodeColumn"));
-                            ObjectCalcTypesId.Add(t.Id, t);
+                            ObjectsCalcTypesId.Add(t.Id, t);
                             ObjectsCalcTypes.Add(t.Code, t);
                             ObjectsCalcTypes.Add(Code + "." + t.Code, t);
                         }
@@ -94,11 +91,10 @@ namespace Tablik
                     using (var rec = new DaoRec(db, "SignalsCalc"))
                         while (rec.Read())
                         {
-                            var s = new TablikSignal(rec);
-                            var t = ObjectCalcTypesId[rec.GetInt("ObjectId")];
+                            var s = new TypeSignal(rec.GetString("CodeSignal"), rec.GetString("NameSignal"));
+                            var t = ObjectsCalcTypesId[rec.GetInt("TypeCalcId")];
                             t.Signals.Add(s.Code, s);
-                            Signals.Add(t.Code + "." + s.Code, s);
-                            Signals.Add(Code + "." + t.Code + "." + s.Code, s);
+                            //if (rec.GetBool("Default")) t.Signal = s.Signal;
                         }
 
                     using (var rec = new DaoRec(db, "Signals"))
@@ -107,12 +103,11 @@ namespace Tablik
                             var s = new TablikSignal(rec);
                             var t = ObjectsTypesId[rec.GetInt("TypeId")];
                             t.Signals.Add(s.Code, s);
-                            Signals.Add(t.Code + "." + s.Code, s);
-                            Signals.Add(Code + "." + t.Code + "." + s.Code, s);
+                            if (rec.GetBool("Default")) t.Signal = s;
                             foreach (var bt in t.BaseTypes)
                             {
                                 var bcode = rec.GetString("CodeSignal" + (bt.SignalCodeColumn == 1 ? "" : bt.SignalCodeColumn.ToString()));
-                                if (!bcode.IsEmpty() && t.Signals.ContainsKey(bcode))
+                                if (!bcode.IsEmpty() && bt.Signals.ContainsKey(bcode))
                                     ((TypeSignal)bt.Signals[bcode]).Signal = s;
                             }
                         }

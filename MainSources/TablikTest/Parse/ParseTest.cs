@@ -69,20 +69,5 @@ namespace TablikTest
             CheckInputsError("{a} {b}", "(InputSignal: (Ident: {a}, , )) Недопустимое использование лексемы, '{b}' (входы, строка: 1, позиция: 5)");
             CheckInputsError("a.b.c", "(InputParam: c (Ident: a, Ident: b, )) Недопустимое использование лексемы, '.' (входы, строка: 1, позиция: 4)");
         }
-
-        //Разбор выражения
-        private void CheckExpr(string formula, string node)
-        {
-            _keeper.Errors.Clear();
-            Assert.AreEqual("NodeList: (" + node + ")", new ExprParsing(_keeper, "упр", formula).ToTestString());
-        }
-
-
-        [TestMethod]
-        public void ExprParse()
-        {
-            CheckExpr("1", "Boolean: 1");
-            CheckExpr("2+3", "Boolean: 1");
-        }
     }
 }

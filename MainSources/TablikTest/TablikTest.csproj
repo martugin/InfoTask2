@@ -50,8 +50,13 @@
   <ItemGroup>
     <Compile Include="Parse\ParseTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tablik\ProjectTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppLibrary\AppLibrary.csproj">
+      <Project>{6665F569-A138-4011-94D2-6EDD503BD4E0}</Project>
+      <Name>AppLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BaseLibraryTest\BaseLibraryTest.csproj">
       <Project>{D7B4D56D-F810-4AEB-ABE2-359327730790}</Project>
       <Name>BaseLibraryTest</Name>
@@ -87,6 +92,10 @@
     <ProjectReference Include="..\InfoTaskLauncher\InfoTaskLauncher.csproj">
       <Project>{BD29E947-8542-4B33-B209-87F5A98593A8}</Project>
       <Name>InfoTaskLauncher</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProcessingLibrary\ProcessingLibrary.csproj">
+      <Project>{8979E35E-C778-4D90-BB5E-74D63D9C5C55}</Project>
+      <Name>ProcessingLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tablik\Tablik.csproj">
       <Project>{2828EE50-3906-40D8-BBAC-2B75F9BEE24E}</Project>

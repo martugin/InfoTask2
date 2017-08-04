@@ -42,7 +42,7 @@ namespace CompileLibrary
                         }
                     }
 
-                    using (var rec = new AdoReader(db, "ParamProps"))
+                    using (var rec = new AdoReader(db, "SELECT * FROM ParamProps"))
                         while (rec.Read())
                         {
                             var dt = rec.GetString("DataType").ToDataType();
