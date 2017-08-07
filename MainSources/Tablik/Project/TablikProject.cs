@@ -79,9 +79,9 @@ namespace Tablik
         {
             if (!_modules.ContainsKey(code))
             {
-                var mod = new TablikModule(this, code);
-                _modules.Add(code, mod);
                 var smod = Project.SchemeModules[code];
+                var mod = new TablikModule(this, code, smod.Name, smod.Description);
+                _modules.Add(code, mod);
                 foreach (var m in smod.LinkedModules.Values)
                 {
                     AddModule(m);

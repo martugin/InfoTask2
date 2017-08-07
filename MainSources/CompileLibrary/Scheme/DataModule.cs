@@ -15,6 +15,6 @@ namespace CompileLibrary
         //Проект
         public SchemeProject Project { get; private set; }
         //Каталог модуля в проекте
-        public string Dir { get { return Project.Dir.EndDir() + @"\Modules\" + Code + "\\"; } }
+        public string Dir { get { return Project.Dir.EndDir() + @"Modules\" + Code + "\\"; } }
     }
 }

@@ -30,7 +30,7 @@ namespace CompileLibrary
             Max = rec.GetString("Max");
 
             ArchiveParamType = rec.GetString("ArchiveParamType").ToArchiveParamType();
-            SuperProcess = rec.GetString("SuperProcessType").ToSuperProcess();
+            SuperProcess = rec.GetString("SuperProcess").ToSuperProcess();
             ObjectCode = rec.GetString("ObjectCode");
         }
 

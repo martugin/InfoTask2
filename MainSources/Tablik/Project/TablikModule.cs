@@ -7,10 +7,12 @@ namespace Tablik
     //Модуль для компиляции 
     internal class TablikModule : DataModule, ISubParams
     {
-        public TablikModule(TablikProject tablikProject, string code)
+        public TablikModule(TablikProject tablikProject, string code, string name, string description)
             : base(tablikProject.Project, code)
         {
             TablikProject = tablikProject;
+            Name = name;
+            Description = description;
         }
 
         //Проект Таблик
@@ -70,10 +72,10 @@ namespace Tablik
         }
 
         //Загрузить список параметров
-        private void LoadModule()
+        internal void LoadModule()
         {
             AddEvent("Загрузка расчетных параметров");
-            using (var db = new DaoDb(Dir + "CalParams.accdb")) 
+            using (var db = new DaoDb(Dir + "CalcParams.accdb")) 
             {
                 using (var rec = new DaoRec(db, "CalcParams"))
                     LoadPars(rec);
@@ -144,7 +146,7 @@ namespace Tablik
         }
 
         //Синтаксический анализ всех параметров
-        private void Parse()
+        internal void Parse()
         {
             AddEvent("Синтаксический разбор формул");
             foreach (var par in ParamsId.Values)
@@ -156,7 +158,7 @@ namespace Tablik
         }
 
         //Построение графа зависимости параметров
-        private void MakeParamsGraph()
+        internal void MakeParamsGraph()
         {
             AddEvent("Построение графа параметров");
             foreach (var p in Params.Values)
@@ -171,7 +173,7 @@ namespace Tablik
         }
 
         //Определение типов данных и формирование порожденных параметров
-        private void DefineDataTypes()
+        internal void DefineDataTypes()
         {
             AddEvent("Опредление типов данных");
             foreach (var par in ParamsOrder)
@@ -179,7 +181,7 @@ namespace Tablik
         }
 
         //Сформировать порожденные параметры
-        private void MakeDerivedParams()
+        internal void MakeDerivedParams()
         {
             DerivedParams.Clear();
             foreach (var par in ParamsOrder)
@@ -188,7 +190,7 @@ namespace Tablik
         }
 
         //Запись результатов компиляции
-        private void SaveCompile()
+        internal void SaveCompile()
         {
             AddEvent("Сохранение используемых сигналов");
             using (var reco = new DaoRec(Dir + "UsedSignals.accdb", "UsedObjects"))
