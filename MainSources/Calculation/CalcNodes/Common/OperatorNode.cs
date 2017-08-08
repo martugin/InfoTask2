@@ -18,7 +18,7 @@ namespace Calculation
         //Запись в строку
         public override string ToTestString()
         {
-            return ToTestWithChildren(Args.Cast<INode>().ToArray());
+            return ToTestWithChildren(Args.ToArray());
         }
     }
 }

@@ -36,5 +36,7 @@ namespace Tablik
                 else AddError("Не найден сигнал");
             }
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

@@ -23,5 +23,7 @@ namespace Tablik
         {
             return Token.Text;
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

@@ -82,5 +82,10 @@ namespace Tablik
         {
             return Tabl.Code + (Field == null ? "" : "." + Field);
         }
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(Args);
+        }
     }
 }

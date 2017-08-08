@@ -38,5 +38,10 @@ namespace Tablik
         {
             return Overload.Code;
         }
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(Args);
+        }
     }
 }

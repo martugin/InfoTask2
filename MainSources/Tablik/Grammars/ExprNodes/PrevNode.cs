@@ -35,5 +35,7 @@ namespace Tablik
         {
             return "Absolute";
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

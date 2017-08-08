@@ -19,6 +19,8 @@ namespace Tablik
         public IdentNode TypeNode { get; private set; }
         //Имя входа
         public ITerminalNode CodeToken { get; private set; }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 
     //-----------------------------------------------------------------------------------

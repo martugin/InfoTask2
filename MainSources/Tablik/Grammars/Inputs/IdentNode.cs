@@ -16,5 +16,7 @@ namespace Tablik
 
         //Тип узла
         protected override string NodeType { get { return "Ident"; } }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

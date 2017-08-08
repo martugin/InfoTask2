@@ -30,5 +30,7 @@ namespace Tablik
         {
             return Prop.Text;
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

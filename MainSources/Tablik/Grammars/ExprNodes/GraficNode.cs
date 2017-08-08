@@ -30,5 +30,10 @@ namespace Tablik
 
         //График
         public Grafic Grafic { get; private set; }
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(Args);
+        }
     }
 }

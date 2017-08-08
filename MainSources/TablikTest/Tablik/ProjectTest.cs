@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AppLibrary;
+﻿using AppLibrary;
 using BaseLibrary;
 using BaseLibraryTest;
 using CommonTypes;
@@ -353,6 +352,50 @@ namespace TablikTest
             Assert.AreEqual(0, spar.Params.Count);
             Assert.AreEqual(0, spar.ParamsAll.Count);
             Assert.IsTrue(spar.IsSubParam);
+        }
+
+        private void ParseExpr(DicS<TablikParam> pars, string code, string result)
+        {
+            Assert.IsTrue(pars.ContainsKey(code));
+            Assert.AreEqual("NodeList: (" + result + ")", pars[code].Expr1.ToTestString());
+        }
+
+        [TestMethod]
+        public void FormulaParse()
+        {
+            var tablik = LoadProject("TablikProject", "FormulaParse", "Mod1", "Mod2");
+            Assert.IsNotNull(tablik.Modules);
+            Assert.IsTrue(tablik.Modules.ContainsKey("Mod1"));
+            var module = tablik.Modules["Mod1"];
+            module.LoadModule();
+            module.Parse();
+            var pars = module.Params;
+
+            ParseExpr(pars, "A01", "Boolean: 1");
+            ParseExpr(pars, "A02", "Fun: + (Integer: 10, Real: 2.5)");
+            ParseExpr(pars, "A03", "Fun: + (Fun: - (Boolean: 1), Fun: * (Integer: 3, Integer: 5))");
+            ParseExpr(pars, "A04", "Fun: Or (Fun: True, Fun: Not (Fun: false))");
+            ParseExpr(pars, "A05", "Fun: и (Fun: и (Fun: и (Fun: и (Fun: и (Fun: < (Real: 2.1, Real: 3.3), Fun: >= (Integer: 4, Fun: - (Integer: 2))), Fun: == (Integer: 8, Integer: 8)), Fun: <> (Boolean: 1, Boolean: 0)), Fun: <= (Boolean: 1, Boolean: 1)), Fun: - (Real: 2,7, Real: 6.8))");
+            ParseExpr(pars, "A06", "String: 'sss/*aa*/'");
+            ParseExpr(pars, "A07", "Fun: And (Fun: > (Fun: + (Integer: 10, Fun: / (Integer: 8, Integer: 4)), Integer: 11), Fun: ИсклИли (Fun: Xor (Boolean: 1, Fun: < (Integer: 7, Integer: 3)), Boolean: 0))");
+            ParseExpr(pars, "A08", "Fun: - (Integer: 2)");
+            ParseExpr(pars, "A09", "Fun: + (Fun: + (Boolean: 1, Boolean: 1), Boolean: 1)");
+            ParseExpr(pars, "A10", "Fun: Like (String: 'aabb', String: '*ab?')");
+            ParseExpr(pars, "A11", "Fun: не (Fun: Not (Fun: НЕ (Fun: not (Boolean: 0))))");
+            ParseExpr(pars, "A12", "Fun: Sr (Fun: sl (Fun: mod (Fun: div (Integer: 55, Integer: 22), Integer: 3), Integer: 2), Integer: 3)");
+            ParseExpr(pars, "A13", "Fun: Или (Fun: Или (Fun: Или (Fun: Бит (Integer: 34, Boolean: 1), Fun: БитИли (Integer: 22, Boolean: 1, Integer: 4)), Fun: BitAnd (Integer: 13, Integer: 2, Integer: 3)), Fun: Ложь)");
+            ParseExpr(pars, "A14", "Fun: + (Fun: ^ (Fun: + (Integer: 2, Boolean: 1), Integer: 3), Fun: * (Integer: 3, Fun: + (Integer: 4, Fun: - (Integer: 5, Integer: 2))))");
+            ParseExpr(pars, "A15", "Fun: + (Fun: cos (Fun: Pi), Fun: sin (Fun: * (Integer: 2, Fun: Pi)))");
+            ParseExpr(pars, "A16", "Fun: * (Fun: Min (Boolean: 1, Integer: 2, Integer: 3), Fun: Max (Integer: 4, Integer: 3, Integer: 2, Boolean: 1))");
+            ParseExpr(pars, "A17", "Fun: Log (Fun: Ln (Integer: 3), Fun: Log10 (Integer: 4))");
+            ParseExpr(pars, "A18", "Fun: * (Integer: 2, Fun: - (Integer: 3))");
+            ParseExpr(pars, "A19", "Fun: ЧастьВремени (Fun: ВрЧас, Time: #12.11.2010 12:13:14#)");
+
+            ParseExpr(pars, "B01", "Void: Пустой");
+            ParseExpr(pars, "B02", "Assign: (Var: x, Integer: 10), Fun: + (Var: x, Integer: 20)");
+            ParseExpr(pars, "B03", "Assign: (Var: aa, String: 'ss'), Assign: (Var: bb, Fun: <> (String: 'tt', Var: aa)), Assign: (Var: cc, Fun: or (Var: bb, Fun: True))");
+            ParseExpr(pars, "B04", "Assign: (DataType: Int, Var: x, Boolean: 1), Assign: (DataType: Real, Var: y, Integer: 2), Fun: * (Var: x, Var: y)");
+            ParseExpr(pars, "B05", "Void: Пустой");
         }
     }
 }

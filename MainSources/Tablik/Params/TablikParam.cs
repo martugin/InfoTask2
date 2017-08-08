@@ -217,15 +217,15 @@ namespace Tablik
         }
 
         //Узлы расчетного и управляющего выражения
-        private TablikListNode _expr1;
-        private TablikListNode _expr2;
+        internal TablikListNode Expr1 { get; private set; }
+        internal TablikListNode Expr2 { get; private set; }
 
         //Семантический разбор формулы
         private void ParseFormula()//расчетное или управляющее выражение
         {
             Vars.Add("расчет", Vars.Add("calc", new TablikVar("расчет")));
-            _expr1 = (TablikListNode)new ExprParsing(Keeper, "расч", UserExpr1).ResultTree;
-            _expr2 = (TablikListNode)new ExprParsing(Keeper, "упр", UserExpr2).ResultTree;
+            Expr1 = (TablikListNode)new ExprParsing(Keeper, "расч", UserExpr1).ResultTree;
+            Expr2 = (TablikListNode)new ExprParsing(Keeper, "упр", UserExpr2).ResultTree;
         }
 
         //Флаг для построения графа зависимости параметров
@@ -283,18 +283,18 @@ namespace Tablik
         //Определение типов данных и формирование порожденных параметров
         public void DefineDataTypes()
         {
-            foreach (var node in _expr1.Nodes)
+            foreach (var node in Expr1.Nodes)
                 node.DefineType();
 
-            var last = _expr1.Nodes.Last();
+            var last = Expr1.Nodes.Last();
             if (last.Type.DataType != DataType.Void)
             {
                 var resVar = Vars["calc"];
                 resVar.Type = resVar.Type.Add(last.Type);
             }
-            foreach (var node in _expr2.Nodes)
+            foreach (var node in Expr2.Nodes)
                 node.DefineType();
-            last = _expr2.Nodes.Last();
+            last = Expr2.Nodes.Last();
             Type = last.Type;
             MetSignals = Keeper.GetMetSignals(last);
         }
@@ -332,11 +332,11 @@ namespace Tablik
                 sb.Append(v.Code).Append("!").Append(v.Type.ToResString()).Append(";");
 
             sb.Append("Expr:");
-            foreach (var node in _expr1.Nodes)
+            foreach (var node in Expr1.Nodes)
                 node.SaveCompiled(sb);
             if (Vars["calc"].Type.DataType != DataType.Void)
                 sb.Append("Assign!Calc!1;");
-            foreach (var node in _expr2.Nodes)
+            foreach (var node in Expr2.Nodes)
                 node.SaveCompiled(sb);
             rec.Put("CompiledExpr", sb.ToString());
             rec.Update();

@@ -23,10 +23,7 @@ namespace CompileLibrary
         protected virtual string NodeType { get { return ""; } }
 
         //Запись в строку
-        public virtual string ToTestString()
-        {
-            return ToTestWithChildren();
-        }
+        public abstract string ToTestString();
 
         //Запись в строку, с указанием списка детей
         protected string ToTestWithChildren(params INode[] children)

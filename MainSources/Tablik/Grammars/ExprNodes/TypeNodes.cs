@@ -14,6 +14,8 @@ namespace Tablik
         {
             Type = new SimpleType(Token.Text.ToDataType());
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 
     //-----------------------------------------------------------------------------------
@@ -24,6 +26,8 @@ namespace Tablik
         {
             Type = new SimpleType(dataType.Symbol.Text.ToDataType(), Token.Text.ToArrayType());
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 
     //-----------------------------------------------------------------------------------
@@ -45,6 +49,8 @@ namespace Tablik
             if (Type == null)
                 AddError("Не найден тип объекта или сигнала");
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 
     //-----------------------------------------------------------------------------------
@@ -67,5 +73,6 @@ namespace Tablik
             }
             Type = (TablikParam)p;
         }
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

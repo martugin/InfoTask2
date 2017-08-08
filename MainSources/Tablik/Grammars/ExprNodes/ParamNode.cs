@@ -67,5 +67,7 @@ namespace Tablik
         {
             return Param.Code;
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

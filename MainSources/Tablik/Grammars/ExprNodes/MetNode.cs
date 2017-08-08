@@ -50,5 +50,7 @@ namespace Tablik
                 }
             }
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

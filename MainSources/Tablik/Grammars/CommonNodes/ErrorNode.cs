@@ -15,5 +15,7 @@ namespace Tablik
         {
             Type = new SimpleType(DataType.Error);
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

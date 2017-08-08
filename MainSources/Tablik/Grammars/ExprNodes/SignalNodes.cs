@@ -63,6 +63,8 @@ namespace Tablik
         {
             return "{" + Signal.FullCode + "}";
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 
     //------------------------------------------------------------------------------------------------
@@ -85,6 +87,8 @@ namespace Tablik
         {
             return "{" + Object.Code + "}";
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 
     //------------------------------------------------------------------------------------------------
@@ -104,5 +108,7 @@ namespace Tablik
         {
             return "{" + Signal.Code + "}!1";
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

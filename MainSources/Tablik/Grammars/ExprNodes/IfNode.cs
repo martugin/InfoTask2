@@ -45,5 +45,7 @@ namespace Tablik
             if (Type.DataType == DataType.Error)
                 AddError("Несовместимые типы данных аргументов функции");
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }
