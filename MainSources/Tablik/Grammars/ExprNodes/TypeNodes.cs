@@ -71,8 +71,13 @@ namespace Tablik
                     Type = new SimpleType();
                 }
             }
-            Type = (TablikParam)p;
+            if (Type == null) Type = (TablikParam)p;
         }
-        public override string ToTestString() { return ToTestWithChildren(); }
+
+        public override string ToTestString()
+        {
+            if (!(Type is TablikParam)) return "";
+            return "Param: " + ((TablikParam)Type).FullCode;
+        }
     }
 }

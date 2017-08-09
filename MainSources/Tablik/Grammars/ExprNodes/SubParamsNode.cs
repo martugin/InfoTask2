@@ -28,6 +28,9 @@ namespace Tablik
             }
         }
 
-        public override string ToTestString() { return ToTestWithChildren(); }
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(Args);
+        }
     }
 }

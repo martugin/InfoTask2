@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text;
 using Antlr4.Runtime.Tree;
 
 namespace Tablik
@@ -7,7 +8,7 @@ namespace Tablik
     internal class MetNode : TablikKeeperNode
     {
         public MetNode(TablikKeeper keeper, ITerminalNode terminal, IExprNode parent, params IExprNode[] args)
-            : base(keeper, terminal, parent)
+            : base(keeper, terminal, args)
         {
             Parent = parent;
             IsMet = true;
@@ -51,6 +52,12 @@ namespace Tablik
             }
         }
 
-        public override string ToTestString() { return ToTestWithChildren(); }
+        public override string ToTestString()
+        {
+            var sb = new StringBuilder("Met: " + Token.Text + " (" + Parent.ToTestString());
+                foreach (IExprNode arg in Args)
+                    sb.Append(", ").Append(arg.ToTestString());
+            return sb.Append(")").ToString();
+        }
     }
 }

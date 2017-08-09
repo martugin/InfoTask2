@@ -147,8 +147,8 @@ namespace Tablik
                 return new VarNode(context.IDENT(), par.Owner.Vars[text]);
             if (_keeper.Module.Params.ContainsKey(text))
                 return new ParamNode(_keeper, context.IDENT(), _keeper.Module.Params[text]);
-            if (par.Params.ContainsKey(text))
-                return new ParamNode(_keeper, context.IDENT(), par.Params[text]);
+            if (par.Owner != null && par.Owner.Params.ContainsKey(text))
+                return new ParamNode(_keeper, context.IDENT(), par.Owner.Params[text]);
             if (_keeper.FunsChecker.Funs.ContainsKey(text))
                 return new FunNode(_keeper, context.IDENT());
             _keeper.AddError("Неизвестный идентификатор", context.IDENT());
@@ -162,8 +162,8 @@ namespace Tablik
             var pars = GoList(context.pars());
             if (_keeper.Module.Params.ContainsKey(text))
                 return new ParamNode(_keeper, context.IDENT(), _keeper.Module.Params[text], pars);
-            if (_keeper.Param.Params.ContainsKey(text))
-                return new ParamNode(_keeper, context.IDENT(), _keeper.Param.Params[text], pars);
+            if (_keeper.Param.Owner != null && _keeper.Param.Owner.Params.ContainsKey(text))
+                return new ParamNode(_keeper, context.IDENT(), _keeper.Param.Owner.Params[text], pars);
             if (_keeper.FunsChecker.Funs.ContainsKey(text))
                 return new FunNode(_keeper, context.IDENT(), pars);
             _keeper.AddError("Неизвестная функция", context.IDENT());

@@ -46,6 +46,9 @@ namespace Tablik
                 AddError("Несовместимые типы данных аргументов функции");
         }
 
-        public override string ToTestString() { return ToTestWithChildren(); }
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(Args);
+        }
     }
 }

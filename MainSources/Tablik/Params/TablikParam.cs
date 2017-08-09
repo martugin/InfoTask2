@@ -41,6 +41,17 @@ namespace Tablik
             JoinToParamTree();
         }
 
+        //Конструктор для тестов
+        public TablikParam(TablikModule module, string code, string expr1, string expr2 = "Расчет")
+            : base(false)
+        {
+            Module = module;
+            Code = code;
+            UserExpr1 = expr1;
+            UserExpr2 = expr2;
+            Keeper = new TablikKeeper(this);
+        }
+
         //Модуль
         internal TablikModule Module { get; private set; }
 

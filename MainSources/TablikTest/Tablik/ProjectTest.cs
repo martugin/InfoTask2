@@ -360,6 +360,13 @@ namespace TablikTest
             Assert.AreEqual("NodeList: (" + result + ")", pars[code].Expr1.ToTestString());
         }
 
+        private void ParseSubExpr(DicS<TablikParam> pars, string code, string subCode, string result)
+        {
+            Assert.IsTrue(pars.ContainsKey(code));
+            Assert.IsTrue(pars[code].Params.ContainsKey(subCode));
+            Assert.AreEqual("NodeList: (" + result + ")", pars[code].Params[subCode].Expr1.ToTestString());
+        }
+
         [TestMethod]
         public void FormulaParse()
         {
@@ -395,7 +402,39 @@ namespace TablikTest
             ParseExpr(pars, "B02", "Assign: (Var: x, Integer: 10), Fun: + (Var: x, Integer: 20)");
             ParseExpr(pars, "B03", "Assign: (Var: aa, String: 'ss'), Assign: (Var: bb, Fun: <> (String: 'tt', Var: aa)), Assign: (Var: cc, Fun: or (Var: bb, Fun: True))");
             ParseExpr(pars, "B04", "Assign: (DataType: Int, Var: x, Boolean: 1), Assign: (DataType: Real, Var: y, Integer: 2), Fun: * (Var: x, Var: y)");
-            ParseExpr(pars, "B05", "Void: Пустой");
+            ParseExpr(pars, "B05", "Assign: (DataType: List(Real), Var: s, Fun: CreateList (Integer: 2, Integer: 3, Integer: 4)), Var: s");
+            ParseExpr(pars, "B06", "Assign: (Var: a, Boolean: 1), Assign: (Var: a, Fun: + (Var: a, Integer: 2)), Assign: (DataType: DicNumbers(Int), Var: d, Fun: СоздатьСловарьЧисла (Var: a, Fun: * (Var: a, Integer: 2))), Var: d");
+            ParseExpr(pars, "B07", "If: Если (Boolean: 1, NodeList: (Integer: 2), NodeList: (Integer: 3))");
+            ParseExpr(pars, "B08", "Assign: (Var: a, Real: 2.4), If: Если (Fun: < (Var: a, Integer: 2), NodeList: (Fun: * (Var: a, Integer: 2)), Fun: And (Fun: >= (Var: a, Integer: 2), Fun: < (Var: a, Integer: 4)), NodeList: (Var: a), NodeList: (Fun: / (Var: a, Integer: 2)))");
+            ParseExpr(pars, "B09", "Assign: (DataType: Int, Var: b, Boolean: 1), If: If (Fun: == (Var: b, Boolean: 0), NodeList: (Assign: (Var: a, Integer: 3), Assign: (Var: c, Integer: 2)), NodeList: (Assign: (Var: a, Integer: 2), Assign: (Var: c, Boolean: 1))), Fun: + (Var: a, Var: c)");
+            ParseExpr(pars, "B10", "Assign: (Var: i, Boolean: 0), Assign: (Var: s, Boolean: 0), While: while (Fun: < (Var: i, Integer: 5), NodeList: (Assign: (Var: s, Fun: + (Var: s, Var: i)))), Var: s");
+            ParseExpr(pars, "B11", "If: Если (Boolean: 1, NodeList: (Assign: (Var: n, Integer: 3), While: Пока (Fun: > (Var: n, Boolean: 0), NodeList: (Assign: (Var: n, Fun: - (Var: n, Integer: 2)))), Var: n), NodeList: (If: Если (Boolean: 0, NodeList: (Integer: 2), NodeList: (Integer: 3))))");
+            ParseExpr(pars, "B12", "Fun: Sin (Fun: - (Grafic: Gr2D (Fun: Abs (Fun: * (Integer: 10, Fun: - (Integer: 2)))), Integer: 5))");
+            ParseExpr(pars, "B13", "Grafic: Gr3D (Real: 1.3, Real: 2.34)");
+            ParseExpr(pars, "B14", "Tabl: Табл(Tab1.SubReal, Fun: + (Boolean: 1, Boolean: 1), Fun: Abs (Fun: - (Integer: 2)))");
+            ParseExpr(pars, "B15", "Fun: + (Tabl: TablList(Tab3.Int1, String: 'code'), String: 'aa')");
+            ParseExpr(pars, "B16", "Tabl: TablContains(Tab2, String: 'ss')");
+
+            ParseExpr(pars, "C01", "Boolean: 1");
+            ParseSubExpr(pars, "C01", "S1", "Integer: 2");
+            ParseSubExpr(pars, "C01", "S2", "Fun: Log10 (SubParam: S1)");
+            ParseExpr(pars, "C02", "Fun: + (Param: C01, Fun: * (Integer: 2, Param: C01))");
+            ParseExpr(pars, "C03", "Assign: (Var: b, Param: C01), Assign: (Var: a, Param: C02), Fun: + (Fun: + (Fun: + (Var: a, Var: b), Param: C01), Param: C02)");
+            ParseExpr(pars, "C04", "Fun: * (Var: x, Var: y)");
+            ParseSubExpr(pars, "C04", "S1", "Fun: + (Var: x, Var: y)");
+            ParseSubExpr(pars, "C04", "S2", "Fun: + (Fun: + (Var: x, Var: y), Var: z)");
+            ParseSubExpr(pars, "C04", "S3", "Fun: + (SubParam: S2 (Boolean: 1), SubParam: S1)");
+            ParseSubExpr(pars, "C04", "S4", "Fun: * (Owner: Owner, Integer: 3)");
+            ParseSubExpr(pars, "C04", "S5", "Fun: + (Param: C02, Met: S2 (Param: C01))");
+            ParseExpr(pars, "C05", "Assign: (Var: a, Boolean: 1), Param: C04 (Fun: + (Integer: 3, Var: a), Fun: - (Integer: 4, Var: a))");
+            ParseExpr(pars, "C06", "Param: C04 (Param: C01, Param: C02)");
+            ParseExpr(pars, "C07", "Prev: Absolute (Param: C01, Boolean: 0)");
+            ParseExpr(pars, "C08", "Fun: + (Met: S1 (Param: C01), Met: S1 (Param: C04 (Integer: 4, Integer: 5)))");
+            ParseExpr(pars, "C09", "Met: S2 (Param: C04 (Real: 1,4, Fun: - (Real: 3,7)), Real: 2,9)");
+            ParseExpr(pars, "C10", "SubParams: Подпараметры (Param: C04 (Boolean: 1, Boolean: 1)), Boolean: 1");
+            ParseExpr(pars, "C11", "Fun: + (Met: S2 (Param: C10, Met: S3 (Param: C10)), Met: S4 (Param: C10))");
+            ParseExpr(pars, "C12", "If: Если (Fun: > (Param: C06, Integer: 3), NodeList: (Param: C08), Param: C04 (Param: C09), NodeList: (If: If (Fun: > (Param: C03, Integer: 2), NodeList: (Integer: 4), NodeList: (Param: C11))))");
+            ParseExpr(pars, "C13", "Boolean: 1");
         }
     }
 }
