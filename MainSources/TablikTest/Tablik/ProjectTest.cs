@@ -401,12 +401,12 @@ namespace TablikTest
             ParseExpr(pars, "B01", "Void: Пустой");
             ParseExpr(pars, "B02", "Assign: (Var: x, Integer: 10), Fun: + (Var: x, Integer: 20)");
             ParseExpr(pars, "B03", "Assign: (Var: aa, String: 'ss'), Assign: (Var: bb, Fun: <> (String: 'tt', Var: aa)), Assign: (Var: cc, Fun: or (Var: bb, Fun: True))");
-            ParseExpr(pars, "B04", "Assign: (DataType: Int, Var: x, Boolean: 1), Assign: (DataType: Real, Var: y, Integer: 2), Fun: * (Var: x, Var: y)");
-            ParseExpr(pars, "B05", "Assign: (DataType: List(Real), Var: s, Fun: CreateList (Integer: 2, Integer: 3, Integer: 4)), Var: s");
-            ParseExpr(pars, "B06", "Assign: (Var: a, Boolean: 1), Assign: (Var: a, Fun: + (Var: a, Integer: 2)), Assign: (DataType: DicNumbers(Int), Var: d, Fun: СоздатьСловарьЧисла (Var: a, Fun: * (Var: a, Integer: 2))), Var: d");
+            ParseExpr(pars, "B04", "Assign: (Type: Int, Var: x, Boolean: 1), Assign: (Type: Real, Var: y, Integer: 2), Fun: * (Var: x, Var: y)");
+            ParseExpr(pars, "B05", "Assign: (Type: List(Real), Var: s, Fun: CreateList (Integer: 2, Integer: 3, Integer: 4)), Var: s");
+            ParseExpr(pars, "B06", "Assign: (Var: a, Boolean: 1), Assign: (Var: a, Fun: + (Var: a, Integer: 2)), Assign: (Type: DicNumbers(Int), Var: d, Fun: СоздатьСловарьЧисла (Var: a, Fun: * (Var: a, Integer: 2))), Var: d");
             ParseExpr(pars, "B07", "If: Если (Boolean: 1, NodeList: (Integer: 2), NodeList: (Integer: 3))");
             ParseExpr(pars, "B08", "Assign: (Var: a, Real: 2.4), If: Если (Fun: < (Var: a, Integer: 2), NodeList: (Fun: * (Var: a, Integer: 2)), Fun: And (Fun: >= (Var: a, Integer: 2), Fun: < (Var: a, Integer: 4)), NodeList: (Var: a), NodeList: (Fun: / (Var: a, Integer: 2)))");
-            ParseExpr(pars, "B09", "Assign: (DataType: Int, Var: b, Boolean: 1), If: If (Fun: == (Var: b, Boolean: 0), NodeList: (Assign: (Var: a, Integer: 3), Assign: (Var: c, Integer: 2)), NodeList: (Assign: (Var: a, Integer: 2), Assign: (Var: c, Boolean: 1))), Fun: + (Var: a, Var: c)");
+            ParseExpr(pars, "B09", "Assign: (Type: Int, Var: b, Boolean: 1), If: If (Fun: == (Var: b, Boolean: 0), NodeList: (Assign: (Var: a, Integer: 3), Assign: (Var: c, Integer: 2)), NodeList: (Assign: (Var: a, Integer: 2), Assign: (Var: c, Boolean: 1))), Fun: + (Var: a, Var: c)");
             ParseExpr(pars, "B10", "Assign: (Var: i, Boolean: 0), Assign: (Var: s, Boolean: 0), While: while (Fun: < (Var: i, Integer: 5), NodeList: (Assign: (Var: s, Fun: + (Var: s, Var: i)))), Var: s");
             ParseExpr(pars, "B11", "If: Если (Boolean: 1, NodeList: (Assign: (Var: n, Integer: 3), While: Пока (Fun: > (Var: n, Boolean: 0), NodeList: (Assign: (Var: n, Fun: - (Var: n, Integer: 2)))), Var: n), NodeList: (If: Если (Boolean: 0, NodeList: (Integer: 2), NodeList: (Integer: 3))))");
             ParseExpr(pars, "B12", "Fun: Sin (Fun: - (Grafic: Gr2D (Fun: Abs (Fun: * (Integer: 10, Fun: - (Integer: 2)))), Integer: 5))");
@@ -434,7 +434,18 @@ namespace TablikTest
             ParseExpr(pars, "C10", "SubParams: Подпараметры (Param: C04 (Boolean: 1, Boolean: 1)), Boolean: 1");
             ParseExpr(pars, "C11", "Fun: + (Met: S2 (Param: C10, Met: S3 (Param: C10)), Met: S4 (Param: C10))");
             ParseExpr(pars, "C12", "If: Если (Fun: > (Param: C06, Integer: 3), NodeList: (Param: C08), Param: C04 (Param: C09), NodeList: (If: If (Fun: > (Param: C03, Integer: 2), NodeList: (Integer: 4), NodeList: (Param: C11))))");
-            ParseExpr(pars, "C13", "Boolean: 1");
+            ParseExpr(pars, "C13", "Assign: (Type: C04, Var: a, Param: C04 (Integer: 2, Integer: 3)), Var: a");
+            ParseExpr(pars, "C14", "Fun: Элемент (Var: arr, Boolean: 1)");
+            ParseExpr(pars, "C15", "Param: C14 (Fun: СоздатьСписок (Integer: 5, Integer: 6, Integer: 7, Integer: 8))");
+            ParseExpr(pars, "C16", "Fun: + (Met: S1 (Var: p), Met: S2 (Var: p, Integer: 3))");
+            ParseExpr(pars, "C17", "Param: C16 (Param: C04 (Boolean: 1, Integer: 2))");
+
+            ParseExpr(pars, "D01", "Fun: + (Fun: + (Fun: + (Signal: {Out1}, Signal: {Out1.Int}), Signal: {Sour1.Out2}), Signal: {Sour1.Out2.State})");
+            ParseExpr(pars, "D02", "Assign: (Var: a, Signal: {Out1}), Assign: (Var: b, MetSignal: {String} (Var: a)), Fun: + (Var: b, String: 'aaa')");
+            ParseExpr(pars, "D03", "MetSignal: {Int} (Var: S)");
+            ParseExpr(pars, "D04", "Fun: Or (MetSignal: {State} (Var: A), MetSignal: {State} (Var: S))");
+            ParseExpr(pars, "D05", "Fun: + (Param: D03 (Signal: {Out1}), Param: D04 (Signal: {Out1}, Signal: {Out2}))");
+            
         }
     }
 }

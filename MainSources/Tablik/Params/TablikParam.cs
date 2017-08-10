@@ -194,7 +194,7 @@ namespace Tablik
                         break;
 
                     case InputType.Signal:
-                        string scode = node.TypeNode.Text;
+                        string scode = node.TypeNode.Text.Substring(1, node.TypeNode.Text.Length - 2);
                         ObjectType t = null;
                         foreach (var con in Module.LinkedSources)
                         {
@@ -203,7 +203,7 @@ namespace Tablik
                                 if (t == null) t = con.ObjectsTypes[scode];
                                 else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
-                            if (con.ObjectsCalcTypes.ContainsKey(scode))
+                            else if (con.ObjectsCalcTypes.ContainsKey(scode))
                             {
                                 if (t == null) t = con.ObjectsCalcTypes[scode];
                                 else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
@@ -356,7 +356,7 @@ namespace Tablik
         //Запись в строку
         public string ToResString()
         {
-            return FullCode + "(" + DataType + ")";
+            return FullCode;
         }
     }
 }

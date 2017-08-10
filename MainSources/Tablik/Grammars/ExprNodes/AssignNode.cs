@@ -43,7 +43,7 @@ namespace Tablik
 
         public override string ToTestString()
         {
-            return NodeType + ": (" + (Var.Type == null ? null : "DataType: " + Var.Type.ToResString() + ", ") + "Var: " + Var.Code + ", " + ((Node)Args[0]).ToTestString() + ")";
+            return NodeType + ": (" + (Var.Type == null ? null : "Type: " + Var.Type.ToResString() + ", ") + "Var: " + Var.Code + ", " + ((Node)Args[0]).ToTestString() + ")";
         }
     }
 }

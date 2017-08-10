@@ -37,6 +37,9 @@ namespace Tablik
             }
         }
 
-        public override string ToTestString() { return ToTestWithChildren(); }
+        public override string ToTestString()
+        {
+            return "MetSignal: " + Token.Text + " (" + Parent.ToTestString() + ")";
+        }
     }
 }
