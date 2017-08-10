@@ -34,8 +34,6 @@ namespace Tablik
         //Чвляется типом
         public bool LessOrEquals(ITablikType type)
         {
-            if (type.TablikSignalType is TablikSignal)
-                return this == type.TablikSignalType;
             return Simple.LessOrEquals(type);
         }
 
@@ -81,7 +79,7 @@ namespace Tablik
 
         public bool LessOrEquals(ITablikType type)
         {
-            return Signal.LessOrEquals(type);
+            return Simple.LessOrEquals(type);
         }
 
         //Запись в строку

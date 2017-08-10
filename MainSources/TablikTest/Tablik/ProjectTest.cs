@@ -74,10 +74,8 @@ namespace TablikTest
 
             var source = tablik.Sources["Sour1"];
             Assert.AreEqual("Sour1", source.Code);
-            Assert.AreEqual(2, source.ObjectsTypesId.Count);
             Assert.AreEqual(4, source.ObjectsTypes.Count);
-            Assert.AreEqual(3, source.ObjectsCalcTypesId.Count);
-            Assert.AreEqual(6, source.ObjectsCalcTypes.Count);
+            Assert.AreEqual(6, source.BaseObjectsTypes.Count);
             Assert.AreEqual(4, source.Objects.Count);
 
             Assert.IsTrue(source.ObjectsTypes.ContainsKey("Large"));
@@ -86,9 +84,9 @@ namespace TablikTest
             Assert.AreEqual("Large", ot.Code);
             Assert.AreEqual("Большой объект", ot.Name);
             Assert.AreEqual(3, ot.BaseTypes.Count);
-            Assert.IsTrue(ot.BaseTypes.Contains(source.ObjectsCalcTypes["Analog"]));
-            Assert.IsTrue(ot.BaseTypes.Contains(source.ObjectsCalcTypes["State"]));
-            Assert.IsTrue(ot.BaseTypes.Contains(source.ObjectsCalcTypes["Discret"]));
+            Assert.IsTrue(ot.BaseTypes.Contains(source.BaseObjectsTypes["Analog"]));
+            Assert.IsTrue(ot.BaseTypes.Contains(source.BaseObjectsTypes["State"]));
+            Assert.IsTrue(ot.BaseTypes.Contains(source.BaseObjectsTypes["Discret"]));
             Assert.AreEqual(5, ot.Signals.Count);
             Assert.IsTrue(ot.Signals.ContainsKey("Bool"));
             Assert.IsTrue(ot.Signals.ContainsKey("Int"));
@@ -120,8 +118,8 @@ namespace TablikTest
             Assert.AreEqual("Small", ot.Code);
             Assert.AreEqual("Маленький объект", ot.Name);
             Assert.AreEqual(2, ot.BaseTypes.Count);
-            Assert.IsTrue(ot.BaseTypes.Contains(source.ObjectsCalcTypes["Analog"]));
-            Assert.IsTrue(ot.BaseTypes.Contains(source.ObjectsCalcTypes["State"]));
+            Assert.IsTrue(ot.BaseTypes.Contains(source.BaseObjectsTypes["Analog"]));
+            Assert.IsTrue(ot.BaseTypes.Contains(source.BaseObjectsTypes["State"]));
             Assert.AreEqual(2, ot.Signals.Count);
             Assert.IsTrue(ot.Signals.ContainsKey("State"));
             Assert.IsTrue(ot.Signals.ContainsKey("Value"));
@@ -144,9 +142,9 @@ namespace TablikTest
             Assert.AreEqual(ArrayType.Single, sig.Simple.ArrayType);
             Assert.AreEqual(null, sig.Simple.TablikSignalType);
 
-            Assert.IsTrue(source.ObjectsCalcTypes.ContainsKey("Analog"));
-            Assert.IsTrue(source.ObjectsCalcTypes.ContainsKey("Sour1.Analog"));
-            ot = source.ObjectsCalcTypes["Analog"];
+            Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("Analog"));
+            Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("Sour1.Analog"));
+            ot = source.BaseObjectsTypes["Analog"];
             Assert.AreEqual("Analog", ot.Code);
             Assert.AreEqual("Аналоговый сигнал", ot.Name);
             Assert.AreEqual(0, ot.BaseTypes.Count);
@@ -172,9 +170,9 @@ namespace TablikTest
             Assert.AreEqual(ArrayType.Single, tsig.Simple.ArrayType);
             Assert.AreEqual(null, tsig.Simple.TablikSignalType);
 
-            Assert.IsTrue(source.ObjectsCalcTypes.ContainsKey("State"));
-            Assert.IsTrue(source.ObjectsCalcTypes.ContainsKey("Sour1.State"));
-            ot = source.ObjectsCalcTypes["State"];
+            Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("State"));
+            Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("Sour1.State"));
+            ot = source.BaseObjectsTypes["State"];
             Assert.AreEqual("State", ot.Code);
             Assert.AreEqual("Сигнал с соcтоянием", ot.Name);
             Assert.AreEqual(0, ot.BaseTypes.Count);
@@ -190,9 +188,9 @@ namespace TablikTest
             Assert.AreEqual(ArrayType.Single, tsig.Simple.ArrayType);
             Assert.AreEqual(null, tsig.Simple.TablikSignalType);
 
-            Assert.IsTrue(source.ObjectsCalcTypes.ContainsKey("Discret"));
-            Assert.IsTrue(source.ObjectsCalcTypes.ContainsKey("Sour1.Discret"));
-            ot = source.ObjectsCalcTypes["Discret"];
+            Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("Discret"));
+            Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("Sour1.Discret"));
+            ot = source.BaseObjectsTypes["Discret"];
             Assert.AreEqual("Discret", ot.Code);
             Assert.AreEqual("Дискретный сигнал", ot.Name);
             Assert.AreEqual(0, ot.BaseTypes.Count);

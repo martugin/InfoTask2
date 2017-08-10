@@ -203,9 +203,9 @@ namespace Tablik
                                 if (t == null) t = con.ObjectsTypes[scode];
                                 else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
-                            else if (con.ObjectsCalcTypes.ContainsKey(scode))
+                            else if (con.BaseObjectsTypes.ContainsKey(scode))
                             {
-                                if (t == null) t = con.ObjectsCalcTypes[scode];
+                                if (t == null) t = con.BaseObjectsTypes[scode];
                                 else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
                         }
@@ -279,14 +279,9 @@ namespace Tablik
         //Данный параметр является наследником указанного типа
         public bool LessOrEquals(ITablikType type)
         {
-            if (this == type) return true;
             if (type is TablikParam)
-            {
-                if (Type is TablikParam && ((TablikParam)Type).LessOrEquals(type))
-                    return true;
-                return BaseParams.Any(bp => bp.LessOrEquals(type));    
-            }
-            if (type.TablikSignalType != null && TablikSignalType != null)
+                return ((TablikParam)Type).LessOrEquals(type) || BaseParams.Any(bp => bp.LessOrEquals(type));
+            if (type is ITablikSignalType)
                 return TablikSignalType.LessOrEquals(type);
             return Simple.LessOrEquals(type);
         }
