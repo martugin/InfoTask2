@@ -22,5 +22,7 @@ namespace Tablik
         {
             Type = new SimpleType(DataType.Void);
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

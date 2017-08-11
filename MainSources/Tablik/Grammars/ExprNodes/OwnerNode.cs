@@ -18,5 +18,7 @@ namespace Tablik
                 AddError("Недопустимое получения владельца параметра");
             else Type = Keeper.Param.Owner;
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

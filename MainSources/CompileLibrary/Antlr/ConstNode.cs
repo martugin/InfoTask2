@@ -49,5 +49,7 @@ namespace CompileLibrary
         public Mean Mean { get; private set; }
         //Тип данных
         public DataType DataType { get { return Mean.DataType; } }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

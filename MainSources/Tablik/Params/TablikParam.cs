@@ -41,6 +41,17 @@ namespace Tablik
             JoinToParamTree();
         }
 
+        //Конструктор для тестов
+        public TablikParam(TablikModule module, string code, string expr1, string expr2 = "Расчет")
+            : base(false)
+        {
+            Module = module;
+            Code = code;
+            UserExpr1 = expr1;
+            UserExpr2 = expr2;
+            Keeper = new TablikKeeper(this);
+        }
+
         //Модуль
         internal TablikModule Module { get; private set; }
 
@@ -183,7 +194,7 @@ namespace Tablik
                         break;
 
                     case InputType.Signal:
-                        string scode = node.TypeNode.Text;
+                        string scode = node.TypeNode.Text.Substring(1, node.TypeNode.Text.Length - 2);
                         ObjectType t = null;
                         foreach (var con in Module.LinkedSources)
                         {
@@ -192,9 +203,9 @@ namespace Tablik
                                 if (t == null) t = con.ObjectsTypes[scode];
                                 else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
-                            if (con.ObjectsCalcTypes.ContainsKey(scode))
+                            else if (con.BaseObjectsTypes.ContainsKey(scode))
                             {
-                                if (t == null) t = con.ObjectsCalcTypes[scode];
+                                if (t == null) t = con.BaseObjectsTypes[scode];
                                 else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
                         }
@@ -217,15 +228,15 @@ namespace Tablik
         }
 
         //Узлы расчетного и управляющего выражения
-        private TablikListNode _expr1;
-        private TablikListNode _expr2;
+        internal TablikListNode Expr1 { get; private set; }
+        internal TablikListNode Expr2 { get; private set; }
 
         //Семантический разбор формулы
         private void ParseFormula()//расчетное или управляющее выражение
         {
             Vars.Add("расчет", Vars.Add("calc", new TablikVar("расчет")));
-            _expr1 = (TablikListNode)new ExprParsing(Keeper, "расч", UserExpr1).ResultTree;
-            _expr2 = (TablikListNode)new ExprParsing(Keeper, "упр", UserExpr2).ResultTree;
+            Expr1 = (TablikListNode)new ExprParsing(Keeper, "расч", UserExpr1).ResultTree;
+            Expr2 = (TablikListNode)new ExprParsing(Keeper, "упр", UserExpr2).ResultTree;
         }
 
         //Флаг для построения графа зависимости параметров
@@ -268,14 +279,9 @@ namespace Tablik
         //Данный параметр является наследником указанного типа
         public bool LessOrEquals(ITablikType type)
         {
-            if (this == type) return true;
             if (type is TablikParam)
-            {
-                if (Type is TablikParam && ((TablikParam)Type).LessOrEquals(type))
-                    return true;
-                return BaseParams.Any(bp => bp.LessOrEquals(type));    
-            }
-            if (type.TablikSignalType != null && TablikSignalType != null)
+                return ((TablikParam)Type).LessOrEquals(type) || BaseParams.Any(bp => bp.LessOrEquals(type));
+            if (type is ITablikSignalType)
                 return TablikSignalType.LessOrEquals(type);
             return Simple.LessOrEquals(type);
         }
@@ -283,18 +289,18 @@ namespace Tablik
         //Определение типов данных и формирование порожденных параметров
         public void DefineDataTypes()
         {
-            foreach (var node in _expr1.Nodes)
+            foreach (var node in Expr1.Nodes)
                 node.DefineType();
 
-            var last = _expr1.Nodes.Last();
+            var last = Expr1.Nodes.Last();
             if (last.Type.DataType != DataType.Void)
             {
                 var resVar = Vars["calc"];
                 resVar.Type = resVar.Type.Add(last.Type);
             }
-            foreach (var node in _expr2.Nodes)
+            foreach (var node in Expr2.Nodes)
                 node.DefineType();
-            last = _expr2.Nodes.Last();
+            last = Expr2.Nodes.Last();
             Type = last.Type;
             MetSignals = Keeper.GetMetSignals(last);
         }
@@ -332,11 +338,11 @@ namespace Tablik
                 sb.Append(v.Code).Append("!").Append(v.Type.ToResString()).Append(";");
 
             sb.Append("Expr:");
-            foreach (var node in _expr1.Nodes)
+            foreach (var node in Expr1.Nodes)
                 node.SaveCompiled(sb);
             if (Vars["calc"].Type.DataType != DataType.Void)
                 sb.Append("Assign!Calc!1;");
-            foreach (var node in _expr2.Nodes)
+            foreach (var node in Expr2.Nodes)
                 node.SaveCompiled(sb);
             rec.Put("CompiledExpr", sb.ToString());
             rec.Update();
@@ -345,7 +351,7 @@ namespace Tablik
         //Запись в строку
         public string ToResString()
         {
-            return FullCode + "(" + DataType + ")";
+            return FullCode;
         }
     }
 }

@@ -27,5 +27,10 @@ namespace Tablik
                 Keeper.Param.BaseParams.Add(Param);
             }
         }
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(Args);
+        }
     }
 }

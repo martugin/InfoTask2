@@ -28,7 +28,15 @@ namespace Tablik
             }
         }
 
+        //Тип узла
+        protected override string NodeType { get { return "Grafic"; } }
+
         //График
         public Grafic Grafic { get; private set; }
+
+        public override string ToTestString()
+        {
+            return ToTestWithChildren(Args);
+        }
     }
 }

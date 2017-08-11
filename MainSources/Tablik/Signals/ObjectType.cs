@@ -52,14 +52,8 @@ namespace Tablik
         //Является типом
         public bool LessOrEquals(ITablikType type)
         {
-            if (type.TablikSignalType is ObjectType)
-            {
-                var ot = (ObjectType) type.TablikSignalType;
-                if (this == ot || BaseTypes.Contains(ot))
-                    return true;
-            }
-            if (type.TablikSignalType is TablikSignal && Signal == type.TablikSignalType) return true;
-            return Simple.LessOrEquals(type);
+            return type is ObjectType && (this == type || BaseTypes.Contains((ObjectType) type))
+                      || Simple.LessOrEquals(type);
         }
 
         //Запись в строку

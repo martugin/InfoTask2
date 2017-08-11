@@ -34,6 +34,12 @@ namespace CompileLibrary
             ObjectCode = rec.GetString("ObjectCode");
         }
 
+        //Конструктор для тестов
+        protected BaseCalcParam(bool isSubParam)
+        {
+            IsSubParam = isSubParam;
+        }
+
         //Полный код
         public string FullCode { get; protected set; }
 

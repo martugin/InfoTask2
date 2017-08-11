@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text;
 using Antlr4.Runtime.Tree;
 using CommonTypes;
 using CompileLibrary;
@@ -24,7 +25,7 @@ namespace Tablik
             if (Tabl == null) AddError("Не найдена таблица");
             else
             {
-                int tnum = Fun.Code == "Tabl" || Fun.Code == "TablContains" ? Args.Length - 1 : Args.Length;
+                int tnum = Fun.Code == "tabl" || Fun.Code == "tablcontains" ? Args.Length - 1 : Args.Length;
                 if (Tabl.Tabls.Count - 1 < tnum)
                     AddError("Недопустимое количество аргументов функции");
                 else if (field != null) 
@@ -81,6 +82,14 @@ namespace Tablik
         public override string CompiledText()
         {
             return Tabl.Code + (Field == null ? "" : "." + Field);
+        }
+
+        public override string ToTestString()
+        {
+            var sb = new StringBuilder("Tabl: " + Token.Text + "(" + Tabl.Code + (Field == null ? "" : "." + Field));
+            foreach (var arg in Args)
+                sb.Append(", ").Append(arg.ToTestString());
+            return sb.Append(")").ToString();
         }
     }
 }

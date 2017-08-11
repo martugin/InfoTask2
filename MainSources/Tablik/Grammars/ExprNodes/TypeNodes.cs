@@ -14,6 +14,11 @@ namespace Tablik
         {
             Type = new SimpleType(Token.Text.ToDataType());
         }
+
+        public override string ToTestString()
+        {
+            return Type.ToResString();
+        }
     }
 
     //-----------------------------------------------------------------------------------
@@ -23,6 +28,11 @@ namespace Tablik
         public ArrayTypeNode(ITerminalNode array, ITerminalNode dataType) : base(array)
         {
             Type = new SimpleType(dataType.Symbol.Text.ToDataType(), Token.Text.ToArrayType());
+        }
+
+        public override string ToTestString()
+        {
+            return Type.ToResString();
         }
     }
 
@@ -39,11 +49,19 @@ namespace Tablik
             {
                 if (con.ObjectsTypes.ContainsKey(signalCode))
                     Type = con.ObjectsTypes[signalCode];
-                if (con.ObjectsCalcTypes.ContainsKey(signalCode))
-                    Type = con.ObjectsCalcTypes[signalCode];
+                if (con.BaseObjectsTypes.ContainsKey(signalCode))
+                    Type = con.BaseObjectsTypes[signalCode];
             }
             if (Type == null)
+            {
                 AddError("Не найден тип объекта или сигнала");
+                Type = new SimpleType();
+            }
+        }
+
+        public override string ToTestString()
+        {
+            return Type.ToResString();
         }
     }
 
@@ -65,7 +83,12 @@ namespace Tablik
                     Type = new SimpleType();
                 }
             }
-            Type = (TablikParam)p;
+            if (Type == null) Type = (TablikParam)p;
+        }
+
+        public override string ToTestString()
+        {
+            return Type.ToResString();
         }
     }
 }

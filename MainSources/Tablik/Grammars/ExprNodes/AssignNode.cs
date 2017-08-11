@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime.Tree;
 using CommonTypes;
+using CompileLibrary;
 
 namespace Tablik
 {
@@ -38,6 +39,11 @@ namespace Tablik
         public override string CompiledText()
         {
             return Var.Code;
+        }
+
+        public override string ToTestString()
+        {
+            return NodeType + ": (" + (Var.Type == null ? null : "Type: " + Var.Type.ToResString() + ", ") + "Var: " + Var.Code + ", " + ((Node)Args[0]).ToTestString() + ")";
         }
     }
 }

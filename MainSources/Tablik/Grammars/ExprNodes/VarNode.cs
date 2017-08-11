@@ -28,5 +28,7 @@ namespace Tablik
         {
             return Var.Code;
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

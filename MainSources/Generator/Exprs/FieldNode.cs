@@ -40,5 +40,7 @@ namespace Generator
         {
             return row[_field];
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 }

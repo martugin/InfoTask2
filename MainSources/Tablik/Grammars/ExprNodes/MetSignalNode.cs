@@ -36,5 +36,10 @@ namespace Tablik
                 else AddError("Не найден сигнал");
             }
         }
+
+        public override string ToTestString()
+        {
+            return "MetSignal: " + Token.Text + " (" + Parent.ToTestString() + ")";
+        }
     }
 }

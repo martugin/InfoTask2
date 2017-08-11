@@ -33,6 +33,8 @@ namespace Generator
         {
             return _var.Mean;
         }
+
+        public override string ToTestString() { return ToTestWithChildren(); }
     }
 
     //----------------------------------------------------------------------------------------------------

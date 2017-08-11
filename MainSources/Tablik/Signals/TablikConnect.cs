@@ -15,57 +15,49 @@ namespace Tablik
         protected string SignalsFile { get; set; }
 
         //Расчетные типы объектов
-        private readonly DicS<ObjectType> _objectsCalcTypes = new DicS<ObjectType>();
-        public DicS<ObjectType> ObjectsCalcTypes { get { return _objectsCalcTypes; } }
-        private readonly DicI<ObjectType> _objectsCalcTypesId = new DicI<ObjectType>();
-        public DicI<ObjectType> ObjectsCalcTypesId { get { return _objectsCalcTypesId; } }
+        private readonly DicS<ObjectType> _baseObjectsTypes = new DicS<ObjectType>();
+        public DicS<ObjectType> BaseObjectsTypes { get { return _baseObjectsTypes; } }
         //Типы объектов 
         private readonly DicS<ObjectType> _objectsTypes = new DicS<ObjectType>();
         public DicS<ObjectType> ObjectsTypes { get { return _objectsTypes; } }
-        private readonly DicI<ObjectType> _objectsTypesId = new DicI<ObjectType>();
-        public DicI<ObjectType> ObjectsTypesId { get { return _objectsTypesId; } }
         //Объекты
         private readonly DicS<TablikObject> _objects = new DicS<TablikObject>();
         public DicS<TablikObject> Objects { get { return _objects; } }
-        private readonly DicI<TablikObject> _objectsId = new DicI<TablikObject>();
-        public DicI<TablikObject> ObjectsId { get { return _objectsId; } }
 
         //Загрузка сигналов
         public void LoadSignals()
         {
             StartLog("Загрузка сигналов", null, Type + " " + Code).Run(() =>
             {
-                ObjectsCalcTypes.Clear();
-                ObjectsCalcTypesId.Clear();
+                BaseObjectsTypes.Clear();
                 ObjectsTypes.Clear();
-                ObjectsTypesId.Clear();
                 Objects.Clear();
-                ObjectsId.Clear();
+                var typesId = new DicI<ObjectType>();
+                var baseTypesId = new DicI<ObjectType>();
+                var objectsId = new DicI<TablikObject>();
 
                 using (var db = new DaoDb(SignalsFile))
                 {
-                    using (var rec = new DaoRec(db, "ObjectTypesCalc"))
+                    using (var rec = new DaoRec(db, "BaseObjectTypes"))
                         while (rec.Read())
                         {
-                            var t = new ObjectType(rec.GetInt("TypeCalcId"), rec.GetString("CodeType"),
-                                rec.GetString("NameType"), rec.GetInt("SignalCodeColumn"));
-                            ObjectsCalcTypesId.Add(t.Id, t);
-                            ObjectsCalcTypes.Add(t.Code, t);
-                            ObjectsCalcTypes.Add(Code + "." + t.Code, t);
+                            var t = new ObjectType(rec.GetInt("BaseTypeId"), rec.GetString("CodeType"), rec.GetString("NameType"), rec.GetInt("SignalCodeColumn"));
+                            baseTypesId.Add(t.Id, t);
+                            BaseObjectsTypes.Add(t.Code, t);
+                            BaseObjectsTypes.Add(Code + "." + t.Code, t);
                         }
 
                     using (var rec = new DaoRec(db, "ObjectTypes"))
                         while (rec.Read())
                         {
-                            var t = new ObjectType(rec.GetInt("TypeId"), rec.GetString("TypeObject"),
-                                rec.GetString("TypeName"), 1);
-                            ObjectsTypesId.Add(t.Id, t);
+                            var t = new ObjectType(rec.GetInt("TypeId"), rec.GetString("TypeObject"), rec.GetString("TypeName"), 1);
+                            typesId.Add(t.Id, t);
                             ObjectsTypes.Add(t.Code, t);
                             ObjectsTypes.Add(Code + "." + t.Code, t);
                             var list = rec.GetString("CalcTypes").ToPropertyList();
                             foreach (var bt in list)
-                                if (ObjectsCalcTypes.ContainsKey(bt))
-                                    t.BaseTypes.Add(ObjectsCalcTypes[bt]);
+                                if (BaseObjectsTypes.ContainsKey(bt))
+                                    t.BaseTypes.Add(BaseObjectsTypes[bt]);
                         }
 
                     using (var rec = new DaoRec(db, "Objects"))
@@ -75,7 +67,7 @@ namespace Tablik
                             if (ObjectsTypes.ContainsKey(t))
                             {
                                 var ob = new TablikObject(this, ObjectsTypes[t], rec);
-                                ObjectsId.Add(ob.Id, ob);
+                                objectsId.Add(ob.Id, ob);
                                 Objects.Add(ob.Code, ob);
                                 Objects.Add(Code + "." + ob.Code, ob);
                                 foreach (Field f in rec.Recordset.Fields)
@@ -88,11 +80,11 @@ namespace Tablik
                             }
                         }
 
-                    using (var rec = new DaoRec(db, "SignalsCalc"))
+                    using (var rec = new DaoRec(db, "BaseSignals"))
                         while (rec.Read())
                         {
                             var s = new TypeSignal(rec.GetString("CodeSignal"), rec.GetString("NameSignal"));
-                            var t = ObjectsCalcTypesId[rec.GetInt("TypeCalcId")];
+                            var t = baseTypesId[rec.GetInt("BaseTypeId")];
                             t.Signals.Add(s.Code, s);
                             //if (rec.GetBool("Default")) t.Signal = s.Signal;
                         }
@@ -101,7 +93,7 @@ namespace Tablik
                         while (rec.Read())
                         {
                             var s = new TablikSignal(rec);
-                            var t = ObjectsTypesId[rec.GetInt("TypeId")];
+                            var t = typesId[rec.GetInt("TypeId")];
                             t.Signals.Add(s.Code, s);
                             if (rec.GetBool("Default")) t.Signal = s;
                             foreach (var bt in t.BaseTypes)
