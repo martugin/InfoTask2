@@ -195,7 +195,7 @@ namespace Tablik
 
                     case InputType.Signal:
                         string scode = node.TypeNode.Text.Substring(1, node.TypeNode.Text.Length - 2);
-                        ObjectType t = null;
+                        ObjectTypeBase t = null;
                         foreach (var con in Module.LinkedSources)
                         {
                             if (con.ObjectsTypes.ContainsKey(scode))

@@ -1,26 +1,31 @@
 ﻿using BaseLibrary;
-using CompileLibrary;
+using CommonTypes;
 
 namespace Tablik
 {
-    //Сигнал из Signals
-    internal class TablikSignal : BaseSignal, ITablikSignalType
+    //Сигнал из BaseSignals
+    internal class BaseTablikSignal : ITablikSignalType
     {
-        public TablikSignal(IRecordRead rec) : base(rec)
+        public BaseTablikSignal(IRecordRead rec)
         {
+            Code = rec.GetString("CodeSignal");
+            Name = rec.GetString("NameSignal");
+            DataType = rec.GetString("DataType").ToDataType();
             Simple = new SimpleType(DataType);
         }
 
+        //Код сигнала
+        public string Code { get; private set; }
+        //Имя сигнала
+        public string Name { get; private set; }
+
+        //Тип данных
+        public DataType DataType { get; private set; }
         //Тип данных - сигнал
         public ITablikSignalType TablikSignalType { get { return this; } }
         //Тип данных - простой
         public SimpleType Simple { get; private set; }
 
-        //Базовые сигналы, ключи - коды
-        private readonly DicS<BaseTablikSignal> _baseSignals = new DicS<BaseTablikSignal>();
-        public DicS<BaseTablikSignal> BaseSignals { get { return _baseSignals; } }
-        
-        //Чвляется типом
         public bool LessOrEquals(ITablikType type)
         {
             return Simple.LessOrEquals(type);

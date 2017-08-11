@@ -13,7 +13,7 @@ valueProg : (voidExpr ':')* expr;
 
 //Выражения без значения
 voidExpr : VOID                                                                                          #VoidExprVoid
-			  | IDENT ASSIGN expr																   #VoidExprVar
+			  | IDENT ASSIGN expr																   #VoidExprAssign
 			  | type IDENT ASSIGN expr														   #VoidExprDataType
 			  | IF '(' expr ';' voidProg (';' expr ';' voidProg)* (';' voidProg)? ')'    #VoidExprIf
 			  | WHILE '(' expr ';' voidProg ')'								 		               #VoidExprWhile

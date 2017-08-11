@@ -49,7 +49,7 @@ namespace Tablik
             {
                 if (con.ObjectsTypes.ContainsKey(signalCode))
                     Type = con.ObjectsTypes[signalCode];
-                if (con.BaseObjectsTypes.ContainsKey(signalCode))
+                else if (con.BaseObjectsTypes.ContainsKey(signalCode))
                     Type = con.BaseObjectsTypes[signalCode];
             }
             if (Type == null)

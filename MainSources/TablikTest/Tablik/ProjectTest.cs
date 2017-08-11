@@ -97,7 +97,6 @@ namespace TablikTest
 
             var sig = ot.Signals["Int"];
             Assert.AreEqual("Int", sig.Code);
-            Assert.AreEqual(sig, sig.Signal);
             Assert.AreEqual("Целый сигнал", sig.Name);
             Assert.AreEqual(DataType.Integer, sig.DataType);
             Assert.AreEqual(DataType.Integer, sig.Simple.DataType);
@@ -105,7 +104,6 @@ namespace TablikTest
             Assert.AreEqual(null, sig.Simple.TablikSignalType);
             sig = ot.Signals["Bool"];
             Assert.AreEqual("Bool", sig.Code);
-            Assert.AreEqual(sig, sig.Signal);
             Assert.AreEqual("Логический сигнал", sig.Name);
             Assert.AreEqual(DataType.Boolean, sig.DataType);
             Assert.AreEqual(DataType.Boolean, sig.Simple.DataType);
@@ -127,7 +125,6 @@ namespace TablikTest
 
             sig = ot.Signals["State"];
             Assert.AreEqual("State", sig.Code);
-            Assert.AreEqual(sig, sig.Signal);
             Assert.AreEqual("Состояние", sig.Name);
             Assert.AreEqual(DataType.Integer, sig.DataType);
             Assert.AreEqual(DataType.Integer, sig.Simple.DataType);
@@ -135,7 +132,6 @@ namespace TablikTest
             Assert.AreEqual(null, sig.Simple.TablikSignalType);
             sig = ot.Signals["Value"];
             Assert.AreEqual("Value", sig.Code);
-            Assert.AreEqual(sig, sig.Signal);
             Assert.AreEqual("Значение", sig.Name);
             Assert.AreEqual(DataType.Real, sig.DataType);
             Assert.AreEqual(DataType.Real, sig.Simple.DataType);
@@ -144,14 +140,13 @@ namespace TablikTest
 
             Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("Analog"));
             Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("Sour1.Analog"));
-            ot = source.BaseObjectsTypes["Analog"];
-            Assert.AreEqual("Analog", ot.Code);
-            Assert.AreEqual("Аналоговый сигнал", ot.Name);
-            Assert.AreEqual(0, ot.BaseTypes.Count);
-            Assert.AreEqual(2, ot.Signals.Count);
+            var bot = source.BaseObjectsTypes["Analog"];
+            Assert.AreEqual("Analog", bot.Code);
+            Assert.AreEqual("Аналоговый сигнал", bot.Name);
+            Assert.AreEqual(2, bot.Signals.Count);
 
-            Assert.IsTrue(ot.Signals.ContainsKey("State"));
-            var tsig = ot.Signals["State"];
+            Assert.IsTrue(bot.Signals.ContainsKey("State"));
+            var tsig = bot.Signals["State"];
             Assert.AreEqual("State", tsig.Code);
             //Assert.AreEqual(tsig, tsig.Signal);
             Assert.AreEqual("Состояние", tsig.Name);
@@ -161,7 +156,7 @@ namespace TablikTest
             Assert.AreEqual(null, tsig.Simple.TablikSignalType);
 
             Assert.IsTrue(ot.Signals.ContainsKey("Value"));
-            tsig = ot.Signals["Value"];
+            tsig = bot.Signals["Value"];
             Assert.AreEqual("Value", tsig.Code);
             //Assert.AreEqual(tsig, tsig.Signal);
             Assert.AreEqual("Значение", tsig.Name);
@@ -172,14 +167,13 @@ namespace TablikTest
 
             Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("State"));
             Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("Sour1.State"));
-            ot = source.BaseObjectsTypes["State"];
-            Assert.AreEqual("State", ot.Code);
-            Assert.AreEqual("Сигнал с соcтоянием", ot.Name);
-            Assert.AreEqual(0, ot.BaseTypes.Count);
-            Assert.AreEqual(1, ot.Signals.Count);
+            bot = source.BaseObjectsTypes["State"];
+            Assert.AreEqual("State", bot.Code);
+            Assert.AreEqual("Сигнал с соcтоянием", bot.Name);
+            Assert.AreEqual(1, bot.Signals.Count);
 
             Assert.IsTrue(ot.Signals.ContainsKey("State"));
-            tsig = ot.Signals["State"];
+            tsig = bot.Signals["State"];
             Assert.AreEqual("State", tsig.Code);
             //Assert.AreEqual(tsig, tsig.Signal);
             Assert.AreEqual("Состояние", tsig.Name);
@@ -190,14 +184,13 @@ namespace TablikTest
 
             Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("Discret"));
             Assert.IsTrue(source.BaseObjectsTypes.ContainsKey("Sour1.Discret"));
-            ot = source.BaseObjectsTypes["Discret"];
-            Assert.AreEqual("Discret", ot.Code);
-            Assert.AreEqual("Дискретный сигнал", ot.Name);
-            Assert.AreEqual(0, ot.BaseTypes.Count);
-            Assert.AreEqual(2, ot.Signals.Count);
+            bot = source.BaseObjectsTypes["Discret"];
+            Assert.AreEqual("Discret", bot.Code);
+            Assert.AreEqual("Дискретный сигнал", bot.Name);
+            Assert.AreEqual(2, bot.Signals.Count);
 
             Assert.IsTrue(ot.Signals.ContainsKey("Есть"));
-            tsig = ot.Signals["Есть"];
+            tsig = bot.Signals["Есть"];
             Assert.AreEqual("Есть", tsig.Code);
             //Assert.AreEqual(tsig, tsig.Signal);
             Assert.AreEqual("Значение", tsig.Name);

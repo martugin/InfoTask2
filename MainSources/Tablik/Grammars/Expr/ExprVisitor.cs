@@ -52,7 +52,7 @@ namespace Tablik
             return new VoidNode(context.VOID());
         }
 
-        public override IExprNode VisitVoidExprVar(P.VoidExprVarContext context)
+        public override IExprNode VisitVoidExprAssign(P.VoidExprAssignContext context)
         {
             return new AssignNode(_keeper, context.ASSIGN(), context.IDENT(), Go(context.expr()));
         }

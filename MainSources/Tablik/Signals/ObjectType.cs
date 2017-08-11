@@ -1,38 +1,21 @@
 ﻿using System.Collections.Generic;
 using BaseLibrary;
-using CommonTypes;
 
 namespace Tablik
 {
-    //Тип объекта 
-    internal class ObjectType : ITablikSignalType
+    //Тип объекта (из ObjectTypes)
+    internal class ObjectType : ObjectTypeBase
     {
-        public ObjectType(int id, string code, string name, int signalCodeColumn)
-        {
-            Id = id;
-            Code = code;
-            Name = name;
-            SignalCodeColumn = signalCodeColumn;
-        }
-
-        //Id в таблице ObjectTypes или ObjectTypesCalc
-        public int Id { get; private set; }
-        //Код типа объекта
-        public string Code { get; private set; }
-        //Имя
-        public string Name { get; private set; }
-        //Базовые типы для данного
-        private readonly HashSet<ObjectType> _baseTypes = new HashSet<ObjectType>();
-        public HashSet<ObjectType> BaseTypes { get { return _baseTypes; } }
-        //Номер колонки в таблице сигналов
-        internal int SignalCodeColumn { get; private set; }
-
-        //Словарь сигналов
-        private readonly DicS<ITablikSignalType> _signals = new DicS<ITablikSignalType>();
-        public DicS<ITablikSignalType> Signals { get { return _signals; } }
+        public ObjectType(IRecordRead rec)
+            : base(rec.GetInt("TypeId"), rec.GetString("TypeCode"), rec.GetString("TypeName")) { }
         
-        //Тип данных как сигнал
-        public ITablikSignalType TablikSignalType { get { return this; } }
+        //Базовые типы для данного
+        private readonly HashSet<BaseObjectType> _baseTypes = new HashSet<BaseObjectType>();
+        public HashSet<BaseObjectType> BaseTypes { get { return _baseTypes; } }
+        //Словарь сигналов
+        private readonly DicS<TablikSignal> _signals = new DicS<TablikSignal>();
+        public DicS<TablikSignal> Signals { get { return _signals; } }
+        
         //Сигнал по умолчанию
         private TablikSignal _signal;
         public TablikSignal Signal
@@ -44,22 +27,15 @@ namespace Tablik
                 Simple = new SimpleType(value.DataType);
             }
         }
-        //Тип данных
-        public DataType DataType { get { return Signal.DataType; } }
-        //Тип данных - простой
-        public SimpleType Simple { get; private set; }
-
+        
         //Является типом
-        public bool LessOrEquals(ITablikType type)
+        public override bool LessOrEquals(ITablikType type)
         {
-            return type is ObjectType && (this == type || BaseTypes.Contains((ObjectType) type))
-                      || Simple.LessOrEquals(type);
-        }
-
-        //Запись в строку
-        public string ToResString()
-        {
-            return "{" + Code + "}" + "(" + DataType + ")";
+            if (type is ObjectType) return this == type;
+            if (type is BaseObjectType)
+                return BaseTypes.Contains((BaseObjectType)type);
+            if (type is SimpleType) Simple.LessOrEquals(type);
+            return false;
         }
     }
 }

@@ -15,8 +15,8 @@ namespace Tablik
         protected string SignalsFile { get; set; }
 
         //Расчетные типы объектов
-        private readonly DicS<ObjectType> _baseObjectsTypes = new DicS<ObjectType>();
-        public DicS<ObjectType> BaseObjectsTypes { get { return _baseObjectsTypes; } }
+        private readonly DicS<BaseObjectType> _baseObjectsTypes = new DicS<BaseObjectType>();
+        public DicS<BaseObjectType> BaseObjectsTypes { get { return _baseObjectsTypes; } }
         //Типы объектов 
         private readonly DicS<ObjectType> _objectsTypes = new DicS<ObjectType>();
         public DicS<ObjectType> ObjectsTypes { get { return _objectsTypes; } }
@@ -33,7 +33,7 @@ namespace Tablik
                 ObjectsTypes.Clear();
                 Objects.Clear();
                 var typesId = new DicI<ObjectType>();
-                var baseTypesId = new DicI<ObjectType>();
+                var baseTypesId = new DicI<BaseObjectType>();
                 var objectsId = new DicI<TablikObject>();
 
                 using (var db = new DaoDb(SignalsFile))
@@ -41,7 +41,7 @@ namespace Tablik
                     using (var rec = new DaoRec(db, "BaseObjectTypes"))
                         while (rec.Read())
                         {
-                            var t = new ObjectType(rec.GetInt("BaseTypeId"), rec.GetString("CodeType"), rec.GetString("NameType"), rec.GetInt("SignalCodeColumn"));
+                            var t = new BaseObjectType(rec);
                             baseTypesId.Add(t.Id, t);
                             BaseObjectsTypes.Add(t.Code, t);
                             BaseObjectsTypes.Add(Code + "." + t.Code, t);
@@ -50,11 +50,11 @@ namespace Tablik
                     using (var rec = new DaoRec(db, "ObjectTypes"))
                         while (rec.Read())
                         {
-                            var t = new ObjectType(rec.GetInt("TypeId"), rec.GetString("TypeObject"), rec.GetString("TypeName"), 1);
+                            var t = new ObjectType(rec);
                             typesId.Add(t.Id, t);
                             ObjectsTypes.Add(t.Code, t);
                             ObjectsTypes.Add(Code + "." + t.Code, t);
-                            var list = rec.GetString("CalcTypes").ToPropertyList();
+                            var list = rec.GetString("BaseTypes").ToPropertyList();
                             foreach (var bt in list)
                                 if (BaseObjectsTypes.ContainsKey(bt))
                                     t.BaseTypes.Add(BaseObjectsTypes[bt]);
@@ -83,10 +83,10 @@ namespace Tablik
                     using (var rec = new DaoRec(db, "BaseSignals"))
                         while (rec.Read())
                         {
-                            var s = new TypeSignal(rec.GetString("CodeSignal"), rec.GetString("NameSignal"));
+                            var s = new BaseTablikSignal(rec);
                             var t = baseTypesId[rec.GetInt("BaseTypeId")];
                             t.Signals.Add(s.Code, s);
-                            //if (rec.GetBool("Default")) t.Signal = s.Signal;
+                            if (rec.GetBool("Default")) t.Signal = s;
                         }
 
                     using (var rec = new DaoRec(db, "Signals"))
@@ -98,9 +98,8 @@ namespace Tablik
                             if (rec.GetBool("Default")) t.Signal = s;
                             foreach (var bt in t.BaseTypes)
                             {
-                                var bcode = rec.GetString("CodeSignal" + (bt.SignalCodeColumn == 1 ? "" : bt.SignalCodeColumn.ToString()));
-                                if (!bcode.IsEmpty() && bt.Signals.ContainsKey(bcode))
-                                    ((TypeSignal)bt.Signals[bcode]).Signal = s;
+                                var bcode = rec.GetString("CodeSignal" + (bt.SignalColumnNum == 1 ? "" : bt.SignalColumnNum.ToString()));
+                                s.BaseSignals.Add(bcode, bt.Signals[bcode]);
                             }
                         }
                 }

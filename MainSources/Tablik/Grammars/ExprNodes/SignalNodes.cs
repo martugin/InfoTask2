@@ -1,5 +1,4 @@
-﻿using System;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime.Tree;
 
 namespace Tablik
 {
@@ -45,7 +44,7 @@ namespace Tablik
                             Signal = ob.UsedSignals[scode];
                         else
                         {
-                            Signal = new UsedSignal((TablikSignal)ob.ObjectType.Signals[scode], ob);
+                            Signal = new UsedSignal(ob.ObjectType.Signals[scode], ob);
                             ob.UsedSignals.Add(scode, Signal);    
                         }
                     }
@@ -102,7 +101,7 @@ namespace Tablik
         protected override string NodeType { get { return "GetSignal"; } }
 
         //Тип сигнала
-        public TypeSignal Signal { get; private set; }
+        public BaseTablikSignal Signal { get; private set; }
 
         public override string CompiledText()
         {

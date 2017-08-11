@@ -56,7 +56,7 @@ namespace Tablik
                         var t = (ObjectType)Param.InputsList[i].Type;
                         foreach (var sigCode in imet.Values)
                             if (ob.UsedSignals.ContainsKey(sigCode))
-                                ob.UsedSignals.Add(sigCode, new UsedSignal(t.Signals[sigCode].Signal, ob));
+                                ob.UsedSignals.Add(sigCode, new UsedSignal(t.Signals[sigCode], ob));
                     }
                 }
             }
