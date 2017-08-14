@@ -1,19 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CommonTypes;
 using CompileLibrary;
 
 namespace Calculation
 {
-    //Узел, задающий один оператор
-    internal class OperatorNode : Node, ICalcNode
+    internal abstract class CalcNode : Node, ICalcNode
     {
-        //Список операций
+        //Значения
+        public abstract IVal Value { get; }
+        //Аргументы
         private readonly List<ICalcNode> _args = new List<ICalcNode>();
         public List<ICalcNode> Args { get { return _args; } }
-
-        //Возвращаемое значение
-        public IVal Value { get { return Args.Last().Value; } }
 
         //Запись в строку
         public override string ToTestString()

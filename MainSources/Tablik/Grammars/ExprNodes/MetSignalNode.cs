@@ -6,7 +6,7 @@ namespace Tablik
     internal class MetSignalNode : TablikKeeperNode
     {
         public MetSignalNode(TablikKeeper keeper, ITerminalNode terminal, IExprNode parent) 
-            : base(keeper, terminal)
+            : base(keeper, terminal, parent)
         {
             Parent = parent;
         }

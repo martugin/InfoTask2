@@ -27,7 +27,7 @@ namespace Tablik
         //Запись в строку
         public string ToResString()
         {
-            return "{" + Code + "}" + "(" + DataType + ")";
+            return "{" + Code + "}";
         }
 
         //Тип данных как сигнал

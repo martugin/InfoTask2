@@ -333,15 +333,15 @@ namespace Tablik
             rec.Put("ErrMess", _errMess);
             rec.Put("ResiltType", Type.ToResString());
 
-            var sb = new StringBuilder("Vars:");
+            var sb = new StringBuilder("Vars: ");
             foreach (var v in Vars.Values)
-                sb.Append(v.Code).Append("!").Append(v.Type.ToResString()).Append(";");
+                sb.Append(v.Code).Append("!").Append(v.Type.ToResString()).Append("; ");
 
-            sb.Append("Expr:");
+            sb.Append("Expr: ");
             foreach (var node in Expr1.Nodes)
                 node.SaveCompiled(sb);
             if (Vars["calc"].Type.DataType != DataType.Void)
-                sb.Append("Assign!Calc!1;");
+                sb.Append("Assign!Calc!1; ");
             foreach (var node in Expr2.Nodes)
                 node.SaveCompiled(sb);
             rec.Put("CompiledExpr", sb.ToString());

@@ -18,7 +18,7 @@ namespace Tablik
         //Записать текст в скомпилированное выражение
         public void SaveCompiled(StringBuilder sb)
         {
-            sb.Append(NodeType).Append("!").Append(CompiledText()).Append(";");
+            sb.Append(NodeType).Append("!").Append(CompiledText()).Append("; ");
         }
 
         public virtual string CompiledText()
@@ -53,7 +53,7 @@ namespace Tablik
         {
             foreach (var arg in Args)
                 arg.SaveCompiled(sb);
-            sb.Append(NodeType).Append("!").Append(CompiledText()).Append("!").Append(Args.Length + (IsMet ? 1 : 0)).Append(";");
+            sb.Append(NodeType).Append("!").Append(CompiledText()).Append("!").Append(Args.Length + (IsMet ? 1 : 0)).Append("; ");
         }
         public virtual string CompiledText()
         {

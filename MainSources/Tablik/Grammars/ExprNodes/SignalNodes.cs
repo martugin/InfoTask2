@@ -89,25 +89,4 @@ namespace Tablik
 
         public override string ToTestString() { return ToTestWithChildren(); }
     }
-
-    //------------------------------------------------------------------------------------------------
-    //Получение сигнала от объекта или типа
-    internal class GetSignalNode : TablikKeeperNode
-    {
-        //Тип узла
-        public GetSignalNode(TablikKeeper keeper, ITerminalNode terminal, params IExprNode[] args) 
-            : base(keeper, terminal, args) { }
-
-        protected override string NodeType { get { return "GetSignal"; } }
-
-        //Тип сигнала
-        public BaseTablikSignal Signal { get; private set; }
-
-        public override string CompiledText()
-        {
-            return "{" + Signal.Code + "}!1";
-        }
-
-        public override string ToTestString() { return ToTestWithChildren(); }
-    }
 }

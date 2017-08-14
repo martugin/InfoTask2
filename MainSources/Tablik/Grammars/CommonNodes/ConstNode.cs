@@ -30,7 +30,7 @@ namespace Tablik
         public void SaveCompiled(StringBuilder sb)
         {
             string val = Mean.DataType != DataType.String ? Mean.String : "\'" + Mean.String + "\'";
-            sb.Append(DataType.ToEnglish()).Append("!").Append(val).Append(";");
+            sb.Append("Const").Append(DataType.ToEnglish()).Append("!").Append(val).Append("; ");
         }
     }
 }

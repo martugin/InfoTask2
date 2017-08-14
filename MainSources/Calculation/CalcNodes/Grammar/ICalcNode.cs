@@ -5,7 +5,7 @@ using CompileLibrary;
 namespace Calculation
 {
     //Интерфейс для узла расчетного выражения
-    internal interface ICalcNode : INode 
+    public interface ICalcNode : INode 
     {
         //Возвращаемое значение
         IVal Value { get; }
