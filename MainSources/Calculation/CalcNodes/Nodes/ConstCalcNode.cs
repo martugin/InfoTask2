@@ -1,4 +1,5 @@
-﻿using CommonTypes;
+﻿using System;
+using CommonTypes;
 
 namespace Calculation
 {
@@ -12,6 +13,12 @@ namespace Calculation
 
         //Значение
         private readonly Mean _mean;
-        public override IVal Value { get { return _mean; } }
+        
+        //Присвоение
+        public override IVal Calculate()
+        {
+            throw new NotImplementedException();
+            return _mean;
+        }
     }
 }

@@ -1,21 +1,22 @@
-﻿using CommonTypes;
+﻿using System.Collections.Generic;
+using CommonTypes;
 
 namespace Calculation
 {
     //Информация об узле выражения
     internal class CalcNodeInfo : CalcNode
     {
-        public CalcNodeInfo(string code, int argsCount = 0)
+        public CalcNodeInfo(string code, int argsCount, Stack<ICalcNode> stack)
         {
             Code = code;
-            ArgsCount = argsCount;
+            if (argsCount != 0) ArgsArr = new ICalcNode[argsCount];
+            for (int i = 0; i < argsCount; i++)
+                ArgsArr[argsCount - i] = stack.Pop();
         }
 
         //Код
         public string Code { get; private set; }
-        //Количество аргументов
-        public int ArgsCount { get; private set; }
 
-        public override IVal Value { get { return null; } }
+        public override IVal Calculate() { return null; }
     }
 }

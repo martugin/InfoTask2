@@ -28,6 +28,10 @@ namespace Calculation
             get { throw new NotImplementedException(); }
         }
 
+        //Расчетные параметры
+        private readonly DicS<CalcParam> _calcParams = new DicS<CalcParam>();
+        public DicS<CalcParam> CalcParams { get { return _calcParams; } }
+
         //Закрузка расчетных формул
         public void Load()
         {

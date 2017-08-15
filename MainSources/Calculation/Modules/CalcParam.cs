@@ -11,7 +11,7 @@ namespace Calculation
         {
             Module = module;
             CompiledExpr = rec.GetString("CompiledExpr");
-            Keeper = new ParsingKeeper();
+            Keeper = new CalcKeeper();
         }
 
         //Модуль
@@ -20,12 +20,21 @@ namespace Calculation
         //Накопитель ошибок
         internal ParsingKeeper Keeper { get; private set; }
         //Корневой узел расчетного выражения
-        public OperatorNode RootNode { get; private set; }
+        internal OperatorNode RootNode { get; private set; }
 
-        //Словарь переменных
-        private readonly DicS<CalcVar> _vars = new DicS<CalcVar>();
-        internal DicS<CalcVar> Vars { get { return _vars; } }
+        //Выходы
+        private readonly SetS _inputs = new SetS();
+        internal SetS Inputs { get { return _inputs; } }
+        //Переменные
+        private readonly SetS _vars = new SetS();
+        internal SetS Vars { get { return _vars; } }
 
+        //Владелец
+        public CalcParam Owner { get; private set; }
+        //Подпараметры
+        private readonly DicS<CalcParam> _subParams = new DicS<CalcParam>();
+        public DicS<CalcParam> SubParams { get { return _subParams; } }
+        
         //Разбор скомпилированного выражения
         public void ParseExpr()
         {

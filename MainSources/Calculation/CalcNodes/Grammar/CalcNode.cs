@@ -6,16 +6,16 @@ namespace Calculation
 {
     internal abstract class CalcNode : Node, ICalcNode
     {
-        //Значения
-        public abstract IVal Value { get; }
         //Аргументы
-        private readonly List<ICalcNode> _args = new List<ICalcNode>();
-        public List<ICalcNode> Args { get { return _args; } }
+        public ICalcNode[] ArgsArr { get; protected set; }
+        public IEnumerable<ICalcNode> Args {get { return ArgsArr; }}
+        //Вычислить значение
+        public abstract IVal Calculate();
 
         //Запись в строку
         public override string ToTestString()
         {
-            return ToTestWithChildren(Args.ToArray());
+            return ToTestWithChildren(ArgsArr);
         }
     }
 }

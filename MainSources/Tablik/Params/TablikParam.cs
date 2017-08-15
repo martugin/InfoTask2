@@ -333,9 +333,13 @@ namespace Tablik
             rec.Put("ErrMess", _errMess);
             rec.Put("ResiltType", Type.ToResString());
 
-            var sb = new StringBuilder("Vars: ");
+            var sb = new StringBuilder("Inputs: ");
+            foreach (var v in InputsList)
+                sb.Append(v.Code).Append("; ");
+            sb.Append("Vars: ");
             foreach (var v in Vars.Values)
-                sb.Append(v.Code).Append("!").Append(v.Type.ToResString()).Append("; ");
+                if (!Inputs.ContainsKey(v.Code))
+                    sb.Append(v.Code).Append("; ");
 
             sb.Append("Expr: ");
             foreach (var node in Expr1.Nodes)

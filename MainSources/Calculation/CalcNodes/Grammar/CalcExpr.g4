@@ -2,16 +2,11 @@ grammar CalcExpr;
 
 /* Parser Rules  */
 
-prog 	: vars expr;
+prog 	: inputs vars expr;
 
-vars : 'Vars:' var*;
-var : IDENT '!' type ';';
-type : DATATYPE                            #TypeF
-        | ARRAY '(' DATATYPE ')'      #TypeF
-        | IDENT                                  #TypeF
-        | IDENT '.' IDENT                  #TypeF
-        | SIGNAL                                #TypeF
-        ;
+inputs : 'Inputs:' (IDENT ';')*;
+
+vars : 'Vars:' (IDENT ';')*;
 
 exprs : 'Expr:' expr*;
 
@@ -52,9 +47,6 @@ info : '!' IDENT                             #InfoSimple
 /* Lexer Rules */
 
 WS  : [ \n\r\t] -> skip;
-
-DATATYPE : 'Bool' | 'Int' | 'Real' | 'Time' | 'String' | 'Segments';             
-ARRAY : 'List' | 'DicNumbers' | 'DicStrings'	;
 
 fragment DIGIT : [0-9];
 fragment LETTER : [_a-zA-Zà-ÿÀ-ß];
