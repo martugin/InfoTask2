@@ -3,26 +3,24 @@ using System.Linq;
 using Antlr4.Runtime.Tree;
 using BaseLibrary;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using P = Calculation.CalcExprParser;
 
 namespace Calculation
 {
     public class CalcExprVisitor : CalcExprBaseVisitor<ICalcNode>
     {
-        internal CalcExprVisitor(CalcKeeper keeper, CalcParam param)
+        internal CalcExprVisitor(CalcKeeper keeper)
         {
             _keeper = keeper;
-            _param = param;
         }
 
         //Формирование строки ошибки
         private readonly CalcKeeper _keeper;
 
         //Расчетный параметр
-        private readonly CalcParam _param;
+        private CalcParam Param { get { return _keeper.Param; }}
         //Модуль
-        private CalcModule Module { get { return _param.Module; }}
+        private CalcModule Module { get { return Param.Module; }}
 
         //Обход дерева разбора
         internal ICalcNode Go(IParseTree tree)
@@ -45,8 +43,8 @@ namespace Calculation
         {
             foreach (var v in context.IDENT().Select(x => x.Symbol.Text))
             {
-                _param.Inputs.Add(v);
-                _param.Vars.Add(v);
+                Param.Inputs.Add(v);
+                Param.Vars.Add(v);
             }
             return null;
         }
@@ -54,7 +52,7 @@ namespace Calculation
         public override ICalcNode VisitVars(P.VarsContext context)
         {
             foreach (var v in context.IDENT().Select(x => x.Symbol.Text))
-                _param.Vars.Add(v);
+                Param.Vars.Add(v);
             return null;
         }
 
@@ -129,7 +127,7 @@ namespace Calculation
         public override ICalcNode VisitExprSubParam(P.ExprSubParamContext context)
         {
             var info = GoInfo(context.info());
-            //return new ParamNode(new CalcParamInstance(_param.CalcParams[info.Code]));
+            //return new ParamNode(new CalcParamInstance(Param.CalcParams[info.Code]));
             throw new NotImplementedException();
         }
 

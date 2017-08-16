@@ -8,6 +8,14 @@ namespace Calculation
 {
     internal class CalcKeeper : ParsingKeeper
     {
+        public CalcKeeper(CalcParam param)
+        {
+            Param = param;
+        }
+
+        //Расчетный параметр
+        public CalcParam Param { get; private set; }
+
         protected override Node MakeConstNode(ITerminalNode terminal, bool b)
         {
             return new ConstCalcNode(MFactory.NewMean(b));

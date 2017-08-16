@@ -1,4 +1,5 @@
 ﻿using BaseLibrary;
+using CommonTypes;
 using CompileLibrary;
 
 namespace Tablik
@@ -15,10 +16,6 @@ namespace Tablik
         public ITablikSignalType TablikSignalType { get { return this; } }
         //Тип данных - простой
         public SimpleType Simple { get; private set; }
-
-        //Базовые сигналы, ключи - коды
-        private readonly DicS<BaseTablikSignal> _baseSignals = new DicS<BaseTablikSignal>();
-        public DicS<BaseTablikSignal> BaseSignals { get { return _baseSignals; } }
         
         //Чвляется типом
         public bool LessOrEquals(ITablikType type)
@@ -30,6 +27,23 @@ namespace Tablik
         public string ToResString()
         {
             return "{" + Code + "}" + "(" + DataType + ")";
+        }
+
+        //Запись в рекордсет
+        public void ToRecordset(DaoRec rec, int objectId, string objectCode)
+        {
+            rec.AddNew();
+            rec.Put("ObjectId", objectId);
+            rec.Put("FullCode", objectCode + "." + Code);
+            rec.Put("CodeSignal", Code);
+            rec.Put("NameSignal", Name);
+            rec.Put("DataType", DataType.ToRussian());
+            rec.Put("SignalType", SignalType);
+            rec.Put("InfOut", InfOut);
+            rec.Put("InfProp", InfProp);
+            rec.Put("InitialSignals", InitialSignals);
+            rec.Put("Formula", Formula);
+            rec.Update();
         }
     }
 }

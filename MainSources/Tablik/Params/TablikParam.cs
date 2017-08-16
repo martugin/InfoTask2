@@ -302,7 +302,8 @@ namespace Tablik
                 node.DefineType();
             last = Expr2.Nodes.Last();
             Type = last.Type;
-            MetSignals = Keeper.GetMetSignals(last);
+            if (Type is ObjectType || Type is BaseObjectType)
+                MetSignals = Keeper.GetMetSignals(last);
         }
 
         //Создать попрожденные параметры

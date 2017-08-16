@@ -1,4 +1,5 @@
-﻿using BaseLibrary;
+﻿using System.Collections.Generic;
+using BaseLibrary;
 using CommonTypes;
 using CompileLibrary;
 
@@ -19,8 +20,8 @@ namespace Tablik
         public ObjectType ObjectType { get; private set; }
 
         //Используемые сигналы
-        private readonly DicS<UsedSignal> _usedSignals = new DicS<UsedSignal>();
-        public DicS<UsedSignal> UsedSignals { get { return _usedSignals; } }
+        private readonly HashSet<TablikSignal> _usedSignals = new HashSet<TablikSignal>();
+        public HashSet<TablikSignal> UsedSignals { get { return _usedSignals; } }
         //Используемые свойства
         private readonly DicS<ObjectProp> _usedProps = new DicS<ObjectProp>();
         public DicS<ObjectProp> UsedProps { get { return _usedProps; } }
@@ -36,8 +37,8 @@ namespace Tablik
             recObjects.Update();
             foreach (var prop in UsedProps.Values)
                 prop.ToRecordset(recProps, id);
-            foreach (var sig in UsedSignals.Values)
-                sig.ToRecordset(recSignals, id);
+            foreach (var sig in UsedSignals)
+                sig.ToRecordset(recSignals, id, Code);
         }
 
         //Сигнал по умолчанию

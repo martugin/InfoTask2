@@ -49,9 +49,9 @@ namespace Tablik
         public SetS GetMetSignals(IExprNode node)
         {
             if (node is VarNode)
-                return ((VarNode)node).Var.MetSignals;
+                return ((VarNode) node).Var.MetSignals;
             if (node.Type is TablikParam)
-                return ((TablikParam)node.Type).MetSignals;
+                return ((TablikParam) node.Type).MetSignals;
             return null;
         }
     }

@@ -99,7 +99,7 @@ namespace Tablik
                             foreach (var bt in t.BaseTypes)
                             {
                                 var bcode = rec.GetString("CodeSignal" + (bt.SignalColumnNum == 1 ? "" : bt.SignalColumnNum.ToString()));
-                                s.BaseSignals.Add(bcode, bt.Signals[bcode]);
+                                t.Signals.Add(bcode, s);
                             }
                         }
                 }

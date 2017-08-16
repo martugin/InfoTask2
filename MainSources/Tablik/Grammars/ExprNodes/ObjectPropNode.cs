@@ -24,7 +24,7 @@ namespace Tablik
         //Определение типа данных
         public override void DefineType()
         {
-            if (!Object.UsedSignals.ContainsKey(Prop.Text))
+            if (!Object.UsedProps.ContainsKey(Prop.Text))
                 AddError("Не найдено свойство", Prop);
             else
             {

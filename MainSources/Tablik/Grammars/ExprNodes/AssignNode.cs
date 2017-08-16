@@ -32,7 +32,8 @@ namespace Tablik
             if (Var.Type.DataType == DataType.Error)
                 AddError("Несовместимость типов данных при присвоении переменной");
             Type = new SimpleType(DataType.Void);
-            Var.MetSignals = Keeper.GetMetSignals(val);
+            if (Var.Type is ObjectType || Var.Type is BaseObjectType)
+                Var.MetSignals = Keeper.GetMetSignals(val);
         }
 
         //Запись в скомпилированное выражение

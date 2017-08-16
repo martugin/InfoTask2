@@ -48,15 +48,15 @@ namespace Tablik
                 {
                     var amet = Keeper.GetMetSignals(Args[i]);
                     if (amet != null)
-                        foreach (var m in amet.Values)
-                            imet.Add(m);
+                        foreach (var m in imet.Values)
+                            amet.Add(m);
                     if (Args[i].Type is TablikObject)
                     {
-                        var ob = (TablikObject) Args[i].Type;
-                        var t = (ObjectType)Param.InputsList[i].Type;
+                        var ob = (TablikObject)Args[i].Type;
+                        var sigs = ob.ObjectType.Signals;
                         foreach (var sigCode in imet.Values)
-                            if (ob.UsedSignals.ContainsKey(sigCode))
-                                ob.UsedSignals.Add(sigCode, new UsedSignal(t.Signals[sigCode], ob));
+                            if (ob.UsedSignals.Contains(sigs[sigCode]))
+                                ob.UsedSignals.Add(sigs[sigCode]);
                     }
                 }
             }

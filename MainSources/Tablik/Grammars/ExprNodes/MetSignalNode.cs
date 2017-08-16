@@ -21,20 +21,31 @@ namespace Tablik
         public override void DefineType()
         {
             var t = Parent.Type;
-            if (!(t is TablikObject) && !(t is ObjectType))
-                AddError("Взятие сигнала от выражения, не являющегося объектом");
-            else
+            var code = Token.Text.Substring(1, Token.Text.Length - 2);
+            var metSignals = Keeper.GetMetSignals(Parent);
+            if (t is TablikObject || t is ObjectType)
             {
-                var type = t is ObjectType ? (ObjectType) t : ((TablikObject) t).ObjectType;
-                var code = Token.Text.Substring(1, Token.Text.Length - 2);
+                var type = t is ObjectType ? (ObjectType)t : ((TablikObject)t).ObjectType;
                 if (type.Signals.ContainsKey(code))
                 {
                     Type = type.Signals[code];
-                    var metSignals =  Keeper.GetMetSignals(Parent);
                     if (metSignals != null) metSignals.Add(code);
+                    else ((TablikObject) t).UsedSignals.Add((TablikSignal) Type);
+                }
+                else AddError("Не найден сигнал");
+            } 
+            else if (t is BaseObjectType)
+            {
+                var type = (BaseObjectType) t;
+                if (type.Signals.ContainsKey(code))
+                {
+                    Type = type.Signals[code];
+                    metSignals.Add(code);
                 }
                 else AddError("Не найден сигнал");
             }
+            else AddError("Взятие сигнала от выражения, не являющегося объектом");
+            if (Type == null) Type = new SimpleType();
         }
 
         public override string ToTestString()

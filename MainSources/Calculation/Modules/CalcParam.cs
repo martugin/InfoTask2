@@ -11,14 +11,14 @@ namespace Calculation
         {
             Module = module;
             CompiledExpr = rec.GetString("CompiledExpr");
-            Keeper = new CalcKeeper();
+            Keeper = new CalcKeeper(this);
         }
 
         //Модуль
         public CalcModule Module { get; private set; }
 
         //Накопитель ошибок
-        internal ParsingKeeper Keeper { get; private set; }
+        internal CalcKeeper Keeper { get; private set; }
         //Корневой узел расчетного выражения
         internal OperatorNode RootNode { get; private set; }
 
@@ -38,7 +38,7 @@ namespace Calculation
         //Разбор скомпилированного выражения
         public void ParseExpr()
         {
-            
+            RootNode = (OperatorNode)new CalcExprParsing(Keeper, "Expr", CompiledExpr).ResultTree;
         }
 
         //Вычисление значения

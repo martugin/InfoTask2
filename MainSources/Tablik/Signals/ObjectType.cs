@@ -15,7 +15,10 @@ namespace Tablik
         //Словарь сигналов
         private readonly DicS<TablikSignal> _signals = new DicS<TablikSignal>();
         public DicS<TablikSignal> Signals { get { return _signals; } }
-        
+        //Словарь базовых сигналов
+        private readonly DicS<BaseTablikSignal> _baseSignals = new DicS<BaseTablikSignal>();
+        public DicS<BaseTablikSignal> BaseSignals { get { return _baseSignals; } }
+
         //Сигнал по умолчанию
         private TablikSignal _signal;
         public TablikSignal Signal

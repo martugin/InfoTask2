@@ -4,9 +4,9 @@ using CompileLibrary;
 
 namespace Calculation
 {
-    public class CalcExprParsing : Parsing
+    internal class CalcExprParsing : Parsing
     {
-        public CalcExprParsing(ParsingKeeper keeper, string fieldName, string fieldValue)
+        public CalcExprParsing(CalcKeeper keeper, string fieldName, string fieldValue)
             : base(keeper, fieldName, fieldValue + Environment.NewLine)
         {
         }
@@ -23,7 +23,7 @@ namespace Calculation
 
         protected override Node RunVisitor(Parser parser, ParsingKeeper keeper)
         {
-            return (Node)new CalcExprVisitor(keeper).Go(((CalcExprParser)parser).prog());
+            return (Node)new CalcExprVisitor((CalcKeeper)keeper).Go(((CalcExprParser)parser).prog());
         }
     }
 }
