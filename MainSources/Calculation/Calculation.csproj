@@ -90,6 +90,8 @@
     <Compile Include="Funs\Base\MomentsFun.cs" />
     <Compile Include="Funs\Base\Oka.cs" />
     <Compile Include="Funs\Base\ScalarFun.cs" />
+    <Compile Include="Modules\DerivedParam.cs" />
+    <Compile Include="Modules\CalcObject.cs" />
     <Compile Include="Modules\CalcParam.cs" />
     <Compile Include="Modules\CalcParamInstance.cs" />
     <Compile Include="Modules\CalcVar.cs" />

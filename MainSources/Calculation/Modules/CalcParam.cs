@@ -30,7 +30,7 @@ namespace Calculation
         internal SetS Vars { get { return _vars; } }
 
         //Владелец
-        public CalcParam Owner { get; private set; }
+        public CalcParam Owner { get; set; }
         //Подпараметры
         private readonly DicS<CalcParam> _subParams = new DicS<CalcParam>();
         public DicS<CalcParam> SubParams { get { return _subParams; } }
