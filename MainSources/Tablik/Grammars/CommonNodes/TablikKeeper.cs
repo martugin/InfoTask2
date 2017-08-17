@@ -54,6 +54,16 @@ namespace Tablik
                 return ((TablikParam) node.Type).MetSignals;
             return null;
         }
+        //Получить список MetProps от вершины
+        public SetS GetMetProps(IExprNode node)
+        {
+            if (node is VarNode)
+                return ((VarNode)node).Var.MetProps;
+            if (node.Type is TablikParam)
+                return ((TablikParam)node.Type).MetProps;
+            return null;
+        }
+
     }
 
     //------------------------------------------------------------------

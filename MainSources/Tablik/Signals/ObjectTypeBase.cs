@@ -2,14 +2,15 @@
 
 namespace Tablik
 {
-    //Базовый класс для BaseObjectTypes и ObjectTypes
+    //Базовый класс для BaseObjectType и ObjectType
     internal abstract class ObjectTypeBase : ITablikSignalType
     {
-        protected ObjectTypeBase(int id, string code, string name)
+        protected ObjectTypeBase(TablikConnect connect, int id, string code, string name)
         {
             Id = id;
             Code = code;
             Name = name;
+            Connect = connect;
         }
 
         //Id в таблице ObjectTypes или ObjectTypesCalc
@@ -18,6 +19,8 @@ namespace Tablik
         public string Code { get; protected set; }
         //Имя
         public string Name { get; protected set; }
+        //Источник
+        public TablikConnect Connect { get; private set; }
 
         //Тип данных
         public DataType DataType { get { return Simple.DataType; } }

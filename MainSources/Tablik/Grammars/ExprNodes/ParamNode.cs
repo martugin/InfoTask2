@@ -38,7 +38,7 @@ namespace Tablik
             else MakeUsedMetSignals();
         }
 
-        //Сформировать используемые сигналы по входам типа объекта
+        //Сформировать используемые сигналы и свойства по входам типа объекта
         private void MakeUsedMetSignals()
         {
             for (int i = 0; i < Args.Length; i++)
@@ -57,6 +57,22 @@ namespace Tablik
                         foreach (var sigCode in imet.Values)
                             if (ob.UsedSignals.Contains(sigs[sigCode]))
                                 ob.UsedSignals.Add(sigs[sigCode]);
+                    }
+                }
+
+                var iprop = Param.InputsList[i].MetProps;
+                if (iprop != null)
+                {
+                    var aprop = Keeper.GetMetProps(Args[i]);
+                    if (aprop != null)
+                        foreach (var p in iprop.Values)
+                            aprop.Add(p);
+                    if (Args[i].Type is TablikObject)
+                    {
+                        var ob = (TablikObject)Args[i].Type;
+                        foreach (var propCode in iprop.Values)
+                            if (ob.UsedProps.ContainsKey(propCode))
+                                ob.UsedProps.Add(propCode,  ob.Props[propCode]);
                     }
                 }
             }

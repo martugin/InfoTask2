@@ -8,9 +8,9 @@ namespace Tablik
     //Один объект для Tablik
     internal class TablikObject : BaseObject, ITablikSignalType
     {
-        public TablikObject(TablikConnect con, ObjectType type, IRecordRead rec) : base(rec)
+        public TablikObject(TablikConnect connect, ObjectType type, IRecordRead rec) : base(rec)
         {
-            Connect = con;
+            Connect = connect;
             ObjectType = type;
         }
 

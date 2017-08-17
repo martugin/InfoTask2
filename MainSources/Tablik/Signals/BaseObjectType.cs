@@ -5,8 +5,8 @@ namespace Tablik
     //Тип объекта (базовый из BaseObjectTypes)
     internal class BaseObjectType : ObjectTypeBase
     {
-        public BaseObjectType(IRecordRead rec)
-            : base(rec.GetInt("BaseTypeId"), rec.GetString("CodeType"), rec.GetString("NameType"))
+        public BaseObjectType(TablikConnect connect, IRecordRead rec)
+            : base(connect, rec.GetInt("BaseTypeId"), rec.GetString("CodeType"), rec.GetString("NameType"))
         {
             SignalColumnNum = rec.GetInt("SignalColumnNum");
         }

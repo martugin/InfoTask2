@@ -209,7 +209,7 @@ namespace Tablik
                                 else Keeper.AddError("Одинаковый код типа объекта в двух разных источниках", node);
                             }
                         }
-                        if (t != null) v = new TablikVar(varCode, t) { MetSignals = new SetS() };
+                        if (t != null) v = new TablikVar(varCode, t) { MetSignals = new SetS(), MetProps = new SetS() };
                         else Keeper.AddError("Не найден тип объекта или сигнала", node);
                         break;
                 }
@@ -273,8 +273,9 @@ namespace Tablik
         private readonly HashSet<TablikParam> _baseParams = new HashSet<TablikParam>();
         public HashSet<TablikParam> BaseParams { get { return _baseParams; } }
 
-        //Список взятий сигналов для переменной типа объекта
+        //Списки используемых сигналов и колонок для переменных типа объекта
         public SetS MetSignals { get; set; }
+        public SetS MetProps { get; set; }
 
         //Данный параметр является наследником указанного типа
         public bool LessOrEquals(ITablikType type)
@@ -303,7 +304,10 @@ namespace Tablik
             last = Expr2.Nodes.Last();
             Type = last.Type;
             if (Type is ObjectType || Type is BaseObjectType)
+            {
                 MetSignals = Keeper.GetMetSignals(last);
+                MetProps = Keeper.GetMetProps(last);
+            }
         }
 
         //Создать попрожденные параметры

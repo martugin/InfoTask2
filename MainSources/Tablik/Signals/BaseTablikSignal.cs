@@ -6,11 +6,12 @@ namespace Tablik
     //Сигнал из BaseSignals
     internal class BaseTablikSignal : ITablikSignalType
     {
-        public BaseTablikSignal(IRecordRead rec)
+        public BaseTablikSignal(TablikConnect connect, IRecordRead rec)
         {
             Code = rec.GetString("CodeSignal");
             Name = rec.GetString("NameSignal");
             DataType = rec.GetString("DataType").ToDataType();
+            Connect = connect;
             Simple = new SimpleType(DataType);
         }
 
@@ -18,6 +19,8 @@ namespace Tablik
         public string Code { get; private set; }
         //Имя сигнала
         public string Name { get; private set; }
+        //Источник
+        public TablikConnect Connect { get; private set; }
 
         //Тип данных
         public DataType DataType { get; private set; }

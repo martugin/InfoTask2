@@ -179,10 +179,10 @@ namespace Tablik
             var stype = expr.Type.TablikSignalType;
             if (stype == null)
             {
-                _keeper.AddError("Недопустимое свойство", context.IDENT());
+                _keeper.AddError("Не найдено свойство", context.IDENT());
                 return new ErrorNode(context.PROP());
             }
-            return new ObjectPropNode(_keeper, (TablikObject)expr.Type.TablikSignalType, context.PROP(), context.IDENT());
+            return new ObjectPropNode(_keeper, expr, context.PROP(), context.IDENT());
         }
 
         public override IExprNode VisitExprMet(P.ExprMetContext context)

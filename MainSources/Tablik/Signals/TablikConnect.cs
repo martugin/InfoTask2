@@ -23,6 +23,9 @@ namespace Tablik
         //Объекты
         private readonly DicS<TablikObject> _objects = new DicS<TablikObject>();
         public DicS<TablikObject> Objects { get { return _objects; } }
+        //Колонки таблицы объектов
+        private readonly DicS<DataType> _objectsColumns  = new DicS<DataType>();
+        public DicS<DataType> ObjectsColumns { get { return _objectsColumns; } }
 
         //Загрузка сигналов
         public void LoadSignals()
@@ -41,7 +44,7 @@ namespace Tablik
                     using (var rec = new DaoRec(db, "BaseObjectTypes"))
                         while (rec.Read())
                         {
-                            var t = new BaseObjectType(rec);
+                            var t = new BaseObjectType(this, rec);
                             baseTypesId.Add(t.Id, t);
                             BaseObjectsTypes.Add(t.Code, t);
                             BaseObjectsTypes.Add(Code + "." + t.Code, t);
@@ -50,7 +53,7 @@ namespace Tablik
                     using (var rec = new DaoRec(db, "ObjectTypes"))
                         while (rec.Read())
                         {
-                            var t = new ObjectType(rec);
+                            var t = new ObjectType(this, rec);
                             typesId.Add(t.Id, t);
                             ObjectsTypes.Add(t.Code, t);
                             ObjectsTypes.Add(Code + "." + t.Code, t);
@@ -83,7 +86,7 @@ namespace Tablik
                     using (var rec = new DaoRec(db, "BaseSignals"))
                         while (rec.Read())
                         {
-                            var s = new BaseTablikSignal(rec);
+                            var s = new BaseTablikSignal(this, rec);
                             var t = baseTypesId[rec.GetInt("BaseTypeId")];
                             t.Signals.Add(s.Code, s);
                             if (rec.GetBool("Default")) t.Signal = s;
@@ -92,7 +95,7 @@ namespace Tablik
                     using (var rec = new DaoRec(db, "Signals"))
                         while (rec.Read())
                         {
-                            var s = new TablikSignal(rec);
+                            var s = new TablikSignal(this, rec);
                             var t = typesId[rec.GetInt("TypeId")];
                             t.Signals.Add(s.Code, s);
                             if (rec.GetBool("Default")) t.Signal = s;
@@ -102,6 +105,10 @@ namespace Tablik
                                 t.Signals.Add(bcode, s);
                             }
                         }
+
+                    using (var rec = new DaoRec(db, "ObjectsColumns"))
+                        while (rec.Read())
+                            ObjectsColumns.Add(rec.GetString("CodeColumn"), rec.GetString("DataType").ToDataType());
                 }
             });
         }

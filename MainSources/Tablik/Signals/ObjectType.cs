@@ -6,8 +6,8 @@ namespace Tablik
     //Тип объекта (из ObjectTypes)
     internal class ObjectType : ObjectTypeBase
     {
-        public ObjectType(IRecordRead rec)
-            : base(rec.GetInt("TypeId"), rec.GetString("TypeCode"), rec.GetString("TypeName")) { }
+        public ObjectType(TablikConnect connect, IRecordRead rec)
+            : base(connect, rec.GetInt("TypeId"), rec.GetString("TypeCode"), rec.GetString("TypeName")) { }
         
         //Базовые типы для данного
         private readonly HashSet<BaseObjectType> _baseTypes = new HashSet<BaseObjectType>();

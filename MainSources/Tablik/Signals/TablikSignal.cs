@@ -7,16 +7,19 @@ namespace Tablik
     //Сигнал из Signals
     internal class TablikSignal : BaseSignal, ITablikSignalType
     {
-        public TablikSignal(IRecordRead rec) : base(rec)
+        public TablikSignal(TablikConnect connect, IRecordRead rec) : base(rec)
         {
             Simple = new SimpleType(DataType);
+            Connect = connect;
         }
 
         //Тип данных - сигнал
         public ITablikSignalType TablikSignalType { get { return this; } }
         //Тип данных - простой
         public SimpleType Simple { get; private set; }
-        
+        //Источник
+        public TablikConnect Connect { get; private set; }
+
         //Чвляется типом
         public bool LessOrEquals(ITablikType type)
         {

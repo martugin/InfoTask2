@@ -20,7 +20,8 @@ namespace Tablik
         //Значение по умолчанию
         public Mean DefaultValue { get; private set; }
 
-        //Список взятий сигналов для переменной типа объекта
+        //Списки используемых сигналов и колонок для переменных типа объекта
         public SetS MetSignals { get; set; }
+        public SetS MetProps { get; set; }
     }
 }

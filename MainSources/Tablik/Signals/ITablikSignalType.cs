@@ -7,5 +7,8 @@
         string Code { get; }
         //Имя
         string Name { get; }
+
+        //Источник
+        TablikConnect Connect { get; }
     }
 }
