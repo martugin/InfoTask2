@@ -8,7 +8,7 @@ namespace Tablik
         public SignalNode(TablikKeeper keeper, ITerminalNode terminal) 
             : base(keeper, terminal)
         {
-            var code = terminal.Symbol.Text;
+            var code = terminal.Symbol.Text.Substring(1, terminal.Symbol.Text.Length - 2);
             string ocode = null, scode = null;
             int pos = code.LastIndexOf('.');
             if (pos != -1)
@@ -16,6 +16,7 @@ namespace Tablik
                 scode = code.Substring(pos + 1);
                 ocode = code.Substring(0, pos);
             }
+            else ocode = code.Substring(1, code.Length - 2);
                 
             foreach (var source in Keeper.Project.Sources.Values)
             {
@@ -23,17 +24,17 @@ namespace Tablik
                 var uobjs = Keeper.Module.UsedObjects;
                 if (objs.ContainsKey(code))
                 {
-                    if (Object != null) AddError("Указанный объект кодом присутствует в нескольких источниках");
+                    if (Object != null) AddError("Указанный объект присутствует в нескольких источниках");
                     Object = objs[ocode = code];
                     Signal = Object.Signal;
-                    _isObject = false;
+                    _isObject = true;
                 }
                 else if (pos != -1 && objs.ContainsKey(ocode) && objs[ocode].ObjectType.Signals.ContainsKey(scode))
                 {
                     if (Object != null) AddError("Указанный сигнал присутствует в нескольких источниках");
                     Object = objs[ocode];
                     Signal = Object.ObjectType.Signals[scode];
-                    _isObject = true;
+                    _isObject = false;
                 }
                 if (!uobjs.ContainsKey(ocode))
                     uobjs.Add(ocode, Object);

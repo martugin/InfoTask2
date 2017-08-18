@@ -239,6 +239,7 @@ namespace ProvidersTest
         public void Clone()
         {
             TestLib.CopyDir(@"Providers\Logika", "Clone");
+            TestLib.CopyFile(@"Providers\Logika", "prolog.mdb", "CloneProlog.mdb");
             var app = new App("Test", new TestIndicator(), false);
             app.InitTest();
             var con = new ClonerConnect(app);

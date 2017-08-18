@@ -87,15 +87,21 @@ namespace TablikTest
             Assert.IsTrue(ot.BaseTypes.Contains(source.BaseObjectsTypes["Analog"]));
             Assert.IsTrue(ot.BaseTypes.Contains(source.BaseObjectsTypes["State"]));
             Assert.IsTrue(ot.BaseTypes.Contains(source.BaseObjectsTypes["Discret"]));
-            Assert.AreEqual(5, ot.Signals.Count);
+            Assert.AreEqual(9, ot.Signals.Count);
             Assert.IsTrue(ot.Signals.ContainsKey("Bool"));
             Assert.IsTrue(ot.Signals.ContainsKey("Int"));
             Assert.IsTrue(ot.Signals.ContainsKey("Real"));
             Assert.AreEqual(ot.Signal, ot.Signals["Real"]);
             Assert.IsTrue(ot.Signals.ContainsKey("Time"));
             Assert.IsTrue(ot.Signals.ContainsKey("String"));
+            Assert.IsTrue(ot.Signals.ContainsKey("State"));
+            Assert.IsTrue(ot.Signals.ContainsKey("Value"));
+            Assert.IsTrue(ot.Signals.ContainsKey("Есть"));
+            Assert.IsTrue(ot.Signals.ContainsKey("Сост"));
 
             var sig = ot.Signals["Int"];
+            Assert.AreEqual(ot.Signals["State"], sig);
+            Assert.AreEqual(ot.Signals["Сост"], sig);
             Assert.AreEqual("Int", sig.Code);
             Assert.AreEqual("Целый сигнал", sig.Name);
             Assert.AreEqual(DataType.Integer, sig.DataType);
@@ -103,12 +109,17 @@ namespace TablikTest
             Assert.AreEqual(ArrayType.Single, sig.Simple.ArrayType);
             Assert.AreEqual(null, sig.Simple.TablikSignalType);
             sig = ot.Signals["Bool"];
+            Assert.AreEqual(ot.Signals["Есть"], sig);
             Assert.AreEqual("Bool", sig.Code);
             Assert.AreEqual("Логический сигнал", sig.Name);
             Assert.AreEqual(DataType.Boolean, sig.DataType);
             Assert.AreEqual(DataType.Boolean, sig.Simple.DataType);
             Assert.AreEqual(ArrayType.Single, sig.Simple.ArrayType);
             Assert.AreEqual(null, sig.Simple.TablikSignalType);
+            sig = ot.Signals["Real"];
+            Assert.AreEqual(ot.Signals["Value"], sig);
+            Assert.AreEqual("Real", sig.Code);
+            Assert.AreEqual(DataType.Real, sig.DataType);
 
             Assert.IsTrue(source.ObjectsTypes.ContainsKey("Small"));
             Assert.IsTrue(source.ObjectsTypes.ContainsKey("Sour1.Small"));
@@ -189,7 +200,7 @@ namespace TablikTest
             Assert.AreEqual("Дискретный сигнал", bot.Name);
             Assert.AreEqual(2, bot.Signals.Count);
 
-            Assert.IsTrue(ot.Signals.ContainsKey("Есть"));
+            Assert.IsTrue(bot.Signals.ContainsKey("Есть"));
             tsig = bot.Signals["Есть"];
             Assert.AreEqual("Есть", tsig.Code);
             //Assert.AreEqual(tsig, tsig.Signal);
@@ -300,7 +311,7 @@ namespace TablikTest
             Assert.IsTrue(tabl.Tabls[2].Fields.ContainsKey("Id"));
             Assert.IsTrue(tabl.Tabls[2].Fields.ContainsKey("String2"));
 
-            Assert.AreEqual(2, module.Params.Count);
+            Assert.AreEqual(58, module.Params.Count);
             Assert.AreEqual(0, module.DerivedParams.Count);
             Assert.IsTrue(module.Params.ContainsKey("A01"));
             Assert.IsTrue(module.ParamsAll.ContainsKey("A01"));
@@ -431,11 +442,11 @@ namespace TablikTest
             ParseExpr(pars, "C16", "Fun: + (Met: S1 (Var: p), Met: S2 (Var: p, Integer: 3))");
             ParseExpr(pars, "C17", "Param: C16 (Param: C04 (Boolean: 1, Integer: 2))");
 
-            ParseExpr(pars, "D01", "Fun: + (Fun: + (Fun: + (Signal: {Out1}, Signal: {Out1.Int}), Signal: {Sour1.Out2}), Signal: {Sour1.Out2.State})");
-            ParseExpr(pars, "D02", "Assign: (Var: a, Signal: {Out1}), Assign: (Var: b, MetSignal: {String} (Var: a)), Fun: + (Var: b, String: 'aaa')");
+            ParseExpr(pars, "D01", "Fun: + (Fun: + (Fun: + (Object: {Out1}, Signal: {Out1.Int}), Object: {Sour1.Out2}), Signal: {Sour1.Out2.State})");
+            ParseExpr(pars, "D02", "Assign: (Var: a, Object: {Out1}), Assign: (Var: b, MetSignal: {String} (Var: a)), Fun: + (Var: b, String: 'aaa')");
             ParseExpr(pars, "D03", "MetSignal: {Int} (Var: S)");
             ParseExpr(pars, "D04", "Fun: Or (MetSignal: {State} (Var: A), MetSignal: {State} (Var: S))");
-            ParseExpr(pars, "D05", "Fun: + (Param: D03 (Signal: {Out1}), Param: D04 (Signal: {Out1}, Signal: {Out2}))");
+            ParseExpr(pars, "D05", "Fun: + (Param: D03 (Object: {Out1}), Param: D04 (Object: {Out1}, Object: {Out2}))");
             
         }
     }
