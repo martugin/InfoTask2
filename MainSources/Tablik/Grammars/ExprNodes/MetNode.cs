@@ -23,14 +23,14 @@ namespace Tablik
         //Определение типа данных
         public override void DefineType()
         {
-            if (!(Parent.Type is TablikParam))
+            if (!(Parent.Type is TablikCalcParam))
                 AddError("Взятие подпараметра от выражения, не являющего параметром");
             else
             {
                 var type = Parent.Type;
-                while (type is TablikParam)
+                while (type is TablikCalcParam)
                 {
-                    var par = (TablikParam) type;
+                    var par = (TablikCalcParam) type;
                     if (par.Params.ContainsKey(Token.Text))
                     {
                         Type = par.Params[Token.Text];
@@ -42,7 +42,7 @@ namespace Tablik
                     AddError("Не найден подпараметр");
                 else
                 {
-                    var inputs = ((TablikParam)Type).InputsList;
+                    var inputs = ((TablikCalcParam)Type).InputsList;
                     if (Args.Length > inputs.Count ||
                         Args.Length < inputs.Count && inputs[Args.Length].DefaultValue == null)
                         AddError("Количество входов подпараметра не совпадает с количеством аргументов");

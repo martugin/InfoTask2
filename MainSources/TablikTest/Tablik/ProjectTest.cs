@@ -356,13 +356,13 @@ namespace TablikTest
             Assert.IsTrue(spar.IsSubParam);
         }
 
-        private void ParseExpr(DicS<TablikParam> pars, string code, string result)
+        private void ParseExpr(DicS<TablikCalcParam> pars, string code, string result)
         {
             Assert.IsTrue(pars.ContainsKey(code));
             Assert.AreEqual("NodeList: (" + result + ")", pars[code].Expr1.ToTestString());
         }
 
-        private void ParseSubExpr(DicS<TablikParam> pars, string code, string subCode, string result)
+        private void ParseSubExpr(DicS<TablikCalcParam> pars, string code, string subCode, string result)
         {
             Assert.IsTrue(pars.ContainsKey(code));
             Assert.IsTrue(pars[code].Params.ContainsKey(subCode));

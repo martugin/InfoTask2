@@ -10,16 +10,16 @@ namespace Tablik
             : base(keeper, terminal, args)
         {
             if (args.Length == 2) Def = args[1];
-            if (!(args[0].Type is TablikParam))
+            if (!(args[0].Type is TablikCalcParam))
                 AddError("Аргумент функции Абсолют должен задавать расчетный параметр", args[0].Token);
-            else Param = (TablikParam)args[0].Type;
+            else Param = (TablikCalcParam)args[0].Type;
         }
 
         //Тип узла
         protected override string NodeType { get { return "Prev"; } }
 
         //Параметр
-        public TablikParam Param { get; private set; }
+        public TablikCalcParam Param { get; private set; }
         //Значение по умолчанию
         public IExprNode Def { get; private set; }
 

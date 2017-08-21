@@ -9,9 +9,9 @@ using CompileLibrary;
 namespace Tablik
 {
     //Один расчетный параметр для компиляции 
-    internal class TablikParam : BaseCalcParam, ISubParams, ITablikType
+    internal class TablikCalcParam : BaseCalcParam, ISubParams, ITablikType
     {
-        public TablikParam(TablikModule module, IRecordRead rec, bool isSubParam, bool isGenerated) 
+        public TablikCalcParam(TablikModule module, IRecordRead rec, bool isSubParam, bool isGenerated) 
             : base(rec, isSubParam)
         {
             Module = module;
@@ -42,7 +42,7 @@ namespace Tablik
         }
 
         //Конструктор для тестов
-        public TablikParam(TablikModule module, string code, string expr1, string expr2 = "Расчет")
+        public TablikCalcParam(TablikModule module, string code, string expr1, string expr2 = "Расчет")
             : base(false)
         {
             Module = module;
@@ -69,17 +69,17 @@ namespace Tablik
         public bool IsGenerated { get; private set; }
 
         //Словарь расчетных подпараметров, ключи - коды, содержит только отмеченные и без грубых ошибок
-        private readonly DicS<TablikParam> _params = new DicS<TablikParam>();
-        public DicS<TablikParam> Params { get { return _params; } }
+        private readonly DicS<TablikCalcParam> _params = new DicS<TablikCalcParam>();
+        public DicS<TablikCalcParam> Params { get { return _params; } }
         //Словарь всех расчетных подпараметров, ключи - коды
-        private readonly DicS<TablikParam> _paramsAll = new DicS<TablikParam>();
-        public DicS<TablikParam> ParamsAll { get { return _paramsAll; } }
+        private readonly DicS<TablikCalcParam> _paramsAll = new DicS<TablikCalcParam>();
+        public DicS<TablikCalcParam> ParamsAll { get { return _paramsAll; } }
         //Словарь расчетных подпараметров, ключи - Id, содержит все подпараметров
-        private readonly DicI<TablikParam> _paramsId = new DicI<TablikParam>();
-        public DicI<TablikParam> ParamsId { get { return _paramsId; } }
+        private readonly DicI<TablikCalcParam> _paramsId = new DicI<TablikCalcParam>();
+        public DicI<TablikCalcParam> ParamsId { get { return _paramsId; } }
 
         //Владелец
-        internal TablikParam Owner { get; private set; }
+        internal TablikCalcParam Owner { get; private set; }
 
         //Добавляет параметр в дерево параметров
         private void JoinToParamTree()
@@ -142,8 +142,8 @@ namespace Tablik
         public DicS<TablikVar> Vars { get { return _vars; } }
 
         //Параметры, используемые в данном
-        private readonly Dictionary<TablikParam, IToken> _usedParams = new Dictionary<TablikParam, IToken>();
-        public Dictionary<TablikParam, IToken> UsedParams { get { return _usedParams; } }
+        private readonly Dictionary<TablikCalcParam, IToken> _usedParams = new Dictionary<TablikCalcParam, IToken>();
+        public Dictionary<TablikCalcParam, IToken> UsedParams { get { return _usedParams; } }
         
         //Семантический разбор поля Inputs
         private void ParseInputs()
@@ -242,7 +242,7 @@ namespace Tablik
         //Флаг для построения графа зависимости параметров
         public DfsStatus DfsStatus { get; set; }
 
-        public void Dfs(List<TablikParam> paramsOrder) //Параметры, упорядоченные по порядку обсчета
+        public void Dfs(List<TablikCalcParam> paramsOrder) //Параметры, упорядоченные по порядку обсчета
         {
             DfsStatus = DfsStatus.Process;
             foreach (var p in UsedParams.Keys)
@@ -270,8 +270,8 @@ namespace Tablik
         public ITablikSignalType TablikSignalType { get { return Type.TablikSignalType; } }
 
         //Параметры, базовые для данного
-        private readonly HashSet<TablikParam> _baseParams = new HashSet<TablikParam>();
-        public HashSet<TablikParam> BaseParams { get { return _baseParams; } }
+        private readonly HashSet<TablikCalcParam> _baseParams = new HashSet<TablikCalcParam>();
+        public HashSet<TablikCalcParam> BaseParams { get { return _baseParams; } }
 
         //Списки используемых сигналов и колонок для переменных типа объекта
         public SetS MetSignals { get; set; }
@@ -280,8 +280,8 @@ namespace Tablik
         //Данный параметр является наследником указанного типа
         public bool LessOrEquals(ITablikType type)
         {
-            if (type is TablikParam)
-                return ((TablikParam)Type).LessOrEquals(type) || BaseParams.Any(bp => bp.LessOrEquals(type));
+            if (type is TablikCalcParam)
+                return ((TablikCalcParam)Type).LessOrEquals(type) || BaseParams.Any(bp => bp.LessOrEquals(type));
             if (type is ITablikSignalType)
                 return TablikSignalType.LessOrEquals(type);
             return Simple.LessOrEquals(type);
@@ -319,8 +319,8 @@ namespace Tablik
             if (Keeper.Errors.Count > 0) return;
             foreach (var p in BaseParams)
                 p.AddDerivedParams(prefix, prefixName, task, false);
-            if (Type is TablikParam)
-                ((TablikParam)Type).AddDerivedParams(prefix, prefixName, task, false);
+            if (Type is TablikCalcParam)
+                ((TablikCalcParam)Type).AddDerivedParams(prefix, prefixName, task, false);
             foreach (var p in Params.Values)
                 p.AddDerivedParams(prefix + "." + p.Code, prefixName + "." + p.Name, task, true);
             if (isCaller)

@@ -7,7 +7,7 @@ namespace Tablik
     //Узел, задающий расчетный параметр
     internal class ParamNode : TablikKeeperNode
     {
-        public ParamNode(TablikKeeper keeper, ITerminalNode terminal, TablikParam param, IEnumerable<IExprNode> args = null) 
+        public ParamNode(TablikKeeper keeper, ITerminalNode terminal, TablikCalcParam param, IEnumerable<IExprNode> args = null) 
             : base(keeper, terminal)
         {
             Param = param;
@@ -23,7 +23,7 @@ namespace Tablik
         }
 
         //Параметр
-        public TablikParam Param { get; private set; }
+        public TablikCalcParam Param { get; private set; }
 
         //Определение типа данных
         public override void DefineType()

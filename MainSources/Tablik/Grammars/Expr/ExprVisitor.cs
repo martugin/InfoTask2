@@ -174,7 +174,7 @@ namespace Tablik
         {
             var expr = Go(context.expr());
             string prop = context.IDENT().Symbol.Text;
-            if (expr.Type is TablikParam && _keeper.FunsChecker.ParamProps.ContainsKey(prop))
+            if (expr.Type is TablikCalcParam && _keeper.FunsChecker.ParamProps.ContainsKey(prop))
                 return new ParamPropNode(_keeper, context.PROP(), context.IDENT());
             var stype = expr.Type.TablikSignalType;
             if (stype == null)

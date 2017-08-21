@@ -101,7 +101,7 @@
     <Compile Include="Params\ISubParams.cs" />
     <Compile Include="Params\TablikDerivedParam.cs" />
     <Compile Include="Project\TablikModule.cs" />
-    <Compile Include="Params\TablikParam.cs" />
+    <Compile Include="Params\TablikCalcParam.cs" />
     <Compile Include="Params\TablikVar.cs" />
     <Compile Include="Project\TablikProject.cs" />
     <Compile Include="Signals\BaseObjectType.cs" />

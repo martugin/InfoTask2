@@ -32,21 +32,21 @@ namespace Tablik
         public DfsStatus DfsStatus { get; set; }
 
         //Словарь расчетных параметров, ключи - коды, содержит только отмеченные и без грубых ошибок 
-        private readonly DicS<TablikParam> _params = new DicS<TablikParam>();
-        public DicS<TablikParam> Params { get { return _params; } }
+        private readonly DicS<TablikCalcParam> _params = new DicS<TablikCalcParam>();
+        public DicS<TablikCalcParam> Params { get { return _params; } }
         //Словарь всех расчетных параметров, ключи - коды
-        private readonly DicS<TablikParam> _paramsAll = new DicS<TablikParam>();
-        public DicS<TablikParam> ParamsAll { get { return _paramsAll; } }
+        private readonly DicS<TablikCalcParam> _paramsAll = new DicS<TablikCalcParam>();
+        public DicS<TablikCalcParam> ParamsAll { get { return _paramsAll; } }
         //Словарь расчетных параметров, ключи - Id, содержит все параметры
-        private readonly DicI<TablikParam> _paramsId = new DicI<TablikParam>();
-        public DicI<TablikParam> ParamsId { get { return _paramsId; } }
+        private readonly DicI<TablikCalcParam> _paramsId = new DicI<TablikCalcParam>();
+        public DicI<TablikCalcParam> ParamsId { get { return _paramsId; } }
         //Словарь расчетных подпараметров, ключи - Id
-        private readonly DicI<TablikParam> _subParamsId = new DicI<TablikParam>();
-        public DicI<TablikParam> SubParamsId { get { return _subParamsId; } }
+        private readonly DicI<TablikCalcParam> _subParamsId = new DicI<TablikCalcParam>();
+        public DicI<TablikCalcParam> SubParamsId { get { return _subParamsId; } }
 
         //Список параметров в порядке расчета
-        private readonly List<TablikParam> _paramsOrder = new List<TablikParam>();
-        public List<TablikParam> ParamsOrder { get { return _paramsOrder; }}
+        private readonly List<TablikCalcParam> _paramsOrder = new List<TablikCalcParam>();
+        public List<TablikCalcParam> ParamsOrder { get { return _paramsOrder; }}
         //Список порожденных параметров
         private readonly List<TablikDerivedParam> _derivedParams = new List<TablikDerivedParam>();
         public List<TablikDerivedParam> DerivedParams { get { return _derivedParams; } }
@@ -101,7 +101,7 @@ namespace Tablik
         {
             while (rec.Read())
             {
-                var par = new TablikParam(this, rec, false, false);
+                var par = new TablikCalcParam(this, rec, false, false);
                 ParamsId.Add(par.ParamId, par);
                 ParamsAll.Add(par.Code, par);
                 if (par.CalcOn && !par.IsFatalError)
@@ -114,7 +114,7 @@ namespace Tablik
         {
             while (rec.Read())
             {
-                var par = new TablikParam(this, rec, true, false);
+                var par = new TablikCalcParam(this, rec, true, false);
                 SubParamsId.Add(par.ParamId, par);
                 var opar = ParamsId[par.OwnerId];
                 opar.ParamsId.Add(par.ParamId, par);

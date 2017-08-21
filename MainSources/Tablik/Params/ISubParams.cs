@@ -6,10 +6,10 @@ namespace Tablik
     internal interface ISubParams
     {
         //Словарь расчетных параметров, ключи - коды, содержит только отмеченные и без грубых ошибок
-        DicS<TablikParam> Params { get; }
+        DicS<TablikCalcParam> Params { get; }
         //Словарь всех расчетных параметров, ключи - коды
-        DicS<TablikParam> ParamsAll { get; }
+        DicS<TablikCalcParam> ParamsAll { get; }
         //Словарь расчетных параметров, ключи - Id, содержит все параметры
-        DicI<TablikParam> ParamsId { get; }
+        DicI<TablikCalcParam> ParamsId { get; }
     }
 }

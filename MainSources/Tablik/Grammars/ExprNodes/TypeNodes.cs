@@ -83,7 +83,7 @@ namespace Tablik
                     Type = new SimpleType();
                 }
             }
-            if (Type == null) Type = (TablikParam)p;
+            if (Type == null) Type = (TablikCalcParam)p;
         }
 
         public override string ToTestString()

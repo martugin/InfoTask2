@@ -9,13 +9,13 @@ namespace Tablik
     //Накопление ошибок параметра в Tablik
     internal class TablikKeeper : ParsingKeeper
     {
-        public TablikKeeper(TablikParam param)
+        public TablikKeeper(TablikCalcParam param)
         {
             Param = param;
         }
 
         //Текущий расчетный параметр
-        internal TablikParam Param { get; private set; }
+        internal TablikCalcParam Param { get; private set; }
         //Текущий модуль
         internal TablikModule Module { get { return Param.Module; } }
         //Текущий проект
@@ -50,8 +50,8 @@ namespace Tablik
         {
             if (node is VarNode)
                 return ((VarNode) node).Var.MetSignals;
-            if (node.Type is TablikParam)
-                return ((TablikParam) node.Type).MetSignals;
+            if (node.Type is TablikCalcParam)
+                return ((TablikCalcParam) node.Type).MetSignals;
             return null;
         }
         //Получить список MetProps от вершины
@@ -59,8 +59,8 @@ namespace Tablik
         {
             if (node is VarNode)
                 return ((VarNode)node).Var.MetProps;
-            if (node.Type is TablikParam)
-                return ((TablikParam)node.Type).MetProps;
+            if (node.Type is TablikCalcParam)
+                return ((TablikCalcParam)node.Type).MetProps;
             return null;
         }
 
