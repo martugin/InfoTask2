@@ -21,22 +21,12 @@ namespace ProvidersLibrary
             _defineObjectFun = defineObjectFun;
             return ReadByParts(objects, partSize, beg, en, isCut, ReadPart, msg);
         }
-        protected ValuesCount ReadByParts(IEnumerable<ListSourceOut> objects, int partSize,
-                                          Func<IList<ListSourceOut>, DateTime, DateTime, bool, IRecordRead> queryValuesFun,
-                                          Func<IRecordRead, ListSourceOut> defineObjectFun, string msg = null)
-        {
-            return ReadByParts(objects, partSize, PeriodBegin, PeriodEnd, false, queryValuesFun, defineObjectFun, msg);
-        }
 
         //Чтение значений по блокам объектов c использованием стандартных функций
         protected ValuesCount ReadByParts(IEnumerable<ListSourceOut> objects, int partSize,
                                                               DateTime beg, DateTime en, bool isCut, string msg = null)
         {
             return ReadByParts(objects, partSize, beg, en, isCut, QueryValues, DefineOut, msg);
-        }
-        protected ValuesCount ReadByParts(IEnumerable<ListSourceOut> objects, int partSize, string msg = null)
-        {
-            return ReadByParts(objects, partSize, PeriodBegin, PeriodEnd, false, msg);
         }
 
         //Чтение всех значений одним блоком
@@ -71,10 +61,6 @@ namespace ProvidersLibrary
         {
             return ReadWhole(part, beg, en, isCut, QueryValues, DefineOut);
         }
-        protected ValuesCount ReadWhole(IEnumerable<ListSourceOut> part)
-        {
-            return ReadWhole(part, PeriodBegin, PeriodEnd, false);
-        }
 
         //Чтение значений по одному явно указанному объекту
         protected ValuesCount ReadOneOut(ListSourceOut ob, DateTime beg, DateTime en, bool isCut,
@@ -84,10 +70,6 @@ namespace ProvidersLibrary
             if (ob == null) return new ValuesCount();
             AddEvent(msg ?? "Чтение значений объекта " + ob.Context);
             return ReadWhole(new[] {ob}, beg, en, isCut, queryValuesFun, rec => ob);
-        }
-        protected ValuesCount ReadOneOut(ListSourceOut ob, Func<IList<ListSourceOut>, DateTime, DateTime, bool, IRecordRead> queryValuesFun, string msg = null)
-        {
-            return ReadOneOut(ob, PeriodBegin, PeriodEnd, false, queryValuesFun, msg);
         }
         
         //Ссылки на используемые функции

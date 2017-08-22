@@ -22,7 +22,11 @@ namespace Kosmotronika
                     : TimeInterval.CreateDefault();
             }
         }
-        
+
+        //Ограничение на длину интервала для одного считывания
+        private readonly TimeSpan _periodLimit = new TimeSpan(1, 0, 0, 0);
+        protected override TimeSpan PeriodLimit { get { return _periodLimit; } }
+
         //Словарь выходов. Один элемент словаря - один выход
         internal readonly Dictionary<OutIndex, KosmOut> Outs = new Dictionary<OutIndex, KosmOut>();
         //Словарь аналоговых выходов
@@ -130,21 +134,21 @@ namespace Kosmotronika
         }
 
         //Чтение изменений
-        protected override ValuesCount ReadChanges()
+        protected override ValuesCount ReadChanges(DateTime beg, DateTime en)
         {
             var vc = new ValuesCount();
             IsAnalog = true;
             using (Start(0, AnalogsProcent()))
-                vc += ReadByParts(Analogs.Values, PartSize, "Изменения значений по аналоговым сигналам");
+                vc += ReadByParts(Analogs.Values, PartSize, beg, en, false, "Изменения значений по аналоговым сигналам");
             if (vc.IsFail) return vc;
 
             IsAnalog = false;
             using (Start(AnalogsProcent(), OutsProcent()))
-                vc += ReadByParts(Outs.Values, PartSize, "Изменения значений по выходам");
+                vc += ReadByParts(Outs.Values, PartSize, beg, en, false, "Изменения значений по выходам");
             if (vc.IsFail) return vc;
 
             using (Start(OutsProcent(), 100))
-                vc += ReadOneOut(OperatorOut, QueryValuesOperator);
+                vc += ReadOneOut(OperatorOut, beg, en, false, QueryValuesOperator);
             return vc;
         }
 

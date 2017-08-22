@@ -67,11 +67,11 @@ namespace Kvint
         }
 
         //Чтение изменений
-        protected override ValuesCount ReadChanges()
+        protected override ValuesCount ReadChanges(DateTime beg, DateTime en)
         {
             var vc = new ValuesCount();
             foreach (var ou in Outs)
-                vc += ou.ReadChanges(PeriodBegin, PeriodEnd);
+                vc += ou.ReadChanges(beg, en);
             return vc;
         }
     }

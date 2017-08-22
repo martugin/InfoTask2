@@ -148,18 +148,18 @@ namespace Ovation
         }
 
         //Чтение изменений
-        protected override ValuesCount ReadChanges()
+        protected override ValuesCount ReadChanges(DateTime beg, DateTime en)
         {
             var vc = new ValuesCount();
             using (Start(0, 70))
-                vc += ReadByParts(OutsId.Values, 200);
+                vc += ReadByParts(OutsId.Values, 200, beg, en, false);
 
             using (Start(70, 80))
-                vc += ReadOneOut(AlarmOut, QueryAlarmValues, "Чтение сигнализационных сообщений");
+                vc += ReadOneOut(AlarmOut, beg, en, false, QueryAlarmValues, "Чтение сигнализационных сообщений");
             using (Start(80, 90))
-                vc += ReadOneOut(SoeOut, QuerySoeValues, "Чтение событий");
+                vc += ReadOneOut(SoeOut, beg, en, false, QuerySoeValues, "Чтение событий");
             using (Start(90, 100))
-                vc += ReadOneOut(TextOut, QueryTextValues, "Чтение текстовых сообщений");
+                vc += ReadOneOut(TextOut, beg, en, false, QueryTextValues, "Чтение текстовых сообщений");
             return vc;
         }
     }

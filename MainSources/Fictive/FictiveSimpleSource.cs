@@ -84,7 +84,7 @@ namespace Fictive
             }
             return vc;
         }
-        protected override ValuesCount ReadChanges()
+        protected override ValuesCount ReadChanges(DateTime beg, DateTime en)
         {
             if (_makeNextError)
             {
@@ -96,8 +96,8 @@ namespace Fictive
             foreach (var ob in _outs.Values)
             {
                 if (ValueForming == ValueForming.Uniform)
-                    vc.WriteCount += ob.MakeUniformValues(PeriodBegin, PeriodEnd, true);
-                else vc.WriteCount += ob.MakeTimeValues(PeriodBegin, PeriodEnd, true);
+                    vc.WriteCount += ob.MakeUniformValues(beg, en, true);
+                else vc.WriteCount += ob.MakeTimeValues(beg, en, true);
             }
             return vc;
         }

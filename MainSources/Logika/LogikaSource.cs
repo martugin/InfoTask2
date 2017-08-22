@@ -63,15 +63,15 @@ namespace Logika
         }
 
         //Чтение значений, срез считывается вместе с изменениями
-        protected override ValuesCount ReadChanges()
+        protected override ValuesCount ReadChanges(DateTime beg, DateTime en)
         {
             var vc = new ValuesCount();
-            DateTime beg = PeriodBegin.AddMinutes(-PeriodBegin.Minute).AddSeconds(-PeriodBegin.Second - 1);
-            DateTime en = PeriodEnd.AddSeconds(1);
+            DateTime b = beg.AddMinutes(-beg.Minute).AddSeconds(-beg.Second - 1);
+            DateTime e = en.AddSeconds(1);
             foreach (var tabl in Outs.Dic)
             {
                 _tableName = tabl.Key;
-                vc += ReadWhole(tabl.Value.Values, beg, en, false);
+                vc += ReadWhole(tabl.Value.Values, b, e, false);
                 if (vc.IsFail) return vc;
             }
             return vc;

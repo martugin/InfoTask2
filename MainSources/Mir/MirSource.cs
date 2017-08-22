@@ -79,9 +79,9 @@ namespace Mir
         }
 
         //Чтение изменений
-        protected override ValuesCount ReadChanges()
+        protected override ValuesCount ReadChanges(DateTime beg, DateTime en)
         {
-            return ReadWhole(Outs.Values);
+            return ReadWhole(Outs.Values, beg, en, false);
         }
     }
 }

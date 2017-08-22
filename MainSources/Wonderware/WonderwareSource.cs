@@ -106,9 +106,9 @@ namespace Wonderware
         }
         
         //Чтение данных из Historian за период
-        protected override ValuesCount ReadChanges()
+        protected override ValuesCount ReadChanges(DateTime beg, DateTime en)
         {
-            return ReadByParts(Outs.Values, 500);
+            return ReadByParts(Outs.Values, 500, beg, en, false);
         }
     }
 }

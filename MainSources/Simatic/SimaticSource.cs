@@ -118,9 +118,9 @@ namespace Simatic
             return ReadByParts(OutsId.Values, 500, PeriodBegin.AddSeconds(-60), PeriodBegin, true);
         }
         //Чтение изменений
-        protected override ValuesCount ReadChanges()
+        protected override ValuesCount ReadChanges(DateTime beg, DateTime en)
         {
-            return ReadByParts(OutsId.Values, 500);
+            return ReadByParts(OutsId.Values, 500, beg, en, false);
         }
     }
 }

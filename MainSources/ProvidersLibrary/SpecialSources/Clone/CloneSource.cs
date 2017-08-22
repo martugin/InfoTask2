@@ -152,18 +152,18 @@ namespace ProvidersLibrary
         }
 
         //Чтение изменений
-        protected internal override ValuesCount ReadChanges()
+        protected internal override ValuesCount ReadChanges(DateTime beg, DateTime en)
         {
             var vc = new ValuesCount();
             AddEvent("Чтение изменений действительных значений");
             _useStrTable = false;
             _useCutTable = false;
-            vc += ReadWhole(ObjectsList);
+            vc += ReadWhole(ObjectsList, beg, en, false);
             if (vc.IsFail) return vc;
             AddEvent("Чтение изменений строковых значений");
             _useStrTable = true;
             _useCutTable = false;
-            vc += ReadWhole(ObjectsList);
+            vc += ReadWhole(ObjectsList, beg, en, false);
             return vc;
         }
     }

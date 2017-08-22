@@ -89,12 +89,6 @@ namespace ProvidersLibrary
             }
             return valuesCount;
         }
-        //Чтение значений по блокам объектов без указания времени и признака среза
-        protected ValuesCount ReadByParts(IEnumerable<ListSourceOut> objects, int partSize,
-                                          Func<List<ListSourceOut>, DateTime, DateTime, bool, ValuesCount> readPartFun, string msg = null)
-        {
-            return ReadByParts(objects, partSize, PeriodBegin, PeriodEnd, false, readPartFun, msg);
-        }
 
         //Разбиение списка объектов на блоки
         private List<List<ListSourceOut>> MakeParts(IEnumerable<ListSourceOut> outs, //Список выходов

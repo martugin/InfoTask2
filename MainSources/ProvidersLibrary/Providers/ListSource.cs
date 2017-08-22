@@ -1,4 +1,8 @@
-﻿namespace ProvidersLibrary
+﻿using System;
+using System.Diagnostics.Eventing.Reader;
+using BaseLibrary;
+
+namespace ProvidersLibrary
 {
     //Базовый класс для всех источников чтения из архива
     public abstract class ListSource : Source
@@ -12,7 +16,10 @@
         //Чтение среза, возврашает количество прочитанных значений
         protected internal virtual ValuesCount ReadCut() { return new ValuesCount(); }
         //Чтение изменений, возврашает количество прочитанных и сформированных значений
-        protected internal abstract ValuesCount ReadChanges();
+        protected internal abstract ValuesCount ReadChanges(DateTime beg, DateTime en);
+        //Ограничение на длину интервала для одного считывания
+        private readonly TimeSpan _periodLimit = new TimeSpan(10000, 0, 0, 0);
+        protected virtual TimeSpan PeriodLimit { get { return _periodLimit; } }
 
         //Чтение значений из провайдера
         protected override ValuesCount ReadProviderValues()
@@ -31,9 +38,30 @@
             if (PeriodBegin < PeriodEnd)
             {
                 AddEvent("Чтение изменений значений");
-                ValuesCount changes;
+                var ts = PeriodEnd.Subtract(PeriodBegin).Subtract(new TimeSpan(0, 0, 0, 0, 1));
+                var tts = new TimeSpan(0);
+                int n = 0;
+                while (tts < ts)
+                {
+                    tts = tts.Add(PeriodLimit);
+                    n++;
+                }
+
+                var changes = new ValuesCount();
                 using (Start(40, 85))
-                    changes = ReadChanges();
+                {
+                    DateTime beg = PeriodBegin;
+                    DateTime en = Static.MinDate;
+                    double proc = 0;
+                    while (en < PeriodEnd)
+                        using (Start(proc, proc += 100.0 / n))
+                        {
+                            en = beg.Add(PeriodLimit);
+                            if (PeriodEnd < en) en = PeriodEnd;
+                            changes = changes + ReadChanges(beg, en);
+                            beg = en;    
+                        }
+                }
                 foreach (ListSignal sig in SourceConnect.InitialSignals.Values)
                     changes.WriteCount += sig.MakeEnd();
                 AddEvent("Изменения значений получены", changes.ToString());

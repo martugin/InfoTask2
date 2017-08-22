@@ -153,11 +153,11 @@ namespace Fictive
                       ReadByParts(OutsId2.Values, 2, PeriodBegin.AddDays(-1), PeriodBegin, true, QueryValues2, DefineOut2);
         }
         //Чтение изменений
-        protected override ValuesCount ReadChanges()
+        protected override ValuesCount ReadChanges(DateTime beg, DateTime en)
         {
-            return ReadByParts(OutsId.Values, 2) +
-                      ReadByParts(Outs2.Values, 2, QueryValues2, DefineOut2) +
-                      ReadOneOut(OperatorOut, QueryOperator);
+            return ReadByParts(OutsId.Values, 2, beg, en, false) +
+                      ReadByParts(Outs2.Values, 2, beg, en, false, QueryValues2, DefineOut2) +
+                      ReadOneOut(OperatorOut, beg, en, false, QueryOperator);
         }
     }
 }
