@@ -49,7 +49,7 @@ namespace ComLaunchers
         //Качество ошибки
         public int ErrQuality
         {
-            get { return _signal.OutValue.Error == null ? 0 : (int) _signal.OutValue.Error.Quality;    }
+            get { return _signal.OutValue.Error == null ? 0 : (int) _signal.OutValue.Error.Quality; }
         }
         //Номер ошибки
         public int ErrNumber
