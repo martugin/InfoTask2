@@ -16,7 +16,8 @@ namespace Experiments
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new ParseForm());
-            Application.Run(new CalibratorForm());
+            //Application.Run(new CalibratorForm());
+            Application.Run(new Form1());
         }
     }
 }

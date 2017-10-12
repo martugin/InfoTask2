@@ -92,5 +92,19 @@ namespace Experiments
             progressBar1.Value = 0;
             Application.DoEvents();
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var it = new ItLauncher();
+            it.Initialize("Experiments");
+            it.Finished += OnFinished;
+            var cloner = it.LoadCloner("LogikaSource", @"DbFile=D:\InfoTask2\Debug\TestsRun\Providers\Logika\CloneProlog.mdb");
+            cloner.MakeCloneAsync(ItStatic.InfoTaskDir() + @"TestsRun\Providers\Logika\Hand\Clone");
+        }
     }
 }
