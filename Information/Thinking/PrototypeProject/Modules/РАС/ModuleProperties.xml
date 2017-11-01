@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Свойства модуля-->
+<ModuleProperties ModuleCode="РАС" ModuleName="Ведомость РАС" Description="" ModuleType="Разовый">
+  <LinkedModules>
+    <Функции />
+  </LinkedModules>
+  <LinkedConnects>
+    <Source1 />
+  </LinkedConnects>
+</ModuleProperties>

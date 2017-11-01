@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл свойств проекта (ProjectProperties.xml)-->
+<ProjectProperties ProjectCode="ProjectExample" ProjectName="Пример проекта" Description="Пример простого проекта" ProjectType="">
+  <Connects>
+    <Source Code="Source1" Description="Источник Овация" Complect="Ovation" />
+  </Connects>
+</ProjectProperties>
