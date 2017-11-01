@@ -1,0 +1,9 @@
+Мгновенные AnalogValues(действ Par) 
+ [Name='Функция для аналоговых ведомостей']
+  = Par
+  Мгновенные Срез = ПризнакСреза(Par);
+  
+Генерация Analog : Analog
+  Мгновенные [ToIdent(Code)] 
+   [Name=NameUnit]
+   = AnalogValues([Объект(Code)]);
