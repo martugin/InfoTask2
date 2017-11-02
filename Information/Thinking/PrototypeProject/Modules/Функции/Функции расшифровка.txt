@@ -1,0 +1,12 @@
+SostStr(целое Sost, строка TablCode, целое TablNum=1, целое BitsCount=16) 
+ [Name='Расшифровка одного слова состояния']
+  St='' i=0
+  Пока(i<BitsCount, 
+       BitVal=Бит(Sost;i)
+       Если(BitVal And ПодТаблСодержит(TablNum;TablCode;I;0),  
+         St=St + ВзятьПодТабл(TablNum;TablCode;I;0)+ ';')
+       i=i+1)
+  = St; 
+   
+СостТЗ(целое Sost) [Name='Состояние ТЗ для ведомости'] 
+  = SostStr(Sost;'ТЗ_1');

@@ -1,23 +1,23 @@
-Cреднее SimplePar [Name = 'Простой параметр'] = 
-  3+2
+Cреднее SimplePar [Name = 'Простой параметр'] = 3+2
   
 Cреднее Par [Name = 'Параметр' 
              Min = 0 
-			 Max = 100] = 
+			 Max = 100] 
   a = 25
   Среднее SubPar = a+1
   Доступ SubPar2 = 
     b = a + SubPar
     b*2;	
-  a+3;
+  = a+3;
 
 Мгновенные Fun(действ x, целое y) [Name = 'Функция'] =
   Мгновенные Spar = x*2
   b = Spar*2
-  y * Spar
+  = y * Spar
   Мгновенные Spar2 = b*2;  
  
-Интерфейс Мгновенные логич IFunS
+Интерфейс IFunS
+  = Мгновенные логич 
   Свойство строка Name
   Свойство строка Units
   Свойство целое SN
@@ -31,7 +31,7 @@ Cреднее Par [Name = 'Параметр'
    SN = S.SN] =
   Мгновенные Бит1 = Бит(S.Sost, 1)
   Мгновенные Бит2 = Бит(S.Sost, 2)
-  Бит1 или Бит2;
+  = Бит1 или Бит2;
 
 FunU (СигналСост S, действ k) : FunS(S)
   [Name = 'Расширенная функция от сигнала']
@@ -41,22 +41,23 @@ FunU (СигналСост S, действ k) : FunS(S)
   S = FunU({KKS},3)
   Мгновенные Вых = S Or S.Бит1
   Среднее КВых = S.Знач*10
-  S;   
+  = S;   
   
 //Таблица Tabl содержит поля Num, Code, Name, Type, Units и KKS типа объект
 //Ее подтаблица содержит поля Num, Code, Name, SubType и JoinKKS типа объект
   
-Генерация [Tabl(Type=='aaa')]
+Генерация Params : Tabl(Type=='aaa')
+  [Name='Генерация параметров']
   Мгновенные [Code + '_Пар']
   [Name = Name + ' параметра' 
    Units = Units]  
-  KKS
+  = KKS
   Мгновенные Пар = KKS.Пар
   Мгновенные Дубль = [Объект(KKS + '-2')].Пар
   Мгновенные Объединение = Объединить([GenSubTabl(SubType=='bbb', Объект(JoinKKS), '; ')])
-  Генерация [SubTabl(SubType=='bbb')]
+  Генерация SubParams : GenSubTabl(SubType=='bbb')
     [Name = Name]
-	JoinKKS
-	Мгновенные Пар = JoinKKS.Пар	
+	= JoinKKS
+	Мгновенные Пар = JoinKKS.Пар;	
   
   
