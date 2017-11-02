@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Файл свойств проекта (ProjectProperties.xml)-->
+<Project Code="PrototypeProject">
+  <Module Code="Ведомости">
+    <Task Code="Аналоговые">
+      <Generation Code="AnalogGen">
+        <Param Code="1BA01E013">
+          <Type Code="AnalogValues">
+            <SubParam Code="Срез" />
+          </Type>
+        </Param>
+        <Param Code="1RL25F001">
+          <Type Code="AnalogValues">
+            <SubParam Code="Срез" />
+          </Type>
+        </Param>
+      </Generation>
+    </Task>
+    <Task Code="ТЗ">
+      <Generation Code="TZGen">
+        <Param Code="ТЗ_З00100101021_Срез" />
+        <Param Code="ВТЗЗ00100111002_Срез" />
+      </Generation>
+    </Task>
+  </Module>
+  <Module Code="Обзорная">
+    <Task Code="ВТЗ">
+      <Generation Code="VTZGen">
+        <Param Code="ВТЗЗ00100111002_СрабВТЗ">
+          <Type Code="ВТЗВТЗ">
+            <SubParam Code="Код" />
+            <SubParam Code="Приор"></SubParam>
+            <SubParam Code="Срез" />
+            <SubParam Code="СостСтр" />
+            <SubParam Code="КолСраб" />
+          </Type>
+        </Param>
+        <Param Code="ВТЗЗ00100211002_СрабВТЗ">
+          <Type Code="ВТЗВТЗ">
+            <SubParam Code="Код" />
+            <SubParam Code="Приор"></SubParam>
+            <SubParam Code="Срез" />
+            <SubParam Code="СостСтр" />
+            <SubParam Code="КолСраб" />
+          </Type>
+        </Param>
+      </Generation>
+    </Task>
+  </Module>
+  <Module Code="Регистрация">
+    <Task Code="РАС">
+      <Generation Code="RasGen">
+        <Param Code="ВТЗЗ00100111002_РАС">
+          <Type Code="РАСВТЗ ">
+            <SubParam Code="КодВТЗ" />
+            <SubParam Code="ПриорВТЗ"></SubParam>
+            <SubParam Code="ПриорВТЗТочка" />
+            <SubParam Code="ПервКод" />
+            <SubParam Code="ПервИмя" />
+            <SubParam Code="ПервВрем" />
+            <SubParam Code="ПервВремСтр" />
+            <SubParam Code="ПервСост" />
+            <SubParam Code="ПервСостСтр" />
+            <SubParam Code="ПризнВремАвар" />
+          </Type>
+          <Var Code="ТЗИмя " />
+          <Var Code="ТЗКод "></Var>
+          <Var Code="ТЗСост" />
+        </Param>
+        <Param Code="ВТЗЗ00100211002_РАС">
+          <Type Code="РАСВТЗ ">
+            <SubParam Code="КодВТЗ" />
+            <SubParam Code="ПриорВТЗ"></SubParam>
+            <SubParam Code="ПриорВТЗТочка" />
+            <SubParam Code="ПервКод" />
+            <SubParam Code="ПервИмя" />
+            <SubParam Code="ПервВрем" />
+            <SubParam Code="ПервВремСтр" />
+            <SubParam Code="ПервСост" />
+            <SubParam Code="ПервСостСтр" />
+            <SubParam Code="ПризнВремАвар" />
+          </Type>
+          <Var Code="ТЗИмя " />
+          <Var Code="ТЗКод "></Var>
+          <Var Code="ТЗСост" />
+        </Param>
+      </Generation>
+    </Task>
+  </Module>
+  <Connection Code="Source1">
+    <Object Code="ВТЗЗ00100111002">
+      <Signal Code="Пар"></Signal>
+    </Object>
+    <Object Code="ВТЗЗ00100211002">
+      <Signal Code="Пар"></Signal>
+    </Object>
+    <Object Code="ТЗ_З00210101002">
+      <Signal Code="Пар"></Signal>
+      <Signal Code="Сост1"></Signal>
+      <Signal Code="Сост2"></Signal>
+    </Object>
+    <Object Code="ТЗ_З00210101025">
+      <Signal Code="Пар"></Signal>
+      <Signal Code="Сост1"></Signal>
+      <Signal Code="Сост2"></Signal>
+    </Object>
+    <Object Code="ТЗ_З00100208004">
+      <Signal Code="Пар"></Signal>
+      <Signal Code="Сост1"></Signal>
+      <Signal Code="Сост2"></Signal>
+    </Object>
+    <Object Code="ТЗ_З00100201021">
+      <Signal Code="Пар"></Signal>
+      <Signal Code="Сост1"></Signal>
+      <Signal Code="Сост2"></Signal>
+    </Object>
+  </Connection>
+</Project>

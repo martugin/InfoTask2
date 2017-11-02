@@ -12,7 +12,7 @@
   Мгновенные ПервСостСтр = SostStr(ПервСост;'ТЗ_1')
   Мгновенные ПризнВремАвар = -1*(АВАРИЯ.ВремяАварии == ПервВрем);
   
-Генерация РАС : VTZTZ(UnitTypeVTZ=='ВТЗ')
+Генерация RasGen : VTZTZ(UnitTypeVTZ=='ВТЗ')
   [ToIdent(Code)+ '_РАС'] [Name=NameVTZ] 
   ТЗИмя = Объединить([GenSubTabl(UnitTypeTZ=='ТЗ', 'Событие(\'' + NameTZ + '\', Бит(' + Объект(Code) + ', 14)), ', '') 
                       GenSubTabl(UnitTypeTZ=='ВТЗ', 'Событие(\'' + NameTZ + '\',' + Объект(Code) + ')', '')] 

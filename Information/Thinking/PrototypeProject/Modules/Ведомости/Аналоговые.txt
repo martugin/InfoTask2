@@ -3,7 +3,7 @@
   = Par
   Мгновенные Срез = ПризнакСреза(Par);
   
-Генерация Analog : Analog
+Генерация AnalogGen : Analog
   Мгновенные [ToIdent(Code)] 
    [Name=NameUnit]
    = AnalogValues([Объект(Code)]);
